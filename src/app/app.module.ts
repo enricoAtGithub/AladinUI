@@ -72,6 +72,7 @@ import {TooltipModule} from 'primeng/tooltip';
 import {TreeModule} from 'primeng/tree';
 import {TreeTableModule} from 'primeng/treetable';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
+import { AuthModule } from './auth/auth.module';
 
 import {AppComponent} from './app.component';
 import {AppRightPanelComponent} from './app.rightpanel.component';
@@ -83,6 +84,7 @@ import {AppTopBarComponent} from './app.topbar.component';
 import {AppFooterComponent} from './app.footer.component';
 
 import {BreadcrumbService} from './breadcrumb.service';
+
 
 @NgModule({
     imports: [
@@ -156,7 +158,8 @@ import {BreadcrumbService} from './breadcrumb.service';
         TooltipModule,
         TreeModule,
         TreeTableModule,
-        VirtualScrollerModule
+        VirtualScrollerModule,
+        AuthModule
     ],
     declarations: [
         AppComponent,
