@@ -3,7 +3,7 @@ import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {LocationStrategy, HashLocationStrategy} from '@angular/common';
+import {LocationStrategy, PathLocationStrategy} from '@angular/common';
 import {AppRoutes} from './app.routes';
 
 import {AccordionModule} from 'primeng/accordion';
@@ -173,7 +173,7 @@ import {BreadcrumbService} from './breadcrumb.service';
         AppProfileComponent
     ],
     providers: [
-        {provide: LocationStrategy, useClass: HashLocationStrategy},
+        {provide: LocationStrategy, useClass: PathLocationStrategy},
         BreadcrumbService
     ],
     bootstrap: [AppComponent]
