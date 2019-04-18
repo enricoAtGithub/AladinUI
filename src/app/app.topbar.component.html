@@ -6,10 +6,10 @@
         <i class="fa fa-align-left"></i>
     </a>
 
-    <a id="layout-megamenu-button" href="#" (click)="app.onMegaMenuButtonClick($event)">
+    <!--<a id="layout-megamenu-button" href="#" (click)="app.onMegaMenuButtonClick($event)">
         <i class="fa fa-angle-down"></i>
         <span class="mega-menu-title">Mega Menu</span>
-    </a>
+    </a>-->
     <a id="topbar-menu-button" href="#" (click)="app.onTopbarMenuButtonClick($event)" *ngIf="app.profileMode==='top' || app.isHorizontal()">
         <img src="assets/layout/images/avatar.png" alt="california-layout">
         <span>Pauline Harrell</span>
@@ -33,96 +33,6 @@
                     <a href="#" (click)="app.onTopbarSubItemClick($event)">
                         <i class="fa fa-fw fa-paint-brush"></i>
                         <span>Change Theme</span>
-                    </a>
-                </li>
-                <li role="menuitem">
-                    <a href="#" (click)="app.onTopbarSubItemClick($event)">
-                        <i class="fa fa-fw fa-star-o"></i>
-                        <span>Favorites</span>
-                    </a>
-                </li>
-                <li role="menuitem">
-                    <a href="#" (click)="app.onTopbarSubItemClick($event)">
-                        <i class="fa fa-fw fa-lock"></i>
-                        <span>Lock Screen</span>
-                    </a>
-                </li>
-                <li role="menuitem">
-                    <a href="#" (click)="app.onTopbarSubItemClick($event)">
-                        <i class="fa fa-fw fa-picture-o"></i>
-                        <span>Wallpaper</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li #messages [ngClass]="{'menuitem-active':app.activeTopbarItem === messages}">
-            <a href="#" (click)="app.onTopbarItemClick($event,messages)">
-                <i class="fa fa-fw fa-envelope-o"></i>
-                <span class="topbar-item-name">Messages</span>
-                <i class="layout-menuitem-toggler fa fa-fw fa-angle-down"></i>
-            </a>
-            <ul class="fadeInDown">
-                <li role="menuitem">
-                    <a href="#" class="topbar-message" (click)="app.onTopbarSubItemClick($event)">
-                        <img src="assets/layout/images/avatar1.png" width="25"/>
-                        <span>Give me a call</span>
-                    </a>
-                </li>
-                <li role="menuitem">
-                    <a href="#" class="topbar-message" (click)="app.onTopbarSubItemClick($event)">
-                        <img src="assets/layout/images/avatar2.png" width="25"/>
-                        <span>Sales reports attached</span>
-                    </a>
-                </li>
-                <li role="menuitem">
-                    <a href="#" class="topbar-message" (click)="app.onTopbarSubItemClick($event)">
-                        <img src="assets/layout/images/avatar3.png" width="25"/>
-                        <span>About your invoice</span>
-                    </a>
-                </li>
-                <li role="menuitem">
-                    <a href="#" class="topbar-message" (click)="app.onTopbarSubItemClick($event)">
-                        <img src="assets/layout/images/avatar2.png" width="25"/>
-                        <span>Meeting today at 10pm</span>
-                    </a>
-                </li>
-                <li role="menuitem">
-                    <a href="#" class="topbar-message" (click)="app.onTopbarSubItemClick($event)">
-                        <img src="assets/layout/images/avatar4.png" width="25"/>
-                        <span>Out of office</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li #notifications [ngClass]="{'menuitem-active':app.activeTopbarItem === notifications}">
-            <a href="#" (click)="app.onTopbarItemClick($event,notifications)">
-                <i class="fa fa-fw fa-bell-o"></i>
-                <span class="topbar-item-name">Notifications</span>
-                <i class="layout-menuitem-toggler fa fa-fw fa-angle-down"></i>
-            </a>
-            <ul class="fadeInDown">
-                <li role="menuitem">
-                    <a href="#" (click)="app.onTopbarSubItemClick($event)">
-                        <i class="fa fa-fw fa-tasks"></i>
-                        <span>Pending tasks</span>
-                    </a>
-                </li>
-                <li role="menuitem">
-                    <a href="#" (click)="app.onTopbarSubItemClick($event)">
-                        <i class="fa fa-fw fa-calendar-check-o"></i>
-                        <span>Meeting today at 3pm</span>
-                    </a>
-                </li>
-                <li role="menuitem">
-                    <a href="#" (click)="app.onTopbarSubItemClick($event)">
-                        <i class="fa fa-fw fa-download"></i>
-                        <span>Download documents</span>
-                    </a>
-                </li>
-                <li role="menuitem">
-                    <a href="#" (click)="app.onTopbarSubItemClick($event)">
-                        <i class="fa fa-fw fa-plane"></i>
-                        <span>Book flight</span>
                     </a>
                 </li>
             </ul>
