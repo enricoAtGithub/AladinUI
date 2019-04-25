@@ -84,6 +84,7 @@ import {AppTopBarComponent} from './app.topbar.component';
 import {AppFooterComponent} from './app.footer.component';
 
 import {BreadcrumbService} from './breadcrumb.service';
+import { UserModule } from './user/user.module';
 
 
 @NgModule({
@@ -159,7 +160,8 @@ import {BreadcrumbService} from './breadcrumb.service';
         TreeModule,
         TreeTableModule,
         VirtualScrollerModule,
-        AuthModule
+        AuthModule,
+        UserModule
     ],
     declarations: [
         AppComponent,

@@ -1,0 +1,42 @@
+<p>
+  <p-panel styleClass="daily-sales" header="Benutzer hinzufügen">
+      
+        <form novalidate #form="ngForm" (ngSubmit)="createUser()">
+            <div class="ui-g form-group p-grid">
+            <div class="p-col">
+              <span class="ui-float-label">
+                  <input id="float-input" type="text" size="30" pInputText> 
+                  <label for="float-input">Benutzername</label>
+              </span>
+            </div>
+            <div class="p-col">
+              <span class="ui-float-label">
+                  <input id="float-input" type="text" size="30" pInputText> 
+                  <label for="float-input">EMail</label>
+              </span>
+            </div>
+            <div class="p-col">
+              <span class="ui-float-label">
+                  <input id="float-input" type="text" size="30" pInputText> 
+                  <label for="float-input">Mandant</label>
+              </span>
+            </div>
+          
+            <div class="p-col">
+              <p-checkbox name="cg" value="Administrator" label="Administrator"></p-checkbox>
+            </div>
+            <div class="p-col">
+              <p-checkbox name="cg" value="Aktiviert" label="Aktiviert"></p-checkbox>
+            </div>
+
+            <div class="p-col-2">
+                <button type="submit" pButton  [disabled]="!form.valid"  icon="pi pi-user-plus" >Benutzer erstellen</button>
+            </div>
+            <div class="p-col">
+                <label>test</label>
+            </div>
+          </div>
+        </form>
+      
+  </p-panel>
+</p>

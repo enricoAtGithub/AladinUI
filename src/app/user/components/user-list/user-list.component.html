@@ -1,11 +1,52 @@
 <div>
-  <p-panel styleClass="daily-sales" header="Daily Sales Stats">
-    <table>
-      <thead>
-        <tr>
-          <th>Email</th>
-        </tr>
-      </thead>
-    </table>
+  <p-panel styleClass="daily-sales" header="Benutzer-Übersicht">
+    <div *ngIf="userList$ | async as userList else noUserList">
+      
+      <p-table [value]="userList">
+        <ng-template pTemplate="header">
+          <tr>        
+            <th>Benutzername</th>        
+            <th>Email</th>        
+            <th>Rollen</th>        
+            <th>Mandant</th>
+            <th>Status</th>
+            <th>letzte Aktivität</th>
+            <th>verwendeter Browser</th>
+            <th>Bearbeiten</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user>
+          <tr>
+            <td>{{user.userName}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.rolesDisplayText()}}</td>
+            <td>{{user.mandant}}</td>
+            <td>{{(user.isActive ? 'aktiv' : 'gesperrt')}}</td>
+            <td>{{user.lastActive}}</td>
+            <td>{{user.lastUsedBrowser}}</td>
+            <td>
+              <button  pButton type="button" icon="pi pi-pencil" class="ui-button-info" 
+              pTooltip="Bearbeiten" styleClass="ui-button-info"></button>
+              <button  pButton type="button" icon="pi pi-lock" class="ui-button-info" 
+              pTooltip="Benutzer sperren" styleClass="ui-button-info"></button>
+              <!-- <button  pButton type="button" icon="fas fa-user-lock" class="ui-button-info" 
+              pTooltip="Benutzer sperren" styleClass="ui-button-info"></button> -->
+              <button  pButton type="button" icon="pi pi-lock-open" class="ui-button-info" 
+              pTooltip="Benutzer entsperren" styleClass="ui-button-info"></button>
+              <button  pButton type="button" icon="pi pi-chevron-circle-up" class="ui-button-info" 
+              pTooltip="Adminstrator-Rolle zuweisen" styleClass="ui-button-info"></button>
+              <button  pButton type="button" icon="pi pi-chevron-circle-down" class="ui-button-info" 
+              pTooltip="Adminstrator-Rolle entziehen" styleClass="ui-button-info"></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <ng-template #noUserList>
+      <div>
+        ...lade Benutzerliste
+      </div>
+    </ng-template>
+    
   </p-panel>
 </div>>
