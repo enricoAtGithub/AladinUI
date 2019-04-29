@@ -1,4 +1,4 @@
-<div class="layout-wrapper" (click)="onLayoutClick()"
+<div class="layout-wrapper" (click)="onLayoutClick()" *ngIf="this.authService.isLoggedIn"
      [ngClass]="{'layout-wrapper-overlay-sidebar': isOverlay(),
                  'layout-wrapper-slim-sidebar': isSlim(),
                  'layout-wrapper-horizontal-sidebar': isHorizontal(),
@@ -31,4 +31,7 @@
 
         <app-footer></app-footer>
     </div>
+</div>
+<div *ngIf="!this.authService.isLoggedIn">
+    <router-outlet></router-outlet>
 </div>

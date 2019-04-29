@@ -72,7 +72,7 @@ import {TooltipModule} from 'primeng/tooltip';
 import {TreeModule} from 'primeng/tree';
 import {TreeTableModule} from 'primeng/treetable';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
-import { AuthModule } from './auth/auth.module';
+import {AuthModule} from './auth/auth.module';
 
 import {AppComponent} from './app.component';
 import {AppRightPanelComponent} from './app.rightpanel.component';
@@ -84,6 +84,7 @@ import {AppTopBarComponent} from './app.topbar.component';
 import {AppFooterComponent} from './app.footer.component';
 
 import {BreadcrumbService} from './breadcrumb.service';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 @NgModule({
@@ -170,7 +171,8 @@ import {BreadcrumbService} from './breadcrumb.service';
         AppBreadcrumbComponent,
         AppTopBarComponent,
         AppFooterComponent,
-        AppProfileComponent
+        AppProfileComponent,
+        DashboardComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: PathLocationStrategy},

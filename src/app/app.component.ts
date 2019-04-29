@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, Renderer2, ViewChild} from '@angular/core';
 import {ScrollPanel} from 'primeng/primeng';
+import { AuthService } from './auth/services/auth.service';
 
 @Component({
     selector: 'app-root',
@@ -47,18 +48,20 @@ export class AppComponent implements AfterViewInit {
     usermenuActive: boolean;
 
     usermenuClick: boolean;
-    
+
     activeProfileItem: any;
 
     @ViewChild('layoutMenuScroller') layoutMenuScrollerViewChild: ScrollPanel;
 
-    constructor(public renderer: Renderer2) {
+    constructor(public renderer: Renderer2, public authService: AuthService) {
     }
 
     ngAfterViewInit() {
-        setTimeout(() => {
-            this.layoutMenuScrollerViewChild.moveBar();
-        }, 100);
+        if (this.authService.isLoggedIn) {
+            setTimeout(() => {
+                this.layoutMenuScrollerViewChild.moveBar();
+            }, 100);
+        }
     }
 
     onLayoutClick() {
