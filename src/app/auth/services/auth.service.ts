@@ -25,8 +25,8 @@ export class AuthService {
 
     const result = new Subject<Boolean>();
 
-    // tslint:disable-next-line: max-line-length
-    this.http.post('http://localhost:8081/rest/api/user/login', JSON.stringify({user: user, passwd: pass}), httpOptions).subscribe((resp: HttpResponse<Object>) => {
+    this.http.post('http://localhost:8081/rest/api/user/login',
+    JSON.stringify({user: user, passwd: pass, userAgent: navigator.userAgent}), httpOptions).subscribe((resp: HttpResponse<Object>) => {
       this.isLoggedIn = true;
       this.roles = resp.body['roles'];
       this.token = resp.body['token'];
