@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import { AppComponent} from './app.component';
+import {AppLayoutComponent} from '../app-layout/app-layout.component';
 import {trigger, state, transition, style, animate} from '@angular/animations';
 
 @Component({
@@ -60,7 +60,7 @@ import {trigger, state, transition, style, animate} from '@angular/animations';
 })
 export class AppProfileComponent {
 
-    constructor(public app: AppComponent) {}
+    constructor(public app: AppLayoutComponent) {}
 
     onProfileClick(event) {
         this.app.usermenuClick = true;

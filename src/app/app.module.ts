@@ -75,19 +75,20 @@ import {VirtualScrollerModule} from 'primeng/virtualscroller';
 import {AuthModule} from './auth/auth.module';
 
 import {AppComponent} from './app.component';
-import {AppRightPanelComponent} from './app.rightpanel.component';
-import {AppProfileComponent} from './app.profile.component';
-import {AppMenuComponent, AppSubMenuComponent} from './app.menu.component';
+import {AppRightPanelComponent} from './layout/app-rightpanel/app.rightpanel.component';
+import {AppProfileComponent} from './layout/app-layout/app-layout.profile.component';
+import {AppMenuComponent, AppSubMenuComponent} from './layout/app-layout/app-layout.menu.component';
 import {AppMegamenuComponent} from './app.megamenu.component';
-import {AppBreadcrumbComponent} from './app.breadcrumb.component';
-import {AppTopBarComponent} from './app.topbar.component';
-import {AppFooterComponent} from './app.footer.component';
+import {AppBreadcrumbComponent} from './layout/app-breadcrumb/app.breadcrumb.component';
+import {AppTopBarComponent} from './layout/app-topbar/app.topbar.component';
+import {AppFooterComponent} from './layout/app-footer/app.footer.component';
 
 import {BreadcrumbService} from './breadcrumb.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AssignmentsComponent } from './assignments/assignments.component';
 import { ReportsComponent } from './reports/reports.component';
 import { InvoicesComponent } from './invoices/invoices.component';
+import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 
 
 @NgModule({
@@ -167,6 +168,7 @@ import { InvoicesComponent } from './invoices/invoices.component';
     ],
     declarations: [
         AppComponent,
+        AppLayoutComponent,
         AppRightPanelComponent,
         AppMenuComponent,
         AppSubMenuComponent,

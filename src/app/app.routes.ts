@@ -7,13 +7,23 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AssignmentsComponent } from './assignments/assignments.component';
 import { ReportsComponent } from './reports/reports.component';
 import { InvoicesComponent } from './invoices/invoices.component';
+import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'dashboard', pathMatch: 'full'},
-    { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
-    { path: 'assignments', component: AssignmentsComponent, canActivate: [AuthGuard]},
-    { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard]},
-    { path: 'invoices', component: InvoicesComponent, canActivate: [AuthGuard]},
+    // App-Layout routes
+    { path: '',
+      component: AppLayoutComponent,
+      canActivate: [AuthGuard],
+      children: [
+        { path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+        { path: 'dashboard', component: DashboardComponent},
+        { path: 'assignments', component: AssignmentsComponent},
+        { path: 'reports', component: ReportsComponent},
+        { path: 'invoices', component: InvoicesComponent},
+      ]
+    },
+
+    // No-Layout routes
     { path: 'login', component: LoginComponent },
     { path: '**', redirectTo: 'dashboard', pathMatch: 'full'},
 ];

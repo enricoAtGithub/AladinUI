@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {trigger, state, style, transition, animate} from '@angular/animations';
 import {MenuItem} from 'primeng/primeng';
-import {AppComponent} from './app.component';
+import {AppLayoutComponent} from '../app-layout/app-layout.component';
 
 @Component({
     selector: 'app-menu',
@@ -16,7 +16,7 @@ export class AppMenuComponent implements OnInit {
 
     model: any[];
 
-    constructor(public app: AppComponent) {}
+    constructor(public app: AppLayoutComponent) {}
 
     ngOnInit() {
         this.model = [
@@ -109,7 +109,7 @@ export class AppSubMenuComponent {
 
     activeIndex: number;
 
-    constructor(public app: AppComponent) {}
+    constructor(public app: AppLayoutComponent) {}
 
     itemClick(event: Event, item: MenuItem, index: number) {
         if (this.root) {
@@ -151,7 +151,7 @@ export class AppSubMenuComponent {
             this.app.menuHoverActive = !this.app.menuHoverActive;
         }
     }
-    
+
     onMouseEnter(index: number) {
         if (this.root && this.app.menuHoverActive && (this.app.isHorizontal() || this.app.isSlim())
             && !this.app.isMobile() && !this.app.isTablet()) {
