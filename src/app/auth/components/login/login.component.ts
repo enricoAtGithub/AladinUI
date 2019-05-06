@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
 
   login(user, pass) {
     this.authService.login(user.value, pass.value).subscribe(success => {
-      if (success) {
+      if (success === true) {
         // Get the redirect URL from our auth service
         // If no redirect has been set, use the default
         const redirect = this.authService.redirectUrl ? this.router.parseUrl(this.authService.redirectUrl) : '/dashboard';
@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
       } else {
         this.loginFailed = true;
         this.msgs = [];
-        this.msgs.push({ severity: 'error', summary: '', detail: 'Der eingegebene Benutzername oder das Passwort ist falsch.' });
+        this.msgs.push({ severity: 'error', summary: '', detail: success.toString() });
       }
     });
   }

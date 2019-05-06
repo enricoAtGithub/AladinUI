@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable({
@@ -15,7 +15,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  login(user, pass): Subject<Boolean> {
+  login(user, pass): Subject<Object> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -23,7 +23,7 @@ export class AuthService {
       observe: 'response' as 'response'
     };
 
-    const result = new Subject<Boolean>();
+    const result = new Subject<Object>();
 
     this.http.post('http://localhost:8081/rest/api/user/login',
     JSON.stringify({user: user, passwd: pass, userAgent: navigator.userAgent}), httpOptions).subscribe((resp: HttpResponse<Object>) => {
@@ -32,7 +32,7 @@ export class AuthService {
       this.token = resp.body['token'];
       result.next(true);
     }, error => {
-      result.next(false);
+      result.next(error['error']['message']);
     });
 
     return result;

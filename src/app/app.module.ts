@@ -85,6 +85,9 @@ import {AppFooterComponent} from './app.footer.component';
 
 import {BreadcrumbService} from './breadcrumb.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { AssignmentsComponent } from './assignments/assignments.component';
+import { ReportsComponent } from './reports/reports.component';
+import { InvoicesComponent } from './invoices/invoices.component';
 
 
 @NgModule({
@@ -172,7 +175,10 @@ import { DashboardComponent } from './dashboard/dashboard.component';
         AppTopBarComponent,
         AppFooterComponent,
         AppProfileComponent,
-        DashboardComponent
+        DashboardComponent,
+        AssignmentsComponent,
+        ReportsComponent,
+        InvoicesComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: PathLocationStrategy},
