@@ -1,6 +1,8 @@
 import {Component} from '@angular/core';
 import {AppLayoutComponent} from '../app-layout/app-layout.component';
 import {trigger, state, transition, style, animate} from '@angular/animations';
+import { AuthService } from 'src/app/auth/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-inline-profile',
@@ -36,6 +38,12 @@ import {trigger, state, transition, style, animate} from '@angular/animations';
                         </li>
                     </ul>
                 </li>
+                <li #logout [ngClass]="{'menuitem-active':app.activeProfileItem === logout}">
+                <a href="/" (click)="onProfileItemClick($event,logout); authService.logout(); router.navigate(['/login'])">
+                    <i class="fa fa-fw fa-user"></i>
+                    <span class="topbar-item-name">Logout</span>
+                </a>
+            </li>
             </ul>
         </div>
     `,
@@ -60,7 +68,7 @@ import {trigger, state, transition, style, animate} from '@angular/animations';
 })
 export class AppProfileComponent {
 
-    constructor(public app: AppLayoutComponent) {}
+    constructor(public app: AppLayoutComponent, public authService: AuthService, public router: Router) {}
 
     onProfileClick(event) {
         this.app.usermenuClick = true;

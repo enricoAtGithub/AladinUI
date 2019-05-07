@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BreadcrumbService } from '../breadcrumb.service';
 
 @Component({
   selector: 'app-assignments',
@@ -7,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AssignmentsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private breadcrumbService: BreadcrumbService) {
+    this.breadcrumbService.setItems([
+      { label: 'Berichte' }
+    ]);
+  }
 
   ngOnInit() {
   }

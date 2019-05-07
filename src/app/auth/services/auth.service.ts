@@ -39,6 +39,12 @@ export class AuthService {
   }
 
   logout(): void {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'authorization':  this.token
+      })
+    };
+    this.http.get('http://localhost:8081/rest/api/user/logout', httpOptions).subscribe();
     this.isLoggedIn = false;
   }
 }
