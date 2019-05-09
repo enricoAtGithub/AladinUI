@@ -29,11 +29,9 @@
               <p-checkbox name="cg" value="Aktiviert" label="Aktiviert"></p-checkbox>
             </div>
 
-            <div class="p-col-2">
-                <button type="submit" pButton  [disabled]="!form.valid"  icon="pi pi-user-plus" >Benutzer erstellen</button>
-            </div>
             <div class="p-col">
-                <label>test</label>
+              <!-- <button type="submit" pButton  [disabled]="!form.valid"  icon="pi pi-user-plus" >Benutzer erstellen</button> -->
+              <p-button type="submit" [disabled]="!form.valid"  icon="pi pi-user-plus" iconPos="left" label="Benutzer erstellen"></p-button>
             </div>
           </div>
         </form>

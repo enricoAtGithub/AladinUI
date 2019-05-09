@@ -17,7 +17,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-user>
           <tr>
-            <td>{{user.userName}}</td>
+            <td><div *ngIf="user.id">{{user.userName}}</div></td>
             <td>{{user.email}}</td>
             <td>{{user.rolesDisplayText()}}</td>
             <td>{{user.mandant}}</td>
@@ -27,16 +27,18 @@
             <td>
               <button  pButton type="button" icon="pi pi-pencil" class="ui-button-info" 
               pTooltip="Bearbeiten" styleClass="ui-button-info"></button>
+              <button  pButton type="button" icon="pi pi-refresh" class="ui-button-info" 
+              pTooltip="Passwort zurücksetzen" styleClass="ui-button-info"></button>
               <button  pButton type="button" icon="pi pi-lock" class="ui-button-info" 
-              pTooltip="Benutzer sperren" styleClass="ui-button-info"></button>
+              pTooltip="Benutzer sperren" *ngIf="user.isActive" styleClass="ui-button-info"></button>
               <!-- <button  pButton type="button" icon="fas fa-user-lock" class="ui-button-info" 
               pTooltip="Benutzer sperren" styleClass="ui-button-info"></button> -->
               <button  pButton type="button" icon="pi pi-lock-open" class="ui-button-info" 
-              pTooltip="Benutzer entsperren" styleClass="ui-button-info"></button>
+              pTooltip="Benutzer entsperren" *ngIf="!user.isActive"styleClass="ui-button-info"></button>
               <button  pButton type="button" icon="pi pi-chevron-circle-up" class="ui-button-info" 
-              pTooltip="Adminstrator-Rolle zuweisen" styleClass="ui-button-info"></button>
+              pTooltip="Adminstrator-Rolle zuweisen" *ngIf="!user.hasRole('ADMIN')" styleClass="ui-button-info"></button>
               <button  pButton type="button" icon="pi pi-chevron-circle-down" class="ui-button-info" 
-              pTooltip="Adminstrator-Rolle entziehen" styleClass="ui-button-info"></button>
+              pTooltip="Adminstrator-Rolle entziehen" *ngIf="user.hasRole('ADMIN')" styleClass="ui-button-info"></button>
             </td>
           </tr>
         </ng-template>
@@ -49,4 +51,4 @@
     </ng-template>
     
   </p-panel>
-</div>>
+</div>

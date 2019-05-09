@@ -12,10 +12,12 @@ export class UserListComponent implements OnInit {
 
   userList$: Observable<UserItem[]>;
 
+  editUserId = -1;
+
   constructor(private usersService: UsersService) { }
 
   ngOnInit() {
-    this.userList$ = this.usersService.getUserList();
+    this.userList$ = this.usersService.getUserListDebug();
   }
 
 }
