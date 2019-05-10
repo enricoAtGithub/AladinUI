@@ -1,3 +1,56 @@
-<p>
-  login works!
-</p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>document.write('<base href="' + document.location + '" />');</script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <link id="theme-css" rel="stylesheet" type="text/css" href="../../../../assets/theme/theme-blue.css">
+    <link id="layout-css" rel="stylesheet" type="text/css" href="../../../../assets/layout/css/layout-blue.css">
+    <link rel="stylesheet" type="text/css" href="../../../../assets/pages/primeng.min.css">
+  </head>
+
+  <body class="login-body">
+    <div class="login-topbar">
+      <a href="#" class="logo">
+        <img src="../../../../assets/layout/images/logo.png" alt="california-layout"/>
+      </a>
+    </div>
+
+    <img class="login-image" src="../../../../assets/layout/images/image-access.png" alt="california-layout" />
+
+    <div class="login-panel ui-fluid">
+      <div class="ui-g">
+        <div class="ui-g-12 ui-lg-12 ui-md-12 logo-container">
+          <span class="login-summary">Willkommen auf Bauplan Online!</span>
+          <div class="login-detail">
+            <span>Bitte melden Sie sich zunächst an.</span>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-lg-12 ui-md-12">
+          <p-messages [value]="msgs"></p-messages>
+        </div>
+        <div class="ui-g-12 ui-lg-12 ui-md-12">
+          <div class="input-wrapper">
+            <label>Benutzername</label>
+            <input #username [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="text" autocomplete="off" placeholder="Benutzername" class="ui-inputtext ui-widget">
+          </div>
+        </div>
+        <div class="ui-g-12 ui-lg-12 ui-md-12">
+          <div class="input-wrapper">
+            <label>Passwort</label>
+            <input #password [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="password" autocomplete="off" placeholder="Passwort" class="ui-inputtext ui-widget">
+          </div>
+        </div>
+        <div class="ui-g-12 ui-lg-12 ui-md-12 button-container">
+          <button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" (click)="login(username, password)" >
+            <span class="ui-button-text ui-c">Anmelden</span>
+          </button>
+          <a href="#" style="float: right">Passwort vergessen?</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
