@@ -18,29 +18,29 @@ import { Router } from '@angular/router';
                 [@menu]="app.isSlim()? app.usermenuActive ? 'visible' : 'hidden' :
                 app.usermenuActive ? 'visibleAnimated' : 'hiddenAnimated'">
                 <li #profile [ngClass]="{'menuitem-active':app.activeProfileItem === profile}">
-                    <a href="#" (click)="onProfileItemClick($event,profile)">
+                    <a href="#" (click)="onProfileItemClick($event,profile); router.navigate(['/profile'])">
                         <i class="fa fa-fw fa-user"></i>
-                        <span class="topbar-item-name">Profile</span>
+                        <span class="topbar-item-name">Profil</span>
                     </a>
                 </li>
                 <li #settings [ngClass]="{'menuitem-active':app.activeProfileItem === settings}">
                     <a href="#" (click)="onProfileItemClick($event,settings)">
                         <i class="fa fa-fw fa-cog"></i>
-                        <span class="topbar-item-name">Settings</span>
+                        <span class="topbar-item-name">Einstellungen</span>
                         <i class="layout-menuitem-toggler fa fa-fw fa-angle-down"></i>
                     </a>
                     <ul>
                         <li role="menuitem">
                             <a href="#" (click)="onProfileSubItemClick($event)">
                                 <i class="fa fa-fw fa-paint-brush"></i>
-                                <span>Change Theme</span>
+                                <span>Theme ändern</span>
                             </a>
                         </li>
                     </ul>
                 </li>
                 <li #logout [ngClass]="{'menuitem-active':app.activeProfileItem === logout}">
                 <a href="/" (click)="onProfileItemClick($event,logout); authService.logout(); router.navigate(['/login'])">
-                    <i class="fa fa-fw fa-user"></i>
+                    <i class="fa fa-fw fa-sign-out"></i>
                     <span class="topbar-item-name">Logout</span>
                 </a>
             </li>

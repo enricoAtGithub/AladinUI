@@ -89,6 +89,7 @@ import { AssignmentsComponent } from './assignments/assignments.component';
 import { ReportsComponent } from './reports/reports.component';
 import { InvoicesComponent } from './invoices/invoices.component';
 import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
+import { ProfileComponent } from './profile/profile.component';
 
 
 @NgModule({
@@ -180,7 +181,8 @@ import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
         DashboardComponent,
         AssignmentsComponent,
         ReportsComponent,
-        InvoicesComponent
+        InvoicesComponent,
+        ProfileComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: PathLocationStrategy},

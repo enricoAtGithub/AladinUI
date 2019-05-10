@@ -47,4 +47,25 @@ export class AuthService {
     this.http.get('http://localhost:8081/rest/api/user/logout', httpOptions).subscribe();
     this.isLoggedIn = false;
   }
+
+  changePassword(oldpass, newpass): Subject<Object> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'authorization': this.token
+      }),
+      observe: 'response' as 'response'
+    };
+
+    const result = new Subject<Object>();
+
+    this.http.post('http://localhost:8081/rest/api/user/changepwd',
+    JSON.stringify({oldpasswd: oldpass, newpasswd: newpass}), httpOptions).subscribe((resp: HttpResponse<Object>) => {
+      result.next(true);
+    }, error => {
+      result.next(error['error']['message']);
+    });
+
+    return result;
+  }
 }
