@@ -1,54 +1,54 @@
 <div>
   <p-panel styleClass="daily-sales" header="Benutzer-Übersicht">
-    <div *ngIf="userList$ | async as userList else noUserList">
+    <div *ngIf="usersService.userList">
       
-      <p-table [value]="userList">
+      <p-table [value]="usersService.userList">
         <ng-template pTemplate="header">
           <tr>        
             <th>Benutzername</th>        
-            <th>Email</th>        
-            <th>Rollen</th>        
-            <th>Mandant</th>
+            <th>Nachname</th>        
+            <th>Vorname</th>        
+            <th>E-Mail</th>
             <th>Status</th>
-            <th>letzte Aktivität</th>
-            <th>verwendeter Browser</th>
+            <th>Letzter Login</th>
+            <th>Verwendeter Browser</th>
             <th>Bearbeiten</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-user>
           <tr>
-            <td><div *ngIf="user.id">{{user.userName}}</div></td>
+            <td><div *ngIf="user.id">{{user.loginName}}</div></td>
+            <td>{{user.lastName}}</td>
+            <td>{{user.firstName}}</td>
             <td>{{user.email}}</td>
-            <td>{{user.rolesDisplayText()}}</td>
-            <td>{{user.mandant}}</td>
-            <td>{{(user.isActive ? 'aktiv' : 'gesperrt')}}</td>
-            <td>{{user.lastActive}}</td>
-            <td>{{user.lastUsedBrowser}}</td>
+            <td>{{(user.active ? 'aktiv' : 'gesperrt')}}</td>
+            <td>{{user.lastLogin}}</td>
+            <td>{{user.browser}}</td>
             <td>
               <button  pButton type="button" icon="pi pi-pencil" class="ui-button-info" 
               pTooltip="Bearbeiten" styleClass="ui-button-info"></button>
               <button  pButton type="button" icon="pi pi-refresh" class="ui-button-info" 
               pTooltip="Passwort zurücksetzen" styleClass="ui-button-info"></button>
               <button  pButton type="button" icon="pi pi-lock" class="ui-button-info" 
-              pTooltip="Benutzer sperren" *ngIf="user.isActive" styleClass="ui-button-info"></button>
+              pTooltip="Benutzer sperren" *ngIf="user.active" styleClass="ui-button-info" (click)="deactivateUser(user)"></button>
               <!-- <button  pButton type="button" icon="fas fa-user-lock" class="ui-button-info" 
               pTooltip="Benutzer sperren" styleClass="ui-button-info"></button> -->
               <button  pButton type="button" icon="pi pi-lock-open" class="ui-button-info" 
-              pTooltip="Benutzer entsperren" *ngIf="!user.isActive"styleClass="ui-button-info"></button>
-              <button  pButton type="button" icon="pi pi-chevron-circle-up" class="ui-button-info" 
+              pTooltip="Benutzer entsperren" *ngIf="!user.active"styleClass="ui-button-info" (click)="activateUser(user)"></button>
+              <button  pButton type="button" icon="pi pi-trash" class="ui-button-info" 
+              pTooltip="Benutzer löschen" styleClass="ui-button-info" (click)="deleteUser(user)"></button>
+              <!--<button  pButton type="button" icon="pi pi-chevron-circle-up" class="ui-button-info" 
               pTooltip="Adminstrator-Rolle zuweisen" *ngIf="!user.hasRole('ADMIN')" styleClass="ui-button-info"></button>
               <button  pButton type="button" icon="pi pi-chevron-circle-down" class="ui-button-info" 
-              pTooltip="Adminstrator-Rolle entziehen" *ngIf="user.hasRole('ADMIN')" styleClass="ui-button-info"></button>
+              pTooltip="Adminstrator-Rolle entziehen" *ngIf="user.hasRole('ADMIN')" styleClass="ui-button-info"></button>-->
             </td>
           </tr>
         </ng-template>
       </p-table>
     </div>
-    <ng-template #noUserList>
-      <div>
-        ...lade Benutzerliste
-      </div>
-    </ng-template>
+    <div *ngIf="!usersService.userList">
+      ...lade Benutzerliste
+    </div>
     
   </p-panel>
 </div>

@@ -1,16 +1,17 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AppLayoutComponent} from '../app-layout/app-layout.component';
 import {trigger, state, transition, style, animate} from '@angular/animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Router } from '@angular/router';
+import {Md5} from 'ts-md5/dist/md5';
 
 @Component({
     selector: 'app-inline-profile',
     template: `
         <div class="user-profile">
             <a href="#" (click)="onProfileClick($event)" id="sidebar-profile-button">
-                <img src="assets/layout/images/avatar.png" alt="california-layout"/>
-                <span class="sidebar-profile-name">Pauline Harrell</span>
+                <img [src]="gravatarLink" style="width: 92px; height:92px; border-radius:46px"/>
+                <span class="sidebar-profile-name">{{fullName}}</span>
                 <span class="sidebar-profile-role">Administrator</span>
             </a>
 
@@ -66,9 +67,17 @@ import { Router } from '@angular/router';
         ])
     ]
 })
-export class AppProfileComponent {
+export class AppProfileComponent implements OnInit {
+    fullName = '';
+    gravatarLink = '';
 
     constructor(public app: AppLayoutComponent, public authService: AuthService, public router: Router) {}
+
+    ngOnInit() {
+        this.fullName = this.authService.localUser.user.firstName + ' ' + this.authService.localUser.user.lastName;
+        const email = this.authService.localUser.user.email;
+        this.gravatarLink = 'https://gravatar.com/avatar/' + <string>Md5.hashStr(email.trim().toLowerCase());
+    }
 
     onProfileClick(event) {
         this.app.usermenuClick = true;

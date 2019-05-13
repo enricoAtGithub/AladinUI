@@ -10,7 +10,7 @@ export class AssignmentsComponent implements OnInit {
 
   constructor(private breadcrumbService: BreadcrumbService) {
     this.breadcrumbService.setItems([
-      { label: 'Berichte' }
+      { label: 'Aufträge' }
     ]);
   }
 

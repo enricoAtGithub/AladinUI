@@ -1,32 +1,39 @@
 <p>
   <p-panel styleClass="daily-sales" header="Benutzer hinzufügen">
       
-        <form novalidate #form="ngForm" (ngSubmit)="createUser()">
+        <form novalidate #form="ngForm" (ngSubmit)="createUser(form)">
             <div class="ui-g form-group p-grid">
             <div class="p-col">
               <span class="ui-float-label">
-                  <input id="float-input" type="text" size="30" pInputText> 
+                  <input name="loginName" ngModel required id="float-input" type="text" size="20" pInputText> 
                   <label for="float-input">Benutzername</label>
               </span>
             </div>
             <div class="p-col">
               <span class="ui-float-label">
-                  <input id="float-input" type="text" size="30" pInputText> 
-                  <label for="float-input">EMail</label>
+                  <input name="email" ngModel required id="float-input" type="text" size="30" pInputText> 
+                  <label for="float-input">E-Mail</label>
               </span>
             </div>
             <div class="p-col">
               <span class="ui-float-label">
-                  <input id="float-input" type="text" size="30" pInputText> 
-                  <label for="float-input">Mandant</label>
+                  <input name="lastName" ngModel id="float-input" type="text" size="20" pInputText> 
+                  <label for="float-input">Nachname</label>
               </span>
             </div>
+            <div class="p-col">
+              <span class="ui-float-label">
+                  <input name="firstName" ngModel id="float-input" type="text" size="20" pInputText> 
+                  <label for="float-input">Vorname</label>
+              </span>
+            </div>
+            
           
             <div class="p-col">
-              <p-checkbox name="cg" value="Administrator" label="Administrator"></p-checkbox>
+              <p-checkbox name="admin" ngModel value="Administrator" label="Administrator"></p-checkbox>
             </div>
             <div class="p-col">
-              <p-checkbox name="cg" value="Aktiviert" label="Aktiviert"></p-checkbox>
+              <p-checkbox name="active" ngModel value="Aktiviert" label="Aktiviert"></p-checkbox>
             </div>
 
             <div class="p-col">

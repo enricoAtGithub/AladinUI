@@ -1,17 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { User } from 'src/app/shared/models/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  public localUser: User;
   public isLoggedIn = false;
-  public displayName: string;
-  public roles: Object;
   public redirectUrl: string;
-
-  private token: string;
 
   constructor(private http: HttpClient) { }
 
@@ -28,8 +26,7 @@ export class AuthService {
     this.http.post('http://localhost:8081/rest/api/user/login',
     JSON.stringify({user: user, passwd: pass, userAgent: navigator.userAgent}), httpOptions).subscribe((resp: HttpResponse<Object>) => {
       this.isLoggedIn = true;
-      this.roles = resp.body['roles'];
-      this.token = resp.body['token'];
+      this.localUser = <User>resp.body;
       result.next(true);
     }, error => {
       result.next(error['error']['message']);
@@ -41,7 +38,7 @@ export class AuthService {
   logout(): void {
     const httpOptions = {
       headers: new HttpHeaders({
-        'authorization':  this.token
+        'authorization':  this.localUser.token
       })
     };
     this.http.get('http://localhost:8081/rest/api/user/logout', httpOptions).subscribe();
@@ -52,7 +49,7 @@ export class AuthService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
-        'authorization': this.token
+        'authorization': this.localUser.token
       }),
       observe: 'response' as 'response'
     };

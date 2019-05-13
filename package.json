@@ -23,16 +23,17 @@
     "@angular/router": "7.2.13",
     "chart.js": "2.7.3",
     "core-js": "2.5.7",
+    "font-awesome": "4.7.0",
     "fullcalendar": "4.0.0-alpha.2",
     "intl": "1.2.5",
+    "primeicons": "1.0.0",
     "primeng": "7.0.0",
+    "prismjs": "1.15.0",
     "quill": "1.1.8",
     "rxjs": "6.4.0",
-    "zone.js": "0.8.29",
+    "ts-md5": "^1.2.4",
     "web-animations-js": "2.3.1",
-    "primeicons": "1.0.0",
-    "font-awesome": "4.7.0",
-    "prismjs": "1.15.0"
+    "zone.js": "0.8.29"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.13.8",

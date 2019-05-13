@@ -6,7 +6,7 @@ import { PanelModule } from 'primeng/panel';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
-import { InputTextModule, CheckboxModule } from 'primeng/primeng';
+import { InputTextModule, CheckboxModule, MessageService } from 'primeng/primeng';
 import { AddUserComponent } from './components/add-user/add-user.component';
 import { UserManagementComponent } from './components/user-management/user-management.component';
 import { FormsModule } from '@angular/forms';
@@ -29,6 +29,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     CheckboxModule
     // RouterModule.forChild(userRoutes)
-  ]
+  ],
+  providers: [ MessageService ]
 })
 export class UserModule { }
