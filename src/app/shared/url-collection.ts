@@ -11,6 +11,9 @@ export class UrlCollection {
         static readonly GET = UrlCollection.USER_API_BASE_PATH + '/get';
         static readonly UPDATE = UrlCollection.USER_API_BASE_PATH + '/update';
         static readonly DELETE = UrlCollection.USER_API_BASE_PATH + '/delete';
+        static readonly LOGIN = UrlCollection.USER_API_BASE_PATH + '/login';
+        static readonly LOGOUT = UrlCollection.USER_API_BASE_PATH + '/logout';
+        static readonly CHANGE_PASSWD = UrlCollection.USER_API_BASE_PATH + '/changepwd';
 
         static buildGetUrl(userName: string) {
             return UrlCollection.UserManagement.GET + '/' + userName;

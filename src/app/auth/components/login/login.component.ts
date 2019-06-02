@@ -20,6 +20,12 @@ export class LoginComponent implements OnInit {
 
   login(user, pass) {
     this.authService.login(user.value, pass.value).subscribe(success => {
+      if (!success) {
+        this.msgs = [];
+        this.msgs.push({ severity: 'error', summary: '', detail: 'An error occured while trying to connect to the server' });
+        return;
+      }
+
       if (success === true) {
         // Get the redirect URL from our auth service
         // If no redirect has been set, use the default

@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: 'http://localhost:8081/rest/api'
+  baseUrl: 'http://splylnx2.simply.local:8023/jmeleon/rest/api'
 };
