@@ -1,0 +1,44 @@
+<form novalidate #form="ngForm" (ngSubmit)="createUser(form)">
+  <div class="ui-g form-group">
+    <div class="ui-g-12 ui-md-12">
+      <div class="ui-g-12 ui-md-12">
+        <span class="ui-float-label">
+            <input name="loginName" ngModel required id="float-input" type="text" pInputText> 
+            <label for="float-input">Benutzername</label>
+        </span>
+      </div>
+      <div class="ui-g-12 ui-md-12">
+        <span class="ui-float-label">
+            <input name="email" ngModel required id="float-input" type="text" pInputText> 
+            <label for="float-input">E-Mail</label>
+        </span>
+      </div>
+      <div class="ui-g-12 ui-md-12">
+        <span class="ui-float-label">
+            <input name="lastName" ngModel id="float-input" type="text" pInputText> 
+            <label for="float-input">Nachname</label>
+        </span>
+      </div>
+      <div class="ui-g-12 ui-md-12">
+        <span class="ui-float-label">
+            <input name="firstName" ngModel id="float-input" type="text" pInputText> 
+            <label for="float-input">Vorname</label>
+        </span>
+      </div>
+      
+    
+      <div class="ui-g-12 ui-md-12">
+        <div class="ui-g-12 ui-md-6">
+          <p-checkbox name="admin" ngModel value="Administrator" label="Administrator"></p-checkbox>
+        </div>
+        <div class="ui-g-12 ui-md-6">
+          <p-checkbox name="active" ngModel value="Aktiviert" label="Aktiviert"></p-checkbox>
+        </div>
+      </div>
+
+      <div class="ui-g-12 ui-md-12">
+        <p-button type="submit" [disabled]="!form.valid"  icon="pi pi-user-plus" iconPos="left" label="Benutzer erstellen"></p-button>
+      </div>
+    </div>
+  </div>
+</form>

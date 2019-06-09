@@ -1,5 +1,11 @@
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
 <div>
-  <p-panel styleClass="daily-sales" header="Benutzer-Übersicht">
+  <p-panel styleClass="daily-sales">
+    <p-header>
+        <span class="ui-panel-title" style="font-size:14px;display:inline-block;margin-top:5px">Benutzer Übersicht</span>
+        <button pButton (click)="showAddUserDialog()" icon="pi pi-plus" class="ui-button-success" style="float: right"></button>
+    </p-header>
+    
     <div *ngIf="usersService.userList">
       
       <p-table [value]="usersService.userList">

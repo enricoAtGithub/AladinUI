@@ -1,20 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersService } from '../../services/users.service';
 import { UserItem } from '../../models/user-item';
-import { MessageService } from 'primeng/primeng';
+import { MessageService, DialogService, ConfirmationService } from 'primeng/primeng';
+import { AddUserDialogComponent } from '../add-user-dialog/add-user-dialog.component';
 
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.css']
+  styleUrls: ['./user-list.component.css'],
+  providers: [ ConfirmationService ]
 })
 export class UserListComponent implements OnInit {
 
   editUserId = -1;
 
-  constructor(private usersService: UsersService, private messageService: MessageService) {
-
-  }
+  constructor(private usersService: UsersService, private messageService: MessageService,
+    private dialogService: DialogService, private confirmationService: ConfirmationService) {}
 
   ngOnInit() {
     this.usersService.refreshUserList();
@@ -31,10 +32,22 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(user: UserItem) {
-    this.usersService.deleteUser(user).subscribe(() =>
-      this.usersService.userList = this.usersService.userList.filter((value, index, arr) => value !== user),
-      err => this.messageService.add({severity: 'error', summary: '', detail: err['error']['message']})
-    );
+    this.confirmationService.confirm({
+      message: 'Sind Sie sicher, dass Sie diesen Benutzer löschen wollen?',
+      accept: () => {
+          this.usersService.deleteUser(user).subscribe(() =>
+            this.usersService.userList = this.usersService.userList.filter((value, index, arr) => value !== user),
+            err => this.messageService.add({severity: 'error', summary: '', detail: err['error']['message']})
+          );
+      }
+    });
+  }
+
+  showAddUserDialog() {
+    this.dialogService.open(AddUserDialogComponent, {
+      header: 'Benutzer Hinzufügen',
+      width: '25%'
+    });
   }
 
 }
