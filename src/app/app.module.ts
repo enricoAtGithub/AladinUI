@@ -1,5 +1,4 @@
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -18,16 +17,15 @@ import {CheckboxModule} from 'primeng/checkbox';
 import {ChipsModule} from 'primeng/chips';
 import {CodeHighlighterModule} from 'primeng/codehighlighter';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
-import {DynamicDialogModule} from 'primeng/dynamicdialog';
 import {ColorPickerModule} from 'primeng/colorpicker';
 import {ContextMenuModule} from 'primeng/contextmenu';
 import {DataViewModule} from 'primeng/dataview';
 import {DialogModule} from 'primeng/dialog';
 import {DropdownModule} from 'primeng/dropdown';
+import {DynamicDialogModule} from 'primeng/dynamicdialog';
 import {EditorModule} from 'primeng/editor';
 import {FieldsetModule} from 'primeng/fieldset';
 import {FileUploadModule} from 'primeng/fileupload';
-import {FullCalendarModule} from 'primeng/fullcalendar';
 import {GalleriaModule} from 'primeng/galleria';
 import {GrowlModule} from 'primeng/growl';
 import {InplaceModule} from 'primeng/inplace';
@@ -96,8 +94,8 @@ import { OrdersComponent } from './orders/orders.component';
 
 @NgModule({
     imports: [
+        AuthModule,
         BrowserModule,
-        FormsModule,
         AppRoutes,
         HttpClientModule,
         BrowserAnimationsModule,
@@ -113,16 +111,15 @@ import { OrdersComponent } from './orders/orders.component';
         ChipsModule,
         CodeHighlighterModule,
         ConfirmDialogModule,
-        DynamicDialogModule,
         ColorPickerModule,
         ContextMenuModule,
         DataViewModule,
         DialogModule,
         DropdownModule,
+        DynamicDialogModule,
         EditorModule,
         FieldsetModule,
         FileUploadModule,
-        FullCalendarModule,
         GalleriaModule,
         GrowlModule,
         InplaceModule,
@@ -167,9 +164,8 @@ import { OrdersComponent } from './orders/orders.component';
         TooltipModule,
         TreeModule,
         TreeTableModule,
-        VirtualScrollerModule,
-        AuthModule,
-        UserModule
+        UserModule,
+        VirtualScrollerModule
     ],
     declarations: [
         AppComponent,
@@ -183,10 +179,10 @@ import { OrdersComponent } from './orders/orders.component';
         AppFooterComponent,
         AppProfileComponent,
         DashboardComponent,
-        ReportsComponent,
         InvoicesComponent,
+        OrdersComponent,
         ProfileComponent,
-        OrdersComponent
+        ReportsComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: PathLocationStrategy},
