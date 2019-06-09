@@ -90,6 +90,7 @@ import { InvoicesComponent } from './invoices/invoices.component';
 import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 import { ProfileComponent } from './profile/profile.component';
 import { OrdersComponent } from './orders/orders.component';
+import { AppThemeComponent } from './layout/app-layout/app-layout.theme.component';
 
 
 @NgModule({
@@ -176,6 +177,7 @@ import { OrdersComponent } from './orders/orders.component';
         AppMegamenuComponent,
         AppBreadcrumbComponent,
         AppTopBarComponent,
+        AppThemeComponent,
         AppFooterComponent,
         AppProfileComponent,
         DashboardComponent,
@@ -188,6 +190,7 @@ import { OrdersComponent } from './orders/orders.component';
         {provide: LocationStrategy, useClass: PathLocationStrategy},
         BreadcrumbService
     ],
+    entryComponents: [ AppThemeComponent ],
     bootstrap: [AppComponent]
 })
 export class AppModule {

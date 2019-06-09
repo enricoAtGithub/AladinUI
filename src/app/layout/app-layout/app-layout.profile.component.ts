@@ -4,6 +4,8 @@ import {trigger, state, transition, style, animate} from '@angular/animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Router } from '@angular/router';
 import {Md5} from 'ts-md5/dist/md5';
+import { AppThemeComponent } from './app-layout.theme.component';
+import { DialogService } from 'primeng/primeng';
 
 @Component({
     selector: 'app-inline-profile',
@@ -32,9 +34,9 @@ import {Md5} from 'ts-md5/dist/md5';
                     </a>
                     <ul>
                         <li role="menuitem">
-                            <a href="#" (click)="onProfileSubItemClick($event)">
+                            <a href="#" (click)="onProfileSubItemClick($event); showThemeDialog();">
                                 <i class="fa fa-fw fa-paint-brush"></i>
-                                <span>Theme ändern</span>
+                                <span>Farbschema ändern</span>
                             </a>
                         </li>
                     </ul>
@@ -65,13 +67,15 @@ import {Md5} from 'ts-md5/dist/md5';
             transition('visibleAnimated => hiddenAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')),
             transition('hiddenAnimated => visibleAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
         ])
-    ]
+    ],
+    providers: [DialogService]
 })
 export class AppProfileComponent implements OnInit {
     fullName = '';
     gravatarLink = '';
 
-    constructor(public app: AppLayoutComponent, public authService: AuthService, public router: Router) {}
+    constructor(public app: AppLayoutComponent, public authService: AuthService,
+        public router: Router, private dialogService: DialogService) {}
 
     ngOnInit() {
         this.fullName = this.authService.localUser.user.firstName + ' ' + this.authService.localUser.user.lastName;
@@ -100,4 +104,12 @@ export class AppProfileComponent implements OnInit {
     onProfileSubItemClick(event) {
         event.preventDefault();
     }
+
+    showThemeDialog() {
+        const ref = this.dialogService.open(AppThemeComponent, {
+            header: 'Farbschema bearbeiten',
+            width: '25%'
+        });
+    }
+
 }
