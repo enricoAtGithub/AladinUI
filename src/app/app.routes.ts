@@ -7,7 +7,7 @@ import { UserModule } from './user/user.module';
 import { UserListComponent } from './user/components/user-list/user-list.component';
 import { UserManagementComponent } from './user/components/user-management/user-management.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { AssignmentsComponent } from './assignments/assignments.component';
+import { OrdersComponent } from './orders/orders.component';
 import { ReportsComponent } from './reports/reports.component';
 import { InvoicesComponent } from './invoices/invoices.component';
 import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
@@ -21,7 +21,7 @@ export const routes: Routes = [
       children: [
         { path: '', redirectTo: 'dashboard', pathMatch: 'full'},
         { path: 'dashboard', component: DashboardComponent},
-        { path: 'assignments', component: AssignmentsComponent},
+        { path: 'orders', component: OrdersComponent},
         { path: 'reports', component: ReportsComponent},
         { path: 'invoices', component: InvoicesComponent},
         { path: 'profile', component: ProfileComponent},

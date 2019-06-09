@@ -3,6 +3,7 @@ import { environment } from 'src/environments/environment';
 export class UrlCollection {
     static readonly BASE_URL = environment.baseUrl;
     static readonly USER_API_BASE_PATH = UrlCollection.BASE_URL + '/user';
+    static readonly ENTITY_API_BASE_PATH = UrlCollection.BASE_URL + '/entities';
 
     static UserManagement = class {
 
@@ -18,6 +19,13 @@ export class UrlCollection {
         static buildGetUrl(userName: string) {
             return UrlCollection.UserManagement.GET + '/' + userName;
         }
+    };
+
+    static Entities = class {
+
+        static readonly CONFIGS = UrlCollection.ENTITY_API_BASE_PATH + '/configurations';
+        static readonly FILTER = UrlCollection.ENTITY_API_BASE_PATH + '/filter';
+
     };
 }
 

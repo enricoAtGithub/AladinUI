@@ -18,6 +18,7 @@ import {CheckboxModule} from 'primeng/checkbox';
 import {ChipsModule} from 'primeng/chips';
 import {CodeHighlighterModule} from 'primeng/codehighlighter';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {DynamicDialogModule} from 'primeng/dynamicdialog';
 import {ColorPickerModule} from 'primeng/colorpicker';
 import {ContextMenuModule} from 'primeng/contextmenu';
 import {DataViewModule} from 'primeng/dataview';
@@ -86,11 +87,11 @@ import {AppFooterComponent} from './layout/app-footer/app.footer.component';
 import {BreadcrumbService} from './breadcrumb.service';
 import { UserModule } from './user/user.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { AssignmentsComponent } from './assignments/assignments.component';
 import { ReportsComponent } from './reports/reports.component';
 import { InvoicesComponent } from './invoices/invoices.component';
 import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 import { ProfileComponent } from './profile/profile.component';
+import { OrdersComponent } from './orders/orders.component';
 
 
 @NgModule({
@@ -112,6 +113,7 @@ import { ProfileComponent } from './profile/profile.component';
         ChipsModule,
         CodeHighlighterModule,
         ConfirmDialogModule,
+        DynamicDialogModule,
         ColorPickerModule,
         ContextMenuModule,
         DataViewModule,
@@ -181,10 +183,10 @@ import { ProfileComponent } from './profile/profile.component';
         AppFooterComponent,
         AppProfileComponent,
         DashboardComponent,
-        AssignmentsComponent,
         ReportsComponent,
         InvoicesComponent,
-        ProfileComponent
+        ProfileComponent,
+        OrdersComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: PathLocationStrategy},
