@@ -16,6 +16,7 @@ export class OrdersComponent implements OnInit {
   fields: Field[];
   loading = false;
   entityData: EntityData;
+  selectedEntry: any;
 
   constructor(private breadcrumbService: BreadcrumbService, private entityService: EntityService, private cd: ChangeDetectorRef) {
     this.breadcrumbService.setItems([

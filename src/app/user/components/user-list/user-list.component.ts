@@ -14,7 +14,7 @@ export class UserListComponent implements OnInit {
 
   editUserId = -1;
 
-  constructor(private usersService: UsersService, private messageService: MessageService,
+  constructor(public usersService: UsersService, private messageService: MessageService,
     private dialogService: DialogService, private confirmationService: ConfirmationService) {}
 
   ngOnInit() {

@@ -5,13 +5,13 @@ import { AppLayoutComponent } from './app-layout.component';
     template: `
         <div class="ui-g">
             <div class="ui-g-12 ui-md-4">
-                <p-radioButton [(ngModel)]="selectedScheme" value="light" label="Hell" [(ngModel)]="radioValue"></p-radioButton>
+                <p-radioButton [(ngModel)]="selectedScheme" value="light" label="Hell"></p-radioButton>
             </div>
             <div class="ui-g-12 ui-md-4">
-                <p-radioButton [(ngModel)]="selectedScheme"value="dark" label="Dunkel" [(ngModel)]="radioValue"></p-radioButton>
+                <p-radioButton [(ngModel)]="selectedScheme"value="dark" label="Dunkel"></p-radioButton>
             </div>
             <div class="ui-g-12 ui-md-4">
-                <p-radioButton [(ngModel)]="selectedScheme" value="gradient" label="Verlauf" [(ngModel)]="radioValue"></p-radioButton>
+                <p-radioButton [(ngModel)]="selectedScheme" value="gradient" label="Verlauf"></p-radioButton>
             </div>
         </div>
         <div class="ui-g">

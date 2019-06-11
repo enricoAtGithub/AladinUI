@@ -77,7 +77,6 @@ import {AppComponent} from './app.component';
 import {AppRightPanelComponent} from './layout/app-rightpanel/app.rightpanel.component';
 import {AppProfileComponent} from './layout/app-layout/app-layout.profile.component';
 import {AppMenuComponent, AppSubMenuComponent} from './layout/app-layout/app-layout.menu.component';
-import {AppMegamenuComponent} from './app.megamenu.component';
 import {AppBreadcrumbComponent} from './layout/app-breadcrumb/app.breadcrumb.component';
 import {AppTopBarComponent} from './layout/app-topbar/app.topbar.component';
 import {AppFooterComponent} from './layout/app-footer/app.footer.component';
@@ -174,7 +173,6 @@ import { AppThemeComponent } from './layout/app-layout/app-layout.theme.componen
         AppRightPanelComponent,
         AppMenuComponent,
         AppSubMenuComponent,
-        AppMegamenuComponent,
         AppBreadcrumbComponent,
         AppTopBarComponent,
         AppThemeComponent,
