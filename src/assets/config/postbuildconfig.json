@@ -1,0 +1,7 @@
+{
+    "baseUrl": "http://localhost:8081/rest/api",
+	"git_branch": "",
+	"git_sha": "",
+	"version": "",
+	"build_no": ""
+}

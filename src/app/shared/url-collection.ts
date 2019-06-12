@@ -1,30 +1,37 @@
-import { environment } from 'src/environments/environment';
+import { AppConfig } from './app-config';
 
 export class UrlCollection {
-    static readonly BASE_URL = environment.baseUrl;
-    static readonly USER_API_BASE_PATH = UrlCollection.BASE_URL + '/user';
-    static readonly ENTITY_API_BASE_PATH = UrlCollection.BASE_URL + '/entities';
+    
+    static ADMIN_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/admin' };
+    static USER_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/user' };
+    static ENTITY_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/entities' };
+
+
+    static Admin = class {
+
+        static INFO(): string { return UrlCollection.ADMIN_API_BASE_PATH() + '/info' }
+    };
 
     static UserManagement = class {
 
-        static readonly CREATE = UrlCollection.USER_API_BASE_PATH + '/create';
-        static readonly ALL = UrlCollection.USER_API_BASE_PATH + '/all';
-        static readonly GET = UrlCollection.USER_API_BASE_PATH + '/get';
-        static readonly UPDATE = UrlCollection.USER_API_BASE_PATH + '/update';
-        static readonly DELETE = UrlCollection.USER_API_BASE_PATH + '/delete';
-        static readonly LOGIN = UrlCollection.USER_API_BASE_PATH + '/login';
-        static readonly LOGOUT = UrlCollection.USER_API_BASE_PATH + '/logout';
-        static readonly CHANGE_PASSWD = UrlCollection.USER_API_BASE_PATH + '/changepwd';
+        static CREATE(): string {return UrlCollection.USER_API_BASE_PATH() + '/create'};
+        static ALL(): string { return UrlCollection.USER_API_BASE_PATH() + '/all' };
+        static GET(): string { return UrlCollection.USER_API_BASE_PATH() + '/get'};
+        static UPDATE(): string { return UrlCollection.USER_API_BASE_PATH() + '/update'};
+        static DELETE(): string { return UrlCollection.USER_API_BASE_PATH() + '/delete'};
+        static LOGIN(): string { return UrlCollection.USER_API_BASE_PATH() + '/login'};
+        static LOGOUT(): string { return UrlCollection.USER_API_BASE_PATH() + '/logout'};
+        static CHANGE_PASSWD(): string { return UrlCollection.USER_API_BASE_PATH() + '/changepwd'};
 
         static buildGetUrl(userName: string) {
-            return UrlCollection.UserManagement.GET + '/' + userName;
+            return UrlCollection.UserManagement.GET() + '/' + userName;
         }
     };
 
     static Entities = class {
 
-        static readonly CONFIGS = UrlCollection.ENTITY_API_BASE_PATH + '/configurations';
-        static readonly FILTER = UrlCollection.ENTITY_API_BASE_PATH + '/filter';
+        static CONFIGS(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/configurations' };
+        static FILTER(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/filter' };
 
     };
 }

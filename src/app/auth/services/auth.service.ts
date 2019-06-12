@@ -24,7 +24,7 @@ export class AuthService {
 
     const result = new Subject<Object>();
 
-    this.http.post(UrlCollection.UserManagement.LOGIN,
+    this.http.post(UrlCollection.UserManagement.LOGIN(),
     JSON.stringify({user: user, passwd: pass, userAgent: navigator.userAgent}), httpOptions).subscribe((resp: HttpResponse<Object>) => {
       this.isLoggedIn = true;
       this.localUser = <User>resp.body;
@@ -42,7 +42,7 @@ export class AuthService {
         'authorization':  this.localUser.token
       })
     };
-    this.http.get(UrlCollection.UserManagement.LOGOUT, httpOptions).subscribe(error => 0);
+    this.http.get(UrlCollection.UserManagement.LOGOUT(), httpOptions).subscribe(error => 0);
     this.isLoggedIn = false;
   }
 
@@ -57,7 +57,7 @@ export class AuthService {
 
     const result = new Subject<Object>();
 
-    this.http.post(UrlCollection.UserManagement.CHANGE_PASSWD,
+    this.http.post(UrlCollection.UserManagement.CHANGE_PASSWD(),
     JSON.stringify({oldpasswd: oldpass, newpasswd: newpass}), httpOptions).subscribe((resp: HttpResponse<Object>) => {
       result.next(true);
     }, error => {

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>JMeleon Angular UI</name>
+    <groupId>de.simply.jmeleon</groupId>
+    <artifactId>jmeleon-frontend</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.language.version>1.8</java.language.version>
+        <!--build_no>${env.build_no}</build_no>
+        <server_url>${env.server_url}</server_url>
+        <basepath>${env.basepath}</basepath-->
+    </properties>
+
+
+    <build>
+        <sourceDirectory>./</sourceDirectory>
+
+        <!-- Change the name of the output artifact here. -->
+        <!--finalName>dynaconf_ui</finalName-->
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <!--
+                            ATTENTION:
+
+                            There is an issue in maven-clean behaviour (google for 'combine.children'):
+                            http://stackoverflow.com/questions/32329141/maven-clean-plugin-is-not-removing-all-given-directories
+
+                            However: deleting a nonsense directory first and THEN the ACTUAL dirs seems to solve the problem.
+                            -->
+                            <directory>${project.build.sourceDirectory}/mvn-non-existing-directory-issue</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.build.sourceDirectory}/dist</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.build.sourceDirectory}/node_modules</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.build.sourceDirectory}/tmp</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.build.sourceDirectory}/target</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <!--plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.3</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <file>src/environments/environment.jenkins.ts</file>
+                    <replacements>
+                        <replacement>
+                            <token>#server_url#</token>
+                            <value>${server_url}</value>
+                        </replacement>
+                        <replacement>
+                            <token>#basepath#</token>
+                            <value>${basepath}</value>
+                        </replacement>
+                        <replacement>
+                            <token>#build_no#</token>
+                            <value>${build_no}</value>
+                        </replacement>
+                    </replacements>
+                </configuration>
+            </plugin-->
+
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <warSourceDirectory>${project.build.sourceDirectory}/dist/jmeleon</warSourceDirectory>
+                    <webXml>src/assets/WEB-INF/web.xml</webXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <!-- Use the latest released version:
+                https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/ -->
+                <version>1.7.6</version>
+                <configuration>
+                    <nodeVersion>v12.4.0</nodeVersion>
+
+                    <!-- optional: with node version greater than 4.0.0 will use npm provided by node distribution -->
+                    <!--npmVersion>6.4.1</npmVersion-->
+
+                    <!-- optional: where to download node and npm from. Defaults to https://nodejs.org/dist/ -->
+                    <!--
+                    <downloadRoot>http://myproxy.example.org/nodejs/</downloadRoot>
+                    -->
+
+                    <!-- optional: folder where your node and npm are installed-->
+                    <installDirectory>target</installDirectory>
+                    <!-- where the ng project can be found -->
+                    <workingDirectory>${project.build.sourceDirectory}</workingDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <!-- optional: you don't really need execution ids, but it looks nice in your build log. -->
+                        <id>install node and npm</id>
+                        <!-- optional: default phase is "generate-resources" -->
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+
+                        <configuration>
+                            <!-- optional: The default argument is actually
+                            "install", so unless you need to run some other npm command,
+                            you can remove this whole <configuration> section.
+                            -->
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <!--phase>process-resources</phase-->
+
+                        <configuration>
+                            <!--arguments>run-script jenkins</arguments-->
+                            <arguments>run-script jenkins</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

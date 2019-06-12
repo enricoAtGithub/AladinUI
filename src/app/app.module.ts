@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {NgModule, APP_INITIALIZER} from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -90,7 +90,11 @@ import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 import { ProfileComponent } from './profile/profile.component';
 import { OrdersComponent } from './orders/orders.component';
 import { AppThemeComponent } from './layout/app-layout/app-layout.theme.component';
+import { AppConfig } from './shared/app-config';
 
+export function initializeApp(appConfig: AppConfig) {
+    return () => appConfig.load();
+}
 
 @NgModule({
     imports: [
@@ -185,6 +189,7 @@ import { AppThemeComponent } from './layout/app-layout/app-layout.theme.componen
         ReportsComponent
     ],
     providers: [
+        AppConfig, {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [AppConfig], multi: true },
         {provide: LocationStrategy, useClass: PathLocationStrategy},
         BreadcrumbService
     ],
