@@ -60,7 +60,7 @@
                 </configuration>
             </plugin>
 
-            <!--plugin>
+            <plugin>
                 <groupId>com.google.code.maven-replacer-plugin</groupId>
                 <artifactId>replacer</artifactId>
                 <version>1.5.3</version>
@@ -73,15 +73,19 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <file>src/environments/environment.jenkins.ts</file>
+                    <file>src/assets/config/postbuildconfig.json</file>
                     <replacements>
                         <replacement>
-                            <token>#server_url#</token>
-                            <value>${server_url}</value>
+                            <token>#git_branch#</token>
+                            <value>${git_branch}</value>
                         </replacement>
                         <replacement>
-                            <token>#basepath#</token>
-                            <value>${basepath}</value>
+                            <token>#git_sha#</token>
+                            <value>${git_sha}</value>
+                        </replacement>
+                        <replacement>
+                            <token>#version#</token>
+                            <value>${project.version}</value>
                         </replacement>
                         <replacement>
                             <token>#build_no#</token>
@@ -89,7 +93,7 @@
                         </replacement>
                     </replacements>
                 </configuration>
-            </plugin-->
+            </plugin>
 
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
