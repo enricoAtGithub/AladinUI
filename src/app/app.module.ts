@@ -90,6 +90,13 @@ import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 import { ProfileComponent } from './profile/profile.component';
 import { OrdersComponent } from './orders/orders.component';
 import { AppThemeComponent } from './layout/app-layout/app-layout.theme.component';
+import { StoreModule } from '@ngrx/store';
+import { reducers, metaReducers } from './reducers';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
+import { EffectsModule } from '@ngrx/effects';
+import { AppEffects } from './app.effects';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
 
 
 @NgModule({
@@ -165,7 +172,11 @@ import { AppThemeComponent } from './layout/app-layout/app-layout.theme.componen
         TreeModule,
         TreeTableModule,
         UserModule,
-        VirtualScrollerModule
+        VirtualScrollerModule,
+        StoreModule.forRoot(reducers, { metaReducers }),
+        StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+        EffectsModule.forRoot([AppEffects]),
+        StoreRouterConnectingModule.forRoot()
     ],
     declarations: [
         AppComponent,
