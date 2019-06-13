@@ -34,32 +34,32 @@ export class UsersService {
 
   refreshUserList() {
     this.updateAuthHeader();
-    this.http.get<UserItem[]>(UrlCollection.UserManagement.ALL, this.authHeader).subscribe(userList => this.userList = userList);
+    this.http.get<UserItem[]>(UrlCollection.UserManagement.ALL(), this.authHeader).subscribe(userList => this.userList = userList);
   }
 
   updateUser(user: UserItem): Observable<any> {
     this.updateAuthHeader();
-    return this.http.post(UrlCollection.UserManagement.UPDATE, user, this.authHeader);
+    return this.http.post(UrlCollection.UserManagement.UPDATE(), user, this.authHeader);
   }
 
   createUser(user: UserItem): Observable<any> {
     this.updateAuthHeader();
-    return this.http.post(UrlCollection.UserManagement.CREATE, user, this.authHeader);
+    return this.http.post(UrlCollection.UserManagement.CREATE(), user, this.authHeader);
   }
 
   activateUser(user: UserItem): Observable<any> {
     this.updateAuthHeader();
-    return this.http.get(UrlCollection.USER_API_BASE_PATH + '/activation/' + user.loginName + '/1', this.authHeader);
+    return this.http.get(UrlCollection.USER_API_BASE_PATH() + '/activation/' + user.loginName + '/1', this.authHeader);
   }
 
   deactivateUser(user: UserItem): Observable<any> {
     this.updateAuthHeader();
-    return this.http.get(UrlCollection.USER_API_BASE_PATH + '/activation/' + user.loginName + '/0', this.authHeader);
+    return this.http.get(UrlCollection.USER_API_BASE_PATH() + '/activation/' + user.loginName + '/0', this.authHeader);
   }
 
   deleteUser(user: UserItem): Observable<any> {
     this.updateAuthHeader();
-    return this.http.post(UrlCollection.UserManagement.DELETE, user, this.authHeader);
+    return this.http.post(UrlCollection.UserManagement.DELETE(), user, this.authHeader);
   }
 
   /*getUserListDebug(): Observable<UserItem[]> {

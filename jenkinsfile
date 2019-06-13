@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+	
+	options {
+		buildDiscarder(logRotator(numToKeepStr: '15', artifactNumToKeepStr: '15'))
+	}
+	
+	triggers {
+	  pollSCM 'H/2 * * * *'
+	}
+	
+	environment {
+		JAVA_HOME = ''
+	}
+	
+	tools {
+        maven 'Maven 3.6.0'
+        jdk 'jdk8'
+    }
+	
+    stages {
+        stage ('Initialize') {
+            steps {
+				withMaven(maven: 'Maven 3.6.0',	jdk: 'jdk8') {
+					sh '''
+						echo "PATH = ${PATH}"
+						echo "M2_HOME = ${M2_HOME}"
+						echo "M2 version:" + `mvn --version`
+					'''
+				}
+            }
+        }
+		
+		stage('Build') {
+            steps {
+				withMaven(maven: 'Maven 3.6.0',	jdk: 'jdk8') {
+					sh "bash ./jenkins/build.sh ${env.BUILD_NUMBER}"
+				}
+            }
+        }
+
+        stage('Deploy') {
+		    when {
+                branch 'develop'
+            }
+            steps {
+                echo 'Deploying on develop...'
+				sh "bash ./jenkins/deploy_develop.sh"
+            }
+        }
+    }
+}

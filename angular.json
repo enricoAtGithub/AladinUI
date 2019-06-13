@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "california": {
+    "jmeleon": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/california",
+            "outputPath": "dist/jmeleon",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -60,18 +60,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "california:build"
+            "browserTarget": "jmeleon:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "california:build:production"
+              "browserTarget": "jmeleon:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "california:build"
+            "browserTarget": "jmeleon:build"
           }
         },
         "test": {
@@ -105,7 +105,7 @@
         }
       }
     },
-    "california-e2e": {
+    "jmeleon-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -113,11 +113,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "california:serve"
+            "devServerTarget": "jmeleon:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "california:serve:production"
+              "devServerTarget": "jmeleon:serve:production"
             }
           }
         },
@@ -133,5 +133,5 @@
       }
     }
   },
-  "defaultProject": "california"
+  "defaultProject": "jmeleon"
 }

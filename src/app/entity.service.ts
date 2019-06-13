@@ -19,7 +19,7 @@ export class EntityService {
         'authorization':  this.authService.localUser.token
       })
     };
-    return this.http.get<EntityConfiguration[]>(UrlCollection.Entities.CONFIGS, httpOptions);
+    return this.http.get<EntityConfiguration[]>(UrlCollection.Entities.CONFIGS(), httpOptions);
   }
 
   filter(type: String, page: Number, pageSize: Number, qualifier: String, sorting: String): Observable<EntityData> {
@@ -30,7 +30,7 @@ export class EntityService {
       })
     };
 
-    return this.http.post<EntityData>(UrlCollection.Entities.FILTER,
+    return this.http.post<EntityData>(UrlCollection.Entities.FILTER(),
       JSON.stringify({type: type, page: page, pageSize: pageSize, qualifier: qualifier, sorting: sorting}), httpOptions);
   }
 }
