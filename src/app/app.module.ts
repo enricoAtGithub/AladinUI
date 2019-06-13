@@ -97,6 +97,7 @@ import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './app.effects';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { RootStoreModule } from './root-store/root-store.module';
 
 
 @NgModule({
@@ -176,7 +177,8 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
         StoreModule.forRoot(reducers, { metaReducers }),
         StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
         EffectsModule.forRoot([AppEffects]),
-        StoreRouterConnectingModule.forRoot()
+        StoreRouterConnectingModule.forRoot(),
+        RootStoreModule
     ],
     declarations: [
         AppComponent,

@@ -33,7 +33,7 @@ export class AuthService {
       result.next(error['error']['message']);
     });
 
-    return result;
+    return result;//.asObservable();
   }
 
   logout(): void {
