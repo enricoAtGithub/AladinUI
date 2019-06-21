@@ -1,5 +1,5 @@
 import {NgModule, APP_INITIALIZER} from '@angular/core';
-import {HttpClientModule} from '@angular/common/http';
+import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {LocationStrategy, PathLocationStrategy} from '@angular/common';
@@ -99,6 +99,8 @@ import { AppEffects } from './app.effects';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { RootStoreModule } from './root-store/root-store.module';
 import { AppConfig } from './shared/app-config';
+import { TokenInterceptor } from 'src/token.interceptor';
+import { HttpHeadersService } from './shared/services/http-headers.service';
 
 export function initializeApp(appConfig: AppConfig) {
     return () => appConfig.load();
@@ -202,9 +204,12 @@ export function initializeApp(appConfig: AppConfig) {
         ReportsComponent
     ],
     providers: [
-        AppConfig, {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [AppConfig], multi: true },
+        AppConfig,
+        {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [AppConfig], multi: true },
         {provide: LocationStrategy, useClass: PathLocationStrategy},
-        BreadcrumbService
+        { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+        BreadcrumbService,
+        HttpHeadersService
     ],
     entryComponents: [ AppThemeComponent ],
     bootstrap: [AppComponent]

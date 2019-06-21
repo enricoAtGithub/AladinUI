@@ -57,11 +57,20 @@ export class AppLayoutComponent implements AfterViewInit {
     }
 
     ngAfterViewInit() {
-        if (this.authService.isLoggedIn) {
-            setTimeout(() => {
-                this.layoutMenuScrollerViewChild.moveBar();
-            }, 100);
-        }
+        // if (this.authService.isLoggedIn) {
+        //     setTimeout(() => {
+        //         this.layoutMenuScrollerViewChild.moveBar();
+        //     }, 100);
+        // }
+        this.authService.isLoggedIn$.subscribe(
+            isLoggedIn => {
+                if (isLoggedIn) {
+                    setTimeout(() => {
+                        this.layoutMenuScrollerViewChild.moveBar();
+                    }, 100);
+                }
+            }
+        );
     }
 
     onLayoutClick() {

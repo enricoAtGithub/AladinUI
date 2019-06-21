@@ -78,12 +78,19 @@ export class AppProfileComponent implements OnInit {
         public router: Router, private dialogService: DialogService) {}
 
     ngOnInit() {
-        this.fullName = this.authService.localUser.user.firstName + ' ' + this.authService.localUser.user.lastName;
-        let email = this.authService.localUser.user.email;
-        if (!email) {
-            email = '';
-        }
-        this.gravatarLink = 'https://gravatar.com/avatar/' + <string>Md5.hashStr(email.trim().toLowerCase());
+        this.authService.localUser$.subscribe(
+            user => {
+                // console.log('user: ', user);
+                if (user) {
+                    this.fullName = `${user.user.firstName} ${user.user.lastName}`;
+                    let email = ' ';
+                    if (user.user.email) {
+                        email = user.user.email;
+                    }
+                    this.gravatarLink = 'https://gravatar.com/avatar/' + <string>Md5.hashStr(email.trim().toLowerCase());
+                }
+            }
+        );
     }
 
     onProfileClick(event) {
