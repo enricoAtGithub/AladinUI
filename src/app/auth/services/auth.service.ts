@@ -5,6 +5,7 @@ import { User } from 'src/app/shared/models/user';
 import { UrlCollection } from 'src/app/shared/url-collection';
 import { switchMap, map, tap, catchError, share } from 'rxjs/operators';
 import { HttpHeadersService } from 'src/app/shared/services/http-headers.service';
+import { HttpResult } from 'src/app/shared/models/http/http-result';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +44,7 @@ export class AuthService {
     );
   }
 
-  login(userName: string, pass: string): Observable<[boolean, string]> {
+  login(userName: string, pass: string): Observable<HttpResult<User>> {
 
     const result = this.http
       .post<User>(
@@ -60,24 +61,39 @@ export class AuthService {
           // todo: create local storage service!
           localStorage.setItem('user', JSON.stringify(user));
         }),
-        map(() => {
-          let mapResult: [boolean, string];
-          mapResult = [true, ''];
-          return mapResult;
+        map(user => {
+          const httpResult: HttpResult<User> = {
+            success: true,
+            result: user
+          };
+          return httpResult;
         }),
         catchError(err => {
-          let mapResult: [boolean, string];
-          mapResult = [false, err['error']['message'].toString()];
-          return of(mapResult);
+          const httpResult: HttpResult<User> = {
+            success: false,
+            errMsg: err['error']['message'].toString()
+          };
+          return of(httpResult);
         })
       );
 
-    return result;//.asObservable();
+    return result;
   }
 
-  logout(): void {
+  logout(): Observable<[boolean, string]> {
     this.userSubject.next(null);
     this.isLoggedInSubject.next(false);
+    return this.http.get(UrlCollection.UserManagement.LOGOUT())
+    .pipe(
+      map(() => {
+        const result: [boolean, string] = [true, ''];
+        return result;
+      }),
+      catchError(err => {
+        const result: [boolean, string] = [false, err['error']['message'].toString()];
+        return of(result);
+      })
+      );
   }
 
   // test!!!

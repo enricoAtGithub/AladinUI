@@ -1,13 +1,15 @@
 import { User } from 'src/app/shared/models/user';
 
-export interface State {
+export interface UserProfileState {
     user: User | null;
     error: string;
-    isLoading: boolean;
+    isInLogin: boolean;
+    isInLogout: boolean; // find better wording. There is no good verb for logout. ending session?
   }
 
-  export const initialState: State = {
+  export const initialState: UserProfileState = {
     user: null,
     error: null,
-    isLoading: false
+    isInLogin: false,
+    isInLogout: false
   };

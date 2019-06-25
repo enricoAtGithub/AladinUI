@@ -4,7 +4,9 @@ import { User } from 'src/app/shared/models/user';
 export enum ActionTypes {
   LOGIN_REQUEST = '[Login] Login Request',
   LOGIN_FAILURE = '[Login] Login Failure',
-  LOGIN_SUCCESS = '[Login] Login Success'
+  LOGIN_SUCCESS = '[Login] Login Success',
+  LOGOUT_REQUESTED = '[Logout] Logout Requested',
+  LOGOUT_SUCCESS = '[Logout] Logout Success'
 }
 
 export class LoginRequestAction implements Action {
@@ -22,4 +24,17 @@ export class LoginSuccessAction implements Action {
   constructor(public payload: { user: User }) {}
 }
 
-export type Actions = LoginRequestAction | LoginFailureAction | LoginSuccessAction;
+export class LogoutRequestedAction implements Action {
+  readonly type = ActionTypes.LOGOUT_REQUESTED;
+}
+
+export class LogoutSuccessAction implements Action {
+  readonly type = ActionTypes.LOGOUT_SUCCESS;
+}
+
+export type Actions =
+  LoginRequestAction |
+  LoginFailureAction |
+  LoginSuccessAction |
+  LogoutRequestedAction |
+  LogoutSuccessAction;
