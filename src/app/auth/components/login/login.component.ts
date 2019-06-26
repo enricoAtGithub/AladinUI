@@ -40,10 +40,12 @@ export class LoginComponent implements OnInit {
       .pipe(select(selectError))
       .subscribe(errMsg => {
         if (!errMsg) {
+          console.log('empty err msg.');
           return;
         }
         this.msgs = [];
         this.msgs.push({ severity: 'error', summary: '', detail: errMsg });
+        console.log('err msg: ', errMsg);
       });
 
   }
@@ -53,24 +55,5 @@ export class LoginComponent implements OnInit {
     const userName = user.value;
     const password = pass.value;
     this.store$.dispatch(new UserProfileActions.LoginRequestAction({userName, password}));
-    // this.authService
-    //   .login(user.value, pass.value)
-    //   .subscribe(httpResult => {
-    //     if (!httpResult.success) {
-    //       this.msgs = [];
-    //       if (!httpResult.errMsg) {
-    //         httpResult.errMsg = 'An error occurred while trying to connect to the server';
-    //       }
-    //       this.msgs.push({ severity: 'error', summary: '', detail: httpResult.errMsg });
-    //       return;
-
-    //     } else {
-    //       // Get the redirect URL from our auth service
-    //       // If no redirect has been set, use the default
-    //       const redirect = this.authService.redirectUrl ? this.router.parseUrl(this.authService.redirectUrl) : '/dashboard';
-    //       // Redirect the user
-    //       this.router.navigateByUrl(redirect);
-    //     }
-    //   });
   }
 }
