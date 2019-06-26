@@ -31,17 +31,17 @@
         <div class="ui-g-12 ui-lg-12 ui-md-12">
           <div class="input-wrapper">
             <label>Benutzername</label>
-            <input #username id="username" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="text" autocomplete="off" placeholder="Benutzername" class="ui-inputtext ui-widget">
+            <input #username id="usernameInput" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="text" autocomplete="off" placeholder="Benutzername" class="ui-inputtext ui-widget">
           </div>
         </div>
         <div class="ui-g-12 ui-lg-12 ui-md-12">
           <div class="input-wrapper">
             <label>Passwort</label>
-            <input #password id="password" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="password" autocomplete="off" placeholder="Passwort" class="ui-inputtext ui-widget">
+            <input #password id="passwordInput" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="password" autocomplete="off" placeholder="Passwort" class="ui-inputtext ui-widget">
           </div>
         </div>
         <div class="ui-g-12 ui-lg-12 ui-md-12 button-container">
-          <button #login id="login" type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" (click)="login(username, password)" >
+          <button #login id="loginBt" type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" (click)="login(username, password)" >
             <span class="ui-button-text ui-c">Anmelden</span>
           </button>
           <a href="#" style="float: right">Passwort vergessen?</a>

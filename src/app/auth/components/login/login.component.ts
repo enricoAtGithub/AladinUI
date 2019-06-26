@@ -6,7 +6,8 @@ import { AppConfig, ServerInfo, UIInfo } from 'src/app/shared/app-config';
 import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-index';
 import { Store, select } from '@ngrx/store';
 import { selectError } from 'src/app/root-store/root-selectors';
-import { Observable } from 'bin/node_modules/rxjs';
+// import { Observable } from 'bin/node_modules/rxjs';
+import { Observable} from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -52,6 +53,7 @@ export class LoginComponent implements OnInit {
 
 
   login(user: { value: string; }, pass: { value: string; }) {
+    console.log('login', user, pass);
     const userName = user.value;
     const password = pass.value;
     this.store$.dispatch(new UserProfileActions.LoginRequestAction({userName, password}));

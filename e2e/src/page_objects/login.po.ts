@@ -2,9 +2,9 @@ import { browser, by, element } from 'protractor';
 
 export class LoginPage {
 
-    userNameInput = element(by.id('username'));
-    passwordInput = element(by.id('password'));
-    loginButton = element(by.id('login'));
+    userNameInput = element(by.id('usernameInput'));
+    passwordInput = element(by.id('passwordInput'));
+    loginButton = element(by.id('loginBt'));
     // welcomeText = element(by.className('login-summary'));
     welcomeText = element(by.css('.login-summary')).getText();
 
