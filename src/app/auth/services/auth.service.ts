@@ -35,10 +35,12 @@ export class AuthService {
 
     this.localUser$.subscribe(
       user => {
+        console.log('local user: ', user);
         this.localUser = user;
     });
-    this.isLoggedIn$.subscribe(
+    this.isLoggedIn$.subscribe(      
       isLoggedIn => {
+        console.log('is logged in: ', isLoggedIn);
         this.isLoggedIn = isLoggedIn;
       }
     );
@@ -81,19 +83,22 @@ export class AuthService {
   }
 
   logout(): Observable<[boolean, string]> {
-    this.userSubject.next(null);
-    this.isLoggedInSubject.next(false);
-    return this.http.get(UrlCollection.UserManagement.LOGOUT())
+    let logoutResult = this.http.get(UrlCollection.UserManagement.LOGOUT())
     .pipe(
       map(() => {
+        
+        this.userSubject.next(null);
+        this.isLoggedInSubject.next(false);
         const result: [boolean, string] = [true, ''];
         return result;
       }),
       catchError(err => {
+        console.log('logout error: ', err);
         const result: [boolean, string] = [false, err['error']['message'].toString()];
         return of(result);
       })
-      );
+    );
+    return logoutResult;
   }
 
   // test!!!

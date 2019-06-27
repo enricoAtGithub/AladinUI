@@ -28,6 +28,7 @@ export class UserProfileEffects {
                 return new userProfileActions.LoginSuccessAction({user: httpResult.result});
 
               }
+              console.log('login failure: ', httpResult.errMsg);
               return new userProfileActions.LoginFailureAction({error: httpResult.errMsg});
             }
           ),
