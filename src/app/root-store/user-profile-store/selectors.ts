@@ -2,7 +2,7 @@ import {createFeatureSelector, createSelector, MemoizedSelector} from '@ngrx/sto
 import { UserProfileState } from './state';
 import { User } from 'src/app/shared/models/user';
 
-const getError = (state: UserProfileState): any => state ? state.error ? state.error : '' : '';
+const getError = (state: UserProfileState): any => state ? state.error ? state.error : 'state=null' : 'state.error=null';
 const getIsLoading = (state: UserProfileState): boolean => state.isInLogin;
 const getUser = (state: UserProfileState): any => state.user;
 
