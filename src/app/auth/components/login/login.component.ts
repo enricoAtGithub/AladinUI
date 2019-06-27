@@ -53,7 +53,8 @@ export class LoginComponent implements OnInit {
 
 
   login(user: { value: string; }, pass: { value: string; }) {
-    console.log('login', user, pass);
+    console.log('login');
+    // console.log('login', user, pass);
     const userName = user.value;
     const password = pass.value;
     this.store$.dispatch(new UserProfileActions.LoginRequestAction({userName, password}));
