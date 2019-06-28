@@ -10,23 +10,31 @@ export class ServerInfo {
     buildtime: string;
     pid: string;
     upSince: string;
-};
+}
 
 export class UIInfo {
     baseUrl: string;
-	git_branch: string;
-	git_sha: string;
-	version: string;
-	build_no: string;
-};
+    git_branch: string;
+    git_sha: string;
+    version: string;
+    build_no: string;
+}
 
 
 @Injectable()
 export class AppConfig {
 
+    constructor(private http: HttpClient) {}
+
     static uiInfo: UIInfo;
 
-    constructor(private http: HttpClient) {}
+    static getBaseUrl(): string {
+        return AppConfig.uiInfo.baseUrl;
+    }
+
+    static getUIInfo(): UIInfo {
+        return AppConfig.uiInfo;
+    }
 
     load() {
         const jsonFile = `assets/config/postbuildconfig.json`;
@@ -35,10 +43,10 @@ export class AppConfig {
                 AppConfig.uiInfo = response;
 
                 if (!AppConfig.uiInfo.baseUrl) {
-                    console.log("take Backend URL from environment");
+                    console.log('take Backend URL from environment');
                     AppConfig.uiInfo.baseUrl = environment.baseUrl;
                 } else {
-                    console.log("take Backend URL from postbuildConfig");
+                    console.log('take Backend URL from postbuildConfig');
                 }
 
                 resolve();
@@ -50,14 +58,6 @@ export class AppConfig {
 
     serverInfo( myFunc) {
         return this.http.get<ServerInfo>(UrlCollection.Admin.INFO()).subscribe(myFunc);
-    }
-
-    static getBaseUrl(): string {
-        return AppConfig.uiInfo.baseUrl
-    }
-
-    static getUIInfo(): UIInfo {
-        return AppConfig.uiInfo;
     }
 
 }
