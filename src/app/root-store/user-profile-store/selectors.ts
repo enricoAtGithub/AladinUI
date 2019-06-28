@@ -3,7 +3,7 @@ import { UserProfileState } from './state';
 import { User } from 'src/app/shared/models/user';
 
 const getError = (state: UserProfileState): any => {
-    console.log('selector-err-state:', state);
+    // console.log('selector-err-state:', state);
     return state ? state.error : 'no state';
 };
 // state ? state.error ? state.error : 'state=null' : 'state.error=null';

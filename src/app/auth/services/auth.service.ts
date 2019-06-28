@@ -13,7 +13,7 @@ import { HttpResult } from 'src/app/shared/models/http/http-result';
 export class AuthService {
 
   // ---ATTENTION---
-  // use only if use of the observables is not possible!!!
+  // use only if use of the observables is not possible!!! (for instance in the token interceptor)
   public localUser: User;
   public isLoggedIn = false;
   // ---------------
@@ -35,12 +35,12 @@ export class AuthService {
 
     this.localUser$.subscribe(
       user => {
-        console.log('local user: ', user);
+        // console.log('local user: ', user);
         this.localUser = user;
     });
     this.isLoggedIn$.subscribe(
       isLoggedIn => {
-        console.log('is logged in: ', isLoggedIn);
+        // console.log('is logged in: ', isLoggedIn);
         this.isLoggedIn = isLoggedIn;
       }
     );
@@ -93,7 +93,7 @@ export class AuthService {
         return result;
       }),
       catchError(err => {
-        console.log('logout error: ', err);
+        // console.log('logout error: ', err);
         const result: [boolean, string] = [false, err['error']['message'] ? err['error']['message'].toString() : err];
         return of(result);
       })

@@ -28,7 +28,7 @@ export class UserProfileEffects {
                 return new userProfileActions.LoginSuccessAction({user: httpResult.result});
 
               }
-              console.log('login failure: ', httpResult.errMsg);
+              // console.log('login failure: ', httpResult.errMsg);
               return new userProfileActions.LoginFailureAction({error: httpResult.errMsg});
             }
           ),
@@ -50,14 +50,14 @@ export class UserProfileEffects {
           map(([success, errMsg]) => {
             if (!success) {
               // communicate?
-              console.log('logout error: ', errMsg);
+              // console.log('logout error: ', errMsg);
             }
             this.router.navigate(['/login']);
             return new userProfileActions.LogoutSuccessAction();
           }),
           // communicate?
           catchError(err => {
-            console.log('logout error: ', err);
+            // console.log('logout error: ', err);
             return of(new userProfileActions.LogoutSuccessAction());
           })
         )

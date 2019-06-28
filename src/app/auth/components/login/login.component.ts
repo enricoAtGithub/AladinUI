@@ -51,27 +51,18 @@ export class LoginComponent implements OnInit {
     //     this.msgs.push({ severity: 'error', summary: '', detail: errMsg });
     //     console.log('err msg: ', errMsg);
     //   });
-    this.store$.select(UserProfileSelectors.selectUserProfileError).subscribe(errMsg => {
 
-      console.log('err msg: ', errMsg);
-      if (!errMsg) {
-        console.log('empty err msg.');
-        return;
-      }
-      this.msgs = [];
-      this.msgs.push({ severity: 'error', summary: '', detail: errMsg });
-    });
-    this.store$.pipe(select(state => UserProfileSelectors.selectUserProfileError(state))).subscribe(errMsg => {
-
-      console.log('err msg: ', errMsg);
-      if (!errMsg) {
-        console.log('empty err msg.');
-        return;
-      }
-      this.msgs = [];
-      this.msgs.push({ severity: 'error', summary: '', detail: errMsg });
-    });
-
+    this.store$
+      .pipe(select(state => UserProfileSelectors.selectUserProfileError(state)))
+      .subscribe(errMsg => {
+        // console.log('err msg: ', errMsg);
+        if (!errMsg) {
+          // console.log('empty err msg.');
+          return;
+        }
+        this.msgs = [];
+        this.msgs.push({ severity: 'error', summary: '', detail: errMsg });
+      });
   }
 
 

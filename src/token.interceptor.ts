@@ -28,10 +28,10 @@ export class TokenInterceptor implements HttpInterceptor {
                     Authorization: this.auth.localUser.token
                 }
             });
-            console.log(`setting auth header to: ${this.auth.localUser.token}`);
+            // console.log(`setting auth header to: ${this.auth.localUser.token}`);
         } else {
 
-            console.log(`no token... current user: ${JSON.stringify(this.auth.localUser)}`);
+            // console.log(`no token... current user: ${JSON.stringify(this.auth.localUser)}`);
         }
 
     return next.handle(request);
