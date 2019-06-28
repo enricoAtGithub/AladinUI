@@ -7,6 +7,13 @@ export class LoginPage {
     loginButton = element(by.id('loginBt'));
     // welcomeText = element(by.className('login-summary'));
     welcomeText = element(by.css('.login-summary')).getText();
+    // firstErrorMsg = element(by.xpath('/html/body/app-root/app-login/html/body/div[2]/div/div[2]/p-messages/div/ul/li/span')).getText();
+    // what if there are multiple messages?
+    // firstErrorMsg = element(by.css('.ui-messages-detail')).getText();
+
+    getFirstErrorMsgText() {
+      return element(by.css('.ui-messages-detail')).getText();
+    }
 
     navigateTo() {
         // check if logged out?
