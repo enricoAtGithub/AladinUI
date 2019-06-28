@@ -9,7 +9,7 @@ export interface UserProfileState {
 
 export const initialState: UserProfileState = {
   user: null,
-  error: null,
+  error: '',
   isInLogin: false,
   isInLogout: false
 };

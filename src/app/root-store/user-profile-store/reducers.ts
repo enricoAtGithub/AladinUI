@@ -6,18 +6,19 @@ export function userProfileReducer(state = initialState, action: Actions): UserP
       case ActionTypes.LOGIN_REQUEST:
         return {
           ...state,
-          error: null,
+          error: '',
           isInLogin: true
         };
       case ActionTypes.LOGIN_SUCCESS:
         return {
           ...state,
           user: action.payload.user,
-          error: null,
+          error: '',
           isInLogin: false,
 
         };
       case ActionTypes.LOGIN_FAILURE:
+        console.log('login failure state: ', action.payload.error);
         return {
           ...state,
           error: action.payload.error,
@@ -26,12 +27,14 @@ export function userProfileReducer(state = initialState, action: Actions): UserP
       case ActionTypes.LOGOUT_REQUESTED:
         return {
           ...state,
+          error: '',
           isInLogout: true
         };
       case ActionTypes.LOGOUT_SUCCESS:
         return {
           ...state,
           isInLogout: false,
+          error: '',
           user: null
         };
       default: {

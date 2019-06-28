@@ -38,7 +38,7 @@ export class AuthService {
         console.log('local user: ', user);
         this.localUser = user;
     });
-    this.isLoggedIn$.subscribe(      
+    this.isLoggedIn$.subscribe(
       isLoggedIn => {
         console.log('is logged in: ', isLoggedIn);
         this.isLoggedIn = isLoggedIn;
@@ -73,6 +73,7 @@ export class AuthService {
         catchError(err => {
           const httpResult: HttpResult<User> = {
             success: false,
+            // errMsg: err['message'].toString() //no vpn connection
             errMsg: err['error']['message'].toString()
           };
           return of(httpResult);
@@ -83,10 +84,9 @@ export class AuthService {
   }
 
   logout(): Observable<[boolean, string]> {
-    let logoutResult = this.http.get(UrlCollection.UserManagement.LOGOUT())
+    const logoutResult = this.http.get(UrlCollection.UserManagement.LOGOUT())
     .pipe(
       map(() => {
-        
         this.userSubject.next(null);
         this.isLoggedInSubject.next(false);
         const result: [boolean, string] = [true, ''];
@@ -94,7 +94,7 @@ export class AuthService {
       }),
       catchError(err => {
         console.log('logout error: ', err);
-        const result: [boolean, string] = [false, err['error']['message'].toString()];
+        const result: [boolean, string] = [false, err['error']['message'] ? err['error']['message'].toString() : err];
         return of(result);
       })
     );
