@@ -1,0 +1,38 @@
+<form novalidate #form="ngForm" (ngSubmit)="updateUser(form)">
+  <div class="ui-g form-group">
+    <div class="ui-g-12 ui-md-12">
+      <div class="ui-g-12 ui-md-12">
+        <span class="ui-float-label">
+            <input name="loginName" disabled="true" [ngModel]="user.loginName" required id="float-input" type="text" pInputText> 
+            <label for="float-input">Benutzername</label>
+        </span>
+      </div>
+      <div class="ui-g-12 ui-md-12">
+        <span class="ui-float-label">
+            <input name="email" [ngModel]="user.email" required id="float-input" type="text" pInputText> 
+            <label for="float-input">E-Mail</label>
+        </span>
+      </div>
+      <div class="ui-g-12 ui-md-12">
+        <span class="ui-float-label">
+            <input name="lastName" [ngModel]="user.lastName" id="float-input" type="text" pInputText> 
+            <label for="float-input">Nachname</label>
+        </span>
+      </div>
+      <div class="ui-g-12 ui-md-12">
+        <span class="ui-float-label">
+            <input name="firstName" [ngModel]="user.firstName" id="float-input" type="text" pInputText> 
+            <label for="float-input">Vorname</label>
+        </span>
+      </div>
+      
+      <div class="ui-g-12 ui-md-12">
+        <p-checkbox name="enforcePasswdChange" binary="true" [ngModel]="user.enforcePasswdChange" value="enforcePasswdChange" label="Enforce Password Change"></p-checkbox>
+      </div>
+
+      <div class="ui-g-12 ui-md-12">
+        <p-button type="submit" [disabled]="!form.valid"  icon="pi pi-user-plus" iconPos="left" label="Speichern"></p-button>
+      </div>
+    </div>
+  </div>
+</form>

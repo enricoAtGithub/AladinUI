@@ -3,6 +3,7 @@ import { UsersService } from '../../services/users.service';
 import { UserItem } from '../../models/user-item';
 import { MessageService, DialogService, ConfirmationService } from 'primeng/primeng';
 import { AddUserDialogComponent } from '../add-user-dialog/add-user-dialog.component';
+import { UpdateUserDialogComponent } from '../update-user-dialog/update-user-dialog.component';
 
 @Component({
   selector: 'app-user-list',
@@ -29,6 +30,16 @@ export class UserListComponent implements OnInit {
   deactivateUser(user: UserItem) {
     this.usersService.deactivateUser(user).subscribe(() => user.active = false,
     err => this.messageService.add({severity: 'error', summary: '', detail: err['error']['message']}));
+  }
+
+  updateUser(user: UserItem) {
+    this.dialogService.open(UpdateUserDialogComponent, {
+      data: {
+        user: user
+      },
+      header: 'Benutzer Bearbeitem',
+      width: '25%'
+    });
   }
 
   deleteUser(user: UserItem) {

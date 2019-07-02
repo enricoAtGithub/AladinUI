@@ -11,6 +11,7 @@ import { AddUserComponent } from './components/add-user/add-user.component';
 import { UserManagementComponent } from './components/user-management/user-management.component';
 import { AddUserDialogComponent } from './components/add-user-dialog/add-user-dialog.component';
 import { FormsModule } from '@angular/forms';
+import { UpdateUserDialogComponent } from './components/update-user-dialog/update-user-dialog.component';
 
 // const userRoutes: Routes = [
 //   {path: '', component: UserListComponent},
@@ -19,7 +20,7 @@ import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
-  declarations: [UserListComponent, AddUserComponent, UserManagementComponent, AddUserDialogComponent],
+  declarations: [UserListComponent, AddUserComponent, UserManagementComponent, AddUserDialogComponent, UpdateUserDialogComponent],
   imports: [
     CommonModule,
     PanelModule,
@@ -34,7 +35,8 @@ import { FormsModule } from '@angular/forms';
   ],
   providers: [ MessageService, DialogService ],
   entryComponents: [
-      AddUserDialogComponent
+      AddUserDialogComponent,
+      UpdateUserDialogComponent
   ]
 })
 export class UserModule { }

@@ -1,4 +1,4 @@
-<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<p-confirmDialog header="Bestätigung" icon="pi pi-exclamation-triangle"></p-confirmDialog>
 <div>
   <p-panel styleClass="daily-sales">
     <p-header>
@@ -32,7 +32,7 @@
             <td>{{user.browser}}</td>
             <td>
               <button  pButton type="button" icon="pi pi-pencil" class="ui-button-info" 
-              pTooltip="Bearbeiten" styleClass="ui-button-info"></button>
+              pTooltip="Bearbeiten" styleClass="ui-button-info" (click)="updateUser(user)"></button>
               <button  pButton type="button" icon="pi pi-refresh" class="ui-button-info" 
               pTooltip="Passwort zurücksetzen" styleClass="ui-button-info"></button>
               <button  pButton type="button" icon="pi pi-lock" class="ui-button-info" 
