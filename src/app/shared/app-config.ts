@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { UrlCollection } from './url-collection';
 import { BehaviorSubject, Subject } from 'rxjs';
 
 export class ServerInfo {
@@ -56,8 +55,8 @@ export class AppConfig {
         });
     }
 
-    serverInfo( myFunc) {
-        return this.http.get<ServerInfo>(UrlCollection.Admin.INFO()).subscribe(myFunc);
+    serverInfo(myFunc) {
+        return this.http.get<ServerInfo>(AppConfig.getBaseUrl() + '/admin/info').subscribe(myFunc);
     }
 
 }
