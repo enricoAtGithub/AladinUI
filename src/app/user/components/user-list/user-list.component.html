@@ -6,9 +6,9 @@
         <button pButton (click)="showAddUserDialog()" icon="pi pi-plus" class="ui-button-success" style="float: right"></button>
     </p-header>
     
-    <div *ngIf="usersService.userList">
+    <div *ngIf="usersService.userList$ | async as userList else noUserList">
       
-      <p-table [value]="usersService.userList">
+      <p-table [value]="userList">
         <ng-template pTemplate="header">
           <tr>        
             <th>Benutzername</th>        
@@ -52,9 +52,12 @@
         </ng-template>
       </p-table>
     </div>
-    <div *ngIf="!usersService.userList">
-      ...lade Benutzerliste
-    </div>
+    <ng-template #noUserList>
+      <div>
+        ...lade Benutzerliste
+      </div>
+    </ng-template>
+
     
   </p-panel>
 </div>

@@ -101,7 +101,7 @@ import { RootStoreModule } from './root-store/root-store.module';
 import { AppConfig } from './shared/app-config';
 import { TokenInterceptor } from 'src/token.interceptor';
 import { HttpHeadersService } from './shared/services/http-headers.service';
-import { DynamicTableComponent } from './dynamic-table/dynamic-table.component';
+import { DynamicTableComponent } from './shared/components/dynamic-table/dynamic-table.component';
 
 export function initializeApp(appConfig: AppConfig) {
     return () => appConfig.load();

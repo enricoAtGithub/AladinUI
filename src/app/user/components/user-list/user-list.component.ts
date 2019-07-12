@@ -4,6 +4,7 @@ import { UserItem } from '../../models/user-item';
 import { MessageService, DialogService, ConfirmationService } from 'primeng/primeng';
 import { AddUserDialogComponent } from '../add-user-dialog/add-user-dialog.component';
 import { UpdateUserDialogComponent } from '../update-user-dialog/update-user-dialog.component';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-list',
@@ -46,10 +47,10 @@ export class UserListComponent implements OnInit {
     this.confirmationService.confirm({
       message: 'Sind Sie sicher, dass Sie diesen Benutzer löschen wollen?',
       accept: () => {
-          this.usersService.deleteUser(user).subscribe(() =>
-            this.usersService.userList = this.usersService.userList.filter((value, index, arr) => value !== user),
-            err => this.messageService.add({severity: 'error', summary: '', detail: err['error']['message']})
-          );
+        this.usersService.deleteUser(user).subscribe(() => {
+          this.usersService.userList$.pipe(first()).subscribe((currentUserList: UserItem[]) =>
+            this.usersService.updateUserListLocally(currentUserList.filter((value, index, arr) => value !== user))); },
+          err => this.messageService.add({severity: 'error', summary: '', detail: err['error']['message']}));
       }
     });
   }

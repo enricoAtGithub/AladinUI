@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { UsersService } from '../../services/users.service';
 import { UserItem } from '../../models/user-item';
 import { UserListComponent } from '../user-list/user-list.component';
-import { map } from 'rxjs/operators';
+import { map, first } from 'rxjs/operators';
 import { MessageService } from 'primeng/primeng';
 
 @Component({
@@ -26,8 +26,14 @@ export class AddUserComponent implements OnInit {
     newUser.email = form.value['email'];
     newUser.active = form.value['active'] === '' ? true : false;
 
-    this.usersService.createUser(newUser).subscribe(() => this.usersService.userList.push(newUser),
-      err => this.messageService.add({severity: 'error', summary: '', detail: err['error']['message']}));
+    this.usersService.createUser(newUser).subscribe(() => {
+        this.usersService.userList$.pipe(first()).subscribe((currentUserList: UserItem[]) => {
+          currentUserList.push(newUser);
+          this.usersService.updateUserListLocally(currentUserList);
+        });
+      },
+        err => this.messageService.add({severity: 'error', summary: '', detail: err['error']['message']})
+    );
   }
 
 }

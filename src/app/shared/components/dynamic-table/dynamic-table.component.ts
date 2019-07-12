@@ -1,10 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
-import { EntityConfiguration } from '../shared/models/entity-configuration';
-import { Field } from '../shared/models/field';
-import { EntityData } from '../shared/models/entity-data';
+import { EntityConfiguration } from '../../models/entity-configuration';
+import { Field } from '../../models/field';
+import { EntityData } from '../../models/entity-data';
 import { EntityService } from 'src/app/entity.service';
 import { LazyLoadEvent } from 'primeng/primeng';
-import { TableData } from './table-data';
+import { TableData } from '../../models/table-data';
 
 @Component({
   selector: 'app-dynamic-table',

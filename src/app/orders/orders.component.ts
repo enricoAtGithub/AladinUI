@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TableData } from 'src/app/dynamic-table/table-data';
+import { TableData } from 'src/app/shared/models/table-data';
 
 @Component({
   selector: 'app-orders',

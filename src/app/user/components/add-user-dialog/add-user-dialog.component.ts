@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { UserItem } from '../../models/user-item';
 import { UsersService } from '../../services/users.service';
 import { MessageService, DynamicDialogRef } from 'primeng/primeng';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-user-dialog',
@@ -24,7 +25,13 @@ export class AddUserDialogComponent implements OnInit {
     newUser.email = form.value['email'];
     newUser.active = form.value['active'] === '' ? true : false;
 
-    this.usersService.createUser(newUser).subscribe(() => { this.usersService.userList.push(newUser);this.ref.close(null); },
+    this.usersService.createUser(newUser).subscribe(() => {
+        this.usersService.userList$.pipe(first()).subscribe((currentUserList: UserItem[]) => {
+          currentUserList.push(newUser);
+          this.usersService.updateUserListLocally(currentUserList);
+        });
+        this.ref.close(null);
+      },
       err => this.messageService.add({severity: 'error', summary: '', detail: err['error']['message']}));
   }
 }
