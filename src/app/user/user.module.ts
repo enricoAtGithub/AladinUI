@@ -12,6 +12,7 @@ import { UserManagementComponent } from './components/user-management/user-manag
 import { AddUserDialogComponent } from './components/add-user-dialog/add-user-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { UpdateUserDialogComponent } from './components/update-user-dialog/update-user-dialog.component';
+import { AddEntityDialogComponent } from '../shared/components/add-entity-dialog/add-entity-dialog.component';
 
 // const userRoutes: Routes = [
 //   {path: '', component: UserListComponent},

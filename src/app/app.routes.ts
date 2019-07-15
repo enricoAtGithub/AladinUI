@@ -4,7 +4,6 @@ import { AuthGuard } from './auth/auth.guard';
 
 import { LoginComponent } from './auth/components/login/login.component';
 import { UserModule } from './user/user.module';
-import { UserListComponent } from './user/components/user-list/user-list.component';
 import { UserManagementComponent } from './user/components/user-management/user-management.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { OrdersComponent } from './orders/orders.component';
@@ -12,6 +11,7 @@ import { ReportsComponent } from './reports/reports.component';
 import { InvoicesComponent } from './invoices/invoices.component';
 import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 import { ProfileComponent } from './profile/profile.component';
+import { RoleManagementComponent } from './user/components/role-management/role-management.component';
 
 export const routes: Routes = [
     // App-Layout routes
@@ -29,7 +29,8 @@ export const routes: Routes = [
         // {path: 'administration', loadChildren: './user/user.module.ts#UserModule'}
         // {path: 'administration', loadChildren: UserModule}
         {path: 'administration', children: [
-            {path: '', pathMatch: 'full', component: UserManagementComponent}
+          {path: 'user-management', pathMatch: 'full', component: UserManagementComponent},
+          {path: 'role-management', pathMatch: 'full', component: RoleManagementComponent}
         ]}
       ]
     },

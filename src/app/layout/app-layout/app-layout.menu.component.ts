@@ -25,7 +25,8 @@ export class AppMenuComponent implements OnInit {
             {label: 'Rechnungen', icon: 'fa fa-fw fa-eur', routerLink: ['/invoices']},
             {label: 'Berichte', icon: 'fa fa-fw fa-file', routerLink: ['/reports']},
             {label: 'Administration', icon: 'fa fa-fw fa-pencil', items: [
-                {label: 'Benutzer-Übersicht', icon: 'pi pi-users', routerLink: ['/administration']},
+                {label: 'Benutzer-Übersicht', icon: 'pi pi-users', routerLink: ['/administration/user-management']},
+                {label: 'Rollenverwaltung', icon: 'pi pi-users', routerLink: ['/administration/role-management']},
             ]},
         ];
     }

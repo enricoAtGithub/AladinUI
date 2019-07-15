@@ -1,3 +1,4 @@
+<p-confirmDialog header="Neuer Eintrag" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
 <div class="ui-g-12">
   <div class="card card-w-title">
     <h1>{{tableData.tableName}}</h1>
@@ -5,6 +6,7 @@
       [(rows)]="configuration.rowsPerPage" [responsive]="true" [lazy]="true" (onLazyLoad)="loadLazy($event)" [loading]="loading" [totalRecords]="entityData.count" >
       <ng-template pTemplate="caption">
         {{configuration.displayName}}
+        <button pButton (click)="showAddEntityDialog()" icon="pi pi-plus" class="ui-button-success" style="float: right; margin-top: -5px;"></button>
       </ng-template>
       <ng-template pTemplate="header" let-columns>
         <tr>
@@ -17,6 +19,7 @@
             <p-dropdown *ngSwitchCase="'dropdown'" [options]="col.options" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
             <p-multiSelect *ngSwitchCase="'multiSelect'" [options]="col.options" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect>
           </th>
+          <th style="width:90px">Bearbeiten</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -24,6 +27,12 @@
           <td *ngFor="let col of columns">
             <span class="ui-column-title">{{col.header}}</span>
               {{rowData[col.header]}}
+          </td>
+          <td style="text-align: center">
+            <button  pButton type="button" icon="pi pi-pencil" class="ui-button-info" 
+            pTooltip="Bearbeiten" styleClass="ui-button-info" style="margin-right: 5px" (click)="updateEntity(rowData)"></button>
+            <button  pButton type="button" icon="pi pi-trash" class="ui-button-info" 
+            pTooltip="Löschen" styleClass="ui-button-info" (click)="deleteEntity(rowData)"></button>
           </td>
         </tr>
       </ng-template>

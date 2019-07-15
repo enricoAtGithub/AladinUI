@@ -24,7 +24,9 @@ export class UrlCollection {
     };
 
     static Entities = class {
-
+        static CREATE(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/create'; }
+        static UPDATE(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/update'; }
+        static DELETE(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/delete'; }
         static CONFIGS(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/configurations'; }
         static FILTER(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/filter'; }
 

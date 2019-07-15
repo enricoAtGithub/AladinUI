@@ -2,14 +2,16 @@ import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
 import { EntityData } from '../../models/entity-data';
-import { EntityService } from 'src/app/entity.service';
-import { LazyLoadEvent } from 'primeng/primeng';
+import { EntityService } from '../../services/entity.service';
+import { LazyLoadEvent, DialogService, ConfirmationService } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
+import { AddEntityDialogComponent } from '../add-entity-dialog/add-entity-dialog.component';
 
 @Component({
   selector: 'app-dynamic-table',
   templateUrl: './dynamic-table.component.html',
-  styleUrls: ['./dynamic-table.component.css']
+  styleUrls: ['./dynamic-table.component.css'],
+  providers: [ConfirmationService]
 })
 export class DynamicTableComponent implements OnInit {
   @Input() tableData: TableData;
@@ -19,8 +21,10 @@ export class DynamicTableComponent implements OnInit {
   loading = false;
   entityData: EntityData;
   selectedEntry: any;
+  lastLazyLoadEvent: LazyLoadEvent;
 
-  constructor(private entityService: EntityService, private cd: ChangeDetectorRef) {}
+  constructor(private entityService: EntityService, private cd: ChangeDetectorRef,
+    private dialogService: DialogService, private confirmationService: ConfirmationService) {}
 
   ngOnInit() {
     this.configuration = new EntityConfiguration();
@@ -32,6 +36,7 @@ export class DynamicTableComponent implements OnInit {
   }
 
   async loadLazy(event: LazyLoadEvent) {
+    this.lastLazyLoadEvent = event;
     this.loading = true;
     this.cd.detectChanges();
 
@@ -65,6 +70,32 @@ export class DynamicTableComponent implements OnInit {
       .subscribe(data => this.entityData = data);
 
     this.loading = false;
+  }
+
+  showAddEntityDialog() {
+    const dialogRef = this.dialogService.open(AddEntityDialogComponent, {
+      data: {
+        config: this.configuration
+      },
+      header: 'Hinzufügen',
+      width: '25%'
+    });
+
+    dialogRef.onClose.subscribe((submitted: boolean) => { if (submitted) { this.loadLazy(this.lastLazyLoadEvent); } });
+  }
+
+  updateEntity(data: any) {
+    console.log(data);
+  }
+
+  deleteEntity(data: any) {
+    this.confirmationService.confirm({
+      message: 'Sind Sie sicher, dass Sie diesen Benutzer löschen wollen?',
+      accept: () => {
+        this.entityService.deleteEntity(this.configuration.type, data['id']).subscribe();
+        this.loadLazy(this.lastLazyLoadEvent);
+      }
+    });
   }
 
 }

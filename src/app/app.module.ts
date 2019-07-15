@@ -102,6 +102,8 @@ import { AppConfig } from './shared/app-config';
 import { TokenInterceptor } from 'src/token.interceptor';
 import { HttpHeadersService } from './shared/services/http-headers.service';
 import { DynamicTableComponent } from './shared/components/dynamic-table/dynamic-table.component';
+import { RoleManagementComponent } from './user/components/role-management/role-management.component';
+import { AddEntityDialogComponent } from './shared/components/add-entity-dialog/add-entity-dialog.component';
 
 export function initializeApp(appConfig: AppConfig) {
     return () => appConfig.load();
@@ -203,7 +205,9 @@ export function initializeApp(appConfig: AppConfig) {
         InvoicesComponent,
         OrdersComponent,
         ProfileComponent,
-        ReportsComponent
+        ReportsComponent,
+        RoleManagementComponent,
+        AddEntityDialogComponent
     ],
     providers: [
         AppConfig,
@@ -213,7 +217,7 @@ export function initializeApp(appConfig: AppConfig) {
         BreadcrumbService,
         HttpHeadersService
     ],
-    entryComponents: [ AppThemeComponent ],
+    entryComponents: [ AppThemeComponent, AddEntityDialogComponent ],
     bootstrap: [AppComponent]
 })
 export class AppModule {
