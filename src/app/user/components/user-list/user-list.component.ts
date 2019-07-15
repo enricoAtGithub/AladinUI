@@ -38,7 +38,7 @@ export class UserListComponent implements OnInit {
       data: {
         user: user
       },
-      header: 'Benutzer Bearbeitem',
+      header: 'Benutzer Bearbeiten',
       width: '25%'
     });
   }

@@ -1,9 +1,11 @@
 export class Field {
     field: String;
     formula: any;
-    type: String;
     visible: boolean;
-    readOnly: boolean;
+    editable: boolean;
+    mandatory: boolean;
+    defaultValue: String;
+    type: String;
     sortable: boolean;
     filterType: String;
     width: String;
