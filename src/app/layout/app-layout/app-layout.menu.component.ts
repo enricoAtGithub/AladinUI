@@ -27,6 +27,7 @@ export class AppMenuComponent implements OnInit {
             {label: 'Administration', icon: 'fa fa-fw fa-pencil', items: [
                 {label: 'Benutzer-Übersicht', icon: 'pi pi-users', routerLink: ['/administration/user-management']},
                 {label: 'Rollenverwaltung', icon: 'pi pi-users', routerLink: ['/administration/role-management']},
+                {label: 'Rechteverwaltung', icon: 'pi pi-users', routerLink: ['/administration/permission-management']},
             ]},
         ];
     }

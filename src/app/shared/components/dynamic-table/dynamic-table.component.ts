@@ -6,6 +6,7 @@ import { EntityService } from '../../services/entity.service';
 import { LazyLoadEvent, DialogService, ConfirmationService } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
 import { AddEntityDialogComponent } from '../add-entity-dialog/add-entity-dialog.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -81,19 +82,21 @@ export class DynamicTableComponent implements OnInit {
       width: '25%'
     });
 
-    dialogRef.onClose.subscribe((submitted: boolean) => { if (submitted) { this.loadLazy(this.lastLazyLoadEvent); } });
+    dialogRef.onClose.subscribe((result: Observable<Object>) => {
+      if (result !== undefined) {
+        result.subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
+      }
+    });
   }
 
   updateEntity(data: any) {
-    console.log(data);
   }
 
   deleteEntity(data: any) {
     this.confirmationService.confirm({
-      message: 'Sind Sie sicher, dass Sie diesen Benutzer löschen wollen?',
+      message: 'Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?',
       accept: () => {
-        this.entityService.deleteEntity(this.configuration.type, data['id']).subscribe();
-        this.loadLazy(this.lastLazyLoadEvent);
+        this.entityService.deleteEntity(this.configuration.type, data['id']).subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
       }
     });
   }

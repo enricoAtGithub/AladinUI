@@ -81,7 +81,7 @@ import {AppBreadcrumbComponent} from './layout/app-breadcrumb/app.breadcrumb.com
 import {AppTopBarComponent} from './layout/app-topbar/app.topbar.component';
 import {AppFooterComponent} from './layout/app-footer/app.footer.component';
 
-import {BreadcrumbService} from './breadcrumb.service';
+import { BreadcrumbService } from './breadcrumb.service';
 import { UserModule } from './user/user.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReportsComponent } from './reports/reports.component';
@@ -98,12 +98,10 @@ import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './app.effects';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { RootStoreModule } from './root-store/root-store.module';
-import { AppConfig } from './shared/app-config';
 import { TokenInterceptor } from 'src/token.interceptor';
+import { AppConfig } from './shared/app-config';
 import { HttpHeadersService } from './shared/services/http-headers.service';
-import { DynamicTableComponent } from './shared/components/dynamic-table/dynamic-table.component';
-import { RoleManagementComponent } from './user/components/role-management/role-management.component';
-import { AddEntityDialogComponent } from './shared/components/add-entity-dialog/add-entity-dialog.component';
+import { SharedModule } from './shared/shared.module';
 
 export function initializeApp(appConfig: AppConfig) {
     return () => appConfig.load();
@@ -165,6 +163,7 @@ export function initializeApp(appConfig: AppConfig) {
         RatingModule,
         ScrollPanelModule,
         SelectButtonModule,
+        SharedModule,
         SlideMenuModule,
         SliderModule,
         SpinnerModule,
@@ -201,13 +200,10 @@ export function initializeApp(appConfig: AppConfig) {
         AppFooterComponent,
         AppProfileComponent,
         DashboardComponent,
-        DynamicTableComponent,
         InvoicesComponent,
         OrdersComponent,
         ProfileComponent,
-        ReportsComponent,
-        RoleManagementComponent,
-        AddEntityDialogComponent
+        ReportsComponent
     ],
     providers: [
         AppConfig,
@@ -217,7 +213,8 @@ export function initializeApp(appConfig: AppConfig) {
         BreadcrumbService,
         HttpHeadersService
     ],
-    entryComponents: [ AppThemeComponent, AddEntityDialogComponent ],
+
+    entryComponents: [ AppThemeComponent ],
     bootstrap: [AppComponent]
 })
 export class AppModule {

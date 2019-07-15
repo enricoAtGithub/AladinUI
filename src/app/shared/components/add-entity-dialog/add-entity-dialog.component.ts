@@ -19,7 +19,6 @@ export class AddEntityDialogComponent implements OnInit {
   }
 
   onSubmit(entityForm: FormGroup) {
-    this.entityService.createEntity(this.configuration.type, entityForm.value).subscribe();
-    this.ref.close(true);
+    this.ref.close(this.entityService.createEntity(this.configuration.type, entityForm.value));
   }
 }
