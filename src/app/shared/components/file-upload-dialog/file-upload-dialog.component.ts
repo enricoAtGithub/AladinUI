@@ -18,6 +18,7 @@ export class FileUploadDialogComponent implements OnInit {
 
   @Input() attachmentCategory: string;
   @Input() catalogueName: string;
+  @Input() catalogueDisplayName: string;
 
   @Output() fileUploaded = new EventEmitter<FileUploadResult>();
   @Output() error = new EventEmitter<HttpErrorResponse>();
@@ -26,7 +27,9 @@ export class FileUploadDialogComponent implements OnInit {
   // catalogue: Catalogue;
   showCatalogChooser = false;
   showFileDialog = false;
+  keepOrgFileName = true;
   uploadFileName: string;
+  newFileName: string;
 
   constructor(private fileService: FileUploadDownloadService) { }
 
@@ -42,6 +45,24 @@ export class FileUploadDialogComponent implements OnInit {
   onDlgShow() {
 
   }
+
+  // enableNewFileNameInput(): boolean {
+  //   return !this.keepOrgFileName;
+  // }
+
+  disableFileNameResetButton(): boolean {
+    return this.keepOrgFileName || !this.newFileName && this.newFileName === this.uploadFileName;
+  }
+
+  disableKeepFileNameCheckbox(): boolean {
+    return !!!this.uploadFileName;
+  }
+
+  resetFileName(): void {
+    this.newFileName = this.uploadFileName;
+  }
+
+
 
   onButtonClickShowFileDialog() {
     // console.log('[file-upload-dialog|onButtonClickShowFileDialog] catalogName: ', this.catalogueName);
@@ -95,6 +116,7 @@ export class FileUploadDialogComponent implements OnInit {
     // console.log('[onFileSelect] selected file', event.files[0]);
     console.log('[onFileSelect] selected file name', event.files[0].name);
     this.uploadFileName = event.files[0].name;
+    this.newFileName = this.uploadFileName;
     this.showCatalogChooser = true;
   }
 

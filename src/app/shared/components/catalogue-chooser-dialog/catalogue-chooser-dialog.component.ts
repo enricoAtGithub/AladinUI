@@ -26,10 +26,13 @@ export class CatalogueChooserDialogComponent implements OnInit, OnDestroy {
       return this._catalogueName;
     }
   @Input() header = '';
-  @Input() description = 'Element auswählen';
+  // @Input() description = 'Element auswählen';
   @Input() preSelectedOption = '';
   @Input() visible = false;
+  @Input() catalogueDisplayName = 'Element auswählen';
+  @Input() showHeader = false;
   @Output() itemSelected = new EventEmitter<string>();
+
   // catalogue$: Observable<Catalogue>;
   catalogue: Catalogue;
   catalogueSubscription: Subscription;
