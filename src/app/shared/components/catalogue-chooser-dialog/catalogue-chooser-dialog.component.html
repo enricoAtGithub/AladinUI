@@ -1,22 +1,25 @@
-<p-dialog 
+<!-- <p-dialog 
   [header]="header" 
-  [(visible)]="visible">
+  [(visible)]="visible"> -->
   <div>{{description}}</div>
-  <div *ngIf="catalogue$ | async as catalogue; else noCatalogue">
-    <p-listbox 
+  <!-- <div *ngIf="catalogue$ | async as catalogue; else noCatalogue"> -->
+    <!-- <p-listbox 
       [options]="catalogue.values" 
       [(ngModel)]="selectedItem" 
       (onClick)="selectItem($event)">
-    </p-listbox>
+    </p-listbox> -->
+    <p-dropdown 
+      [options]="catalogItems" 
+      [(ngModel)]="selectedItem"></p-dropdown>
     <p-button 
       label="Übernehmen" 
       icon="fa fa-check" 
       (click)="onApplySelection()" 
       [disabled]="!!selectItem">
     </p-button>
-  </div>
+  <!-- </div>
   <ng-template #noCatalogue>
     ...lade
-  </ng-template>
+  </ng-template> -->
   <p-message *ngIf="showErrMsg" severity="warn" [text]="errMsg"></p-message>
-</p-dialog>
+<!-- </p-dialog> -->

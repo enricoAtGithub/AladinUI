@@ -14,6 +14,7 @@ export class FileUploadDialogComponent implements OnInit {
   @Input() chooseLabel = 'Datei auswählen';
   @Input() uploadLabel = 'Hochladen';
   @Input() cancelLabel = 'Abbrechen';
+  @Input() dialogHeader = 'Datei hochladen';
 
   @Input() attachmentCategory: string;
   @Input() catalogueName: string;
@@ -22,18 +23,33 @@ export class FileUploadDialogComponent implements OnInit {
   @Output() error = new EventEmitter<HttpErrorResponse>();
 
   url: string;
-  catalogue: Catalogue;
+  // catalogue: Catalogue;
   showCatalogChooser = false;
+  showFileDialog = false;
   uploadFileName: string;
 
   constructor(private fileService: FileUploadDownloadService) { }
 
   ngOnInit() {
-    this.catalogue = new Catalogue();
-    this.catalogue.name = 'TestCatalogue';
-    this.catalogue.values.push('Test01', 'Test02');
+    // this.catalogue = new Catalogue();
+    // this.catalogue.name = 'GlassDocumentTypes';
+    // this.catalogue.values.push('Test01', 'Test02');
     this.url = this.fileService.getUploadUrl();
+    // console.log('[file-upload-dialog|ngOnInit] catalogName: ', this.catalogueName);
+    // console.log('[file-upload-dialog|ngOnInit] attachmentCategory: ', this.attachmentCategory);
   }
+
+  onDlgShow() {
+
+  }
+
+  onButtonClickShowFileDialog() {
+    // console.log('[file-upload-dialog|onButtonClickShowFileDialog] catalogName: ', this.catalogueName);
+    this.showFileDialog = !this.showFileDialog;
+  }
+
+
+// file upload component events
 
   onBeforeUpload(event: any) {
     console.log('onBeforeUpload');

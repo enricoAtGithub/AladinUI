@@ -36,6 +36,7 @@ export class CatalogueService {
   }
 
   getCatalogue(catalogueName: string): Observable<HttpResult<Catalogue>> {
+    console.log('getting catalogue: ', catalogueName);
     return this.http.post<Catalogue>(
         UrlCollection.Catalogues.GET(),
         {name: catalogueName})
