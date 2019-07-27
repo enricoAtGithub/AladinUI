@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AddEntityDialogComponent } from './components/add-entity-dialog/add-entity-dialog.component';
+import { EntityDialogComponent } from './components/entity-dialog/entity-dialog.component';
 import { EntityService } from './services/entity.service';
 import { DynamicTableComponent } from './components/dynamic-table/dynamic-table.component';
 import { ButtonModule } from 'primeng/button';
@@ -10,7 +10,7 @@ import { TableModule } from 'primeng/table';
 
 @NgModule({
   declarations: [
-    AddEntityDialogComponent,
+    EntityDialogComponent,
     DynamicTableComponent,
   ],
   imports: [
@@ -24,7 +24,7 @@ import { TableModule } from 'primeng/table';
     InputTextModule
   ],
   entryComponents: [
-    AddEntityDialogComponent
+    EntityDialogComponent
   ],
   exports: [
     DynamicTableComponent

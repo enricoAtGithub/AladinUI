@@ -3,14 +3,14 @@
     <div *ngFor="let field of configuration.fields">
       <div *ngIf="field.mandatory || field.editable" class="p-col form-group ui-g-12 ui-md-12" style="margin-bottom: 5px">
         <span class="ui-float-label">
-          <input [required]="field.mandatory" [name]="field.header" ngModel id="float-input" type="text" size="30" pInputText> 
+          <input [required]="field.mandatory" [name]="field.header" [ngModel]="update ? entity[field.header] : ''" id="float-input" type="text" size="30" pInputText> 
           <label for="float-input">{{field.header}}</label>
         </span>
       </div>
     </div>
 
     <div class="ui-g-12 ui-md-12">
-      <p-button type="submit" [disabled]="!entityForm.form.valid" icon="pi pi-user-plus" iconPos="left" label="Erstellen"></p-button>
+      <p-button type="submit" [disabled]="!entityForm.form.valid" icon="pi pi-user-plus" iconPos="left" [label]="update ? 'Speichern' : 'Erstellen'"></p-button>
     </div>
   </div>
 </form>

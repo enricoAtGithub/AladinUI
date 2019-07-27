@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddEntityDialogComponent } from './add-entity-dialog.component';
+import { EntityDialogComponent } from './entity-dialog.component';
 
 describe('AddEntityDialogComponent', () => {
-  let component: AddEntityDialogComponent;
-  let fixture: ComponentFixture<AddEntityDialogComponent>;
+  let component: EntityDialogComponent;
+  let fixture: ComponentFixture<EntityDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddEntityDialogComponent ]
+      declarations: [ EntityDialogComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddEntityDialogComponent);
+    fixture = TestBed.createComponent(EntityDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

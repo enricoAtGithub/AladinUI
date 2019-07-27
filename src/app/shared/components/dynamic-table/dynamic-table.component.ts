@@ -5,8 +5,9 @@ import { EntityData } from '../../models/entity-data';
 import { EntityService } from '../../services/entity.service';
 import { LazyLoadEvent, DialogService, ConfirmationService } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
-import { AddEntityDialogComponent } from '../add-entity-dialog/add-entity-dialog.component';
+import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
 import { Observable } from 'rxjs';
+import { GroupConfiguration } from '../../models/group-configuration';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -18,6 +19,7 @@ export class DynamicTableComponent implements OnInit {
   @Input() tableData: TableData;
 
   configuration: EntityConfiguration;
+  groupConfigurations: GroupConfiguration[];
   fields: Field[];
   loading = false;
   entityData: EntityData;
@@ -33,6 +35,15 @@ export class DynamicTableComponent implements OnInit {
     this.entityService.getEntityConfigurations().subscribe(configs => {
       this.configuration = configs[this.tableData.configName];
       this.fields = this.configuration.fields.filter(field => field.visible === true);
+      /*if (this.configuration.groups.length > 0) {
+        this.entityService.getGroupConfigurations().subscribe(allConfigs => {
+          allConfigs.forEach(config => {
+            if (this.configuration.groups.includes(config.type)) {
+              this.groupConfigurations.push(config);
+            }
+          });
+        });
+      }*/
     });
   }
 
@@ -74,8 +85,9 @@ export class DynamicTableComponent implements OnInit {
   }
 
   showAddEntityDialog() {
-    const dialogRef = this.dialogService.open(AddEntityDialogComponent, {
+    const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
+        update: false,
         config: this.configuration
       },
       header: 'Hinzufügen',
@@ -90,6 +102,21 @@ export class DynamicTableComponent implements OnInit {
   }
 
   updateEntity(data: any) {
+    const dialogRef = this.dialogService.open(EntityDialogComponent, {
+      data: {
+        update: true,
+        entity: data,
+        config: this.configuration
+      },
+      header: 'Bearbeiten',
+      width: '25%'
+    });
+
+    dialogRef.onClose.subscribe((result: Observable<Object>) => {
+      if (result !== undefined) {
+        result.subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
+      }
+    });
   }
 
   deleteEntity(data: any) {
