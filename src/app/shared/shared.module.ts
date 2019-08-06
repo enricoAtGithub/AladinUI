@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule, DropdownModule, MultiSelectModule, InputTextModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
+import { PickListModule } from 'primeng/picklist';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { TableModule } from 'primeng/table';
     TableModule,
     DropdownModule,
     MultiSelectModule,
-    InputTextModule
+    InputTextModule,
+    PickListModule,
   ],
   entryComponents: [
     EntityDialogComponent

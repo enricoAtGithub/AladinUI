@@ -1,9 +1,10 @@
 import { Field } from './field';
 
-export class EntityConfiguration {
+export class GroupConfiguration {
     type: String;
-    groups: String[];
+    holder: String;
+    member: String;
     displayName: String;
     rowsPerPage: Number;
-    fields: Field[];
+    memberFields: Field[];
 }

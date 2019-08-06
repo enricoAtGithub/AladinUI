@@ -32,9 +32,18 @@ export class UrlCollection {
 
     };
 
+    static Groups = class {
+        static ADDMEMBER(): string { return UrlCollection.GROUPS_API_BASE_PATH() + '/addmember'; }
+        static REMOVEMEMBER(): string { return UrlCollection.GROUPS_API_BASE_PATH() + '/removemember'; }
+        static CONFIGS(): string { return UrlCollection.GROUPS_API_BASE_PATH() + '/configurations'; }
+        static MEMBERS(): string { return UrlCollection.GROUPS_API_BASE_PATH() + '/members'; }
+
+    };
+
     static ADMIN_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/admin'; }
     static USER_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/user'; }
     static ENTITY_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/entities'; }
+    static GROUPS_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/groups'; }
 }
 
 

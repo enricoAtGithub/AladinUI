@@ -2,7 +2,7 @@
 <div class="ui-g-12">
   <div class="card card-w-title">
     <h1>{{tableData.tableName}}</h1>
-    <p-table #dt [columns]="fields" [value]="entityData.data" selectionMode="single" dataKey="id" [(selection)]="selectedEntry" [paginator]="true"
+    <p-table #dt [columns]="fields" [value]="entityData.data" selectionMode="single" dataKey="id" [(selection)]="selectedEntry" (onRowSelect)="rowSelect($event)" [paginator]="true"
       [(rows)]="configuration.rowsPerPage" [responsive]="true" [lazy]="true" (onLazyLoad)="loadLazy($event)" [loading]="loading" [totalRecords]="entityData.count" >
       <ng-template pTemplate="caption">
         {{configuration.displayName}}
@@ -37,5 +37,21 @@
         </tr>
       </ng-template>
     </p-table>
+  </div>
+
+  <div *ngIf="groupConfigurations && (dt.selection !== undefined && dt.selection !== null)">
+    <div *ngFor="let groupConfig of groupConfigurations; let i = index" [attr.data-index]="i" class="card card-w-title">
+      <div *ngIf="groupMembers && groupMembers[i]">
+        <h1>{{groupConfig.displayName}}</h1>
+        <p-pickList #pickListSelector [responsive]="true" [source]="nonGroupMembers[i].data" [target]="groupMembers[i].data" sourceHeader="All Entities"
+          targetHeader="Entities owned" (onMoveToTarget)="addMembers($event.items, i)" (onMoveToSource)="removeMembers($event.items, i)" [showSourceControls]="false" [showTargetControls]="false">
+          <ng-template let-item pTemplate="item">
+            <div *ngFor="let field of groupConfig.memberFields">
+              <div style="display: inline" *ngIf="field.visible">{{item[field.header]}}</div>
+            </div>
+          </ng-template>
+        </p-pickList>
+      </div>
+    </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 <form (ngSubmit)="onSubmit(entityForm)" #entityForm="ngForm" class="ui-g">
   <div class="ui-g-12 ui-md-12 form-group">
     <div *ngFor="let field of configuration.fields">
-      <div *ngIf="field.mandatory || field.editable" class="p-col form-group ui-g-12 ui-md-12" style="margin-bottom: 5px">
+      <div *ngIf="(field.mandatory && !update) || field.editable" class="p-col form-group ui-g-12 ui-md-12" style="margin-bottom: 5px">
         <span class="ui-float-label">
           <input [required]="field.mandatory" [name]="field.header" [ngModel]="update ? entity[field.header] : ''" id="float-input" type="text" size="30" pInputText> 
           <label for="float-input">{{field.header}}</label>

@@ -1,13 +1,14 @@
-import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input} from '@angular/core';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
 import { EntityData } from '../../models/entity-data';
 import { EntityService } from '../../services/entity.service';
-import { LazyLoadEvent, DialogService, ConfirmationService } from 'primeng/primeng';
+import { LazyLoadEvent, DialogService, ConfirmationService, PickList, PickListModule } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
 import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
 import { Observable } from 'rxjs';
 import { GroupConfiguration } from '../../models/group-configuration';
+import { GroupMembers } from '../../models/group-members';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -20,6 +21,12 @@ export class DynamicTableComponent implements OnInit {
 
   configuration: EntityConfiguration;
   groupConfigurations: GroupConfiguration[];
+  // Contains all entities, that the currently selected entity is member of for each group relation; implicitly ordered by index
+  groupMembers: GroupMembers[];
+  // Contains all members available for each group relation; implicitly ordered by inde
+  allGroupMembers: EntityData[] = [];
+  // Contains all members which are not held by the selected entity for each group relation; implicitly ordered by index
+  nonGroupMembers: EntityData[] = [];
   fields: Field[];
   loading = false;
   entityData: EntityData;
@@ -30,21 +37,64 @@ export class DynamicTableComponent implements OnInit {
     private dialogService: DialogService, private confirmationService: ConfirmationService) {}
 
   ngOnInit() {
+
     this.configuration = new EntityConfiguration();
     this.entityData = new EntityData();
     this.entityService.getEntityConfigurations().subscribe(configs => {
+      // Get the config according to the given name
       this.configuration = configs[this.tableData.configName];
       this.fields = this.configuration.fields.filter(field => field.visible === true);
-      /*if (this.configuration.groups.length > 0) {
-        this.entityService.getGroupConfigurations().subscribe(allConfigs => {
-          allConfigs.forEach(config => {
-            if (this.configuration.groups.includes(config.type)) {
-              this.groupConfigurations.push(config);
+
+      // Get relevant group configurations if available
+      if (this.configuration.groups !== null) {
+        this.groupConfigurations = [];
+        this.entityService.getGroupConfigurations().subscribe((allConfigs: GroupConfiguration[]) => {
+          // Go through all available groups and add the ones which are listed in the entities configuration
+          for (const key of Object.keys(allConfigs)) {
+            if (this.configuration.groups.includes(allConfigs[key].type)) {
+              this.groupConfigurations.push(allConfigs[key]);
+              // Gruppenkonfigurationen haben immernoch den package klassennamen
+              this.entityService.filter(allConfigs[key].member, 1, 100, '', '')
+                .subscribe(allMembers => this.allGroupMembers.push(allMembers));
             }
+          }
+        });
+      }
+    });
+  }
+
+  async rowSelect(event) {
+    if (!this.groupConfigurations) {
+      return;
+    }
+    this.groupMembers = [];
+    // TODO: remove this
+    this.nonGroupMembers = JSON.parse(JSON.stringify(this.allGroupMembers));
+    let i = 0;
+    this.groupConfigurations.forEach(config => {
+      this.entityService.membersGroup(config.type, this.selectedEntry['id']).subscribe(members => {
+        this.groupMembers.push(members);
+
+        // Filter out the members which the groupholder already has
+        members.data.forEach(e => {
+          this.nonGroupMembers[i].data = this.nonGroupMembers[i].data.filter((value) => {
+            if (value['id'] === e['id']) { return false; }
+            return true;
           });
         });
-      }*/
+      i++;
+      });
     });
+  }
+
+  async addMembers(items: any[], index: number) {
+    items.forEach(item =>
+      this.entityService.addMember(this.groupConfigurations[index].type, this.selectedEntry['id'], item['id']).subscribe());
+  }
+
+  async removeMembers(items: any[], index: number) {
+    items.forEach(item =>
+      this.entityService.removeMember(this.groupConfigurations[index].type, this.selectedEntry['id'], item['id']).subscribe());
   }
 
   async loadLazy(event: LazyLoadEvent) {
