@@ -41,10 +41,12 @@
 
   <div *ngIf="groupConfigurations && (dt.selection !== undefined && dt.selection !== null)">
     <div *ngFor="let groupConfig of groupConfigurations; let i = index" [attr.data-index]="i" class="card card-w-title">
+      <h1>{{groupConfig.displayName}}</h1>
+      <div *ngIf="!groupMembers || !groupMembers[i]"><p-pickList [responsive]="true" sourceHeader="Verfügbar" targetHeader="Zugewiesen" [showSourceControls]="false" [showTargetControls]="false"></p-pickList></div>
       <div *ngIf="groupMembers && groupMembers[i]">
-        <h1>{{groupConfig.displayName}}</h1>
-        <p-pickList #pickListSelector [responsive]="true" [source]="nonGroupMembers[i].data" [target]="groupMembers[i].data" sourceHeader="All Entities"
-          targetHeader="Entities owned" (onMoveToTarget)="addMembers($event.items, i)" (onMoveToSource)="removeMembers($event.items, i)" [showSourceControls]="false" [showTargetControls]="false">
+        <p-pickList #pickListSelector [responsive]="true" [source]="nonGroupMembers[i].data" [target]="groupMembers[i].data"
+          sourceHeader="Verfügbar" targetHeader="Zugewiesen" (onMoveToTarget)="addMembers($event.items, i)"
+          (onMoveToSource)="removeMembers($event.items, i)" [showSourceControls]="false" [showTargetControls]="false">
           <ng-template let-item pTemplate="item">
             <div *ngFor="let field of groupConfig.memberFields">
               <div style="display: inline" *ngIf="field.visible">{{item[field.header]}}</div>

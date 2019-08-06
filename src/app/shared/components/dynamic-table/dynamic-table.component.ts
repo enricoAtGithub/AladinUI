@@ -53,8 +53,7 @@ export class DynamicTableComponent implements OnInit {
           for (const key of Object.keys(allConfigs)) {
             if (this.configuration.groups.includes(allConfigs[key].type)) {
               this.groupConfigurations.push(allConfigs[key]);
-              // Gruppenkonfigurationen haben immernoch den package klassennamen
-              this.entityService.filter(allConfigs[key].member, 1, 100, '', '')
+              this.entityService.filter(allConfigs[key].member, 1, 2147483647, '', '')
                 .subscribe(allMembers => this.allGroupMembers.push(allMembers));
             }
           }
