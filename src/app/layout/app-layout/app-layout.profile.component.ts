@@ -78,9 +78,9 @@ export class AppProfileComponent implements OnInit {
     gravatarLink = '';
 
     constructor(
-        public app: AppLayoutComponent, 
+        public app: AppLayoutComponent,
         public authService: AuthService,
-        public router: Router, 
+        public router: Router,
         private dialogService: DialogService,
         private store$: Store<RootStoreState.State>) {}
 
@@ -127,7 +127,7 @@ export class AppProfileComponent implements OnInit {
     }
 
     logout(){
-        // authService.logout(); 
+        // authService.logout();
         this.store$.dispatch(new UserProfileActions.LogoutRequestedAction());
         this.router.navigate(['/login']);
     }

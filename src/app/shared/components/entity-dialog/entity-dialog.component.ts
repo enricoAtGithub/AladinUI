@@ -27,7 +27,7 @@ export class EntityDialogComponent implements OnInit {
 
   onSubmit(entityForm: FormGroup) {
     if (this.update) {
-      this.ref.close(this.entityService.updateEntity(this.configuration.type, entityForm.value));
+      this.ref.close(this.entityService.updateEntity(this.configuration.type, this.entity['id'], entityForm.value));
     } else {
       this.ref.close(this.entityService.createEntity(this.configuration.type, entityForm.value));
     }
