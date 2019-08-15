@@ -1,0 +1,20 @@
+<div class="card card-w-title">
+    <h1>Katalogverwaltung</h1>
+    <p-treeTable [value]="allCatalogues">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Name</th>
+                <th>Beschreibung</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr [ttRow]="rowNode">
+                <td>
+                    <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                    {{rowData.name}}
+                </td>
+                <td>{{rowData.description}}</td>
+            </tr>
+        </ng-template>
+    </p-treeTable>
+</div>

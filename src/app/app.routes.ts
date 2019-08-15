@@ -13,6 +13,7 @@ import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RoleManagementComponent } from './user/components/role-management/role-management.component';
 import { PermissionManagementComponent } from './user/components/permission-management/permission-management.component';
+import { CatalogueManagementComponent } from './user/components/catalogue-management/catalogue-management.component';
 
 export const routes: Routes = [
     // App-Layout routes
@@ -33,6 +34,7 @@ export const routes: Routes = [
           {path: 'user-management', pathMatch: 'full', component: UserManagementComponent},
           {path: 'role-management', pathMatch: 'full', component: RoleManagementComponent},
           {path: 'permission-management', pathMatch: 'full', component: PermissionManagementComponent},
+          {path: 'catalogue-management', pathMatch: 'full', component: CatalogueManagementComponent},
         ]}
       ]
     },

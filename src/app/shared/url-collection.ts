@@ -40,10 +40,21 @@ export class UrlCollection {
 
     };
 
+    static Catalogues = class {
+        static CREATE(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/create'; }
+        static GET(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/get'; }
+        static ALL(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/all'; }
+        static DELETE(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/delete'; }
+        static ADD(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/add'; }
+        static REMOVE(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/remove'; }
+
+    };
+
     static ADMIN_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/admin'; }
     static USER_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/user'; }
     static ENTITY_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/entities'; }
     static GROUPS_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/groups'; }
+    static CATALOGUES_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/catalogue'; }
 }
 
 

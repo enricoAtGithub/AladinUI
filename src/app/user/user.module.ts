@@ -5,7 +5,8 @@ import { PanelModule } from 'primeng/panel';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
-import { InputTextModule, CheckboxModule, MessageService, DialogService, ConfirmDialogModule } from 'primeng/primeng';
+import { InputTextModule, CheckboxModule, MessageService, DialogService, ConfirmDialogModule, DropdownModule,
+  TreeTableModule } from 'primeng/primeng';
 import { AddUserComponent } from './components/add-user/add-user.component';
 import { UserManagementComponent } from './components/user-management/user-management.component';
 import { AddUserDialogComponent } from './components/add-user-dialog/add-user-dialog.component';
@@ -14,6 +15,7 @@ import { UpdateUserDialogComponent } from './components/update-user-dialog/updat
 import { PermissionManagementComponent } from './components/permission-management/permission-management.component';
 import { RoleManagementComponent } from './components/role-management/role-management.component';
 import { SharedModule } from '../shared/shared.module';
+import { CatalogueManagementComponent } from './components/catalogue-management/catalogue-management.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import { SharedModule } from '../shared/shared.module';
     AddUserDialogComponent,
     UpdateUserDialogComponent,
     RoleManagementComponent,
-    PermissionManagementComponent
+    PermissionManagementComponent,
+    CatalogueManagementComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +38,9 @@ import { SharedModule } from '../shared/shared.module';
     FormsModule,
     CheckboxModule,
     ConfirmDialogModule,
-    SharedModule
+    SharedModule,
+    DropdownModule,
+    TreeTableModule,
   ],
   providers: [ MessageService, DialogService ],
   entryComponents: [

@@ -1,5 +1,5 @@
 <p-confirmDialog header="Neuer Eintrag" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
-<div class="ui-g-12">
+<div *ngIf="configuration" class="ui-g-12">
   <div class="card card-w-title">
     <h1>{{tableData.tableName}}</h1>
     <p-table #dt [columns]="fields" [value]="entityData.data" selectionMode="single" dataKey="id" [(selection)]="selectedEntry" (onRowSelect)="rowSelect($event)" [paginator]="true"

@@ -3,7 +3,7 @@ import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
 import { EntityData } from '../../models/entity-data';
 import { EntityService } from '../../services/entity.service';
-import { LazyLoadEvent, DialogService, ConfirmationService, PickList, PickListModule } from 'primeng/primeng';
+import { LazyLoadEvent, DialogService, ConfirmationService } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
 import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
 import { Observable } from 'rxjs';
@@ -43,6 +43,9 @@ export class DynamicTableComponent implements OnInit {
     this.entityService.getEntityConfigurations().subscribe(configs => {
       // Get the config according to the given name
       this.configuration = configs[this.tableData.configName];
+      if (this.configuration === undefined) {
+        return;
+      }
       this.fields = this.configuration.fields.filter(field => field.visible === true);
 
       // Get relevant group configurations if available
