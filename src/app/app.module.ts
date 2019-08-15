@@ -102,6 +102,7 @@ import { TokenInterceptor } from 'src/token.interceptor';
 import { AppConfig } from './shared/app-config';
 import { HttpHeadersService } from './shared/services/http-headers.service';
 import { SharedModule } from './shared/shared.module';
+import { HttpErrorRepsonseInterceptor } from 'src/http-error-repsonse.interceptor';
 
 export function initializeApp(appConfig: AppConfig) {
     return () => appConfig.load();
@@ -209,7 +210,8 @@ export function initializeApp(appConfig: AppConfig) {
         AppConfig,
         {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [AppConfig], multi: true },
         {provide: LocationStrategy, useClass: PathLocationStrategy},
-        { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+        {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+        {provide: HTTP_INTERCEPTORS, useClass: HttpErrorRepsonseInterceptor, multi: true},
         BreadcrumbService,
         HttpHeadersService
     ],

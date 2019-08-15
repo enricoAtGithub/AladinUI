@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule, DropdownModule, MultiSelectModule, InputTextModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { PickListModule } from 'primeng/picklist';
+import { ErrorNotificationService } from './services/error-notification.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { PickListModule } from 'primeng/picklist';
     DynamicTableComponent
   ],
   providers: [
-    EntityService
+    EntityService,
+    ErrorNotificationService
   ]
 })
 export class SharedModule { }
