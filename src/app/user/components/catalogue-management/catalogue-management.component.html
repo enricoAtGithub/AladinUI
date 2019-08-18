@@ -1,19 +1,81 @@
-<div class="card card-w-title">
-    <h1>Katalogverwaltung</h1>
-    <p-treeTable [value]="allCatalogues">
+<p-dialog header="Katalog erstellen" [(visible)]="displayCreateCatalogue" [style]="{width: '300px', height: '200px'}" [draggable]="false" [resizable]="false">
+    <form novalidate #catalogueForm="ngForm" (ngSubmit)="createCatalogue(catalogueForm)">
+        <div class="ui-g form-group">
+            <div class="ui-g-12 ui-md-12">
+                <div class="ui-g-12 ui-md-12">
+                    <span class="ui-float-label">
+                        <input name="name" ngModel required id="float-input" type="text" pInputText> 
+                        <label for="float-input">Name</label>
+                    </span>
+                </div>
+                <div class="ui-g-12 ui-md-12">
+                    <span class="ui-float-label">
+                        <input name="description" ngModel id="float-input" type="text" pInputText> 
+                        <label for="float-input">Beschreibung</label>
+                    </span>
+                </div>
+
+                <div class="ui-g-12 ui-md-12">
+                    <p-button type="submit" [disabled]="!catalogueForm.valid"  icon="pi pi-plus" iconPos="left" label="Katalog erstellen"></p-button>
+                </div>
+            </div>
+        </div>
+    </form>
+</p-dialog>
+
+<p-dialog header="Eintrag erstellen" [(visible)]="displayAddEntry" [style]="{width: '300px', height: '200px'}" [draggable]="false" [resizable]="false">
+        <form novalidate #entryForm="ngForm" (ngSubmit)="addEntry(entryForm)">
+            <div class="ui-g form-group">
+                <div class="ui-g-12 ui-md-12">
+                    <div class="ui-g-12 ui-md-12">
+                        <span class="ui-float-label">
+                            <input name="name" ngModel required id="float-input" type="text" pInputText> 
+                            <label for="float-input">Name</label>
+                        </span>
+                    </div>
+                    <div class="ui-g-12 ui-md-12">
+                        <span class="ui-float-label">
+                            <input name="description" ngModel id="float-input" type="text" pInputText> 
+                            <label for="float-input">Beschreibung</label>
+                        </span>
+                    </div>
+    
+                    <div class="ui-g-12 ui-md-12">
+                        <p-button type="submit" [disabled]="!entryForm.valid"  icon="pi pi-plus" iconPos="left" label="Eintrag erstellen"></p-button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </p-dialog>
+    
+
+<div class="card">
+    <p-treeTable [value]="allCatalogues" [autoLayout]="true">
+        <ng-template pTemplate="caption">
+            Katalogverwaltung
+            <button pButton (click)="showCreateCatalogueDialog()" icon="pi pi-plus" class="ui-button-success" style="float: right; margin-top: -5px; margin-right: 13px"></button>
+        </ng-template>
         <ng-template pTemplate="header">
             <tr>
                 <th>Name</th>
                 <th>Beschreibung</th>
+                <th style="width: 90px"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-            <tr [ttRow]="rowNode">
+            <tr>
                 <td>
                     <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                     {{rowData.name}}
                 </td>
                 <td>{{rowData.description}}</td>
+                <td *ngIf="rowNode.node.children" style="text-align: center">
+                    <button pButton (click)="showAddEntryDialog(rowNode.node.data.id)" style="margin-right: 5px;" icon="pi pi-plus" class="ui-button-success"></button>
+                    <button pButton (click)="deleteCatalogue(rowNode.node.data.id)" style="margin-left: 5px;" icon="pi pi-trash" class="ui-button-info"></button>
+                </td>
+                <td *ngIf="!rowNode.node.children" style="text-align: center">
+                    <button pButton (click)="deleteEntry(rowNode.node.parent.data.id, rowNode.node.data.id)" icon="pi pi-trash" class="ui-button-info"></button>
+                </td>
             </tr>
         </ng-template>
     </p-treeTable>

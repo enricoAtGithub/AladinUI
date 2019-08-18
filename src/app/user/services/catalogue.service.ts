@@ -16,23 +16,24 @@ export class CatalogueService {
     return this.httpClient.get<any>(UrlCollection.Catalogues.ALL()).toPromise().then(res => <TreeNode[]>res.data);
   }
 
-  createCatalogue(name: String): Observable<Catalogue> {
-    return this.httpClient.post<Catalogue>(UrlCollection.Catalogues.CREATE(), JSON.stringify({name: name}));
+  createCatalogue(name: string, description: string): Observable<Catalogue> {
+    return this.httpClient.post<Catalogue>(UrlCollection.Catalogues.CREATE(), JSON.stringify({name: name, description: description}));
   }
 
-  getCatalogue(name: String): Observable<Catalogue> {
+  getCatalogue(name: string): Observable<Catalogue> {
     return this.httpClient.post<Catalogue>(UrlCollection.Catalogues.GET(), JSON.stringify({name: name}));
   }
 
-  deleteCatalogue(name: String): Observable<null> {
-    return this.httpClient.post<null>(UrlCollection.Catalogues.DELETE(), JSON.stringify({name: name}));
+  deleteCatalogue(catalogueId: string) {
+    return this.httpClient.get(UrlCollection.Catalogues.DELETE() + '/' + catalogueId);
   }
 
-  addEntry(name: String, values: any[]): Observable<null> {
-    return this.httpClient.post<null>(UrlCollection.Catalogues.ADD(), JSON.stringify({name: name, values: values}));
+  addEntry(catalogueId: string, name: string, description: string): Observable<any> {
+    return this.httpClient.post<any>(UrlCollection.Catalogues.ADDENTRY() + '/' + catalogueId,
+     JSON.stringify({name: name, description: description}));
   }
 
-  removeEntry(name: String, values: any[]): Observable<Catalogue[]> {
-    return this.httpClient.post<null>(UrlCollection.Catalogues.REMOVE(), JSON.stringify({name: name, values: values}));
+  removeEntry(entryId: string) {
+    return this.httpClient.get(UrlCollection.Catalogues.REMOVEENTRY() + '/' + entryId);
   }
 }

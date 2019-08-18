@@ -45,8 +45,8 @@ export class UrlCollection {
         static GET(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/get'; }
         static ALL(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/all'; }
         static DELETE(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/delete'; }
-        static ADD(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/add'; }
-        static REMOVE(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/remove'; }
+        static ADDENTRY(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/addEntry'; }
+        static REMOVEENTRY(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/removeEntry'; }
 
     };
 

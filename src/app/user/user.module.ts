@@ -6,7 +6,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputTextModule, CheckboxModule, MessageService, DialogService, ConfirmDialogModule, DropdownModule,
-  TreeTableModule } from 'primeng/primeng';
+  TreeTableModule, DialogModule } from 'primeng/primeng';
 import { AddUserComponent } from './components/add-user/add-user.component';
 import { UserManagementComponent } from './components/user-management/user-management.component';
 import { AddUserDialogComponent } from './components/add-user-dialog/add-user-dialog.component';
@@ -41,6 +41,7 @@ import { CatalogueManagementComponent } from './components/catalogue-management/
     SharedModule,
     DropdownModule,
     TreeTableModule,
+    DialogModule,
   ],
   providers: [ MessageService, DialogService ],
   entryComponents: [
