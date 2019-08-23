@@ -37,24 +37,37 @@ export class UrlCollection {
         static REMOVEMEMBER(): string { return UrlCollection.GROUPS_API_BASE_PATH() + '/removemember'; }
         static CONFIGS(): string { return UrlCollection.GROUPS_API_BASE_PATH() + '/configurations'; }
         static MEMBERS(): string { return UrlCollection.GROUPS_API_BASE_PATH() + '/members'; }
-
     };
 
     static Catalogues = class {
-        static CREATE(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/create'; }
-        static GET(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/get'; }
-        static ALL(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/all'; }
-        static DELETE(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/delete'; }
-        static ADDENTRY(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/addEntry'; }
-        static REMOVEENTRY(): string { return UrlCollection.CATALOGUES_API_BASE_PATH() + '/removeEntry'; }
+        static CREATE(): string { return UrlCollection.CATALOGUE_API_BASE_PATH() + '/create'; }
+        static GET(): string { return UrlCollection.CATALOGUE_API_BASE_PATH() + '/get'; }
+        static ALL(): string { return UrlCollection.CATALOGUE_API_BASE_PATH() + '/all'; }
+        static DELETE(): string { return UrlCollection.CATALOGUE_API_BASE_PATH() + '/delete'; }
+        static ADDENTRY(): string { return UrlCollection.CATALOGUE_API_BASE_PATH() + '/addEntry'; }
+        static REMOVEENTRY(): string { return UrlCollection.CATALOGUE_API_BASE_PATH() + '/removeEntry'; }
 
+    };
+
+    static Attachments = class {
+        static attach = (): string => UrlCollection.basePathAttachment() + '/attach';
+        static all = (): string => UrlCollection.basePathAttachment() + '/all';
+    };
+
+    static Files = class {
+        static download = (id: number) => UrlCollection.FILE_API_BASE_PATH() + '/download/' + id;
+        static upload = () => UrlCollection.FILE_API_BASE_PATH() + '/upload/';
     };
 
     static ADMIN_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/admin'; }
     static USER_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/user'; }
     static ENTITY_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/entities'; }
+    static CATALOGUE_API_BASE_PATH(): string {return AppConfig.getBaseUrl() + '/catalogue'; }
+    static FILE_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/file'; }
     static GROUPS_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/groups'; }
-    static CATALOGUES_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/catalogue'; }
+    static API_BASE_PATH(): string { return AppConfig.getBaseUrl(); }
+
+    static basePathAttachment = (): string => AppConfig.getBaseUrl() + '/attachment';
 }
 
 

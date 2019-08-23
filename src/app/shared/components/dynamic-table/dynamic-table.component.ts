@@ -130,10 +130,32 @@ export class DynamicTableComponent implements OnInit {
       page = event.first / <number>this.configuration.rowsPerPage + 1;
     }
 
-    await this.entityService.filter(this.tableData.configName, page, 10, qualifier, sorting)
-      .subscribe(data => this.entityData = data);
+    if (this.tableData.explicitUrl === undefined) {
+      await this.entityService.filter(this.tableData.configName, page, 10, qualifier, sorting)
+        .subscribe(data => this.entityData = data);
+    } else {
+      await this.entityService.getEntityDataFromUrl(this.tableData.explicitUrl)
+        .subscribe(data => this.processData(data));
+    }
 
     this.loading = false;
+  }
+
+  processData(data: EntityData) {
+    this.configuration.fields.forEach(field => {
+      if (field.type === 'Date') {
+        data.data.forEach((element, i) => data.data[i][<string>field.header] = this.processDate(element[<string>field.header]));
+      }
+    });
+    console.log(data.data);
+
+    this.entityData = data;
+  }
+
+  processDate(timestamp: string): string {
+    const date = new Date(timestamp);
+    return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear() + ' - ' +
+      date.getHours() + ':' + date.getMinutes();
   }
 
   showAddEntityDialog() {
