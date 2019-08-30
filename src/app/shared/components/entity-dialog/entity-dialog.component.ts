@@ -26,6 +26,20 @@ export class EntityDialogComponent implements OnInit {
   }
 
   onSubmit(entityForm: FormGroup) {
+    this.configuration.fields.forEach(field => {
+      if (field.type === 'Date') {
+        const dateString: string = entityForm.value[<string>field.header];
+        let date: Date = new Date();
+        if (/\./gm.test(dateString)) {
+          const dS: number[] = <number[]><unknown[]>dateString.match(/\d+/gm);
+          date = new Date(dS[2], dS[1], dS[0], dS[3], dS[4]);
+        } else {
+          date = new Date(date);
+        }
+        entityForm.value[<string>field.header] = date.toISOString();
+      }
+    });
+
     if (this.update) {
       this.ref.close(this.entityService.updateEntity(this.configuration.type, this.entity['id'], entityForm.value));
     } else {

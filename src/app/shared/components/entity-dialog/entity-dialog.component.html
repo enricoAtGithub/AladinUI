@@ -2,9 +2,15 @@
   <div class="ui-g-12 ui-md-12 form-group">
     <div *ngFor="let field of configuration.fields">
       <div *ngIf="(field.mandatory && !update) || field.editable" class="p-col form-group ui-g-12 ui-md-12" style="margin-bottom: 5px">
-        <span class="ui-float-label">
+        <span *ngIf="field.type === 'String'" class="ui-float-label">
           <input [required]="field.mandatory" [name]="field.header" [ngModel]="update ? entity[field.header] : ''" id="float-input" type="text" style="width: 100%" pInputText> 
           <label for="float-input">{{field.header}}</label>
+        </span>
+        <span *ngIf="field.type === 'boolean'">
+          <p-checkbox [required]="field.mandatory" [name]="field.header" [binary]="true" [label]="field.header" [ngModel]="update ? entity[field.header] === '✓' : false"></p-checkbox>
+        </span>
+        <span *ngIf="field.type === 'Date'">
+          <p-calendar [required]="field.mandatory" [name]="field.header" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [ngModel]="update ? entity[field.header] : undefined"></p-calendar>
         </span>
       </div>
     </div>

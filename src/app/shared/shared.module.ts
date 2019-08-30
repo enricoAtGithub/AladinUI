@@ -5,7 +5,7 @@ import { EntityService } from './services/entity.service';
 import { DynamicTableComponent } from './components/dynamic-table/dynamic-table.component';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
-import { ConfirmDialogModule, DropdownModule, MultiSelectModule, InputTextModule } from 'primeng/primeng';
+import { ConfirmDialogModule, DropdownModule, MultiSelectModule, InputTextModule, CheckboxModule, CalendarModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { PickListModule } from 'primeng/picklist';
 import { ErrorNotificationService } from './services/error-notification.service';
@@ -25,6 +25,8 @@ import { ErrorNotificationService } from './services/error-notification.service'
     MultiSelectModule,
     InputTextModule,
     PickListModule,
+    CheckboxModule,
+    CalendarModule,
   ],
   entryComponents: [
     EntityDialogComponent

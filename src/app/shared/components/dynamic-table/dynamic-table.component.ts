@@ -132,7 +132,7 @@ export class DynamicTableComponent implements OnInit {
 
     if (this.tableData.explicitUrl === undefined) {
       await this.entityService.filter(this.tableData.configName, page, 10, qualifier, sorting)
-        .subscribe(data => this.entityData = data);
+        .subscribe(data => this.processData(data));
     } else {
       await this.entityService.getEntityDataFromUrl(this.tableData.explicitUrl)
         .subscribe(data => this.processData(data));
@@ -143,19 +143,30 @@ export class DynamicTableComponent implements OnInit {
 
   processData(data: EntityData) {
     this.configuration.fields.forEach(field => {
-      if (field.type === 'Date') {
-        data.data.forEach((element, i) => data.data[i][<string>field.header] = this.processDate(element[<string>field.header]));
+      switch (field.type) {
+        case 'Date':
+          data.data.forEach((element, i) => data.data[i][<string>field.header] = this.processDate(element[<string>field.header]));
+          break;
+        case 'boolean':
+          data.data.forEach((element, i) => data.data[i][<string>field.header] = element[<string>field.header] ? '✓' : '🞩');
+          break;
+        default:
+          break;
       }
     });
-    console.log(data.data);
 
     this.entityData = data;
   }
 
+  // returns number as string with leading zero
+  lZ(num: Number): string {
+    return ('0' + num).slice(-2);
+  }
+
   processDate(timestamp: string): string {
     const date = new Date(timestamp);
-    return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear() + ' - ' +
-      date.getHours() + ':' + date.getMinutes();
+    return this.lZ(date.getDate()) + '.' + this.lZ(date.getMonth() + 1) + '.' + date.getFullYear() + ' ' +
+      this.lZ(date.getHours()) + ':' + this.lZ(date.getMinutes());
   }
 
   showAddEntityDialog() {
