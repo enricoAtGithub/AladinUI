@@ -33,16 +33,20 @@ export class CatalogueManagementComponent implements OnInit {
 
   createCatalogue(form: NgForm) {
     this.catalogueService.createCatalogue(form.value['name'], form.value['description']).subscribe((cat: Catalogue) => {
+      this.displayCreateCatalogue = false;
       this.allCatalogues.push(<TreeNode>JSON.parse('{"data": ' + JSON.stringify(cat) + ' ,"children": []}'));
       this.allCatalogues = [...this.allCatalogues];
+      form.resetForm();
     });
   }
 
   addEntry(form: NgForm) {
     this.catalogueService.addEntry(this.catalogueToAddTo, form.value['name'], form.value['description']).subscribe((entry) => {
+      this.displayAddEntry = false;
       this.allCatalogues.find((node) => node.data.id === this.catalogueToAddTo).children.push(
         <TreeNode>JSON.parse('{"data": ' + JSON.stringify(entry) + '}'));
       this.allCatalogues = [...this.allCatalogues];
+      form.resetForm();
     });
   }
 
