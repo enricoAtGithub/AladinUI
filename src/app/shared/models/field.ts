@@ -1,19 +1,20 @@
 export class Field {
-    field: String;
+    field: string;
     formula: any;
     visible: boolean;
     editable: boolean;
     mandatory: boolean;
-    defaultValue: String;
-    type: String;
+    defaultValue: string;
+    type: string;
+    defaultCatalogue: string;
     sortable: boolean;
-    filterType: String;
-    width: String;
+    filterType: string;
+    width: string;
     options: Option[];
-    header: String;
+    header: string;
 }
 
 class Option {
-    label: String;
-    value: String;
+    label: string;
+    value: string;
 }

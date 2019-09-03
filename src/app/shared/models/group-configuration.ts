@@ -1,10 +1,10 @@
 import { Field } from './field';
 
 export class GroupConfiguration {
-    type: String;
-    holder: String;
-    member: String;
-    displayName: String;
-    rowsPerPage: Number;
+    type: string;
+    holder: string;
+    member: string;
+    displayName: string;
+    rowsPerPage: number;
     memberFields: Field[];
 }

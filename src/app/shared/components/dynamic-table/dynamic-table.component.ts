@@ -9,6 +9,11 @@ import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component'
 import { Observable } from 'rxjs';
 import { GroupConfiguration } from '../../models/group-configuration';
 import { GroupMembers } from '../../models/group-members';
+import { Catalogue } from '../../models/catalogue';
+import { CatalogueService } from 'src/app/user/services/catalogue.service';
+import { ErrorNotificationService } from '../../services/error-notification.service';
+import { ErrorMessage } from '../../models/error-message';
+import { delay } from 'q';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -20,13 +25,17 @@ export class DynamicTableComponent implements OnInit {
   @Input() tableData: TableData;
 
   configuration: EntityConfiguration;
-  groupConfigurations: GroupConfiguration[];
+  groupConfigsArray: GroupConfiguration[] = [];
+  groupConfigurations: Map<string, GroupConfiguration> = new Map();
   // Contains all entities, that the currently selected entity is member of for each group relation; implicitly ordered by index
-  groupMembers: GroupMembers[];
+  groupMembers: Map<string, GroupMembers> = new Map();
   // Contains all members available for each group relation; implicitly ordered by inde
-  allGroupMembers: EntityData[] = [];
+  allGroupMembers: Map<string, EntityData> = new Map();
   // Contains all members which are not held by the selected entity for each group relation; implicitly ordered by index
-  nonGroupMembers: EntityData[] = [];
+  nonGroupMembers: Map<string, EntityData> = new Map();
+  // All catalogues which are relevant to the entity configuration
+  catalogues: Map<string, Catalogue> = new Map();
+  catalogueCount = 0;
   fields: Field[];
   loading = false;
   entityData: EntityData;
@@ -34,34 +43,42 @@ export class DynamicTableComponent implements OnInit {
   lastLazyLoadEvent: LazyLoadEvent;
 
   constructor(private entityService: EntityService, private cd: ChangeDetectorRef,
-    private dialogService: DialogService, private confirmationService: ConfirmationService) {}
+    private dialogService: DialogService, private confirmationService: ConfirmationService,
+    private catalogueService: CatalogueService, private errorNotificationService: ErrorNotificationService) {}
 
   ngOnInit() {
-
     this.configuration = new EntityConfiguration();
     this.entityData = new EntityData();
-    this.entityService.getEntityConfigurations().subscribe(configs => {
+    this.entityService.getEntityConfigurations().subscribe(async configs => {
       // Get the config according to the given name
-      this.configuration = configs[this.tableData.configName];
-      if (this.configuration === undefined) {
+      const config = configs[this.tableData.configName];
+      if (config === undefined) {
         return;
       }
-      this.fields = this.configuration.fields.filter(field => field.visible === true);
+
+      const fields = config.fields.filter(field => field.visible === true);
+
+      fields.forEach(field => {
+        if (field.type === 'CatalogueEntry') {
+          this.catalogueCount++;
+          this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(cat => this.catalogues.set(field.defaultCatalogue, cat));
+        }
+      });
 
       // Get relevant group configurations if available
-      if (this.configuration.groups !== null) {
-        this.groupConfigurations = [];
+      if (config.groups !== null) {
         this.entityService.getGroupConfigurations().subscribe((allConfigs: GroupConfiguration[]) => {
-          // Go through all available groups and add the ones which are listed in the entities configuration
-          for (const key of Object.keys(allConfigs)) {
-            if (this.configuration.groups.includes(allConfigs[key].type)) {
-              this.groupConfigurations.push(allConfigs[key]);
-              this.entityService.filter(allConfigs[key].member, 1, 2147483647, '', '')
-                .subscribe(allMembers => this.allGroupMembers.push(allMembers));
-            }
+          for (const group of config.groups) {
+            this.groupConfigurations.set(group, allConfigs[group]);
+            this.groupConfigsArray.push(allConfigs[group]);
+            this.entityService.filter(allConfigs[group].member, 1, 2147483647, '', '')
+              .subscribe(allMembers => this.allGroupMembers.set(group, allMembers));
           }
         });
       }
+
+      this.configuration = config;
+      this.fields = config.fields.filter(field => field.visible === true);
     });
   }
 
@@ -69,37 +86,52 @@ export class DynamicTableComponent implements OnInit {
     if (!this.groupConfigurations) {
       return;
     }
-    this.groupMembers = [];
-    // TODO: remove this
-    this.nonGroupMembers = JSON.parse(JSON.stringify(this.allGroupMembers));
-    let i = 0;
+    this.groupMembers.clear();
+    this.allGroupMembers.forEach((value, key) => this.nonGroupMembers.set(key, {...value}));
+
     this.groupConfigurations.forEach(config => {
       this.entityService.membersGroup(config.type, this.selectedEntry['id']).subscribe(members => {
-        this.groupMembers.push(members);
+        this.groupMembers.set(config.type, members);
 
         // Filter out the members which the groupholder already has
         members.data.forEach(e => {
-          this.nonGroupMembers[i].data = this.nonGroupMembers[i].data.filter((value) => {
+          this.nonGroupMembers.get(config.type).data = this.nonGroupMembers.get(config.type).data.filter((value) => {
             if (value['id'] === e['id']) { return false; }
             return true;
           });
         });
-      i++;
       });
     });
   }
 
-  async addMembers(items: any[], index: number) {
+  async addMembers(items: any[], groupTypeName: string) {
     items.forEach(item =>
-      this.entityService.addMember(this.groupConfigurations[index].type, this.selectedEntry['id'], item['id']).subscribe());
+      this.entityService.addMember(this.groupConfigurations.get(groupTypeName).type, this.selectedEntry['id'], item['id']).subscribe());
   }
 
-  async removeMembers(items: any[], index: number) {
+  async removeMembers(items: any[], groupTypeName: string) {
     items.forEach(item =>
-      this.entityService.removeMember(this.groupConfigurations[index].type, this.selectedEntry['id'], item['id']).subscribe());
+      this.entityService.removeMember(this.groupConfigurations.get(groupTypeName).type, this.selectedEntry['id'], item['id']).subscribe());
+  }
+
+  async refreshTableContents() {
+    this.loadLazy(this.lastLazyLoadEvent);
   }
 
   async loadLazy(event: LazyLoadEvent) {
+    // Check if the configuration data requested in ngOnInit has already been reveived
+    let timeout = 5000;
+    while ((!this.catalogues || this.catalogueCount !== this.catalogues.size || !this.fields) && timeout !== 0) {
+      await delay(null, 50).then();
+      timeout -= 50;
+    }
+
+    if (timeout === 0) {
+      this.errorNotificationService.addErrorNotification(
+        new ErrorMessage('error', 'Connection timeout', 'Unable to receive configuration data from the server'));
+      return;
+    }
+
     this.lastLazyLoadEvent = event;
     this.loading = true;
     this.cd.detectChanges();
@@ -107,21 +139,19 @@ export class DynamicTableComponent implements OnInit {
     let sorting = '';
     let qualifier = '';
 
-    if (this.fields) {
-      this.fields.forEach(field => {
-        if (event.filters[<string>field.field]) {
-          qualifier += 'LIKE(\'' + field.header + '\',\'%' +  event.filters[<string>field.field].value + '%\'),';
-        }
-      });
+    this.fields.forEach(field => {
+      if (event.filters[field.field]) {
+        qualifier += 'LIKE(\'' + field.header + '\',\'%' +  event.filters[field.field].value + '%\'),';
+      }
+    });
 
-      const sort = this.fields.find(field => {if (field.field === event.sortField) {return true; }});
+    const sort = this.fields.find(field => {if (field.field === event.sortField) {return true; }});
 
-      if (sort) {
-        if (event.sortOrder === 1) {
-          sorting += 'ASC(\'' + sort.header + '\')';
-        } else {
-          sorting += 'DESC(\'' + sort.header + '\')';
-        }
+    if (sort) {
+      if (event.sortOrder === 1) {
+        sorting += 'ASC(\'' + sort.header + '\')';
+      } else {
+        sorting += 'DESC(\'' + sort.header + '\')';
       }
     }
 
@@ -131,31 +161,23 @@ export class DynamicTableComponent implements OnInit {
     }
 
     if (this.tableData.explicitUrl === undefined) {
-      await this.entityService.filter(this.tableData.configName, page, 10, qualifier, sorting)
-        .subscribe(data => this.processData(data));
+      this.entityService.filter(this.tableData.configName, page, 10, qualifier, sorting)
+        .subscribe(data => { this.entityData = data; this.loading = false; });
     } else {
-      await this.entityService.getEntityDataFromUrl(this.tableData.explicitUrl)
-        .subscribe(data => this.processData(data));
+      this.entityService.getEntityDataFromUrl(this.tableData.explicitUrl)
+        .subscribe(data => { this.entityData = data; this.loading = false; });
     }
-
-    this.loading = false;
   }
 
-  processData(data: EntityData) {
-    this.configuration.fields.forEach(field => {
-      switch (field.type) {
-        case 'Date':
-          data.data.forEach((element, i) => data.data[i][<string>field.header] = this.processDate(element[<string>field.header]));
-          break;
-        case 'boolean':
-          data.data.forEach((element, i) => data.data[i][<string>field.header] = element[<string>field.header] ? '✓' : '🞩');
-          break;
-        default:
-          break;
-      }
-    });
-
-    this.entityData = data;
+  processData(input: any, field: Field): string {
+    switch (field.type) {
+      case 'Date':
+        return this.processDate(new Date(input));
+      case 'boolean':
+        return input ? '✓' : '🞩';
+      default:
+        return input;
+    }
   }
 
   // returns number as string with leading zero
@@ -163,8 +185,7 @@ export class DynamicTableComponent implements OnInit {
     return ('0' + num).slice(-2);
   }
 
-  processDate(timestamp: string): string {
-    const date = new Date(timestamp);
+  processDate(date: Date): string {
     return this.lZ(date.getDate()) + '.' + this.lZ(date.getMonth() + 1) + '.' + date.getFullYear() + ' ' +
       this.lZ(date.getHours()) + ':' + this.lZ(date.getMinutes());
   }

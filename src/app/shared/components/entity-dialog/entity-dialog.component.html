@@ -10,7 +10,11 @@
           <p-checkbox [required]="field.mandatory" [name]="field.header" [binary]="true" [label]="field.header" [ngModel]="update ? entity[field.header] === '✓' : false"></p-checkbox>
         </span>
         <span *ngIf="field.type === 'Date'">
+          {{field.header}}
           <p-calendar [required]="field.mandatory" [name]="field.header" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [ngModel]="update ? entity[field.header] : undefined"></p-calendar>
+        </span>
+        <span *ngIf="field.type === 'CatalogueEntry'">
+          <p-dropdown [required]="field.mandatory" [name]="field.header" [options]="catalogueOptions.get(field.defaultCatalogue)" optionLabel="name" [ngModel]="update ? entity[field.header] : undefined"></p-dropdown>
         </span>
       </div>
     </div>

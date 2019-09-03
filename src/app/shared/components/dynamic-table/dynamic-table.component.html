@@ -27,7 +27,7 @@
         <tr [pSelectableRow]="rowData">
           <td *ngFor="let col of columns">
             <span class="ui-column-title">{{col.header}}</span>
-              {{rowData[col.header]}}
+              {{processData(rowData[col.header], col)}}
           </td>
           <td *ngIf="tableData.showCrudButtons !== false" style="text-align: center">
             <button  pButton type="button" icon="pi pi-pencil" class="ui-button-info" 
@@ -41,13 +41,16 @@
   </div>
 
   <div *ngIf="groupConfigurations && (dt.selection !== undefined && dt.selection !== null)">
-    <div *ngFor="let groupConfig of groupConfigurations; let i = index" [attr.data-index]="i" class="card card-w-title">
+    <div *ngFor="let groupConfig of groupConfigsArray" class="card card-w-title">
       <h1>{{groupConfig.displayName}}</h1>
-      <div *ngIf="!groupMembers || !groupMembers[i]"><p-pickList [responsive]="true" sourceHeader="Verfügbar" targetHeader="Zugewiesen" [showSourceControls]="false" [showTargetControls]="false"></p-pickList></div>
-      <div *ngIf="groupMembers && groupMembers[i]">
-        <p-pickList #pickListSelector [responsive]="true" [source]="nonGroupMembers[i].data" [target]="groupMembers[i].data"
-          sourceHeader="Verfügbar" targetHeader="Zugewiesen" (onMoveToTarget)="addMembers($event.items, i)"
-          (onMoveToSource)="removeMembers($event.items, i)" [showSourceControls]="false" [showTargetControls]="false">
+      <div *ngIf="!groupMembers || !groupMembers.get(groupConfig.type)">
+        <p-pickList [responsive]="true" sourceHeader="Verfügbar" targetHeader="Zugewiesen" [showSourceControls]="false" [showTargetControls]="false"></p-pickList>
+      </div>
+      <div *ngIf="groupMembers && groupMembers.get(groupConfig.type)">
+        <p-pickList #pickListSelector [responsive]="true" [source]="nonGroupMembers.get(groupConfig.type).data"
+          [target]="groupMembers.get(groupConfig.type).data" sourceHeader="Verfügbar" targetHeader="Zugewiesen"
+          (onMoveToTarget)="addMembers($event.items, groupConfig.type)" (onMoveToSource)="removeMembers($event.items, groupConfig.type)"
+          [showSourceControls]="false" [showTargetControls]="false">
           <ng-template let-item pTemplate="item">
             <div *ngFor="let field of groupConfig.memberFields">
               <div style="display: inline" *ngIf="field.visible">{{item[field.header]}}</div>
