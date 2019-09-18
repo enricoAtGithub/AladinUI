@@ -35,7 +35,7 @@
       <ng-template pTemplate="body" let-rowData let-columns="columns">
         <!-- Processing and displaying the data -->
         <tr [pSelectableRow]="rowData">
-          <td *ngFor="let col of columns">
+          <td *ngFor="let col of columns" [style.width]="col.width">
             <span class="ui-column-title">{{col.header}}</span>
               {{processData(rowData[col.header], col)}}
           </td>
