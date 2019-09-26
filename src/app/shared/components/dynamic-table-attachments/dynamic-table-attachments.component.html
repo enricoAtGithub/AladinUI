@@ -1,0 +1,38 @@
+<div *ngIf="entryId !== undefined && entryId !== null" class="card">
+  <p-tabView>
+      <!-- Display group relations if available -->
+      <div *ngIf="groupConfigurations">
+          <p-tabPanel *ngFor="let groupConfig of groupConfigsArray; let i = index" [header]="groupConfig.displayName" [selected]="i==0">
+            <!-- Dummy pickList to prevent flickering when group data is changing -->
+            <div *ngIf="!groupMembers || !groupMembers.get(groupConfig.type)">
+              <p-pickList [responsive]="true" sourceHeader="Verfügbar" targetHeader="Zugewiesen" [showSourceControls]="false" [showTargetControls]="false"></p-pickList>
+            </div>
+            <!-- Actual picklist -->
+            <div *ngIf="groupMembers && groupMembers.get(groupConfig.type)">
+              <p-pickList #pickListSelector [responsive]="true" [source]="nonGroupMembers.get(groupConfig.type).data"
+                [target]="groupMembers.get(groupConfig.type).data" sourceHeader="Verfügbar" targetHeader="Zugewiesen"
+                (onMoveToTarget)="addMembers($event.items, groupConfig.type)" (onMoveToSource)="removeMembers($event.items, groupConfig.type)"
+                [showSourceControls]="false" [showTargetControls]="false">
+                <ng-template let-item pTemplate="item">
+                  <div *ngFor="let field of groupConfig.memberFields">
+                    <div style="display: inline" *ngIf="field.visible">{{item[field.header]}}</div>
+                  </div>
+                </ng-template>
+              </p-pickList>
+            </div>
+          </p-tabPanel>
+        </div>
+
+        <div *ngIf="this.configuration.components?.includes('Notes')">
+          <p-tabPanel [header]="Notizen">
+            Notes
+          </p-tabPanel>
+        </div>
+
+        <div *ngIf="this.configuration.components?.includes('LogEntries')">
+          <p-tabPanel [header]="Logbuch">
+            <app-dynamic-table *ngIf="logTableData" [tableData]="logTableData"></app-dynamic-table>
+          </p-tabPanel>
+        </div>
+  </p-tabView>
+</div>

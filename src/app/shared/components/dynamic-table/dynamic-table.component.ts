@@ -6,9 +6,7 @@ import { EntityService } from '../../services/entity.service';
 import { LazyLoadEvent, DialogService, ConfirmationService } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
 import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
-import { Observable } from 'rxjs';
-import { GroupConfiguration } from '../../models/group-configuration';
-import { GroupMembers } from '../../models/group-members';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { Catalogue } from '../../models/catalogue';
 import { CatalogueService } from 'src/app/user/services/catalogue.service';
 import { ErrorNotificationService } from '../../services/error-notification.service';
@@ -25,21 +23,12 @@ export class DynamicTableComponent implements OnInit {
   @Input() tableData: TableData;
 
   configuration: EntityConfiguration;
-  groupConfigsArray: GroupConfiguration[] = [];
-  groupConfigurations: Map<string, GroupConfiguration> = new Map();
-  // Contains all entities, that the currently selected entity is member of for each group relation; implicitly ordered by index
-  groupMembers: Map<string, GroupMembers> = new Map();
-  // Contains all members available for each group relation; implicitly ordered by inde
-  allGroupMembers: Map<string, EntityData> = new Map();
-  // Contains all members which are not held by the selected entity for each group relation; implicitly ordered by index
-  nonGroupMembers: Map<string, EntityData> = new Map();
-  // All catalogues which are relevant to the entity configuration
-  catalogues: Map<string, Catalogue> = new Map();
-  catalogueCount = 0;
+  $configuration: Subject<EntityConfiguration> = new Subject();
   fields: Field[];
   loading = false;
   entityData: EntityData;
   selectedEntry: any;
+  $entryId: Subject<number> = new Subject();
   lastLazyLoadEvent: LazyLoadEvent;
 
   constructor(private entityService: EntityService, private cd: ChangeDetectorRef,
@@ -51,67 +40,18 @@ export class DynamicTableComponent implements OnInit {
     this.entityData = new EntityData();
     this.entityService.getEntityConfigurations().subscribe(async configs => {
       // Get the config according to the given name
-      const config = configs[this.tableData.configName];
-      if (config === undefined) {
+      this.configuration = configs[this.tableData.configName];
+      this.$configuration.next(this.configuration);
+      if (this.configuration === undefined) {
         return;
       }
 
-      const fields = config.fields.filter(field => field.visible === true);
-
-      fields.forEach(field => {
-        if (field.type === 'CatalogueEntry') {
-          this.catalogueCount++;
-          this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(cat => this.catalogues.set(field.defaultCatalogue, cat));
-        }
-      });
-
-      // Get relevant group configurations if available
-      if (config.groups !== null) {
-        this.entityService.getGroupConfigurations().subscribe((allConfigs: GroupConfiguration[]) => {
-          for (const group of config.groups) {
-            this.groupConfigurations.set(group, allConfigs[group]);
-            this.groupConfigsArray.push(allConfigs[group]);
-            this.entityService.filter(allConfigs[group].member, 1, 2147483647, '', '')
-              .subscribe(allMembers => this.allGroupMembers.set(group, allMembers));
-          }
-        });
-      }
-
-      this.configuration = config;
-      this.fields = config.fields.filter(field => field.visible === true);
+      this.fields = this.configuration.fields.filter(field => field.visible === true);
     });
   }
 
   async rowSelect(event) {
-    if (!this.groupConfigurations) {
-      return;
-    }
-    this.groupMembers.clear();
-    this.allGroupMembers.forEach((value, key) => this.nonGroupMembers.set(key, {...value}));
-
-    this.groupConfigurations.forEach(config => {
-      this.entityService.membersGroup(config.type, this.selectedEntry['id']).subscribe(members => {
-        this.groupMembers.set(config.type, members);
-
-        // Filter out the members which the groupholder already has
-        members.data.forEach(e => {
-          this.nonGroupMembers.get(config.type).data = this.nonGroupMembers.get(config.type).data.filter((value) => {
-            if (value['id'] === e['id']) { return false; }
-            return true;
-          });
-        });
-      });
-    });
-  }
-
-  async addMembers(items: any[], groupTypeName: string) {
-    items.forEach(item =>
-      this.entityService.addMember(this.groupConfigurations.get(groupTypeName).type, this.selectedEntry['id'], item['id']).subscribe());
-  }
-
-  async removeMembers(items: any[], groupTypeName: string) {
-    items.forEach(item =>
-      this.entityService.removeMember(this.groupConfigurations.get(groupTypeName).type, this.selectedEntry['id'], item['id']).subscribe());
+    this.$entryId.next(this.selectedEntry['id']);
   }
 
   async refreshTableContents() {
@@ -121,7 +61,7 @@ export class DynamicTableComponent implements OnInit {
   async loadLazy(event: LazyLoadEvent) {
     // Check if the configuration data requested in ngOnInit has already been reveived
     let timeout = 5000;
-    while ((!this.catalogues || this.catalogueCount !== this.catalogues.size || !this.fields) && timeout !== 0) {
+    while ((!this.configuration || !this.fields) && timeout !== 0) {
       await delay(null, 50).then();
       timeout -= 50;
     }

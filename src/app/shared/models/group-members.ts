@@ -1,8 +1,8 @@
 export class GroupMembers {
-    count: Number;
-    page: Number;
-    pages: Number;
-    pageSize: Number;
-    type: String;
+    count: number;
+    page: number;
+    pages: number;
+    pageSize: number;
+    type: string;
     data: any[];
 }

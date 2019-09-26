@@ -1,9 +1,14 @@
 import { Field } from './field';
 
 export class EntityConfiguration {
-    type: String;
-    groups: String[];
-    displayName: String;
-    rowsPerPage: Number;
+    type: string;
+    groups: string[];
+    components: string[];
+    displayName: string;
+    rowsPerPage: number;
+    onAttachPost: {
+        condition: string;
+        action: string;
+    };
     fields: Field[];
 }

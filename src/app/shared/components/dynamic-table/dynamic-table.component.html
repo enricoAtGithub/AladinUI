@@ -51,27 +51,6 @@
     </p-table>
   </div>
 
-  <!-- Display group relations if available -->
-  <div *ngIf="groupConfigurations && (dt.selection !== undefined && dt.selection !== null)">
-    <div *ngFor="let groupConfig of groupConfigsArray" class="card card-w-title">
-      <h1>{{groupConfig.displayName}}</h1>
-      <!-- Dummy pickList to prevent flickering when group data is changing -->
-      <div *ngIf="!groupMembers || !groupMembers.get(groupConfig.type)">
-        <p-pickList [responsive]="true" sourceHeader="Verfügbar" targetHeader="Zugewiesen" [showSourceControls]="false" [showTargetControls]="false"></p-pickList>
-      </div>
-      <!-- Actual picklist -->
-      <div *ngIf="groupMembers && groupMembers.get(groupConfig.type)">
-        <p-pickList #pickListSelector [responsive]="true" [source]="nonGroupMembers.get(groupConfig.type).data"
-          [target]="groupMembers.get(groupConfig.type).data" sourceHeader="Verfügbar" targetHeader="Zugewiesen"
-          (onMoveToTarget)="addMembers($event.items, groupConfig.type)" (onMoveToSource)="removeMembers($event.items, groupConfig.type)"
-          [showSourceControls]="false" [showTargetControls]="false">
-          <ng-template let-item pTemplate="item">
-            <div *ngFor="let field of groupConfig.memberFields">
-              <div style="display: inline" *ngIf="field.visible">{{item[field.header]}}</div>
-            </div>
-          </ng-template>
-        </p-pickList>
-      </div>
-    </div>
-  </div>
+  <app-dynamic-table-attachments [tableData]="tableData" [$configuration]="$configuration.asObservable()" [$entryId]="$entryId.asObservable()"></app-dynamic-table-attachments>
+
 </div>
