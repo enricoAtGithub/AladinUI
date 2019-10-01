@@ -1,38 +1,50 @@
-<div *ngIf="entryId !== undefined && entryId !== null" class="card">
+<div *ngIf="entryId !== undefined && entryId !== null && !isEmpty" style="padding: 0px" class="card">
   <p-tabView>
-      <!-- Display group relations if available -->
-      <div *ngIf="groupConfigurations">
-          <p-tabPanel *ngFor="let groupConfig of groupConfigsArray; let i = index" [header]="groupConfig.displayName" [selected]="i==0">
-            <!-- Dummy pickList to prevent flickering when group data is changing -->
-            <div *ngIf="!groupMembers || !groupMembers.get(groupConfig.type)">
-              <p-pickList [responsive]="true" sourceHeader="Verfügbar" targetHeader="Zugewiesen" [showSourceControls]="false" [showTargetControls]="false"></p-pickList>
+    <!-- Display group relations if available -->
+    <p-tabPanel *ngFor="let groupConfig of groupConfigsArray; let i = index" [header]="groupConfig.displayName" [selected]="i==0">
+      <!-- Dummy pickList to prevent flickering when group data is changing -->
+      <div *ngIf="!groupMembers || !groupMembers.get(groupConfig.type)">
+        <p-pickList [responsive]="true" sourceHeader="Verfügbar" targetHeader="Zugewiesen" [showSourceControls]="false" [showTargetControls]="false"></p-pickList>
+      </div>
+      <!-- Actual picklist -->
+      <div *ngIf="groupMembers && groupMembers.get(groupConfig.type)">
+        <p-pickList #pickListSelector [responsive]="true" [source]="nonGroupMembers.get(groupConfig.type).data"
+          [target]="groupMembers.get(groupConfig.type).data" sourceHeader="Verfügbar" targetHeader="Zugewiesen"
+          (onMoveToTarget)="addMembers($event.items, groupConfig.type)" (onMoveToSource)="removeMembers($event.items, groupConfig.type)"
+          [showSourceControls]="false" [showTargetControls]="false">
+          <ng-template let-item pTemplate="item">
+            <div *ngFor="let field of groupConfig.memberFields">
+              <div style="display: inline" *ngIf="field.visible">{{item[field.header]}}</div>
             </div>
-            <!-- Actual picklist -->
-            <div *ngIf="groupMembers && groupMembers.get(groupConfig.type)">
-              <p-pickList #pickListSelector [responsive]="true" [source]="nonGroupMembers.get(groupConfig.type).data"
-                [target]="groupMembers.get(groupConfig.type).data" sourceHeader="Verfügbar" targetHeader="Zugewiesen"
-                (onMoveToTarget)="addMembers($event.items, groupConfig.type)" (onMoveToSource)="removeMembers($event.items, groupConfig.type)"
-                [showSourceControls]="false" [showTargetControls]="false">
-                <ng-template let-item pTemplate="item">
-                  <div *ngFor="let field of groupConfig.memberFields">
-                    <div style="display: inline" *ngIf="field.visible">{{item[field.header]}}</div>
-                  </div>
-                </ng-template>
-              </p-pickList>
-            </div>
-          </p-tabPanel>
-        </div>
+          </ng-template>
+        </p-pickList>
+      </div>
+    </p-tabPanel>
 
-        <div *ngIf="this.configuration.components?.includes('Notes')">
-          <p-tabPanel [header]="Notizen">
-            Notes
-          </p-tabPanel>
+    <p-tabPanel *ngIf="this.configuration?.components?.includes('Notes')" header="Notizen" [selected]="true">
+      <div style="height: 250px">
+        <app-dynamic-table #notesTable class="ui-g-6" style="padding: 0px" *ngIf="noteTableData" [tableData]="noteTableData" [$selectedEntryId]="$noteSelectedEntry"></app-dynamic-table>
+        <div *ngIf="selectedNote" class="ui-g-6" style="padding: 7px">
+          <div style="margin-bottom: 7px;">
+            <input type="text" style="width: 90%; display: inline" pInputText [(ngModel)]="selectedNote.subject">
+            <button type="button" pButton style="width: 4%; margin-left: 1%" icon="pi pi-trash" class="ui-button-info" (click)="removeNote()"></button>
+            <button type="button" pButton style="width: 4%; margin-left: 1%" icon="pi pi-save" class="ui-button-success" (click)="saveNote()"></button>
+          </div>
+          <p-editor [(ngModel)]="selectedNote.note" [style]="{'height': '170px'}"></p-editor>
         </div>
+        <div class="ui-g-6" *ngIf="!selectedNote">
+          <div style="border-style: dashed; border-color: #378D4F; height: 247px; text-align: center; cursor: pointer;" (click)="createEmptyNote()">
+              <i class="pi pi-plus" style="position: relative; top: 20%; font-size: 11em; color: #378D4F"></i>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
 
-        <div *ngIf="this.configuration.components?.includes('LogEntries')">
-          <p-tabPanel [header]="Logbuch">
-            <app-dynamic-table *ngIf="logTableData" [tableData]="logTableData"></app-dynamic-table>
-          </p-tabPanel>
-        </div>
+    <p-tabPanel *ngIf="this.configuration?.components?.includes('LogEntries')" header="Logbuch">
+      <div style="height: 250px">
+        <app-dynamic-table #logsTable *ngIf="logTableData" [tableData]="logTableData"></app-dynamic-table>
+      </div>
+    </p-tabPanel>
+
   </p-tabView>
 </div>

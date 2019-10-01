@@ -7,7 +7,6 @@ import { LazyLoadEvent, DialogService, ConfirmationService } from 'primeng/prime
 import { TableData } from '../../models/table-data';
 import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { Catalogue } from '../../models/catalogue';
 import { CatalogueService } from 'src/app/user/services/catalogue.service';
 import { ErrorNotificationService } from '../../services/error-notification.service';
 import { ErrorMessage } from '../../models/error-message';
@@ -21,6 +20,7 @@ import { delay } from 'q';
 })
 export class DynamicTableComponent implements OnInit {
   @Input() tableData: TableData;
+  @Input() $selectedEntryId: Subject<number>;
 
   configuration: EntityConfiguration;
   $configuration: Subject<EntityConfiguration> = new Subject();
@@ -33,9 +33,12 @@ export class DynamicTableComponent implements OnInit {
 
   constructor(private entityService: EntityService, private cd: ChangeDetectorRef,
     private dialogService: DialogService, private confirmationService: ConfirmationService,
-    private catalogueService: CatalogueService, private errorNotificationService: ErrorNotificationService) {}
+    private errorNotificationService: ErrorNotificationService) {}
 
   ngOnInit() {
+    if (this.$selectedEntryId !== undefined) {
+      this.$entryId = this.$selectedEntryId;
+    }
     this.configuration = new EntityConfiguration();
     this.entityData = new EntityData();
     this.entityService.getEntityConfigurations().subscribe(async configs => {
@@ -50,8 +53,12 @@ export class DynamicTableComponent implements OnInit {
     });
   }
 
-  async rowSelect(event) {
+  async rowSelect() {
     this.$entryId.next(this.selectedEntry['id']);
+  }
+
+  async rowUnselect() {
+    this.$entryId.next(undefined);
   }
 
   async refreshTableContents() {

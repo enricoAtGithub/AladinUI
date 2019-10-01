@@ -44,7 +44,6 @@ export class EntityService {
   }
 
   createEntity(type: String, data) {
-    console.log(type);
     return this.http.post(UrlCollection.Entities.CREATE(), JSON.stringify({type: type, fields: data}),
     new HttpOptionsFactory()
       // .addAcceptJson()
@@ -75,16 +74,57 @@ export class EntityService {
   }
 
   membersGroup(type: String, holderId: Number): Observable<GroupMembers> {
-    return this.http.post<GroupMembers>(UrlCollection.Groups.MEMBERS(), JSON.stringify({type: type, holderId: holderId}));
+    return this.http.post<GroupMembers>(UrlCollection.Groups.MEMBERS(), JSON.stringify({type: type, holderId: holderId}),
+    new HttpOptionsFactory()
+      .addAcceptJson()
+      .addContentTypeJson()
+      .build());
   }
 
   addMember(type: String, holderId: Number, memberId: Number): Observable<Boolean> {
-    return this.http.post<Boolean>(UrlCollection.Groups.ADDMEMBER(), JSON.stringify({type: type, holderId: holderId, memberId: memberId}));
+    return this.http.post<Boolean>(UrlCollection.Groups.ADDMEMBER(), JSON.stringify({type: type, holderId: holderId, memberId: memberId}),
+    new HttpOptionsFactory()
+      .addAcceptJson()
+      .addContentTypeJson()
+      .build());
   }
 
   removeMember(type: String, holderId: Number, memberId: Number): Observable<Boolean> {
     return this.http.post<Boolean>(
       UrlCollection.Groups.REMOVEMEMBER(),
-      JSON.stringify({type: type, holderId: holderId, memberId: memberId}));
+      JSON.stringify({type: type, holderId: holderId, memberId: memberId}),
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
+  }
+
+  // Entity Attachments
+  getAttachments(attachmentType: string, type: string, id: number) {
+    return this.http.get(UrlCollection.EntityAttachments.ENTRIES(attachmentType, type, id));
+  }
+
+  removeAttachmentEntry(attachmentType: string, id: number) {
+    return this.http.post(UrlCollection.EntityAttachments.REMOVE(attachmentType), JSON.stringify({id: id}),
+    new HttpOptionsFactory()
+      .addAcceptJson()
+      .addContentTypeJson()
+      .build());
+  }
+
+  updateAttachmentEntry(attachmentType: string, attachmentEntry: any) {
+    return this.http.post(UrlCollection.EntityAttachments.UPDATE(attachmentType), JSON.stringify(attachmentEntry),
+    new HttpOptionsFactory()
+      .addAcceptJson()
+      .addContentTypeJson()
+      .build());
+  }
+
+  addAttachmentEntry(attachmentType: string, attachmentEntry: any) {
+    return this.http.post(UrlCollection.EntityAttachments.ADD(attachmentType), JSON.stringify(attachmentEntry),
+    new HttpOptionsFactory()
+      .addAcceptJson()
+      .addContentTypeJson()
+      .build());
   }
 }

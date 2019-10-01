@@ -55,8 +55,15 @@ export class UrlCollection {
     };
 
     static Files = class {
-        static download = (id: number) => UrlCollection.FILE_API_BASE_PATH() + '/download/' + id;
-        static upload = () => UrlCollection.FILE_API_BASE_PATH() + '/upload/';
+        static generateDownloadUrl = (id: number) => UrlCollection.FILE_API_BASE_PATH() + '/download/' + id;
+        static generateUploadUrl = () => UrlCollection.FILE_API_BASE_PATH() + '/upload/';
+    };
+
+    static EntityAttachments = class {
+        static ENTRIES = (attachmentType: string, entityType: string, id: number) => UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/entries/' + entityType + '/' + id;
+        static REMOVE = (attachmentType: string) => UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/remove';
+        static UPDATE = (attachmentType: string) => UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/update';
+        static ADD = (attachmentType: string) => UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/add';
     };
 
     static ADMIN_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/admin'; }
@@ -65,6 +72,7 @@ export class UrlCollection {
     static CATALOGUE_API_BASE_PATH(): string {return AppConfig.getBaseUrl() + '/catalogue'; }
     static FILE_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/file'; }
     static GROUPS_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/groups'; }
+    static ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType: string): string { return AppConfig.getBaseUrl() + '/' + attachmentType; }
     static API_BASE_PATH(): string { return AppConfig.getBaseUrl(); }
 
     static basePathAttachment = (): string => AppConfig.getBaseUrl() + '/attachment';
