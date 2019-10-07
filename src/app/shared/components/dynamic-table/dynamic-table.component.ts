@@ -21,6 +21,7 @@ import { delay } from 'q';
 export class DynamicTableComponent implements OnInit {
   @Input() tableData: TableData;
   @Input() $selectedEntryId: Subject<number>;
+  @Input() dblClickCallback: (data) => any;
 
   configuration: EntityConfiguration;
   $configuration: Subject<EntityConfiguration> = new Subject();
@@ -183,6 +184,18 @@ export class DynamicTableComponent implements OnInit {
         this.entityService.deleteEntity(this.configuration.type, data['id']).subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
       }
     });
+  }
+
+  doubleClickTableRow(data:any ) {
+    if (typeof this.dblClickCallback === "undefined") {
+      console.log("no handler defined for DblClick events")
+    } else {
+      this.dblClickCallback(data)
+    }
+  }
+
+  public getEntityData(): EntityData {
+    return this.entityData;
   }
 
 }
