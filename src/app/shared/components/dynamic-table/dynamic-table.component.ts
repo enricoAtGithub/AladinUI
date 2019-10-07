@@ -90,10 +90,10 @@ export class DynamicTableComponent implements OnInit {
 
     this.fields.forEach(field => {
       if (event.filters[field.field]) {
-        if (field.type == 'String') {
+        if (field.type === 'String') {
           qualifier += 'LIKE(\'' + field.header + '\',\'%' +  event.filters[field.field].value + '%\'),';
         } else {
-          qualifier += 'EQ(\'' +field.header +'\',' + event.filters[field.field].value + ')'
+          qualifier += 'EQ(\'' + field.header + '\',' + event.filters[field.field].value + ')';
         }
       }
     });
@@ -187,11 +187,11 @@ export class DynamicTableComponent implements OnInit {
     });
   }
 
-  doubleClickTableRow(data:any ) {
-    if (typeof this.dblClickCallback === "undefined") {
-      console.log("no handler defined for DblClick events")
+  doubleClickTableRow(data: any ) {
+    if (typeof this.dblClickCallback === 'undefined') {
+      console.log('no handler defined for DblClick events');
     } else {
-      this.dblClickCallback(data)
+      this.dblClickCallback(data);
     }
   }
 
