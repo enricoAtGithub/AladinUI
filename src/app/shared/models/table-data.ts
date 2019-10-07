@@ -1,3 +1,5 @@
+import { Subject } from "rxjs";
+
 export class TableData {
     tableName: string;
     configName: string;
@@ -8,6 +10,8 @@ export class TableData {
     pagination: boolean;
     explicitUrl: string;
     scrollHeight: string;
+
+    triggerRefresh: Subject<unknown>;
 
     constructor(tableName: string, configName: string, showHeadline: boolean = true, showHeader: boolean = true,
         showCrudButtons: boolean = true, scrollable: boolean = false, pagination: boolean = true, explicitUrl?: string,
@@ -21,5 +25,7 @@ export class TableData {
             this.pagination = pagination;
             this.scrollable = scrollable;
             this.scrollHeight = scrollHeight;
+
+            this.triggerRefresh = new Subject();
     }
 }

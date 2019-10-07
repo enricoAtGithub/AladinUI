@@ -51,6 +51,7 @@ export class DynamicTableComponent implements OnInit {
       }
 
       this.fields = this.configuration.fields.filter(field => field.visible === true);
+      this.tableData.triggerRefresh.subscribe( () => this.refreshTableContents());
     });
   }
 
