@@ -88,7 +88,11 @@ export class DynamicTableComponent implements OnInit {
 
     this.fields.forEach(field => {
       if (event.filters[field.field]) {
-        qualifier += 'LIKE(\'' + field.header + '\',\'%' +  event.filters[field.field].value + '%\'),';
+        if (field.type == 'String') {
+          qualifier += 'LIKE(\'' + field.header + '\',\'%' +  event.filters[field.field].value + '%\'),';
+        } else {
+          qualifier += 'EQ(\'' +field.header +'\',' + event.filters[field.field].value + ')'
+        }
       }
     });
 
