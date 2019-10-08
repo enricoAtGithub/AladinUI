@@ -95,6 +95,10 @@ export class DynamicTableAttachmentsComponent implements OnInit {
             this.allNotes = response['data']);
 
           this.$noteSelectedEntry.subscribe(selectedEntry => {
+            if (selectedEntry === undefined) {
+              this.selectedNote = undefined;
+              return;
+            }
             this.createEmptyNote();
             const note = this.allNotes.find(element => element['id'] === selectedEntry);
             if (note) {
@@ -140,8 +144,9 @@ export class DynamicTableAttachmentsComponent implements OnInit {
 
   async removeNote() {
     if (this.selectedNote['id'] !== undefined) {
-      this.entityService.removeAttachmentEntry('note', this.selectedNote['id']).subscribe(() =>
-        this.allNotes.filter(element => element !== this.selectedNote));
+      this.entityService.removeAttachmentEntry('note', this.selectedNote['id']).subscribe(() => this.loadNotes());
+    } else {
+      this.selectedNote = undefined;
     }
   }
 
