@@ -19,7 +19,7 @@
                 {{col.header}}
                 <p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
               </p>
-              <div style="height: 36px; width: 100%;"></div>
+              <div *ngIf="filtersInTable" style="height: 36px; width: 100%;"></div>
             </div>
             <!-- Filters -->
             <div *ngIf="col.filterType !== 'none'" style="margin: auto; margin-top: -32px; height: 32px; width: 80%;">

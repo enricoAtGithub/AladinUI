@@ -31,6 +31,7 @@ export class DynamicTableComponent implements OnInit {
   selectedEntry: any;
   $entryId: Subject<number> = new Subject();
   lastLazyLoadEvent: LazyLoadEvent;
+  filtersInTable = false;
 
   constructor(private entityService: EntityService, private cd: ChangeDetectorRef,
     private dialogService: DialogService, private confirmationService: ConfirmationService,
@@ -51,6 +52,8 @@ export class DynamicTableComponent implements OnInit {
       }
 
       this.fields = this.configuration.fields.filter(field => field.visible === true);
+      this.fields.forEach(field => this.filtersInTable = field.filterType !== 'none' || this.filtersInTable);
+
       this.tableData.triggerRefresh.subscribe( () => this.refreshTableContents());
     });
   }
