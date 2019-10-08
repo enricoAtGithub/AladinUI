@@ -6,8 +6,12 @@
           <input [required]="field.mandatory" [name]="field.header" [ngModel]="update ? entity[field.header] : ''" id="float-input" type="text" style="width: 100%" pInputText> 
           <label for="float-input">{{field.header}}</label>
         </span>
+        <span *ngIf="field.type === 'int'" class="ui-float-label">
+          <input [required]="field.mandatory" [name]="field.header" [ngModel]="update ? entity[field.header] : ''" id="float-input" type="number" style="width: 100%" pInputText> 
+          <label for="float-input">{{field.header}}</label>
+        </span>
         <span *ngIf="field.type === 'boolean'">
-          <p-checkbox [required]="field.mandatory" [name]="field.header" [binary]="true" [label]="field.header" [ngModel]="update ? entity[field.header] === '✓' : false"></p-checkbox>
+          <p-checkbox [required]="field.mandatory" [name]="field.header" [binary]="true" [label]="field.header" [ngModel]="update ? entity[field.header] : false"></p-checkbox>
         </span>
         <span *ngIf="field.type === 'Date'">
           {{field.header}}
