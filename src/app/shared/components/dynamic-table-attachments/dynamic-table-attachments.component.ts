@@ -8,9 +8,9 @@ import { EntityData } from '../../models/entity-data';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { map } from 'rxjs/operators';
 import { DynamicTableComponent } from '../dynamic-table/dynamic-table.component';
-import { select, Store } from '@ngrx/store';
-import { RootStoreState } from 'src/app/root-store/root-index';
 import { Note } from '../../models/note';
+import { Attribute } from '../../models/attribute';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-dynamic-table-attachments',
@@ -45,7 +45,14 @@ export class DynamicTableAttachmentsComponent implements OnInit {
 
   isEmpty: boolean;
 
-  constructor(private entityService: EntityService, private store$: Store<RootStoreState.State>) { }
+  attributes: any[];
+  attributeClone: any;
+  displayAddAttribute: boolean;
+  newAttribute = new Attribute();
+
+  types = [{label: 'Long', value: 'Long'}, {label: 'String', value: 'String'}, {label: 'Boolean', value: 'Boolean'}, {label: 'Date', value: 'Date'}];
+
+  constructor(private entityService: EntityService) { }
 
   ngOnInit() {
     if (this.configName !== undefined && this.$configuration === undefined) {
@@ -110,6 +117,10 @@ export class DynamicTableAttachmentsComponent implements OnInit {
           });
         }
 
+        if (this.configuration.components && this.configuration.components.includes('Attributes')) {
+          this.updateAttachments();
+        }
+
         if (this.groupConfigurations) {
           this.groupMembers.clear();
           this.allGroupMembers.forEach((value, key) => this.nonGroupMembers.set(key, {...value}));
@@ -169,6 +180,46 @@ export class DynamicTableAttachmentsComponent implements OnInit {
     this.selectedNote = new Note();
     this.selectedNote.ownerType = this.configuration.type;
     this.selectedNote.ownerId = this.entryId;
+  }
+
+  openAddAttributeDialog() {
+    this.newAttribute = new Attribute();
+    this.newAttribute.ownerType = this.configuration.type;
+    this.newAttribute.ownerId = this.entryId;
+    this.displayAddAttribute = true;
+  }
+
+  updateAttachments() {
+    this.entityService.getAttachments('attribute', this.configuration.type, this.entryId).subscribe(response => {
+      this.attributes = response['data'];
+      this.attributes.forEach(attr => {if (attr['Typ'] === 'Date') {attr['DateValue'] = new Date(attr['Value']); }});
+    });
+  }
+
+  addNewAttribute() {
+    this.displayAddAttribute = false;
+    this.entityService.addAttachmentEntry('attribute', this.newAttribute).subscribe(() => this.updateAttachments());
+  }
+
+  onRowEditInit(attribute: any) {
+    this.attributeClone = {...attribute};
+  }
+
+  onRowDelete(attribute: any) {
+    this.entityService.removeAttachmentEntry('attribute', attribute['id']).subscribe(() =>
+      this.attributes = this.attributes.filter(element => element['id'] !== attribute['id']));
+  }
+
+  onRowEditSave(attribute: any) {
+    const value = attribute['Value'];
+    const typ: string = attribute['Typ'];
+    this.entityService.updateAttachmentEntry('attribute', {id: attribute['id'], name: attribute['Name'], attributeType: typ,
+      longValue: typ === 'Long' ? <number>value : null, stringValue: typ === 'String' ? <string>value : null,
+      booleanValue: attribute['BooleanValue'], dateValue: attribute['DateValue']}).subscribe();
+  }
+
+  onRowEditCancel(attribute: any, index: number) {
+      this.attributes[index] = this.attributeClone;
   }
 
 }

@@ -1,3 +1,36 @@
+<p-dialog header="Attribut hinzufügen" [(visible)]="displayAddAttribute" [resizable]="false" [draggable]="false" [style]="{'width': '400px'}">
+  <form (ngSubmit)="addNewAttribute()" #attributeForm="ngForm" class="ui-g">
+    <div class="ui-g-12 ui-md-12 form-group">
+      <span class="ui-float-label" style="margin-bottom: 25px">
+        <input required name="Name" id="float-input" type="text" [(ngModel)]="newAttribute.name" style="width: 100%" pInputText> 
+        <label for="float-input">Name</label>
+      </span> 
+      <span class="ui-float-label form-group">
+        <p-dropdown required [options]="types" name="Typ" [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.attributeType"  [autoDisplayFirst]="false"></p-dropdown>
+        <label for="float-input">Typ</label>
+      </span>
+      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" 
+        *ngIf="newAttribute.attributeType === 'Long' || newAttribute.attributeType === 'String' || newAttribute.attributeType === undefined">
+        <input required name="Wert" id="float-input" [type]="newAttribute.attributeType === 'Long' ? 'number' : 'text'" [(ngModel)]="newAttribute.stringValue"
+          style="width: 100%" pInputText> 
+        <label for="float-input">Wert</label>
+      </span>
+      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px; height: 26px" *ngIf="newAttribute.attributeType === 'Boolean'">
+        <p-checkbox name="Wert" binary="true" [(ngModel)]="newAttribute.booleanValue"></p-checkbox>
+        <label for="float-input" style="top: -.75em; font-size: 12px;">Wert</label>
+      </span>
+      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" *ngIf="newAttribute.attributeType === 'Date'">
+        <p-calendar name="Wert" [(ngModel)]="newAttribute.dateValue" showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}"></p-calendar>
+        <label for="float-input">Wert</label>
+      </span>
+    
+      <div class="ui-g-12 ui-md-12" style="padding: 0px">
+        <p-button type="submit" [disabled]="!attributeForm.form.valid" icon="pi pi-user-plus" iconPos="left" label="Erstellen"></p-button>
+      </div>
+    </div>
+  </form>
+</p-dialog>
+
 <div *ngIf="entryId !== undefined && entryId !== null && !isEmpty" style="padding: 0px" class="card">
   <p-tabView>
     <!-- Display group relations if available -->
@@ -43,6 +76,73 @@
     <p-tabPanel *ngIf="this.configuration?.components?.includes('LogEntries')" header="Logbuch">
       <div style="height: 250px">
         <app-dynamic-table #logsTable *ngIf="logTableData" [tableData]="logTableData"></app-dynamic-table>
+      </div>
+    </p-tabPanel>
+
+    <p-tabPanel *ngIf="this.configuration?.components?.includes('Attributes')" header="Attribute">
+      <div style="height: 250px">
+        <p-table [value]="attributes" dataKey="id" editMode="row">
+          <ng-template pTemplate="header">
+            <tr>
+                <th>Name</th>
+                <th>Typ</th>
+                <th>Wert</th>
+                <th style="width:8em">
+                  <button pButton type="button" icon="pi pi-plus" class="ui-button-success" (click)="openAddAttributeDialog()"></button>
+                </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="rowData">
+              <td>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="rowData.Name" style="width: 100%">
+                  </ng-template>
+                  <ng-template pTemplate="output"> 
+                    {{rowData.Name}}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <p-dropdown [options]="types" [(ngModel)]="rowData.Typ" [style]="{'width':'100%'}"></p-dropdown>
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{rowData.Typ}}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor>
+                  <ng-template *ngIf="rowData.Typ === 'Boolean'" pTemplate="input">
+                    <p-checkbox binary="true" [(ngModel)]="rowData.BooleanValue"></p-checkbox>
+                  </ng-template>
+                  <ng-template *ngIf="rowData.Typ === 'Long' || rowData.Typ === 'String'"  pTemplate="input">
+                    <input pInputText [type]="rowData.Typ === 'Long' ? 'number' : 'text'" [(ngModel)]="rowData.Value" style="width: 100%">
+                  </ng-template>
+                  <ng-template *ngIf="rowData.Typ === 'Date'" pTemplate="input">
+                    <p-calendar [(ngModel)]="rowData.DateValue" showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}"></p-calendar>
+                  </ng-template>
+                  
+                  <ng-template pTemplate="output"> 
+                    {{rowData.BooleanValue}} 
+                    {{rowData.StringValue}} 
+                    {{rowData.LongValue}} 
+                    {{rowData.DateValue}}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td style="text-align:center">
+                <button *ngIf="!editing" id="editButton{{rowData.id}}" pButton type="button" pInitEditableRow icon="pi pi-pencil" style="margin-right: .5em" class="ui-button-info" (click)="onRowEditInit(rowData)"></button>
+                <button *ngIf="!editing" pButton type="button" icon="pi pi-trash" class="ui-button-info" (click)="onRowDelete(rowData)"></button>
+                <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check" class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData)"></button>
+                <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
       </div>
     </p-tabPanel>
 
