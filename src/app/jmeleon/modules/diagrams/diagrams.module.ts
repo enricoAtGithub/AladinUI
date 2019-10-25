@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DiagramComponent } from './components/diagram/diagram.component';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [DiagramComponent],
   imports: [
     CommonModule
   ]
