@@ -1,14 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DiagramsModule } from './modules/diagrams/diagrams.module';
 
 
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule,
-    DiagramsModule
+    CommonModule
   ]
 })
-export class JmeleonModule { }
+export class DiagramsModule { }
