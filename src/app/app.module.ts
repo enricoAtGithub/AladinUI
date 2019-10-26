@@ -106,6 +106,7 @@ import { HttpErrorRepsonseInterceptor } from 'src/http-error-repsonse.intercepto
 import { FileUploadDialogComponent } from './shared/components/file-upload-dialog/file-upload-dialog.component';
 import { FileSaverModule } from 'ngx-filesaver';
 import { JmeleonModule } from './jmeleon/jmeleon.module';
+import { DiagramsModule } from './jmeleon/modules/diagrams/diagrams.module';
 
 export function initializeApp(appConfig: AppConfig) {
     console.log('initialize app');
@@ -190,7 +191,8 @@ export function initializeApp(appConfig: AppConfig) {
         VirtualScrollerModule,
         RootStoreModule,
         FileSaverModule,
-        JmeleonModule
+        JmeleonModule,
+        DiagramsModule
     ],
     declarations: [
         AppComponent,

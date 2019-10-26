@@ -1,1 +1,20 @@
-<p>diagram works!</p>
+<!-- <div *ngIf="showPanel; else noPanel">
+    <p-panel header="diagramData.header">
+        <p-chart [type]="diagramData.type" [data]="diagramData.data" [options]="diagramData.options"></p-chart>
+    </p-panel>
+</div>
+<ngTemplate +noPanel>
+    <p-chart [type]="diagramData.type" [data]="diagramData.data" [options]="diagramData.options"></p-chart>
+</ngTemplate> -->
+
+<div *ngIf="showPanel">
+    <p-panel [header]="header">
+        <div *ngIf="diagramData; else noDiagramData">
+            <p-chart [type]="diagramData.type" [data]="diagramData.data" [options]="diagramData.options"></p-chart>
+        </div>
+        <ng-template #noDiagramData>
+            <p-progressSpinner></p-progressSpinner>
+        </ng-template>
+    </p-panel>
+    
+</div>

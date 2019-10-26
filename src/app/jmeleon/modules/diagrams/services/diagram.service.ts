@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Input } from '@angular/core';
 import { DiagramsModule } from '../diagrams.module';
+import { DiagramData } from '../models/diagram-data';
 
 @Injectable({
   providedIn: DiagramsModule
@@ -7,4 +8,5 @@ import { DiagramsModule } from '../diagrams.module';
 export class DiagramService {
 
   constructor() { }
+
 }

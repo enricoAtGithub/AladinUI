@@ -1,13 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DiagramComponent } from './components/diagram/diagram.component';
+import { ChartModule } from 'primeng/chart';
+import { ProgressSpinnerModule, PanelModule } from 'primeng/primeng';
 
 
 
 @NgModule({
-  declarations: [DiagramComponent],
+  declarations: [
+    DiagramComponent
+  ],
   imports: [
-    CommonModule
+    CommonModule,
+    ChartModule,
+    ProgressSpinnerModule,
+    PanelModule
+  ],
+  exports: [
+    DiagramComponent
   ]
 })
 export class DiagramsModule { }

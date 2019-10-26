@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { DiagramData } from '../../models/diagram-data';
 
 @Component({
   selector: 'app-diagram',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DiagramComponent implements OnInit {
 
+  @Input() showPanel = true;
+  @Input() diagramData: DiagramData;
+  header = '';
+
   constructor() { }
 
   ngOnInit() {
+    if (!!this.diagramData) {
+      this.header = this.diagramData.header;
+    }
   }
 
 }
