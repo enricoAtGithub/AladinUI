@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { DiagramsModule } from '../diagrams.module';
+import { DiagramData } from '../models/diagram-data';
 
 @Injectable({
-  providedIn: DiagramsModule
+  // providedIn: DiagramsModule
+  providedIn: 'root'
 })
 export class DiagramColorService {
 
-  private barColors: [string, string][] = [
+  private readonly barColors: [string, string][] = [
 
     ['#2955d9', '#6787e4'],
     ['#448c30', '#6cc454'],
@@ -42,5 +44,29 @@ export class DiagramColorService {
 
   getBorderColors(): string[] {
     return this.barColors.map(colorTuple => colorTuple[1]);
+  }
+
+  checkAndSetChartColors(diagramData: DiagramData): void {
+    let currentColorId = 0;
+    let colorUsed = false;
+
+    if (!!diagramData || !!diagramData.data || !!diagramData.data.datasets) {
+      return;
+    }
+
+    diagramData.data.datasets.forEach((dataset, index, arr) => {
+      colorUsed = false;
+      if (dataset.backgroundColor === null) {
+        colorUsed = true;
+        arr[index].backgroundColor = this.barColors[currentColorId % this.barColors.length][0];
+      }
+      if (dataset.borderColor === null) {
+        colorUsed = true;
+        arr[index].borderColor = this.barColors[currentColorId % this.barColors.length][1];
+      }
+      if (colorUsed) {
+        currentColorId++;
+      }
+    });
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DiagramData } from '../../models/diagram-data';
+import { DiagramService } from '../../services/diagram.service';
 
 @Component({
   selector: 'app-diagram',
@@ -10,14 +11,10 @@ export class DiagramComponent implements OnInit {
 
   @Input() showPanel = true;
   @Input() diagramData: DiagramData;
-  header = '';
 
   constructor() { }
 
   ngOnInit() {
-    if (!!this.diagramData) {
-      this.header = this.diagramData.header;
-    }
   }
 
 }
