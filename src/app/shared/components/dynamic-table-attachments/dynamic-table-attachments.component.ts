@@ -211,11 +211,13 @@ export class DynamicTableAttachmentsComponent implements OnInit {
   }
 
   onRowEditSave(attribute: any) {
-    const value = attribute['Value'];
-    const typ: string = attribute['Typ'];
-    this.entityService.updateAttachmentEntry('attribute', {id: attribute['id'], name: attribute['Name'], attributeType: typ,
-      longValue: typ === 'Long' ? <number>value : null, stringValue: typ === 'String' ? <string>value : null,
-      booleanValue: attribute['BooleanValue'], dateValue: attribute['DateValue']}).subscribe();
+    const type: string = attribute['Typ'];
+    this.entityService.updateAttachmentEntry('attribute', {id: attribute['id'], name: attribute['Name'], attributeType: type,
+      longValue: type === 'Long' ? attribute['LongValue'] : undefined,
+      stringValue: type === 'String' ? attribute['StringValue'] : undefined,
+      booleanValue: type === 'Boolean' ? attribute['BooleanValue'] : undefined,
+      dateValue: type === 'Date' ? attribute['DateValue'] : undefined
+    }).subscribe();
   }
 
   onRowEditCancel(attribute: any, index: number) {

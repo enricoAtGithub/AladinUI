@@ -116,21 +116,18 @@
               </td>
               <td>
                 <p-cellEditor>
-                  <ng-template *ngIf="rowData.Typ === 'Boolean'" pTemplate="input">
-                    <p-checkbox binary="true" [(ngModel)]="rowData.BooleanValue"></p-checkbox>
-                  </ng-template>
-                  <ng-template *ngIf="rowData.Typ === 'Long' || rowData.Typ === 'String'"  pTemplate="input">
-                    <input pInputText [type]="rowData.Typ === 'Long' ? 'number' : 'text'" [(ngModel)]="rowData.Value" style="width: 100%">
-                  </ng-template>
-                  <ng-template *ngIf="rowData.Typ === 'Date'" pTemplate="input">
-                    <p-calendar [(ngModel)]="rowData.DateValue" showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}"></p-calendar>
+                  <ng-template  pTemplate="input">
+                    <p-checkbox *ngIf="rowData.Typ === 'Boolean'" binary="true" [(ngModel)]="rowData.BooleanValue"></p-checkbox>
+                    <input *ngIf="rowData.Typ === 'Long'" pInputText type="number" [(ngModel)]="rowData.LongValue" style="width: 100%">
+                    <input *ngIf="rowData.Typ === 'String'" pInputText type="text" [(ngModel)]="rowData.StringValue" style="width: 100%">
+                    <p-calendar *ngIf="rowData.Typ === 'Date'" [(ngModel)]="rowData.DateValue" showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}"></p-calendar>
                   </ng-template>
                   
                   <ng-template pTemplate="output"> 
-                    {{rowData.BooleanValue}} 
-                    {{rowData.StringValue}} 
-                    {{rowData.LongValue}} 
-                    {{rowData.DateValue}}
+                    {{rowData.Typ === 'Boolean' ? rowData.BooleanValue : ''}} 
+                    {{rowData.Typ === 'String' ? rowData.StringValue : ''}} 
+                    {{rowData.Typ === 'Long' ? rowData.LongValue : ''}} 
+                    {{rowData.Typ === 'Date' ? rowData.DateValue : ''}}
                   </ng-template>
                 </p-cellEditor>
               </td>
