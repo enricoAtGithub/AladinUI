@@ -31,6 +31,7 @@ import { AttachmentListComponent } from './components/attachment-list/attachment
 import { AddEntityDialogComponent } from './components/add-entity-dialog/add-entity-dialog.component';
 import { EntityLogComponent } from './components/entity-log/entity-log.component';
 import { PictureDialogComponent } from './components/picture-dialog/picture-dialog.component';
+import { EntityDropdownComponent } from './components/entity-dropdown/entity-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { PictureDialogComponent } from './components/picture-dialog/picture-dial
     AttachmentListComponent,
     AddEntityDialogComponent,
     EntityLogComponent,
-    PictureDialogComponent
+    PictureDialogComponent,
+    EntityDropdownComponent
   ],
   imports: [
     CommonModule,
@@ -75,7 +77,9 @@ import { PictureDialogComponent } from './components/picture-dialog/picture-dial
     DynamicTableComponent,
     DynamicTableAttachmentsComponent,
     FileUploadDialogComponent,
-    AttachmentListComponent
+    AttachmentListComponent,
+    CatalogueChooserDialogComponent,
+    EntityDropdownComponent
   ],
   providers: [
     EntityService,
