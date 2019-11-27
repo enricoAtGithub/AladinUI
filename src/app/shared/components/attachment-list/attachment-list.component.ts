@@ -72,7 +72,7 @@ export class AttachmentListComponent implements OnInit {
   readAttachmentData(attachment: AttachmentResponseData): void {
     const {keys, values} = attachment.getDataKeysAndValues();
     this.header = keys
-      .filter(key => key !== 'id')
+      .filter(key => key !== 'id' && key !== '_repr_')
       .map(key => ({field: key, header: key}));
     this.content = values;
     this.content2 = values.map(row => {

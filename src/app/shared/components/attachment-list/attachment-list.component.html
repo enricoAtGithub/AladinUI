@@ -13,15 +13,7 @@
             <td *ngFor="let col of header; let i = index">
                 <span *ngIf="attachment[col.field]!=='buttons'; else buttons">{{attachment[col.field]}}</span>
                 <ng-template #buttons>
-                    <!-- <p-button icon="fa fa-download" pTooltip="Herunterladen" class="downloadBtn" (click)="downloadAttachment(attachment['id'])"></p-button> -->
                     <div>
-                        <!-- <div *ngIf="showPictureViewerOpenButton">
-                            <p-overlayPanel #op [dismissable]="true" [showCloseIcon]="true" (onShow)="showImage()">
-                                Content
-                            </p-overlayPanel>
-                            <p-button icon="pi pi-image" pTooltip="Bildbetrachter"
-                                (click)="openImage(attachment['id']); op.toggle($event)"></p-button>
-                        </div> -->
                         <p-button *ngIf="showPictureViewerOpenButton" icon="pi pi-image" pTooltip="Bildbetrachter"
                                 (click)="openImage(attachment['id'])"></p-button>
                         <button pButton type="button" icon="fa fa-download" pTooltip="Herunterladen" fileSaver
