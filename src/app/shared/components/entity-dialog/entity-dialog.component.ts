@@ -32,7 +32,9 @@ export class EntityDialogComponent implements OnInit {
     this.entity = this.config.data['entity'];
     this.configuration.fields.forEach(field => {
       if (field.type === 'Date' && this.update) {
-        this.entity[field.header] = new Date(this.entity[field.header]);
+        if (this.entity[field.header] != null) {
+          this.entity[field.header] = new Date(this.entity[field.header]);
+        }
       }
       if (field.type === 'CatalogueEntry') {
         this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
@@ -57,7 +59,9 @@ export class EntityDialogComponent implements OnInit {
   onSubmit(entityForm: FormGroup) {
     this.configuration.fields.forEach(field => {
       if (field.type === 'Date') {
-        entityForm.value[field.header] = new Date(entityForm.value[field.header]).toISOString();
+        if (entityForm.value[field.header] != null) {
+          entityForm.value[field.header] = new Date(entityForm.value[field.header]).toISOString();
+        }
       }
       if (field.type === 'CatalogueEntry') {
         entityForm.value[field.header] = entityForm.value[field.header]['id'];

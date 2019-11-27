@@ -126,6 +126,10 @@ export class DynamicTableComponent implements OnInit {
   }
 
   processData(input: any, field: Field): string {
+    if (input == null) {
+      return '';
+    }
+
     switch (field.type) {
       case 'Date':
         return this.processDate(new Date(input));
