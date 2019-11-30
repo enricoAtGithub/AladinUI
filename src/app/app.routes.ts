@@ -1,6 +1,6 @@
 import { Routes, RouterModule } from '@angular/router';
 import { ModuleWithProviders } from '@angular/core';
-import { AuthGuard } from './auth/auth.guard';
+import { AuthGuard } from './auth/guards/auth.guard';
 
 import { LoginComponent } from './auth/components/login/login.component';
 import { UserModule } from './user/user.module';
@@ -14,7 +14,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { RoleManagementComponent } from './user/components/role-management/role-management.component';
 import { PermissionManagementComponent } from './user/components/permission-management/permission-management.component';
 import { CatalogueManagementComponent } from './user/components/catalogue-management/catalogue-management.component';
-import { UserManagementGuard } from './auth/user-management.guard';
+import { UserManagementGuard } from './auth/guards/user-management.guard';
+import { LoginGuard } from './auth/guards/login.guard';
 
 export const routes: Routes = [
     // App-Layout routes
@@ -43,7 +44,7 @@ export const routes: Routes = [
     },
 
     // No-Layout routes
-    { path: 'login', component: LoginComponent },
+    { path: 'login', canActivate: [LoginGuard], component: LoginComponent },
 
     { path: '**', redirectTo: 'dashboard', pathMatch: 'full'},
 ];
