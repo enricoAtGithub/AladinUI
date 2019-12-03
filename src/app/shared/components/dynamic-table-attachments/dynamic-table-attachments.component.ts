@@ -1,26 +1,22 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, SimpleChanges, OnChanges } from '@angular/core';
 import { TableData } from '../../models/table-data';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { GroupConfiguration } from '../../models/group-configuration';
 import { EntityService } from '../../services/entity.service';
 import { GroupMembers } from '../../models/group-members';
 import { EntityData } from '../../models/entity-data';
 import { EntityConfiguration } from '../../models/entity-configuration';
-import { map } from 'rxjs/operators';
 import { DynamicTableComponent } from '../dynamic-table/dynamic-table.component';
 import { Note } from '../../models/note';
 import { Attribute } from '../../models/attribute';
-import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-dynamic-table-attachments',
   templateUrl: './dynamic-table-attachments.component.html',
   styleUrls: ['./dynamic-table-attachments.component.css']
 })
-export class DynamicTableAttachmentsComponent implements OnInit {
+export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   @Input() configName: string;
-  @Input() $configuration: Observable<EntityConfiguration>;
-  @Input() $entryId: Observable<number>;
   @Input() entryId: number;
 
   @ViewChild('notesTable', {static: false}) notesTable: DynamicTableComponent;
@@ -54,15 +50,10 @@ export class DynamicTableAttachmentsComponent implements OnInit {
 
   constructor(private entityService: EntityService) { }
 
-  ngOnInit() {
-    if (this.configName !== undefined && this.$configuration === undefined) {
-      this.$configuration = this.entityService.getEntityConfigurations().pipe(map(configs => configs[this.configName]));
-    }
-
-    this.$configuration.subscribe(config => {
-      this.configuration = config;
-
-      this.isEmpty = (!this.configuration.components && this.configuration.groups === null);
+  init() {
+    this.entityService.getEntityConfigurations().subscribe(configs => {
+      this.configuration = configs[this.configName];
+      this.isEmpty = !this.configuration.components && this.configuration.groups === null;
       if (this.isEmpty) {
         return;
       }
@@ -78,69 +69,94 @@ export class DynamicTableAttachmentsComponent implements OnInit {
           }
         });
       }
+    });
+  }
 
-      if (this.entryId !== undefined && this.$entryId === undefined) {
-        this.$entryId = new BehaviorSubject(this.entryId).asObservable();
+  ngOnInit() {
+    if (this.configName !== undefined) {
+      this.init();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.configName && changes.configName.previousValue === undefined && changes.configName.currentValue !== undefined) {
+      this.init();
+    }
+
+    if (changes.entryId && this.configuration) {
+      if (this.entryId === undefined || this.entryId === null) {
+        this.selectedNote = undefined;
+        this.logTableData = undefined;
+        this.noteTableData = undefined;
+        return;
       }
 
-      this.$entryId.subscribe(entryId => {
-        this.entryId = entryId;
-
-        if (this.entryId === undefined) {
-          this.selectedNote = undefined;
-          return;
+      if (this.configuration.components) {
+        if (this.configuration.components.includes('LogEntries') && this.logsTable !== null) {
+          if (!this.logTableData) {
+            this.logTableData = new TableData('Logs', 'LogEntry', false, false, false, true, false,
+              '/log/entries/' + this.configuration.type + '/' + this.entryId, '175px');
+          } else {
+            this.logTableData.explicitUrl  = '/log/entries/' + this.configuration.type + '/' + this.entryId;
+            this.logTableData.triggerRefresh.next();
+          }
         }
 
-        this.logTableData = new TableData('Logs', 'LogEntry', false, false, false, true, false,
-        '/log/entries/' + this.configuration.type + '/' + this.entryId, '175px');
-
-        this.noteTableData = new TableData('Note', 'Note', false, false, false, true, false,
-        '/note/entries/' + this.configuration.type + '/' + this.entryId, '175px');
-
-        if (this.configuration.components && this.configuration.components.includes('Notes')) {
-          this.entityService.getAttachments('note', this.configuration.type, this.entryId).subscribe(response =>
-            this.allNotes = response['data']);
-
-          this.$noteSelectedEntry.subscribe(selectedEntry => {
-            if (selectedEntry === undefined) {
-              this.selectedNote = undefined;
-              return;
-            }
-            this.createEmptyNote();
-            const note = this.allNotes.find(element => element['id'] === selectedEntry);
-            if (note) {
-              this.selectedNote.note = note['Notiz'];
-              this.selectedNote.subject = note['Subject'];
-              this.selectedNote.category = note['Kategorie'];
-              this.selectedNote.id = note['id'];
-            }
-          });
+        if (this.configuration.components.includes('Notes')) {
+          if (!this.noteTableData) {
+          this.noteTableData = new TableData('Note', 'Note', false, false, false, true, false,
+            '/note/entries/' + this.configuration.type + '/' + this.entryId, '175px');
+          } else {
+            this.selectedNote = undefined;
+            this.noteTableData.explicitUrl  = '/note/entries/' + this.configuration.type + '/' + this.entryId;
+            this.noteTableData.triggerRefresh.next();
+          }
         }
+      }
 
-        if (this.configuration.components && this.configuration.components.includes('Attributes')) {
-          this.updateAttachments();
-        }
+      if (this.configuration.components && this.configuration.components.includes('Attributes')) {
+        this.updateAttachments();
+      }
 
-        if (this.groupConfigurations) {
-          this.groupMembers.clear();
-          this.allGroupMembers.forEach((value, key) => this.nonGroupMembers.set(key, {...value}));
+      if (this.configuration.components && this.configuration.components.includes('Notes')) {
+        this.entityService.getAttachments('note', this.configuration.type, this.entryId).subscribe(response =>
+          this.allNotes = response['data']);
 
-          this.groupConfigurations.forEach(groupConfig => {
-            this.entityService.membersGroup(groupConfig.type, entryId).subscribe(members => {
-              this.groupMembers.set(groupConfig.type, members);
+        this.$noteSelectedEntry.subscribe(selectedEntry => {
+          if (selectedEntry === undefined) {
+            this.selectedNote = undefined;
+            return;
+          }
+          this.createEmptyNote();
+          const note = this.allNotes.find(element => element['id'] === selectedEntry);
+          if (note) {
+            this.selectedNote.note = note['Notiz'];
+            this.selectedNote.subject = note['Subject'];
+            this.selectedNote.category = note['Kategorie'];
+            this.selectedNote.id = note['id'];
+          }
+        });
+      }
 
-              // Filter out the members which the groupholder already has
-              members.data.forEach(e => {
-                this.nonGroupMembers.get(groupConfig.type).data = this.nonGroupMembers.get(groupConfig.type).data.filter((value) => {
-                  if (value['id'] === e['id']) { return false; }
-                  return true;
-                });
+      if (this.groupConfigurations) {
+        this.groupMembers.clear();
+        this.allGroupMembers.forEach((value, key) => this.nonGroupMembers.set(key, {...value}));
+
+        this.groupConfigurations.forEach(groupConfig => {
+          this.entityService.membersGroup(groupConfig.type, this.entryId).subscribe(members => {
+            this.groupMembers.set(groupConfig.type, members);
+
+            // Filter out the members which the groupholder already has
+            members.data.forEach(e => {
+              this.nonGroupMembers.get(groupConfig.type).data = this.nonGroupMembers.get(groupConfig.type).data.filter((value) => {
+                if (value['id'] === e['id']) { return false; }
+                return true;
               });
             });
           });
-        }
-      });
-    });
+        });
+      }
+    }
   }
 
   async addMembers(items: any[], groupTypeName: string) {
@@ -155,7 +171,10 @@ export class DynamicTableAttachmentsComponent implements OnInit {
 
   async removeNote() {
     if (this.selectedNote['id'] !== undefined) {
-      this.entityService.removeAttachmentEntry('note', this.selectedNote['id']).subscribe(() => this.loadNotes());
+      this.entityService.removeAttachmentEntry('note', this.selectedNote['id']).subscribe(() => {
+        this.loadNotes();
+        this.selectedNote = undefined;
+      });
     } else {
       this.selectedNote = undefined;
     }

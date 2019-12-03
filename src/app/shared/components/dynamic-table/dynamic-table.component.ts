@@ -29,6 +29,7 @@ export class DynamicTableComponent implements OnInit {
   loading = false;
   entityData: EntityData;
   selectedEntry: any;
+  selectedEntryId: number;
   $entryId: Subject<number> = new Subject();
   lastLazyLoadEvent: LazyLoadEvent;
   filtersInTable = false;
@@ -59,10 +60,12 @@ export class DynamicTableComponent implements OnInit {
   }
 
   async rowSelect() {
+    this.selectedEntryId = this.selectedEntry['id'];
     this.$entryId.next(this.selectedEntry['id']);
   }
 
   async rowUnselect() {
+    this.selectedEntryId = undefined;
     this.$entryId.next(undefined);
   }
 

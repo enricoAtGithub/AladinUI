@@ -53,6 +53,6 @@
     </p-table>
   </div>
 
-  <app-dynamic-table-attachments *ngIf="tableData.showAttachments" [$configuration]="$configuration.asObservable()" [$entryId]="$entryId.asObservable()"></app-dynamic-table-attachments>
+  <app-dynamic-table-attachments *ngIf="tableData.showAttachments" [configName]="configuration.type" [entryId]="selectedEntryId"></app-dynamic-table-attachments>
 
 </div>
