@@ -1,11 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Catalogue } from '../../models/catalogue';
 import { CatalogueService } from '../../services/catalogue.service';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { HttpResult } from '../../models/http/http-result';
 import { map, tap } from 'rxjs/operators';
 import { SelectItem } from 'primeng/primeng';
-// import { EventEmitter } from 'events';
 
 @Component({
   selector: 'app-catalogue-chooser-dialog',
@@ -14,26 +13,21 @@ import { SelectItem } from 'primeng/primeng';
 })
 export class CatalogueChooserDialogComponent implements OnInit, OnDestroy {
 
-
-  // @Input() catalogueName: string;
   _catalogueName: string;
   @Input()
     set catalogueName(catalogueName: string) {
       this._catalogueName = catalogueName;
-      // console.log('[catalogue-chooser] setting catalog name: ', this._catalogueName);
     }
     get catalogueName() {
       return this._catalogueName;
     }
   @Input() header = '';
-  // @Input() description = 'Element auswählen';
   @Input() preSelectedOption = '';
   @Input() visible = false;
   @Input() catalogueDisplayName = 'Element auswählen';
   @Input() showHeader = false;
   @Output() itemSelected = new EventEmitter<string>();
 
-  // catalogue$: Observable<Catalogue>;
   catalogue: Catalogue;
   catalogueSubscription: Subscription;
 
@@ -42,22 +36,10 @@ export class CatalogueChooserDialogComponent implements OnInit, OnDestroy {
   selectedItem: string;
   errMsg: string;
   showErrMsg = false;
-  // catalogueSubscription: Subscription;
 
   constructor(private catalogueService: CatalogueService) { }
 
   ngOnInit() {
-    // console.log('[catalogue-chooser] catalog name: ', this.catalogueName);
-    // this.catalogue$ = this.catalogueService.getCatalogue(this.catalogueName)
-    //   .pipe(
-    //     tap((httpResult: HttpResult<Catalogue>) => {
-    //       if (!httpResult.success) {
-    //         this.showErrorMessage(httpResult.errMsg);
-    //       }
-    //     }),
-    //     map((httpResult: HttpResult<Catalogue>) => httpResult.result),
-    //     tap(catalogue => console.log('[catalogue-chooser] catalog: ', catalogue))
-    //   );
     this.catalogueSubscription = this.catalogueService.getCatalogue(this.catalogueName)
       .pipe(
         tap((httpResult: HttpResult<Catalogue>) => {
@@ -66,21 +48,19 @@ export class CatalogueChooserDialogComponent implements OnInit, OnDestroy {
           }
         }),
         map((httpResult: HttpResult<Catalogue>) => httpResult.result),
-        // tap(catalogue => console.log('[catalogue-chooser] catalog: ', catalogue))
       ).subscribe(catalogue => {
         this.catalogue = catalogue;
-        this.catalogItems = catalogue.values.map(value => <SelectItem>{label: value, value: value});
+        this.catalogItems = catalogue.values.map(value => <SelectItem>{label: value.name, value: value.name});
+        if (!!this.preSelectedOption) {
+          this.selectedItem = this.preSelectedOption;
+        } else {
         this.selectedItem = this.catalogItems[0].value;
+        }
         this.onApplySelection();
       });
-
-    if (this.preSelectedOption !== '') {
-      this.selectedItem = this.preSelectedOption;
-    }
   }
 
   ngOnDestroy(): void {
-    // throw new Error('Method not implemented.');
   }
 
   showErrorMessage(errMsg: string) {
@@ -93,7 +73,6 @@ export class CatalogueChooserDialogComponent implements OnInit, OnDestroy {
   }
 
   onApplySelection() {
-    // console.log('[CatalogueChooserDialogComponent - onApplySelection] selected item: ', this.selectItem);
     this.itemSelected.emit(this.selectedItem);
     this.visible = false;
   }
