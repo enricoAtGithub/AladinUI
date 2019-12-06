@@ -19,13 +19,11 @@ export class DiagramService {
 
 
   public getBaseUrl() {
-    // console.log('[StorageUrlService-getBaseUrl]');
     return AppConfig.getBaseUrl() + '/storage';
   }
   // just temporary
   public getCapacityData(): Observable<DiagramData> {
     const url = `${this.getBaseUrl()}/capacity`;
-    // console.log('[DiagramService-getCapacityData] url: ', url);
     return this.http.get<DiagramData>(url);
   }
 
