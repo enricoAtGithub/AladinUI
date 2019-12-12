@@ -56,6 +56,11 @@ export class EntityDialogComponent implements OnInit {
     });
   }
 
+  nullField(field: any, form: NgForm) {
+    console.log('changed value ' + this.entity[field['header']] + ' of field ' + field.header + ' to null');
+    form.control.patchValue({[field['header']]: null});
+  }
+
   onSubmit(entityForm: FormGroup) {
     this.configuration.fields.forEach(field => {
       if (field.type === 'Date') {
