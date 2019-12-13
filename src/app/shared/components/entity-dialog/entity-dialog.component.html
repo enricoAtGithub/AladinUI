@@ -1,5 +1,5 @@
 <p-dialog header="Entity Auswahl" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog" [style]="{width: '80%'}" appendTo="body">
-  <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData" [$selectedEntryId]="$selectedEntity"></app-dynamic-table>
+  <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData" (onEntitySelection)="entitySelected($event, entityForm)"></app-dynamic-table>
 </p-dialog>
 
 <form (ngSubmit)="onSubmit(entityForm)" #entityForm="ngForm" class="ui-g">
@@ -24,9 +24,10 @@
         <span *ngSwitchCase="'CatalogueEntry'" style="flex-grow: 1;">
           <p-dropdown [required]="field.mandatory" [name]="field.header" [options]="catalogueOptions.get(field.defaultCatalogue)" optionLabel="name" [ngModel]="update ? entity[field.header] : undefined"></p-dropdown>
         </span>
-        <span *ngSwitchDefault class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1;">
-          <input [required]="field.mandatory" [name]="field.header" [ngModel]="update ? entity[field.header] : undefined" id="float-input" type="number" style="width: 60px" pInputText>
-          <button pButton type="button" (click)="openEntitySelectionDialog(field, entityForm)" icon="pi pi-pencil"></button>
+        <span *ngSwitchDefault class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
+          <input #textModule [disabled]="true" placeholder="Unverändert" id="float-input" style="width: 100%" pInputText>
+          <input [required]="field.mandatory" [name]="field.header" [ngModel]="update ? entity[field.header] : undefined" type="hidden">
+          <button pButton type="button" (click)="openEntitySelectionDialog(field, textModule)" icon="pi pi-pencil"></button>
           <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
         </span>
         <button *ngIf="!field.mandatory" pButton type="button" (click)="nullField(field, entityForm)" icon="pi pi-times"></button>

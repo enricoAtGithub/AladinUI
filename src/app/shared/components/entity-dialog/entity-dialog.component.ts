@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { DynamicDialogRef, DynamicDialogConfig, InputText, InputTextModule } from 'primeng/primeng';
+import { DynamicDialogRef, DynamicDialogConfig, InputText } from 'primeng/primeng';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { FormGroup, NgForm } from '@angular/forms';
 import { EntityService } from '../../services/entity.service';
 import { CatalogueService } from 'src/app/user/services/catalogue.service';
 import { TableData } from '../../models/table-data';
-import { Subject } from 'rxjs';
-import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-entity-dialog',
@@ -20,7 +18,7 @@ export class EntityDialogComponent implements OnInit {
   entity: any;
   displayEntitySelectionDialog = false;
   entitySelectionTableData: TableData;
-  $selectedEntity = new Subject<number>();
+  entitySelectionContext: {header: string, textModule: any};
 
   constructor(public ref: DynamicDialogRef, public config: DynamicDialogConfig, private entityService: EntityService,
     private catalogueService: CatalogueService) { }
@@ -47,17 +45,19 @@ export class EntityDialogComponent implements OnInit {
     });
   }
 
-  openEntitySelectionDialog(field: any, form: NgForm) {
+  entitySelected(entity: any, form: NgForm) {
+    form.control.patchValue({[this.entitySelectionContext.header]: entity['id']});
+    this.entitySelectionContext.textModule['value'] = entity['_repr_'];
+    this.displayEntitySelectionDialog = false;
+  }
+
+  openEntitySelectionDialog(field: any, input: InputText) {
+    this.entitySelectionContext = {header: field['header'], textModule: input};
     this.entitySelectionTableData = new TableData(field['type'], field['type'], false, false, false, true, true, undefined, '700px', false);
     this.displayEntitySelectionDialog = true;
-    this.$selectedEntity.pipe(first()).subscribe(selectedId => {
-      form.control.patchValue({[field['header']]: selectedId});
-      this.displayEntitySelectionDialog = false;
-    });
   }
 
   nullField(field: any, form: NgForm) {
-    console.log('changed value ' + this.entity[field['header']] + ' of field ' + field.header + ' to null');
     form.control.patchValue({[field['header']]: null});
   }
 
