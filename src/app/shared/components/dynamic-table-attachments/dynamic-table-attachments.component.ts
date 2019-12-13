@@ -35,7 +35,6 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   logTableData: TableData;
   noteTableData: TableData;
 
-  $noteSelectedEntry: Subject<number> = new Subject();
   allNotes: any[];
   selectedNote: Note;
 
@@ -121,21 +120,6 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
       if (this.configuration.components && this.configuration.components.includes('Notes')) {
         this.entityService.getAttachments('note', this.configuration.type, this.entryId).subscribe(response =>
           this.allNotes = response['data']);
-
-        this.$noteSelectedEntry.subscribe(selectedEntry => {
-          if (selectedEntry === undefined) {
-            this.selectedNote = undefined;
-            return;
-          }
-          this.createEmptyNote();
-          const note = this.allNotes.find(element => element['id'] === selectedEntry);
-          if (note) {
-            this.selectedNote.note = note['Notiz'];
-            this.selectedNote.subject = note['Subject'];
-            this.selectedNote.category = note['Kategorie'];
-            this.selectedNote.id = note['id'];
-          }
-        });
       }
 
       if (this.groupConfigurations) {
@@ -199,6 +183,21 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
     this.selectedNote = new Note();
     this.selectedNote.ownerType = this.configuration.type;
     this.selectedNote.ownerId = this.entryId;
+  }
+
+  noteSelected(entity: any) {
+    if (entity === undefined) {
+      this.selectedNote = undefined;
+      return;
+    }
+    this.createEmptyNote();
+    const note = this.allNotes.find(element => element['id'] === entity['id']);
+    if (note) {
+      this.selectedNote.note = note['Notiz'];
+      this.selectedNote.subject = note['Subject'];
+      this.selectedNote.category = note['Kategorie'];
+      this.selectedNote.id = note['id'];
+    }
   }
 
   openAddAttributeDialog() {

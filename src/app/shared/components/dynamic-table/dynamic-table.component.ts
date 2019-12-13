@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Input} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter} from '@angular/core';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
 import { EntityData } from '../../models/entity-data';
@@ -20,8 +20,8 @@ import { delay } from 'q';
 })
 export class DynamicTableComponent implements OnInit {
   @Input() tableData: TableData;
-  @Input() $selectedEntryId: Subject<number>;
   @Input() dblClickCallback: (data) => any;
+  @Output() onEntitySelection = new EventEmitter();
 
   configuration: EntityConfiguration;
   $configuration: Subject<EntityConfiguration> = new Subject();
@@ -39,9 +39,6 @@ export class DynamicTableComponent implements OnInit {
     private errorNotificationService: ErrorNotificationService) {}
 
   ngOnInit() {
-    if (this.$selectedEntryId !== undefined) {
-      this.$entryId = this.$selectedEntryId;
-    }
     this.configuration = new EntityConfiguration();
     this.entityData = new EntityData();
     this.entityService.getEntityConfigurations().subscribe(async configs => {
@@ -60,13 +57,11 @@ export class DynamicTableComponent implements OnInit {
   }
 
   async rowSelect() {
-    this.selectedEntryId = this.selectedEntry['id'];
-    this.$entryId.next(this.selectedEntry['id']);
+    this.onEntitySelection.emit(this.selectedEntry);
   }
 
   async rowUnselect() {
-    this.selectedEntryId = undefined;
-    this.$entryId.next(undefined);
+    this.onEntitySelection.emit(undefined);
   }
 
   async refreshTableContents() {
@@ -177,7 +172,7 @@ export class DynamicTableComponent implements OnInit {
         entity: data,
         config: this.configuration
       },
-      header: 'Bearbeiten',
+      header: data['_repr_'] + ' bearbeiten',
       width: '25%'
     });
 

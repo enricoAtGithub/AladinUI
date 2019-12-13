@@ -56,7 +56,7 @@
 
     <p-tabPanel *ngIf="this.configuration?.components?.includes('Notes')" header="Notizen" [selected]="true">
       <div style="height: 250px">
-        <app-dynamic-table #notesTable class="ui-g-6" style="padding: 0px" *ngIf="noteTableData" [tableData]="noteTableData" [$selectedEntryId]="$noteSelectedEntry"></app-dynamic-table>
+        <app-dynamic-table #notesTable class="ui-g-6" style="padding: 0px" *ngIf="noteTableData" [tableData]="noteTableData" (onEntitySelection)="noteSelected($event)"></app-dynamic-table>
         <div *ngIf="selectedNote" class="ui-g-6" style="padding: 7px">
           <div style="margin-bottom: 7px;">
             <input type="text" style="width: 90%; display: inline" pInputText [(ngModel)]="selectedNote.subject">
