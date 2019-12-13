@@ -58,10 +58,12 @@ export class DynamicTableComponent implements OnInit {
 
   async rowSelect() {
     this.onEntitySelection.emit(this.selectedEntry);
+    this.selectedEntryId = this.selectedEntry['id'];
   }
 
   async rowUnselect() {
     this.onEntitySelection.emit(undefined);
+    this.selectedEntryId = undefined;
   }
 
   async refreshTableContents() {
