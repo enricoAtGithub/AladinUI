@@ -6,13 +6,17 @@
         <label for="float-input">Name</label>
       </span> 
       <span class="ui-float-label form-group">
-        <p-dropdown required [options]="types" name="Typ" [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.attributeType"  [autoDisplayFirst]="false"></p-dropdown>
+        <p-dropdown required [options]="types" name="Typ" [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.attributeType"
+          [autoDisplayFirst]="false"></p-dropdown>
         <label for="float-input">Typ</label>
       </span>
-      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" 
-        *ngIf="newAttribute.attributeType === 'Long' || newAttribute.attributeType === 'String' || newAttribute.attributeType === undefined">
-        <input required name="Wert" id="float-input" [type]="newAttribute.attributeType === 'Long' ? 'number' : 'text'" [(ngModel)]="newAttribute.stringValue"
-          style="width: 100%" pInputText> 
+      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
+        *ngIf="newAttribute.attributeType === 'String' || newAttribute.attributeType === undefined">
+        <input required name="Wert" id="float-input" type="text" [(ngModel)]="newAttribute.stringValue" style="width: 100%" pInputText> 
+        <label for="float-input">Wert</label>
+      </span>
+      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" *ngIf="newAttribute.attributeType === 'Long'">
+        <input required name="Wert" id="float-input" type="number" [(ngModel)]="newAttribute.longValue" style="width: 100%" pInputText> 
         <label for="float-input">Wert</label>
       </span>
       <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px; height: 26px" *ngIf="newAttribute.attributeType === 'Boolean'">
