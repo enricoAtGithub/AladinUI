@@ -2,10 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {AppLayoutComponent} from '../app-layout/app-layout.component';
 import {trigger, state, transition, style, animate} from '@angular/animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { Router } from '@angular/router';
 import {Md5} from 'ts-md5/dist/md5';
 import { AppThemeComponent } from './app-layout.theme.component';
 import { DialogService } from 'primeng/primeng';
-import { Router } from '@angular/router';
 import { JMeleonPermissionsService } from 'src/app/auth/services/jmeleon-permissions.service';
 
 @Component({
@@ -22,26 +22,32 @@ import { JMeleonPermissionsService } from 'src/app/auth/services/jmeleon-permiss
                 [@menu]="app.isSlim()? app.usermenuActive ? 'visible' : 'hidden' :
                 app.usermenuActive ? 'visibleAnimated' : 'hiddenAnimated'">
                 <li #profile [ngClass]="{'menuitem-active':app.activeProfileItem === profile}">
-                    <a href="#" (click)="onProfileItemClick($event,profile); router.navigate(['/profile'])">
+                    <a href="#" (click)="onProfileItemClick($event,profile); router.navigate(['/profile'])" id="aProfile">
                         <i class="fa fa-fw fa-user"></i>
                         <span class="topbar-item-name">Profil</span>
                     </a>
                 </li>
                 <li #settings [ngClass]="{'menuitem-active':app.activeProfileItem === settings}">
-                    <a href="#" (click)="onProfileItemClick($event,settings)">
+                    <a href="#" (click)="onProfileItemClick($event,settings)" id="aProfileSettings">
                         <i class="fa fa-fw fa-cog"></i>
                         <span class="topbar-item-name">Einstellungen</span>
                         <i class="layout-menuitem-toggler fa fa-fw fa-angle-down"></i>
                     </a>
                     <ul>
                         <li role="menuitem">
-                            <a href="#" (click)="onProfileSubItemClick($event); showThemeDialog();">
+                            <a href="#" (click)="onProfileSubItemClick($event); showThemeDialog();" id="aProfileColorSettings">
                                 <i class="fa fa-fw fa-paint-brush"></i>
                                 <span>Farbschema ändern</span>
                             </a>
                         </li>
                     </ul>
                 </li>
+                <li #logoutLi [ngClass]="{'menuitem-active':app.activeProfileItem === logout}" id="logout-li">
+                <a id="logout-link" href="/" (click)="onProfileItemClick($event,logoutLi); logout();" id="aProfileLogout">
+                    <i class="fa fa-fw fa-sign-out"></i>
+                    <span class="topbar-item-name">Logout</span>
+                </a>
+            </li>
             </ul>
         </div>
     `,
@@ -75,8 +81,8 @@ export class AppProfileComponent implements OnInit {
         public authService: AuthService,
         public router: Router,
         private dialogService: DialogService,
-        private jmeleonPermissionService: JMeleonPermissionsService
-    ) {}
+        private store$: Store<RootStoreState.State>,
+        private jmeleonPermissionService: JMeleonPermissionsService) {}
 
     ngOnInit() {
         this.authService.localUser$.subscribe(
@@ -122,6 +128,12 @@ export class AppProfileComponent implements OnInit {
             header: 'Farbschema bearbeiten',
             width: '25%'
         });
+    }
+
+    logout() {
+        // authService.logout();
+        this.store$.dispatch(new UserProfileActions.LogoutRequestedAction());
+        this.router.navigate(['/login']);
     }
 
 }
