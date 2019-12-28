@@ -63,12 +63,15 @@ export class EntityDialogComponent implements OnInit {
 
   onSubmit(entityForm: FormGroup) {
     this.configuration.fields.forEach(field => {
-      if (field.type === 'Date') {
+      if (field.type === 'int') {
+        if (entityForm.value[field.header] === '') {
+          entityForm.value[field.header] = null;
+        }
+      } else if (field.type === 'Date') {
         if (entityForm.value[field.header] != null) {
           entityForm.value[field.header] = new Date(entityForm.value[field.header]).toISOString();
         }
-      }
-      if (field.type === 'CatalogueEntry') {
+      } else if (field.type === 'CatalogueEntry') {
         entityForm.value[field.header] = entityForm.value[field.header]['id'];
       }
     });
