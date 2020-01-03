@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { BrowserStorageService } from './services/browser-storage.service';
 
 export class ServerInfo {
     host: string;
@@ -30,7 +31,9 @@ export class AppConfig {
 
     static uiInfo: UIInfo;
 
-    constructor(private http: HttpClient) {
+    constructor(
+        private http: HttpClient,
+        private browserStorageService: BrowserStorageService) {
         // load() gets called in the app-module already.
         // this.load();
 
@@ -41,9 +44,11 @@ export class AppConfig {
     }
 
     load() {
-        console.log('[[AppConfig-load]] gets called.');
+        if (this.browserStorageService.hasUIInfo()) {
+            AppConfig.uiInfo = this.browserStorageService.getUIInfo();
+        }
+
         const jsonFile = `./assets/config/postbuildconfig.json`;
-        // this.http.get('../../assets/config/postbuildconfig.json').subscribe(json => {
         this.http.get(jsonFile).subscribe(json => {
             const uiInfo = json as UIInfo;
             if (!uiInfo.baseUrl) {
@@ -54,6 +59,8 @@ export class AppConfig {
             }
             AppConfig.uiInfo = uiInfo;
             AppConfig.uiInfoSubject.next(uiInfo);
+
+            this.browserStorageService.saveUIInfo(uiInfo);
         });
     }
 
@@ -62,8 +69,6 @@ export class AppConfig {
             this.http.get<ServerInfo>(uiInfo.baseUrl + '/admin/info')
                     .subscribe(serverInfo => AppConfig.serverInfoSubject.next(serverInfo));
         });
-        // this.http.get<ServerInfo>(AppConfig.getBaseUrl() + '/admin/info')
-        //             .subscribe(serverInfo => AppConfig.serverInfoSubject.next(serverInfo));
     }
 
 

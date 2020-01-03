@@ -80,7 +80,7 @@ export class AuthService {
           this.userSubject.next(user);
           this.isLoggedInSubject.next(true);
           // todo: create local storage service!
-          localStorage.setItem('user', JSON.stringify(user));
+          // localStorage.setItem('user', JSON.stringify(user));
         }),
         map(user => {
           const httpResult: HttpResult<User> = {
