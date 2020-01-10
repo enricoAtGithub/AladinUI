@@ -8,6 +8,7 @@
       <ng-template *ngIf="tableData.showHeader" pTemplate="caption">
         {{configuration.displayName}}
         <button pButton (click)="showAddEntityDialog()" icon="pi pi-plus" class="ui-button-success" style="float: right; margin-top: -5px;"></button>
+        <button pButton (click)="refreshTableContents()" icon="pi pi-undo" class="ui-button-secondary" style="float: right; margin-top: -5px; margin-right: 5px;"></button>
       </ng-template>
       <!-- Table Headers -->
       <ng-template pTemplate="header" let-columns>
