@@ -51,7 +51,7 @@
           [showSourceControls]="false" [showTargetControls]="false">
           <ng-template let-item pTemplate="item">
             <div *ngFor="let field of groupConfig.memberFields">
-              <div style="display: inline" *ngIf="field.visible">{{item[field.header]}}</div>
+              <div style="display: inline" *ngIf="field.visible">{{item[field.field]}}</div>
             </div>
           </ng-template>
         </p-pickList>
@@ -101,37 +101,37 @@
               <td>
                 <p-cellEditor>
                   <ng-template pTemplate="input">
-                    <input pInputText type="text" [(ngModel)]="rowData.Name" style="width: 100%">
+                    <input pInputText type="text" [(ngModel)]="rowData.name" style="width: 100%">
                   </ng-template>
                   <ng-template pTemplate="output"> 
-                    {{rowData.Name}}
+                    {{rowData.name}}
                   </ng-template>
                 </p-cellEditor>
               </td>
               <td>
                 <p-cellEditor>
                   <ng-template pTemplate="input">
-                    <p-dropdown [options]="types" [(ngModel)]="rowData.Typ" [style]="{'width':'100%'}"></p-dropdown>
+                    <p-dropdown [options]="types" [(ngModel)]="rowData.attributeType" [style]="{'width':'100%'}"></p-dropdown>
                   </ng-template>
                   <ng-template pTemplate="output">
-                    {{rowData.Typ}}
+                    {{rowData.attributeType}}
                   </ng-template>
                 </p-cellEditor>
               </td>
               <td>
                 <p-cellEditor>
                   <ng-template  pTemplate="input">
-                    <p-checkbox *ngIf="rowData.Typ === 'Boolean'" binary="true" [(ngModel)]="rowData.BooleanValue"></p-checkbox>
-                    <input *ngIf="rowData.Typ === 'Long'" pInputText type="number" [(ngModel)]="rowData.LongValue" style="width: 100%">
-                    <input *ngIf="rowData.Typ === 'String'" pInputText type="text" [(ngModel)]="rowData.StringValue" style="width: 100%">
-                    <p-calendar *ngIf="rowData.Typ === 'Date'" [(ngModel)]="rowData.DateValue" showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}"></p-calendar>
+                    <p-checkbox *ngIf="rowData.attributeType === 'Boolean'" binary="true" [(ngModel)]="rowData.booleanValue"></p-checkbox>
+                    <input *ngIf="rowData.attributeType === 'Long'" pInputText type="number" [(ngModel)]="rowData.longValue" style="width: 100%">
+                    <input *ngIf="rowData.attributeType === 'String'" pInputText type="text" [(ngModel)]="rowData.stringValue" style="width: 100%">
+                    <p-calendar *ngIf="rowData.attributeType === 'Date'" [(ngModel)]="rowData.dateValue" showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}"></p-calendar>
                   </ng-template>
                   
                   <ng-template pTemplate="output"> 
-                    {{rowData.Typ === 'Boolean' ? rowData.BooleanValue : ''}} 
-                    {{rowData.Typ === 'String' ? rowData.StringValue : ''}} 
-                    {{rowData.Typ === 'Long' ? rowData.LongValue : ''}} 
-                    {{rowData.Typ === 'Date' ? rowData.DateValue : ''}}
+                    {{rowData.attributeType === 'Boolean' ? rowData.booleanValue : ''}} 
+                    {{rowData.attributeType === 'String' ? rowData.stringValue : ''}} 
+                    {{rowData.attributeType === 'Long' ? rowData.longValue : ''}} 
+                    {{rowData.attributeType === 'Date' ? rowData.dateValue : ''}}
                   </ng-template>
                 </p-cellEditor>
               </td>

@@ -40,7 +40,7 @@
         <tr [pSelectableRow]="rowData" (dblclick)="doubleClickTableRow(rowData)">
           <td *ngFor="let col of columns" [style.width]="col.width" style="word-wrap: break-word;">
             <span class="ui-column-title">{{col.header}}</span>
-              {{processData(rowData[col.header], col)}}
+              {{processData(rowData[col.field], col)}}
           </td>
           <!-- Crud Buttons -->
           <td *ngIf="tableData.showCrudButtons !== false" style="text-align: center">

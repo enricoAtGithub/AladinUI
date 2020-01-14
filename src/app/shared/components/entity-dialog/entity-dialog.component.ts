@@ -18,7 +18,7 @@ export class EntityDialogComponent implements OnInit {
   entity: any;
   displayEntitySelectionDialog = false;
   entitySelectionTableData: TableData;
-  entitySelectionContext: {header: string, textModule: any};
+  entitySelectionContext: {field: string, textModule: any};
 
   constructor(public ref: DynamicDialogRef, public config: DynamicDialogConfig, private entityService: EntityService,
     private catalogueService: CatalogueService) { }
@@ -30,15 +30,15 @@ export class EntityDialogComponent implements OnInit {
     this.entity = this.config.data['entity'];
     this.configuration.fields.forEach(field => {
       if (field.type === 'Date' && this.update) {
-        if (this.entity[field.header] != null) {
-          this.entity[field.header] = new Date(this.entity[field.header]);
+        if (this.entity[field.field] != null) {
+          this.entity[field.field] = new Date(this.entity[field.field]);
         }
       }
       if (field.type === 'CatalogueEntry') {
         this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
           this.catalogueOptions.set(catalogue.name, catalogue.values);
           if (this.update) {
-            this.entity[field.header] = catalogue.values.find(element => element['id'] === this.entity[field.header]);
+            this.entity[field.field] = catalogue.values.find(element => element['id'] === this.entity[field.field]);
           }
         });
       }
@@ -46,33 +46,33 @@ export class EntityDialogComponent implements OnInit {
   }
 
   entitySelected(entity: any, form: NgForm) {
-    form.control.patchValue({[this.entitySelectionContext.header]: entity['id']});
+    form.control.patchValue({[this.entitySelectionContext.field]: entity['id']});
     this.entitySelectionContext.textModule['value'] = entity['_repr_'];
     this.displayEntitySelectionDialog = false;
   }
 
   openEntitySelectionDialog(field: any, input: InputText) {
-    this.entitySelectionContext = {header: field['header'], textModule: input};
+    this.entitySelectionContext = {field: field['field'], textModule: input};
     this.entitySelectionTableData = new TableData(field['type'], field['type'], false, false, false, true, true, undefined, '700px', false);
     this.displayEntitySelectionDialog = true;
   }
 
   nullField(field: any, form: NgForm) {
-    form.control.patchValue({[field['header']]: null});
+    form.control.patchValue({[field['field']]: null});
   }
 
   onSubmit(entityForm: FormGroup) {
     this.configuration.fields.forEach(field => {
       if (field.type === 'int') {
-        if (entityForm.value[field.header] === '') {
-          entityForm.value[field.header] = null;
+        if (entityForm.value[field.field] === '') {
+          entityForm.value[field.field] = null;
         }
       } else if (field.type === 'Date') {
-        if (entityForm.value[field.header] != null) {
-          entityForm.value[field.header] = new Date(entityForm.value[field.header]).toISOString();
+        if (entityForm.value[field.field] != null) {
+          entityForm.value[field.field] = new Date(entityForm.value[field.field]).toISOString();
         }
       } else if (field.type === 'CatalogueEntry') {
-        entityForm.value[field.header] = entityForm.value[field.header]['id'];
+        entityForm.value[field.field] = entityForm.value[field.field]['id'];
       }
     });
 

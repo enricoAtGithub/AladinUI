@@ -210,7 +210,7 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   updateAttachments() {
     this.entityService.getAttachments('attribute', this.configuration.type, this.entryId).subscribe(response => {
       this.attributes = response['data'];
-      this.attributes.forEach(attr => {if (attr['Typ'] === 'Date') {attr['DateValue'] = new Date(attr['Value']); }});
+      this.attributes.forEach(attr => {if (attr['attributeType'] === 'Date') {attr['DateValue'] = new Date(attr['Value']); }});
     });
   }
 
@@ -229,12 +229,12 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   }
 
   onRowEditSave(attribute: any) {
-    const type: string = attribute['Typ'];
-    this.entityService.updateAttachmentEntry('attribute', {id: attribute['id'], name: attribute['Name'], attributeType: type,
-      longValue: type === 'Long' ? attribute['LongValue'] : undefined,
-      stringValue: type === 'String' ? attribute['StringValue'] : undefined,
-      booleanValue: type === 'Boolean' ? attribute['BooleanValue'] : undefined,
-      dateValue: type === 'Date' ? attribute['DateValue'] : undefined
+    const type: string = attribute['attributeType'];
+    this.entityService.updateAttachmentEntry('attribute', {id: attribute['id'], name: attribute['name'], attributeType: type,
+      longValue: type === 'Long' ? attribute['longValue'] : undefined,
+      stringValue: type === 'String' ? attribute['stringValue'] : undefined,
+      booleanValue: type === 'Boolean' ? attribute['booleanValue'] : undefined,
+      dateValue: type === 'Date' ? attribute['dateValue'] : undefined
     }).subscribe();
   }
 
