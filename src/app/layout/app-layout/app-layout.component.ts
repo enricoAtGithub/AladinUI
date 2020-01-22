@@ -1,6 +1,10 @@
 import {AfterViewInit, Component, Renderer2, ViewChild} from '@angular/core';
 import {ScrollPanel} from 'primeng/primeng';
 import { AuthService } from '../../auth/services/auth.service';
+import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-index';
+import { Store, select } from '@ngrx/store';
+import { selectError } from 'src/app/root-store/root-selectors';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-layout',
@@ -53,8 +57,12 @@ export class AppLayoutComponent implements AfterViewInit {
 
     @ViewChild('layoutMenuScroller', {static: false}) layoutMenuScrollerViewChild: ScrollPanel;
 
-    constructor(public renderer: Renderer2, public authService: AuthService) {
-    }
+    constructor(
+        public renderer: Renderer2,
+        public authService: AuthService,
+        public router: Router,
+        private store$: Store<RootStoreState.State>,
+    ) {}
 
     ngAfterViewInit() {
         // if (this.authService.isLoggedIn) {
@@ -138,6 +146,16 @@ export class AppLayoutComponent implements AfterViewInit {
         this.topbarMenuActive = !this.topbarMenuActive;
 
         this.hideOverlayMenu();
+
+        event.preventDefault();
+    }
+
+
+    onLogoutButtonClick(event) {
+        this.topbarItemClick = true;
+
+        this.store$.dispatch(new UserProfileActions.LogoutRequestedAction());
+        this.router.navigate(['/login']);
 
         event.preventDefault();
     }

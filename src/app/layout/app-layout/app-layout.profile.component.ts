@@ -2,13 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {AppLayoutComponent} from '../app-layout/app-layout.component';
 import {trigger, state, transition, style, animate} from '@angular/animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { Router } from '@angular/router';
 import {Md5} from 'ts-md5/dist/md5';
 import { AppThemeComponent } from './app-layout.theme.component';
 import { DialogService } from 'primeng/primeng';
-import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-index';
-import { Store, select } from '@ngrx/store';
-import { selectError } from 'src/app/root-store/root-selectors';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-inline-profile',
@@ -44,12 +41,6 @@ import { selectError } from 'src/app/root-store/root-selectors';
                         </li>
                     </ul>
                 </li>
-                <li #logoutLi [ngClass]="{'menuitem-active':app.activeProfileItem === logout}" id="logout-li">
-                <a id="logout-link" href="/" (click)="onProfileItemClick($event,logoutLi); logout();">
-                    <i class="fa fa-fw fa-sign-out"></i>
-                    <span class="topbar-item-name">Logout</span>
-                </a>
-            </li>
             </ul>
         </div>
     `,
@@ -81,8 +72,8 @@ export class AppProfileComponent implements OnInit {
         public app: AppLayoutComponent,
         public authService: AuthService,
         public router: Router,
-        private dialogService: DialogService,
-        private store$: Store<RootStoreState.State>) {}
+        private dialogService: DialogService
+    ) {}
 
     ngOnInit() {
         this.authService.localUser$.subscribe(
@@ -124,12 +115,6 @@ export class AppProfileComponent implements OnInit {
             header: 'Farbschema bearbeiten',
             width: '25%'
         });
-    }
-
-    logout(){
-        // authService.logout();
-        this.store$.dispatch(new UserProfileActions.LogoutRequestedAction());
-        this.router.navigate(['/login']);
     }
 
 }
