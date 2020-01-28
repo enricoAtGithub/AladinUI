@@ -11,7 +11,7 @@ import { EntityService } from '../../services/entity.service';
 export class EntityDropdownComponent implements OnInit {
 
   @Input() propertyName: string;
-  @Input() fieldName: string;
+  @Input() fieldName = '_repr_';
   @Input() allowNull = true;
   @Input() selectedOptionId?: number;
   @Input() defaultNullValue: string;
