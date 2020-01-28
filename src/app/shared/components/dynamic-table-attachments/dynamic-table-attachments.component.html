@@ -45,8 +45,8 @@
       </div>
       <!-- Actual picklist -->
       <div *ngIf="groupMembers && groupMembers.get(groupConfig.type)">
-        <p-pickList #pickListSelector [responsive]="true" [source]="nonGroupMembers.get(groupConfig.type).data"
-          [target]="groupMembers.get(groupConfig.type).data" sourceHeader="Verfügbar" targetHeader="Zugewiesen"
+        <p-pickList #pickListSelector [responsive]="true" [source]="nonGroupMembers.get(groupConfig.type)"
+          [target]="groupMembers.get(groupConfig.type)" sourceHeader="Verfügbar" targetHeader="Zugewiesen"
           (onMoveToTarget)="addMembers($event.items, groupConfig.type)" (onMoveToSource)="removeMembers($event.items, groupConfig.type)"
           [showSourceControls]="false" [showTargetControls]="false">
           <ng-template let-item pTemplate="item">

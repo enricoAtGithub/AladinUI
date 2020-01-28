@@ -26,11 +26,11 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   groupConfigsArray: GroupConfiguration[] = [];
   groupConfigurations: Map<string, GroupConfiguration> = new Map();
   // Contains all entities, that the currently selected entity is member of for each group relation
-  groupMembers: Map<string, GroupMembers> = new Map();
+  groupMembers: Map<string, any> = new Map();
   // Contains all members available for each group relation
-  allGroupMembers: Map<string, EntityData> = new Map();
+  allGroupMembers: Map<string, any> = new Map();
   // Contains all members which are not held by the selected entity for each group relation
-  nonGroupMembers: Map<string, EntityData> = new Map();
+  nonGroupMembers: Map<string, any> = new Map();
 
   logTableData: TableData;
   noteTableData: TableData;
@@ -124,19 +124,18 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
 
       if (this.groupConfigurations) {
         this.groupMembers.clear();
-        this.allGroupMembers.forEach((value, key) => this.nonGroupMembers.set(key, {...value}));
 
         this.groupConfigurations.forEach(groupConfig => {
           this.entityService.membersGroup(groupConfig.type, this.entryId).subscribe(members => {
-            this.groupMembers.set(groupConfig.type, members);
 
-            // Filter out the members which the groupholder already has
-            members.data.forEach(e => {
-              this.nonGroupMembers.get(groupConfig.type).data = this.nonGroupMembers.get(groupConfig.type).data.filter((value) => {
-                if (value['id'] === e['id']) { return false; }
-                return true;
-              });
-            });
+            this.groupMembers.set(groupConfig.type, members.data);
+
+            var memberIds: Set<number> = new Set(members.data.map( m => m.id ));
+
+            // deep copy of entities + filtering for non-members
+            this.nonGroupMembers.set(groupConfig.type, this.allGroupMembers.get(groupConfig.type).data
+              .filter( (d: any) => !memberIds.has(d['id']))
+              .map( (d: any) => { return { ...d }} ));
           });
         });
       }
