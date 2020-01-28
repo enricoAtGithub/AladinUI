@@ -93,10 +93,11 @@ export class DynamicTableComponent implements OnInit {
 
     this.fields.forEach(field => {
       if (event.filters[field.field]) {
+        let filterContent: string = event.filters[field.field].value.replace("\\","\\\\").replace("'","\\'")
         if (field.type === 'String') {
-          qualifier += 'LIKE(\'' + field.header + '\',\'%' +  event.filters[field.field].value + '%\'),';
+          qualifier += 'LIKE(\'' + field.field + '\',\'%' + filterContent  + '%\'),';
         } else {
-          qualifier += 'EQ(\'' + field.header + '\',' + event.filters[field.field].value + ')';
+          qualifier += 'EQ(\'' + field.field + '\',' + filterContent + ')';
         }
       }
     });
@@ -105,9 +106,9 @@ export class DynamicTableComponent implements OnInit {
 
     if (sort) {
       if (event.sortOrder === 1) {
-        sorting += 'ASC(\'' + sort.header + '\')';
+        sorting += 'ASC(\'' + sort.field + '\')';
       } else {
-        sorting += 'DESC(\'' + sort.header + '\')';
+        sorting += 'DESC(\'' + sort.field + '\')';
       }
     }
 
