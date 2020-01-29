@@ -97,7 +97,7 @@ export class DynamicTableComponent implements OnInit {
         if (field.type === 'String') {
           qualifier += 'LIKE(\'' + field.field + '\',\'%' + filterContent  + '%\'),';
         } else {
-          qualifier += 'EQ(\'' + field.field + '\',' + filterContent + ')';
+          qualifier += 'EQ(\'' + field.field + '\',' + filterContent + '),';
         }
       }
     });
