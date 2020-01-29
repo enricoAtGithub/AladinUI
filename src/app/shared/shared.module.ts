@@ -24,6 +24,7 @@ import { FileSaverModule } from 'ngx-filesaver';
 import { PickListModule } from 'primeng/picklist';
 import { ErrorNotificationService } from './services/error-notification.service';
 import { DynamicTableAttachmentsComponent } from './components/dynamic-table-attachments/dynamic-table-attachments.component';
+import { KeyFilterModule } from 'primeng/primeng';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { DynamicTableAttachmentsComponent } from './components/dynamic-table-att
     DropdownModule,
     MultiSelectModule,
     InputTextModule,
+    KeyFilterModule,
     FileUploadModule,
     DialogModule,
     ListboxModule,
