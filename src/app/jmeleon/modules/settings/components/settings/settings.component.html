@@ -1,12 +1,63 @@
 
-<h1>Einstellungen</h1>
+
+<div>
+    <h1>Einstellungen</h1>
+
+    <div >
+        <p-button label="Ansicht aktualisieren" icon="pi pi-replay" (click)="loadSettings()" class="spacing-bottom-small"></p-button>
+    </div>
+</div>
 
 <ng-template ngFor
     let-category
-    [ngForOf]="categories">
+    [ngForOf]="categories$ | async">
     
-    <p-card>
-        Content
+    <p-card styleClass="spacing-bottom-small">
+        <div>
+            <h2>{{category.category}}</h2>
+
+            <ng-template ngFor let-setting [ngForOf]="category.settings">
+                <div class="p-grid">
+                    <div class="p-col-4">
+                        {{setting.name}}
+                    </div>
+                    <div class="p-col-8"> 
+                        <div *ngIf="setting.name === activeEditSetting; else notInEditMode"  class="p-grid">
+
+                            <div *ngIf="setting.multiline; else singleLine" class="p-col-10">
+                                <textarea [rows]="10" [cols]="100" pInputTextarea [(ngModel)]="setting.value"></textarea>
+                            </div>
+                            <ng-template #singleLine>
+                                <div  class="p-col-10">
+                                    <input type="text" pInputText [(ngModel)]="setting.value" class="ui-g-12">
+                                </div>
+                            </ng-template>    
+                            <div class="p-col-2">
+                                <p-button tooltip="Speichern"  icon="fa fa-save" (click)="saveSetting(setting)"></p-button>
+                                <p-button tooltip="Abbrechen"  icon="fa fa-times" (click)="cancelEdit(setting)"></p-button>
+                            </div>
+
+                        </div>
+                        
+                        <ng-template #notInEditMode>
+                            <div class="p-grid">
+
+                                <div  class="p-col-10">
+                                    {{setting.value}}
+                                </div> 
+                                <div class="p-col-2">
+                                    <p-button tooltip="Bearbeiten"  icon="fa fa-edit" (click)="setActiveForEdit(setting)" [disabled]="!!activeEditSetting"></p-button>
+                                </div>
+                            </div>
+                        </ng-template>    
+
+                        <!-- <span class="ui-float-label">    
+                        </span> -->
+                        <!-- {{setting.value}} -->
+                    </div>
+                </div>
+            </ng-template>
+        </div>
     </p-card>
 
 </ng-template>

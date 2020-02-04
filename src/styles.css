@@ -81,6 +81,20 @@
     color: darkslategray;
 }
 
+.form-header-medium {
+    color: darkslategray;
+    font-weight: bold;
+    font-size: 15px;
+
+}
+
+.table-header-medium {
+    color: darkslategray;
+    font-weight: bold;
+    font-size: 15px;
+
+}
+
 .form-input{
     width: 100%;
     margin: 0; padding: 0; border: 0;

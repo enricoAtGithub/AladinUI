@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { CategoryModel } from '../models/category.model';
 import { AppConfig } from 'src/app/shared/app-config';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap, map, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,11 @@ export class SettingsService {
         this.http.post(url, {name, value})
         .pipe(
           // todo: find better way to handle empty responses!
-          map(() => true)
+          map(() => true),
+          catchError(err => {
+            console.error(`could not save setting '${name}' with value '${value}'. error: `, err);
+            return of(false);
+          })
         )
       )
     );
