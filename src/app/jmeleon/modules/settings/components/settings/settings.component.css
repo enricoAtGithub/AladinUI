@@ -1,0 +1,16 @@
+input[type="text"][disabled] {
+    color: black !important;
+ }
+ input[type="text"][readonly] {
+    background-color: rgba(203, 235, 255, 0.5) !important;
+ }
+ textarea[readonly] {
+    background-color: rgba(203, 235, 255, 0.5) !important;
+ }
+
+ .ui-inputtext{
+    color: black !important;
+ }
+ .ui-inputtext[type="text"][disabled]{
+    color: black !important;
+ }

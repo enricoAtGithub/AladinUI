@@ -4,7 +4,7 @@
     <h1>Einstellungen</h1>
 
     <div >
-        <p-button label="Ansicht aktualisieren" icon="pi pi-replay" (click)="loadSettings()" class="spacing-bottom-small"></p-button>
+        <p-button label="Ansicht aktualisieren" icon="pi pi-replay" (click)="loadSettings()" class="spacing-bottom-small" [disabled]="!!activeEditSetting"></p-button>
     </div>
 </div>
 
@@ -22,7 +22,29 @@
                         {{setting.name}}
                     </div>
                     <div class="p-col-8"> 
-                        <div *ngIf="setting.name === activeEditSetting; else notInEditMode"  class="p-grid">
+                        <div class="p-grid">
+
+                            <div *ngIf="setting.multiline; else singleLine" class="p-col-10">
+                                <textarea [rows]="10" [cols]="100" pInputTextarea [(ngModel)]="setting.value" class="ui-g-12" [readonly]="setting.name !== activeEditSetting"></textarea>
+                            </div>
+                            <ng-template #singleLine>
+                                <div  class="p-col-10">
+                                    <input type="text" pInputText [(ngModel)]="setting.value" class="ui-g-12" [readonly]="setting.name !== activeEditSetting">
+                                </div>
+                            </ng-template>    
+                            <div class="p-col-2" *ngIf="setting.name === activeEditSetting">
+                                <p-button tooltip="Speichern"  icon="fa fa-save" (click)="saveSetting(setting)"></p-button>
+                                <p-button tooltip="Abbrechen"  icon="fa fa-times" (click)="cancelEdit(setting)"></p-button>
+                            </div>
+                            <div class="p-col-2" *ngIf="setting.name !== activeEditSetting">
+                                <p-button tooltip="Bearbeiten"  icon="fa fa-edit" (click)="setActiveForEdit(setting)" [disabled]="!!activeEditSetting"></p-button>
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- <div *ngIf="setting.name === activeEditSetting; else notInEditMode"  class="p-grid">
 
                             <div *ngIf="setting.multiline; else singleLine" class="p-col-10">
                                 <textarea [rows]="10" [cols]="100" pInputTextarea [(ngModel)]="setting.value"></textarea>
@@ -49,7 +71,7 @@
                                     <p-button tooltip="Bearbeiten"  icon="fa fa-edit" (click)="setActiveForEdit(setting)" [disabled]="!!activeEditSetting"></p-button>
                                 </div>
                             </div>
-                        </ng-template>    
+                        </ng-template>     -->
 
                         <!-- <span class="ui-float-label">    
                         </span> -->

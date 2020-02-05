@@ -14,6 +14,7 @@ export class SettingsComponent implements OnInit {
   categories: CategoryModel[];
   categories$: Observable<CategoryModel[]>;
   activeEditSetting: string;
+  orgSettingValue: string;
   constructor(
     private settingService: SettingsService
   ) { }
@@ -46,10 +47,13 @@ export class SettingsComponent implements OnInit {
 
   }
   setActiveForEdit(setting: SettingsModel) {
+    this.orgSettingValue = setting.value;
     this.activeEditSetting = setting.name;
   }
   cancelEdit(setting: SettingsModel) {
     this.activeEditSetting = null;
+    setting.value = this.orgSettingValue;
+    this.orgSettingValue = null;
   }
 
 }
