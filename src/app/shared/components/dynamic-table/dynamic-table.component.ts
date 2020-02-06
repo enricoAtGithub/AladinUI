@@ -93,7 +93,7 @@ export class DynamicTableComponent implements OnInit {
 
     this.fields.forEach(field => {
       if (event.filters[field.field]) {
-        let filterContent: string = event.filters[field.field].value.replace("\\","\\\\").replace("'","\\'")
+        let filterContent: string = event.filters[field.field].value.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
         if (field.type === 'String') {
           qualifier += 'LIKE(\'' + field.field + '\',\'%' + filterContent  + '%\'),';
         } else {
