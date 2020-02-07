@@ -12,15 +12,8 @@ import { mergeMap, catchError } from 'rxjs/operators';
 export class TokenInterceptor implements HttpInterceptor {
   constructor(public auth: AuthService) {}
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    if (request.method === 'POST') {
-        request = request.clone({
-            setHeaders: {
-                'Content-Type':  'application/json'
-            }
-        });
-    }
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     if (this.auth.isLoggedIn && this.auth.localUser && this.auth.localUser.token) {
             request = request.clone({
@@ -33,6 +26,8 @@ export class TokenInterceptor implements HttpInterceptor {
 
             // console.log(`no token... current user: ${JSON.stringify(this.auth.localUser)}`);
         }
+
+    // console.log('http-request: ', request);
 
     return next.handle(request);
   }
