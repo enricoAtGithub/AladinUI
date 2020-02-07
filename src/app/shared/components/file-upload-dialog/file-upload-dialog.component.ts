@@ -44,22 +44,27 @@ export class FileUploadDialogComponent implements OnInit {
   newFileName: string;
   uploadMessages: Message[] = [];
   selectedCatalogueEntry: string;
-  maxUploadInMB: number;
+  maxUploadInByte: number;
 
   constructor(
     private fileService: FileUploadDownloadService,
     private attachmentService: AttachmentService,
     private settingService: SettingsService) {
-      this.maxUploadInMB = 1;
     }
 
   ngOnInit() {
+    this.setMaxUploadSize(1);
     this.url = this.fileService.getUploadUrl();
-    this.settingService.getMaxUpload().subscribe(maxUpload => this.maxUploadInMB = maxUpload * 1024);
+    this.settingService.getMaxUpload().subscribe(maxUploadInMB => this.setMaxUploadSize(maxUploadInMB));
   }
 
   onDlgShow() {
-    this.settingService.getMaxUpload().subscribe(maxUpload => this.maxUploadInMB = maxUpload * 1024);
+    this.settingService.getMaxUpload().subscribe(maxUploadInMB => this.setMaxUploadSize(maxUploadInMB));
+  }
+
+  setMaxUploadSize(setingInMB) {
+    this.maxUploadInByte = setingInMB * 1024;
+    // console.log('maxUploadInByte: ', this.maxUploadInByte);
   }
 
   disableFileNameResetButton(): boolean {
