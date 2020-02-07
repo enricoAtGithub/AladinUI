@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { CategoryModel } from '../models/category.model';
 import { AppConfig } from 'src/app/shared/app-config';
 import { switchMap, map, catchError } from 'rxjs/operators';
+import { SettingsModel } from '../models/setting.model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,9 +22,9 @@ export class SettingsService {
       switchMap(url => this.http.get<CategoryModel[]>(url))
     );
   }
-  getSetting(name: string): Observable<CategoryModel[]> {
+  getSetting(name: string): Observable<SettingsModel> {
     return this.getSettingUrl(name).pipe(
-      switchMap(url => this.http.get<CategoryModel[]>(url))
+      switchMap(url => this.http.get<SettingsModel>(url))
     );
   }
 
@@ -40,6 +41,12 @@ export class SettingsService {
           })
         )
       )
+    );
+  }
+
+  getMaxUpload(): Observable<number> {
+    return this.getSetting('MAX_UPLOAD_SIZE_MB').pipe(
+      map(result => +result.value)
     );
   }
 

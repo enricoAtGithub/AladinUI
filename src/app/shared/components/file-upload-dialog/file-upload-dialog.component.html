@@ -41,6 +41,13 @@
                 [chooseLabel]="chooseLabel"
                 [uploadLabel]="uploadLabel"
                 [cancelLabel]="cancelLabel"
+                [maxFileSize]="maxUploadInMB"
+
+                invalidFileSizeMessageDetail="Max. Uploadgröße ist: {0}"
+                invalidFileSizeMessageSummary="{0}: Datei zu groß,"
+                invalidFileTypeMessageSummary="Ungültiger Dateityp"
+                invalidFileTypeMessageDetail="Gültige Typen: {0}"
+
                 showCancelButton="false"
                 (onBeforeUpload)="onBeforeUpload($event)"
                 (onSend)="onSend($event)"

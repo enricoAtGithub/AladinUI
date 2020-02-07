@@ -6,6 +6,7 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { AttachmentService } from '../../services/attachment.service';
 import { Message } from 'primeng/primeng';
 import { AttachmentRequestData } from '../../models/attachment-request-data';
+import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
 
 const MAIN_TYPE = 'File';
 
@@ -42,15 +43,24 @@ export class FileUploadDialogComponent implements OnInit {
   uploadFileName: string;
   newFileName: string;
   uploadMessages: Message[] = [];
+  selectedCatalogueEntry: string;
+  maxUploadInMB: number;
 
-
-  constructor(private fileService: FileUploadDownloadService, private attachmentService: AttachmentService) { }
+  constructor(
+    private fileService: FileUploadDownloadService,
+    private attachmentService: AttachmentService,
+    private settingService: SettingsService) {
+      this.maxUploadInMB = 1;
+    }
 
   ngOnInit() {
     this.url = this.fileService.getUploadUrl();
+    this.settingService.getMaxUpload().subscribe(maxUpload => this.maxUploadInMB = maxUpload * 1024);
   }
 
-  onDlgShow() {}
+  onDlgShow() {
+    this.settingService.getMaxUpload().subscribe(maxUpload => this.maxUploadInMB = maxUpload * 1024);
+  }
 
   disableFileNameResetButton(): boolean {
     return this.keepOrgFileName || !this.newFileName && this.newFileName === this.uploadFileName;
