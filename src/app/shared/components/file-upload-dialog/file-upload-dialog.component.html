@@ -14,6 +14,21 @@
                 (onError)="onFileError($event)"
                 ></p-fileUpload> -->
 
-<p-fileUpload customUpload="true" (uploadHandler)="myUploader($event)">
-
+<p-fileUpload 
+    [url]="url"
+    [multiple]="false"  
+    [auto]="true"
+    chooseLabel="Dateiauswahl"
+    uploadLabel="Upload"
+    cancelLabel="Verwerfen"
+    showCancelButton="false"
+    onBeforeUpload="onBeforeUpload($event)"
+    onSend="onSend($event)"
+    onUpload="onUpload($event)"
+    onError="onError($event)"
+    onClear="onClear($event)"
+    onRemove="onRemove($event)"
+    onSelect="onSelect($event)"
+    onProgress="onProgress($event)">
+        
 </p-fileUpload>
