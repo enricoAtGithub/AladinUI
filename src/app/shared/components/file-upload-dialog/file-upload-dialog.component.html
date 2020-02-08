@@ -54,23 +54,39 @@
         </div>
     </div>
     <div class="p-grid">
-            <div class="p-col-4" style="text-align: right">Dateiname:</div>
-            <div class="p-col-8">
-                <p-checkbox [(ngModel)]="keepOrgFileName" binary="true" label="Dateinamen beibehalten" [disabled]="disableKeepFileNameCheckbox()"></p-checkbox>
-                <div class="ui-inputgroup">
-                    <input type="text" pInputText placeholder="Dateiname" [readonly]="keepOrgFileName" [(ngModel)]="newFileName">   
-                    <button 
-                        pButton 
-                        type="button" 
-                        icon="fa fa-refresh" 
-                        class="ui-button-warn" 
-                        pTooltip="Dateinamen zurücksetzen"
-                        [disabled]="disableFileNameResetButton()"
-                        (click)="resetFileName()">
-                    </button>      
-                </div>
+        <div class="p-col-4" style="text-align: right">Dateiname:</div>
+        <div class="p-col-8">
+            <p-checkbox 
+                [(ngModel)]="keepOrgFileName" 
+                binary="true" 
+                label="Dateinamen beibehalten" 
+                [disabled]="disableKeepFileNameCheckbox()">
+            </p-checkbox>
+            <div class="ui-inputgroup">
+                <input 
+                    type="text" 
+                    pInputText 
+                    placeholder="Dateiname" 
+                    [readonly]="keepOrgFileName" 
+                    [(ngModel)]="newFileName">   
+                <button 
+                    pButton 
+                    type="button" 
+                    icon="fa fa-refresh" 
+                    class="ui-button-warn" 
+                    pTooltip="Dateinamen zurücksetzen"
+                    [disabled]="disableFileNameResetButton()"
+                    (click)="resetFileName()">
+                </button>      
             </div>
         </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-4" style="text-align: right"></div>
+        <div class="p-col-8">
+            <p-messages [(value)]="uploadMessages"></p-messages>
+        </div>
+    </div>
 
     
 

@@ -3,6 +3,10 @@ import { Catalogue } from '../../models/catalogue';
 import { FileUploadDownloadService } from '../../services/file-upload-download.service';
 import { FileUploadResult } from '../../models/http/file-upload-result';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { AttachmentService } from '../../services/attachment.service';
+import { Message } from 'primeng/primeng';
+
+const MAIN_TYPE = 'File';
 
 @Component({
   selector: 'app-file-upload-dialog',
@@ -16,39 +20,35 @@ export class FileUploadDialogComponent implements OnInit {
   @Input() cancelLabel = 'Abbrechen';
   @Input() dialogHeader = 'Datei hochladen';
 
-  @Input() attachmentCategory: string;
   @Input() catalogueName: string;
   @Input() catalogueDisplayName: string;
+
+  @Input() createAttachment = false;
+  // entity to attach file to
+  @Input() ownerId: number;
+  @Input() ownerType: string;
+  // attachment category for entity
+  @Input() attachmentCategory: string;
 
   @Output() fileUploaded = new EventEmitter<FileUploadResult>();
   @Output() error = new EventEmitter<HttpErrorResponse>();
 
   url: string;
-  // catalogue: Catalogue;
   showCatalogChooser = false;
   showFileDialog = false;
   keepOrgFileName = true;
   uploadFileName: string;
   newFileName: string;
+  uploadMessages: Message[] = [];
 
-  constructor(private fileService: FileUploadDownloadService) { }
+
+  constructor(private fileService: FileUploadDownloadService, private attachmentService: AttachmentService) { }
 
   ngOnInit() {
-    // this.catalogue = new Catalogue();
-    // this.catalogue.name = 'GlassDocumentTypes';
-    // this.catalogue.values.push('Test01', 'Test02');
     this.url = this.fileService.getUploadUrl();
-    // console.log('[file-upload-dialog|ngOnInit] catalogName: ', this.catalogueName);
-    // console.log('[file-upload-dialog|ngOnInit] attachmentCategory: ', this.attachmentCategory);
   }
 
-  onDlgShow() {
-
-  }
-
-  // enableNewFileNameInput(): boolean {
-  //   return !this.keepOrgFileName;
-  // }
+  onDlgShow() {}
 
   disableFileNameResetButton(): boolean {
     return this.keepOrgFileName || !this.newFileName && this.newFileName === this.uploadFileName;
@@ -62,10 +62,30 @@ export class FileUploadDialogComponent implements OnInit {
     this.newFileName = this.uploadFileName;
   }
 
+  resetFileDialog(): void {
+    this.uploadFileName = '';
+    this.newFileName = '';
+    this.keepOrgFileName = true;
+  }
+
+  attachFileToEntity(fileId: number) {
+    this.attachmentService.attachToEntity(
+        MAIN_TYPE,
+        fileId,
+        this.ownerType,
+        this.ownerId,
+        this.attachmentCategory)
+      .subscribe(response => {
+        if (response.success) {
+          this.uploadMessages.push({severity: 'info', summary: 'Erfolg', detail: 'Datei wurde erfolgreich hochgeladen und verknüpft.'});
+        } else {
+          this.uploadMessages.push({severity: 'error', summary: 'Fehler', detail: response.errMsg});
+        }
+      });
+  }
 
 
   onButtonClickShowFileDialog() {
-    // console.log('[file-upload-dialog|onButtonClickShowFileDialog] catalogName: ', this.catalogueName);
     this.showFileDialog = !this.showFileDialog;
   }
 
@@ -89,6 +109,10 @@ export class FileUploadDialogComponent implements OnInit {
     console.log('onUpload', event);
     const uploadResult = <FileUploadResult>event.originalEvent.body;
     console.log('upload result', uploadResult);
+    // attach
+    if (this.createAttachment) {
+      this.attachFileToEntity(uploadResult.id);
+    }
     this.fileUploaded.emit(uploadResult);
 
 
@@ -98,22 +122,20 @@ export class FileUploadDialogComponent implements OnInit {
     console.log('onError');
     console.log('error: ', event.error);
     this.error.emit(event.error);
-    // const xhr: XMLHttpRequest = event.xhr;
-    // console.error('Fehler beim Upload: ' + xhr.statusText + '/' + xhr.responseText + '/' + xhr.status + '/' + xhr.readyState);
   }
 
   onClear(event: any) {
     console.log('onClear', event);
+  this.resetFileDialog();
   }
 
   onRemove(event: any) {
     console.log('onRemove');
+    this.resetFileDialog();
   }
 
   onSelect(event: any) {
     console.log('onSelect');
-    // console.log('[onFileSelect] selected files', event.files);
-    // console.log('[onFileSelect] selected file', event.files[0]);
     console.log('[onFileSelect] selected file name', event.files[0].name);
     this.uploadFileName = event.files[0].name;
     this.newFileName = this.uploadFileName;

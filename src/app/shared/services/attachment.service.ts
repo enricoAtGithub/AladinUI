@@ -20,7 +20,7 @@ export class AttachmentService {
     mainId: number,
     ownerType: string,
     ownerId: number,
-    attachmentType: string):
+    attachmentCategory: string):
     Observable<HttpResponseState> {
 
     return this.http.post(UrlCollection.Attachments.attach(), {
@@ -28,12 +28,16 @@ export class AttachmentService {
       mainId,
       ownerType,
       ownerId,
-      attachmentType
+      attachmentCategory
     })
     .pipe(
-      map(() => this.serviceHelper.createSuccessResponse()),
+      // map(() => this.serviceHelper.createSuccessResponse()),
+      map(response => {
+        console.log('attachment response: ', response);
+        return this.serviceHelper.createSuccessResponse();
+      }),
       catchError(err =>
-        of(this.serviceHelper.createErrorResponse('error creating catalogue', err)))
+        of(this.serviceHelper.createErrorResponse('error creating attachment', err)))
     );
   }
 
