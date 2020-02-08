@@ -1,37 +1,24 @@
-<!-- <p-fileUpload  name="file" 
-                [url]="uploadUrl"
-                [multiple]="false"  
-                [auto]="true"
-                chooseLabel="Dateiauswahl"
-                uploadLabel="Upload"
-                cancelLabel="Verwerfen"
-                showCancelButton="false"
-                
-                (onUpload)="onFileUploadComplete($event)"
-                (onBeforeUpload)="onFileBeforeUpload($event)"
-                (onBeforeSend)="onFileBeforeSend($event)"
-                (onSelect)="onFileSelect($event)"
-                (onError)="onFileError($event)"
-                ></p-fileUpload> -->
-                
-<app-catalogue-chooser-dialog [catalogueName]="catalogueName" [visible]="showCatalogChooser" (itemSelected)='onCatalogueItemSelected($event)'>
+<app-catalogue-chooser-dialog 
+    [catalogueName]="catalogueName" 
+    [visible]="showCatalogChooser" 
+    (itemSelected)='onCatalogueItemSelected($event)'>
 </app-catalogue-chooser-dialog>
 
 <p-fileUpload 
+    name="file" 
     [url]="url"
     [multiple]="false"  
     [auto]="true"
-    chooseLabel="Dateiauswahl"
-    uploadLabel="Upload"
-    cancelLabel="Verwerfen"
+    [chooseLabel]="chooseLabel"
+    [uploadLabel]="uploadLabel"
+    [cancelLabel]="cancelLabel"
     showCancelButton="false"
-    onBeforeUpload="onBeforeUpload($event)"
-    onSend="onSend($event)"
-    onUpload="onUpload($event)"
-    onError="onError($event)"
-    onClear="onClear($event)"
-    onRemove="onRemove($event)"
-    onSelect="onSelect($event)"
-    onProgress="onProgress($event)">
-        
+    (onBeforeUpload)="onBeforeUpload($event)"
+    (onSend)="onSend($event)"
+    (onUpload)="onUpload($event)"
+    (onError)="onError($event)"
+    (onClear)="onClear($event)"
+    (onRemove)="onRemove($event)"
+    (onSelect)="onSelect($event)"
+    (onProgress)="onProgress($event)">
 </p-fileUpload>
