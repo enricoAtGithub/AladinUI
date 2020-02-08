@@ -6,7 +6,8 @@ import { HttpResponseState } from '../models/http/http-response-state';
 import { UrlCollection } from '../url-collection';
 import { map, catchError } from 'rxjs/operators';
 import { HttpResult } from '../models/http/http-result';
-import { AttachmentData } from '../models/attachment-data';
+import { AttachmentResponseData } from '../models/attachment-response-data';
+import { AttachmentRequestData } from '../models/attachment-request-data';
 
 @Injectable({
   providedIn: 'root'
@@ -15,21 +16,8 @@ export class AttachmentService {
 
   constructor(private http: HttpClient, private serviceHelper: ServiceHelperService) { }
 
-  attachToEntity(
-    mainType: string,
-    mainId: number,
-    ownerType: string,
-    ownerId: number,
-    attachmentCategory: string):
-    Observable<HttpResponseState> {
-
-    return this.http.post(UrlCollection.Attachments.attach(), {
-      mainType,
-      mainId,
-      ownerType,
-      ownerId,
-      attachmentCategory
-    })
+  attachToEntity(attachmentData: AttachmentRequestData): Observable<HttpResponseState> {
+    return this.http.post(UrlCollection.Attachments.attach(), attachmentData, { observe: 'response' })
     .pipe(
       // map(() => this.serviceHelper.createSuccessResponse()),
       map(response => {
@@ -41,38 +29,22 @@ export class AttachmentService {
     );
   }
 
-  getAllAttachments(
-    mainType: string,
-    ownerType: string,
-    ownerId: number): Observable<HttpResult<AttachmentData>> {
+  getAllAttachments(attachmentData: AttachmentRequestData): Observable<HttpResult<AttachmentResponseData>> {
 
-    return this.http.post<AttachmentData>(UrlCollection.Attachments.all(), {
-      mainType,
-      ownerType,
-      ownerId
-    }).pipe(
-      map(result => this.serviceHelper.createSuccessResponseWithContent<AttachmentData>(result)),
+    return this.http.post<AttachmentResponseData>(UrlCollection.Attachments.all(), attachmentData).pipe(
+      map(result => this.serviceHelper.createSuccessResponseWithContent<AttachmentResponseData>(result)),
       catchError(err =>
-        of(this.serviceHelper.createErrorResponseWithContent<AttachmentData>(
+        of(this.serviceHelper.createErrorResponseWithContent<AttachmentResponseData>(
           'error getting attachments for entity', err))));
   }
 
-  detachFromEntity(
-    mainType: string,
-    mainId: number,
-    ownerType: string,
-    ownerId: number) {
+  detachFromEntity(attachmentData: AttachmentRequestData) {
 
-      return this.http.post(UrlCollection.Attachments.attach(), {
-        mainType,
-        mainId,
-        ownerType,
-        ownerId
-      })
-      .pipe(
-        map(() => this.serviceHelper.createSuccessResponse()),
-        catchError(err =>
-          of(this.serviceHelper.createErrorResponse('error creating catalogue', err)))
-      );
-    }
+    return this.http.post(UrlCollection.Attachments.attach(), attachmentData)
+    .pipe(
+      map(() => this.serviceHelper.createSuccessResponse()),
+      catchError(err =>
+        of(this.serviceHelper.createErrorResponse('error creating catalogue', err)))
+    );
+  }
 }

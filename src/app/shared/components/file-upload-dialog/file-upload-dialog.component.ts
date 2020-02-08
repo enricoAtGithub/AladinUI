@@ -5,6 +5,7 @@ import { FileUploadResult } from '../../models/http/file-upload-result';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { AttachmentService } from '../../services/attachment.service';
 import { Message } from 'primeng/primeng';
+import { AttachmentRequestData } from '../../models/attachment-request-data';
 
 const MAIN_TYPE = 'File';
 
@@ -70,11 +71,12 @@ export class FileUploadDialogComponent implements OnInit {
 
   attachFileToEntity(fileId: number) {
     this.attachmentService.attachToEntity(
-        MAIN_TYPE,
-        fileId,
-        this.ownerType,
-        this.ownerId,
-        this.attachmentCategory)
+      <AttachmentRequestData>{
+        mainType: MAIN_TYPE,
+        mainId: fileId,
+        ownerType: this.ownerType,
+        ownerId: this.ownerId,
+        attachmentCategory: this.attachmentCategory})
       .subscribe(response => {
         if (response.success) {
           this.uploadMessages.push({severity: 'info', summary: 'Erfolg', detail: 'Datei wurde erfolgreich hochgeladen und verknüpft.'});
