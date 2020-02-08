@@ -103,6 +103,7 @@ import { AppConfig } from './shared/app-config';
 import { HttpHeadersService } from './shared/services/http-headers.service';
 import { SharedModule } from './shared/shared.module';
 import { HttpErrorRepsonseInterceptor } from 'src/http-error-repsonse.interceptor';
+import { FileUploadDialogComponent } from './shared/components/file-upload-dialog/file-upload-dialog.component';
 
 export function initializeApp(appConfig: AppConfig) {
     return () => appConfig.load();
@@ -204,7 +205,8 @@ export function initializeApp(appConfig: AppConfig) {
         InvoicesComponent,
         OrdersComponent,
         ProfileComponent,
-        ReportsComponent
+        ReportsComponent,
+        FileUploadDialogComponent
     ],
     providers: [
         AppConfig,

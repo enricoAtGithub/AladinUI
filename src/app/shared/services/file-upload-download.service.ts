@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { switchMap, map, tap, catchError, share } from 'rxjs/operators';
 import { HttpHeadersService } from 'src/app/shared/services/http-headers.service';
 import { HttpResult } from 'src/app/shared/models/http/http-result';
+import { FileUploadResult } from '../models/http/file-upload-result';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,19 @@ export class FileUploadDownloadService {
 
   public getUploadUrl(): string {
     return UrlCollection.FILE_API_BASE_PATH() + '/upload';
+  }
+
+  public readUploadResult(response: HttpResponse<FileUploadResult>): HttpResult<FileUploadResult> {
+    if (response.ok) {
+      return {
+        success: true,
+        result: response.body
+      };
+    }
+    return {
+      success: false,
+      errMsg: response.statusText
+    };
   }
 
 }

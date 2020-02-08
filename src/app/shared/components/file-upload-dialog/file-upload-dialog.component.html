@@ -1,0 +1,19 @@
+<!-- <p-fileUpload  name="file" 
+                [url]="uploadUrl"
+                [multiple]="false"  
+                [auto]="true"
+                chooseLabel="Dateiauswahl"
+                uploadLabel="Upload"
+                cancelLabel="Verwerfen"
+                showCancelButton="false"
+                
+                (onUpload)="onFileUploadComplete($event)"
+                (onBeforeUpload)="onFileBeforeUpload($event)"
+                (onBeforeSend)="onFileBeforeSend($event)"
+                (onSelect)="onFileSelect($event)"
+                (onError)="onFileError($event)"
+                ></p-fileUpload> -->
+
+<p-fileUpload customUpload="true" (uploadHandler)="myUploader($event)">
+
+</p-fileUpload>
