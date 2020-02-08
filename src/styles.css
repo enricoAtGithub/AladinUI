@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+/*global margins*/
+.spacing-top-small {
+    margin-top: 10px;
+}
+.spacing-right-small {
+    margin-right: 10px;
+}
+.spacing-bottom-small {
+    margin-bottom: 10px;
+}
+.spacing-left-small {
+    margin-left: 10px;
+}
+
+.grid-row-background-even {
+    background-color: #f0f6ff;
+}

@@ -4,9 +4,12 @@
 
 export const environment = {
   production: false,
-  baseUrl: 'http://splylnx2.simply.local:8023/jmeleon/rest/api'
+  baseUrl: 'http://splylnx2.simply.local:8023/jmeleon/rest/api',
+  companyName: 'DOT-IT',
+  appName: 'JMeleon',
+  companyEmail:  'info@dot-it.de',
+  companyPhone: '+49 8888 88888888'
 };
-
 /*
  * In development mode, to ignore zone related error stack frames such as
  * `zone.run`, `zoneDelegate.invokeTask` for easier debugging, you can

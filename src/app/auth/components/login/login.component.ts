@@ -11,6 +11,7 @@ import { Store, select } from '@ngrx/store';
 // import { Observable } from 'bin/node_modules/rxjs';
 import { Observable} from 'rxjs';
 // import { selectUserProfileError } from 'src/app/root-store/user-profile-store/selectors';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -25,12 +26,18 @@ export class LoginComponent implements OnInit {
   uiDetails: string;
   appDetails: string;
   private errMsg$: Observable<string>;
+  companyName: string;
+  appName: string;
 
   constructor(
     public authService: AuthService,
     public router: Router,
     private appConfig: AppConfig,
-    private store$: Store<RootStoreState.State>) {}
+    private store$: Store<RootStoreState.State>) {
+
+    this.companyName = environment.companyName;
+    this.appName = environment.appName;
+    }
 
   ngOnInit() {
     const uiInfo: UIInfo = AppConfig.getUIInfo();

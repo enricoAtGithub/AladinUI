@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig, ServerInfo, UIInfo } from 'src/app/shared/app-config';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-footer',
@@ -7,8 +8,13 @@ import { AppConfig, ServerInfo, UIInfo } from 'src/app/shared/app-config';
 })
 export class AppFooterComponent implements OnInit {
   appDetails: string;
+  companyName: string;
+  appName: string;
 
-  constructor(private appConfig: AppConfig) {}
+  constructor(private appConfig: AppConfig) {
+    this.companyName = environment.companyName;
+    this.appName = environment.appName;
+  }
 
   ngOnInit() {
     const uiInfo: UIInfo = AppConfig.getUIInfo();

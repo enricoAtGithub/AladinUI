@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable, ReplaySubject, BehaviorSubject, of, Subscription } from 'rxjs';
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { User } from 'src/app/shared/models/user';
 import { UrlCollection } from 'src/app/shared/url-collection';
 import { switchMap, map, tap, catchError, share } from 'rxjs/operators';
 import { HttpHeadersService } from 'src/app/shared/services/http-headers.service';
 import { HttpResult } from 'src/app/shared/models/http/http-result';
+import { HttpOptionsFactory } from 'src/app/shared/models/http/http-options-factory';
 
 @Injectable({
   providedIn: 'root'
@@ -46,13 +47,16 @@ export class AuthService {
     );
   }
 
-  login(userName: string, pass: string): Observable<HttpResult<User>> {
 
+  login(userName: string, pass: string): Observable<HttpResult<User>> {
     const result = this.http
       .post<User>(
         UrlCollection.UserManagement.LOGIN(),
-        JSON.stringify({user: userName, passwd: pass, userAgent: navigator.userAgent}),
-        this.httpHeaderService.getObserveHttpOption())
+        {user: userName, passwd: pass, userAgent: navigator.userAgent},
+        new HttpOptionsFactory()
+          .addContentTypeJson()
+          .buildWithObserveOption()
+        )
       .pipe(
         map(httpResponse => {
           return httpResponse.body as User;
@@ -61,7 +65,7 @@ export class AuthService {
           this.userSubject.next(user);
           this.isLoggedInSubject.next(true);
           // todo: create local storage service!
-          localStorage.setItem('user', JSON.stringify(user));
+          // localStorage.setItem('user', JSON.stringify(user));
         }),
         map(user => {
           const httpResult: HttpResult<User> = {
@@ -70,18 +74,28 @@ export class AuthService {
           };
           return httpResult;
         }),
-        catchError(err => {
-          const httpResult: HttpResult<User> = {
+        catchError((err: HttpErrorResponse) => {
+          console.log('error: ', err);
+          let httpResult: HttpResult<User>;
+          // wrong credentials
+          if (err.status === 403) {
+            httpResult = {
+              success: false,
+              errMsg: err.error.message
+            };
+          // no vpn connection, ...?
+          } else {
+            httpResult = {
             success: false,
-            // errMsg: err['message'].toString() //no vpn connection
-            errMsg: err['error']['message'].toString()
-          };
+            errMsg: err.statusText
+            };
+          }
           return of(httpResult);
         })
       );
-
     return result;
   }
+
 
   logout(): Observable<[boolean, string]> {
     const logoutResult = this.http.get(UrlCollection.UserManagement.LOGOUT())
