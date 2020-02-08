@@ -25,12 +25,16 @@ import { PickListModule } from 'primeng/picklist';
 import { ErrorNotificationService } from './services/error-notification.service';
 import { DynamicTableAttachmentsComponent } from './components/dynamic-table-attachments/dynamic-table-attachments.component';
 import { KeyFilterModule } from 'primeng/primeng';
+import { FileUploadDialogComponent } from './components/file-upload-dialog/file-upload-dialog.component';
+import { CatalogueChooserDialogComponent } from './components/catalogue-chooser-dialog/catalogue-chooser-dialog.component';
 
 @NgModule({
   declarations: [
     EntityDialogComponent,
     DynamicTableComponent,
     DynamicTableAttachmentsComponent,
+    FileUploadDialogComponent,
+    CatalogueChooserDialogComponent
   ],
   imports: [
     CommonModule,
@@ -61,6 +65,7 @@ import { KeyFilterModule } from 'primeng/primeng';
   exports: [
     DynamicTableComponent,
     DynamicTableAttachmentsComponent,
+    FileUploadDialogComponent
   ],
   providers: [
     EntityService,

@@ -13,6 +13,9 @@
                 (onSelect)="onFileSelect($event)"
                 (onError)="onFileError($event)"
                 ></p-fileUpload> -->
+                
+<app-catalogue-chooser-dialog [catalogueName]="catalogueName" [visible]="showCatalogChooser" (itemSelected)='onCatalogueItemSelected($event)'>
+</app-catalogue-chooser-dialog>
 
 <p-fileUpload 
     [url]="url"

@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Catalogue } from '../../models/catalogue';
 
 @Component({
   selector: 'app-file-upload-dialog',
@@ -7,18 +8,23 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class FileUploadDialogComponent implements OnInit {
 
-  @Input() chooseLabel: string;
-  @Input() uploadLabel: string;
-  @Input() cancelLabel: string;
+  @Input() chooseLabel = 'Datei auswählen';
+  @Input() uploadLabel = 'Hochladen';
+  @Input() cancelLabel = 'Abbrechen';
   url: string;
+  catalogue: Catalogue;
+  showCatalogChooser = false;
 
   constructor() { }
 
   ngOnInit() {
+    this.catalogue = new Catalogue();
+    this.catalogue.name = 'TestCatalogue';
+    this.catalogue.values.push('Test01', 'Test02');
   }
 
   onBeforeUpload(event: any) {
-
+    console.log('onBeforeUpload');
   }
 
   onSend(event: any) {
@@ -49,6 +55,9 @@ export class FileUploadDialogComponent implements OnInit {
     console.log('onProgress');
   }
 
+  onCatalogueItemSelected($event) {
+
+  }
 
 
 

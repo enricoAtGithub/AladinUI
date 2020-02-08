@@ -1,4 +1,8 @@
 export class Catalogue {
     name: string;
-    values: any[];
+    values: string[];
+
+    constructor() {
+        this.values = [];
+    }
 }
