@@ -13,8 +13,13 @@ export class EntityDropdownComponent implements OnInit {
   @Input() propertyName: string;
   @Input() fieldName = '_repr_';
   @Input() allowNull = true;
+  @Input() sort = false;
+  @Input() sortByFieldName = 'name';
+  @Input() sortAsc = true;
+
   @Input() selectedOptionId?: number;
   @Input() defaultNullValue: string;
+
   @Output() selectedOptionChanged = new EventEmitter();
   @Output() selectedOptionIdChanged = new EventEmitter();
 
@@ -37,8 +42,12 @@ export class EntityDropdownComponent implements OnInit {
 
   getEntityData(): void {
     this.selectItems = [];
+    let sortTerm = '';
+    if (this.sort && !!this.sortByFieldName) {
+      sortTerm = `${(this.sortAsc ? 'ASC(\'' : 'DESC(\'')}${this.sortByFieldName}')`;
+    }
     this.entityService
-          .filter(this.propertyName, 1, 100, '', '')
+          .filter(this.propertyName, 1, 100, '', sortTerm)
           .subscribe(
             entityData => {
               this.data = entityData;
