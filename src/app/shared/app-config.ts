@@ -55,8 +55,12 @@ export class AppConfig {
     }
 
     loadServerInfo() {
-        this.http.get<ServerInfo>(AppConfig.getBaseUrl() + '/admin/info')
+        AppConfig.uiInfo$.subscribe(uiInfo => {
+            this.http.get<ServerInfo>(uiInfo.baseUrl + '/admin/info')
                     .subscribe(serverInfo => AppConfig.serverInfoSubject.next(serverInfo));
+        });
+        // this.http.get<ServerInfo>(AppConfig.getBaseUrl() + '/admin/info')
+        //             .subscribe(serverInfo => AppConfig.serverInfoSubject.next(serverInfo));
     }
 
 
