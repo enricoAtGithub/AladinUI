@@ -1,12 +1,14 @@
-
+<div *ngIf="!!image">
   <img [src]="image.source" [alt]="image.header" *ngIf="!isImageLoading; else noImageFound">
-  <ng-template #noImageFound>
-    <!-- <img src="fallbackImage.png" alt="Fallbackimage"> -->
-    <div *ngIf="errorOccurred">
-        <i class="fa fa-times optionNotChecked" aria-hidden="true"></i>
-        <span>Bild konnte nicht geladen werden.</span>
-    </div>
-    <div *ngIf="!errorOccurred">
-        <span>Bild wird geladen...</span>
-    </div>
-  </ng-template>
+</div>
+
+<ng-template #noImageFound>
+  <!-- <img src="fallbackImage.png" alt="Fallbackimage"> -->
+  <div *ngIf="errorOccurred">
+    <i class="fa fa-times optionNotChecked" aria-hidden="true"></i>
+    <span>Bild konnte nicht geladen werden.</span>
+  </div>
+  <div *ngIf="!errorOccurred">
+    <span>Bild wird geladen...</span>
+  </div>
+</ng-template>

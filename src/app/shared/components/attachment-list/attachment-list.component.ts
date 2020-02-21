@@ -42,7 +42,7 @@ export class AttachmentListComponent implements OnInit {
   constructor(
     private attachmentService: AttachmentService,
     private entityService: EntityService,
-    public dialogService: DialogService) { }
+    private dialogService: DialogService) { }
 
 
   ngOnInit() {
