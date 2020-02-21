@@ -5,6 +5,7 @@ import { AttachmentResponseData } from '../../models/attachment-response-data';
 import { AttachmentService } from '../../services/attachment.service';
 import { map, tap } from 'rxjs/operators';
 import { UrlCollection } from '../../url-collection';
+import { EntityService } from '../../services/entity.service';
 
 @Component({
   selector: 'app-attachment-list',
@@ -30,7 +31,7 @@ export class AttachmentListComponent implements OnInit {
   content: string[][];
   content2: any[];
 
-  constructor(private attachmentService: AttachmentService) { }
+  constructor(private attachmentService: AttachmentService, private entityService: EntityService) { }
 
   ngOnInit() {
     if (this.receiveDataFromParent) {
@@ -84,6 +85,30 @@ export class AttachmentListComponent implements OnInit {
 
   downloadUrl(id: number): string {
     return UrlCollection.Files.generateDownloadUrl(id);
+  }
+
+  detachAndDeleteEntity(id: number) {
+    console.log('[AttachmentListComponent-detachAndDeleteEntity]');
+    // detach
+      // 	{
+      //      "mainType" : "File",
+      //      "mainId" : 12,
+      //      "ownerType" : "Glass",
+      //      "ownerId" : 9
+      // }
+      const attachmentRequest: AttachmentRequestData = {
+        mainType: this.mainType,
+        mainId: id,
+        ownerType: this.ownerType,
+        ownerId: this.ownerId
+      };
+      this.attachmentService.detachFromEntity(attachmentRequest).subscribe(_ => {
+        // delete
+        this.entityService.deleteEntity(this.mainType, id).subscribe(_ => {
+          console.log(`successfully deleted ${this.mainType}`);
+          this.updateData();
+        });
+      });
   }
 
 }

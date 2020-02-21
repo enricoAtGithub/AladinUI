@@ -16,3 +16,7 @@
 .grid-row-background-even {
     background-color: #f0f6ff;
 }
+
+.btnSpacing {
+    margin-right: 10px; 
+}

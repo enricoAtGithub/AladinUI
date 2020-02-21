@@ -14,7 +14,8 @@
                 <span *ngIf="attachment[col.field]!=='buttons'; else buttons">{{attachment[col.field]}}</span>
                 <ng-template #buttons>
                     <!-- <p-button icon="fa fa-download" pTooltip="Herunterladen" class="downloadBtn" (click)="downloadAttachment(attachment['id'])"></p-button> -->
-                    <button 
+                    <div>
+                        <button 
                         pButton 
                         type="button" 
                         icon="fa fa-download" 
@@ -23,7 +24,15 @@
                         [method]="'GET'"
                         [fileName]="attachment['Dateiname']"
                         [url]="downloadUrl(attachment['id'])"
+                        style="margin-right: 2px"
                         ></button>
+                    <p-button 
+                        icon="pi pi-trash" 
+                        pTooltip="Löschen" 
+                        (click)="detachAndDeleteEntity(attachment['id'])"
+                        class="btnSpacing"></p-button>
+                    </div>
+
                 </ng-template>
             </td>
         </tr>

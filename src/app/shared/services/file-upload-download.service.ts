@@ -37,6 +37,12 @@ export class FileUploadDownloadService {
     };
   }
 
+  deleteFile() {
+
+  }
+
+  // don't we have an image service?
+
   public getImage(imageFileId): Observable<Blob> {
     return this.http.get(this.getDownloadUrl(imageFileId), {responseType: 'blob'});
   }
