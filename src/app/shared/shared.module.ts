@@ -29,6 +29,7 @@ import { FileUploadDialogComponent } from './components/file-upload-dialog/file-
 import { CatalogueChooserDialogComponent } from './components/catalogue-chooser-dialog/catalogue-chooser-dialog.component';
 import { AttachmentListComponent } from './components/attachment-list/attachment-list.component';
 import { AddEntityDialogComponent } from './components/add-entity-dialog/add-entity-dialog.component';
+import { EntityLogComponent } from './components/entity-log/entity-log.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { AddEntityDialogComponent } from './components/add-entity-dialog/add-ent
     FileUploadDialogComponent,
     CatalogueChooserDialogComponent,
     AttachmentListComponent,
-    AddEntityDialogComponent
+    AddEntityDialogComponent,
+    EntityLogComponent
   ],
   imports: [
     CommonModule,

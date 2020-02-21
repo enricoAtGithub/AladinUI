@@ -70,11 +70,11 @@ export class AttachmentListComponent implements OnInit {
       keys.forEach((key, pos) => {
         attObj[key] = row[pos];
       });
-      console.log('[attachment-list] attObj: ', attObj);
+      // console.log('[attachment-list] attObj: ', attObj);
       return attObj;
     });
-    console.log('[attachment-list] header: ', this.header);
-    console.log('[attachment-list] content: ', this.content);
+    // console.log('[attachment-list] header: ', this.header);
+    // console.log('[attachment-list] content: ', this.content);
   }
 
   /**

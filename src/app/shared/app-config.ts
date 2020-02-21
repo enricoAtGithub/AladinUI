@@ -31,7 +31,8 @@ export class AppConfig {
     static uiInfo: UIInfo;
 
     constructor(private http: HttpClient) {
-        this.load();
+        // load() gets called in the app-module already.
+        // this.load();
 
     }
 

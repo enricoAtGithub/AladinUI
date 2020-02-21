@@ -18,7 +18,7 @@ export class AppFooterComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('[AppFooterComponent-ngOnInit]');
+    // console.log('[AppFooterComponent-ngOnInit]');
     AppConfig.uiInfo$.subscribe(uiInfo => {
       this.uiDetails = 'UI version=' + uiInfo.version + '.' + uiInfo.git_branch + '.' + uiInfo.build_no + '.' + uiInfo.git_sha;
       this.appDetails = this.uiDetails + ', loading BE details....';

@@ -20,7 +20,7 @@ export class CatalogueChooserDialogComponent implements OnInit, OnDestroy {
   @Input()
     set catalogueName(catalogueName: string) {
       this._catalogueName = catalogueName;
-      console.log('[catalogue-chooser] setting catalog name: ', this._catalogueName);
+      // console.log('[catalogue-chooser] setting catalog name: ', this._catalogueName);
     }
     get catalogueName() {
       return this._catalogueName;
@@ -66,7 +66,7 @@ export class CatalogueChooserDialogComponent implements OnInit, OnDestroy {
           }
         }),
         map((httpResult: HttpResult<Catalogue>) => httpResult.result),
-        tap(catalogue => console.log('[catalogue-chooser] catalog: ', catalogue))
+        // tap(catalogue => console.log('[catalogue-chooser] catalog: ', catalogue))
       ).subscribe(catalogue => {
         this.catalogue = catalogue;
         this.catalogItems = catalogue.values.map(value => <SelectItem>{label: value, value: value});
