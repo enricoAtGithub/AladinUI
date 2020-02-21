@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { BehaviorSubject, Subject } from 'rxjs';
 import PostBuildConfig from '../../assets/config/postbuildconfig.json';
 
 export class ServerInfo {
@@ -39,8 +38,6 @@ export class AppConfig {
     }
 
     load() {
-        // const jsonFile = `assets/config/postbuildconfig.json`;
-        console.log('[AppConfig-load] loading config...');
         AppConfig.uiInfo = PostBuildConfig as UIInfo;
         if (!AppConfig.uiInfo.baseUrl) {
             console.log('take Backend URL from environment');
@@ -48,23 +45,6 @@ export class AppConfig {
         } else {
             console.log('take Backend URL from postbuildConfig');
         }
-        // return new Promise<void>((resolve, reject) => {
-        //     this.http.get(jsonFile).toPromise().then((response: UIInfo) => {
-        //         console.log('[AppConfig-load] reading config. uiInfo: ', response);
-        //         AppConfig.uiInfo = response;
-
-        //         if (!AppConfig.uiInfo.baseUrl) {
-        //             console.log('take Backend URL from environment');
-        //             AppConfig.uiInfo.baseUrl = environment.baseUrl;
-        //         } else {
-        //             console.log('take Backend URL from postbuildConfig');
-        //         }
-
-        //         resolve();
-        //     }).catch((response: any) => {
-        //        reject(`Could not load file '${jsonFile}': ${JSON.stringify(response)}`);
-        //     });
-        // });
     }
 
     serverInfo(myFunc) {
