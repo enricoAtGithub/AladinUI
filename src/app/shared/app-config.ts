@@ -38,13 +38,22 @@ export class AppConfig {
     }
 
     load() {
-        AppConfig.uiInfo = PostBuildConfig as UIInfo;
-        if (!AppConfig.uiInfo.baseUrl) {
-            console.log('take Backend URL from environment');
-            AppConfig.uiInfo.baseUrl = environment.baseUrl;
-        } else {
-            console.log('take Backend URL from postbuildConfig');
-        }
+        // AppConfig.uiInfo = PostBuildConfig as UIInfo;
+        // if (!AppConfig.uiInfo.baseUrl) {
+        //     console.log('take Backend URL from environment');
+        //     AppConfig.uiInfo.baseUrl = environment.baseUrl;
+        // } else {
+        //     console.log('take Backend URL from postbuildConfig');
+        // }
+        this.http.get('../../assets/config/postbuildconfig.json').subscribe(json => {
+            AppConfig.uiInfo = json as UIInfo;
+            if (!AppConfig.uiInfo.baseUrl) {
+                console.log('taking Backend URL from environment');
+                AppConfig.uiInfo.baseUrl = environment.baseUrl;
+            } else {
+                console.log('taking Backend URL from postbuildConfig');
+            }
+        });
     }
 
     serverInfo(myFunc) {
