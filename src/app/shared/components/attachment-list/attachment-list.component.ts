@@ -12,12 +12,17 @@ import { map, tap } from 'rxjs/operators';
 })
 export class AttachmentListComponent implements OnInit {
 
+  // either receive attachment data from parent (for scenario with additional display like image galleria )
+  // or define request data and this component requests the data.
+  @Input() receiveDataFromParent = false;
+
   @Input() documentTypeForHeader = 'Dokumente';
-  // @Input() attachmentRequestData: AttachmentRequestData;
   @Input() mainType: string;
-  @Input()   ownerType: string;
-  @Input()   ownerId: number;
-  @Input()   attachmentCategory?: string;
+  @Input() ownerType: string;
+  @Input() ownerId: number;
+  @Input() attachmentCategory?: string;
+
+  @Input() attachment: AttachmentResponseData;
 
   attachments$: Observable<AttachmentResponseData>;
   header: {field: string, header: string}[];
@@ -26,22 +31,32 @@ export class AttachmentListComponent implements OnInit {
   constructor(private attachmentService: AttachmentService) { }
 
   ngOnInit() {
+    if (this.receiveDataFromParent) {
+      this.readAttachmentData(this.attachment);
+    } else {
+      this.requestAttachmentData();
+    }
+  }
+
+  requestAttachmentData() {
     const attachmentRequestData = {
-        mainType: this.mainType,
-        ownerType: this.ownerType,
-        ownerId: this.ownerId,
-        attachmentCategory: this.attachmentCategory
-      };
+      mainType: this.mainType,
+      ownerType: this.ownerType,
+      ownerId: this.ownerId,
+      attachmentCategory: this.attachmentCategory
+    };
     this.attachments$ = this.attachmentService.getAllAttachments(attachmentRequestData)
       .pipe(
         // add err mgmt.
         map(response => response.result),
-        tap(attachment => {
-          const {keys, values} = attachment.getDataKeysAndValues();
-          this.header = keys.map(key => ({field: key, header: key}));
-          this.content = values;
-        })
+        tap(attachment => this.readAttachmentData(attachment))
       );
+  }
+
+  readAttachmentData(attachment: AttachmentResponseData): void {
+    const {keys, values} = attachment.getDataKeysAndValues();
+    this.header = keys.map(key => ({field: key, header: key}));
+    this.content = values;
   }
 
 }
