@@ -20,3 +20,17 @@
 .btnSpacing {
     margin-right: 10px; 
 }
+
+.flexgrid-header {
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.flexgrid-segment {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.flexgrid-odd-line {
+    background-color: #f2f5fa;
+}
