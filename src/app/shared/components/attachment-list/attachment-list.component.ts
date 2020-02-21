@@ -6,11 +6,11 @@ import { AttachmentService } from '../../services/attachment.service';
 import { map, tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-artefact-list',
-  templateUrl: './artefact-list.component.html',
-  styleUrls: ['./artefact-list.component.css']
+  selector: 'app-attachment-list',
+  templateUrl: './attachment-list.component.html',
+  styleUrls: ['./attachment-list.component.css']
 })
-export class ArtefactListComponent implements OnInit {
+export class AttachmentListComponent implements OnInit {
 
   @Input() documentTypeForHeader = 'Dokumente';
   // @Input() attachmentRequestData: AttachmentRequestData;

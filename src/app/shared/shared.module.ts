@@ -27,7 +27,7 @@ import { DynamicTableAttachmentsComponent } from './components/dynamic-table-att
 import { KeyFilterModule } from 'primeng/primeng';
 import { FileUploadDialogComponent } from './components/file-upload-dialog/file-upload-dialog.component';
 import { CatalogueChooserDialogComponent } from './components/catalogue-chooser-dialog/catalogue-chooser-dialog.component';
-import { ArtefactListComponent } from './components/artefact-list/artefact-list.component';
+import { AttachmentListComponent } from './components/attachment-list/attachment-list.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +36,7 @@ import { ArtefactListComponent } from './components/artefact-list/artefact-list.
     DynamicTableAttachmentsComponent,
     FileUploadDialogComponent,
     CatalogueChooserDialogComponent,
-    ArtefactListComponent
+    AttachmentListComponent
   ],
   imports: [
     CommonModule,

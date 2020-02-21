@@ -9,7 +9,7 @@
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-attachment>
+        <ng-template pTemplate="body" let-attachment> 
             <tr>
                 <td *ngFor="let col of cols; let i = index">
                     {{attachment[i]}}
@@ -29,3 +29,5 @@
 <ng-template #noAttachments>
     ...keine Anhänge.
 </ng-template>
+
+
