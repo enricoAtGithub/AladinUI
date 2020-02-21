@@ -70,4 +70,8 @@ export class AttachmentListComponent implements OnInit {
     console.log('[attachment-list] content: ', this.content);
   }
 
+  public updateData() {
+    this.requestAttachmentData();
+  }
+
 }
