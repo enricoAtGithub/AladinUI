@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AttachmentRequestData } from '../../models/attachment-request-data';
 import { Observable } from 'rxjs';
 import { AttachmentResponseData } from '../../models/attachment-response-data';
@@ -25,6 +25,9 @@ export class AttachmentListComponent implements OnInit {
   @Input() attachmentCategory?: string;
 
   @Input() attachment: AttachmentResponseData;
+  @Output() attachmentRemoved = new EventEmitter<AttachmentRequestData>();
+
+
 
   attachments$: Observable<AttachmentResponseData>;
   header: {field: string, header: string}[];
@@ -107,6 +110,7 @@ export class AttachmentListComponent implements OnInit {
         this.entityService.deleteEntity(this.mainType, id).subscribe(_ => {
           console.log(`successfully deleted ${this.mainType}`);
           this.updateData();
+          this.attachmentRemoved.emit(attachmentRequest);
         });
       });
   }
