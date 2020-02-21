@@ -23,12 +23,24 @@ export class AttachmentResponseData {
                     idPos = pos;
                 }
                 return d;
-            })
-            .filter(key => key !== 'id');
+            });
+            // .filter(key => key !== 'id');
 
         const values = this.data
-            .filter((_, pos) => pos !== idPos)
-            .map(obj => Object.values(obj).map(val => <string>val));
+            // .filter((_, pos) => pos !== idPos)
+            .map(obj => {
+                const rowVal = Object
+                    .values(obj)
+                    .map(val => <string>val);
+                    // .filter((_, pos) => pos !== idPos);
+                // rowVal = rowVal.filter((_, pos) => pos !== idPos);
+                // console.log('[AttachmentResponseData] row prev: ', rowVal);
+                rowVal.push('buttons');
+                // console.log('[AttachmentResponseData] row post: ', rowVal);
+                return rowVal;
+            });
+
+        keys.push('buttons');
 
         return {
             keys,

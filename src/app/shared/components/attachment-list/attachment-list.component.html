@@ -4,14 +4,17 @@
     <ng-template pTemplate="header">
         <tr>
             <th *ngFor="let col of header">
-                {{col.header}}
+                <span *ngIf="col.header!=='buttons'">{{col.header}}</span>
             </th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-attachment> 
         <tr>
             <td *ngFor="let col of header; let i = index">
-                {{attachment[col.field]}}
+                <span *ngIf="attachment[col.field]!=='buttons'; else buttons">{{attachment[col.field]}}</span>
+                <ng-template #buttons>
+                    <p-button icon="fa fa-download" pTooltip="Herunterladen" class="downloadBtn" (click)="downloadAttachment(attachment['id'])"></p-button>
+                </ng-template>
             </td>
         </tr>
     </ng-template>

@@ -56,7 +56,9 @@ export class AttachmentListComponent implements OnInit {
 
   readAttachmentData(attachment: AttachmentResponseData): void {
     const {keys, values} = attachment.getDataKeysAndValues();
-    this.header = keys.map(key => ({field: key, header: key}));
+    this.header = keys
+      .filter(key => key !== 'id')
+      .map(key => ({field: key, header: key}));
     this.content = values;
     this.content2 = values.map(row => {
       const attObj = {};
@@ -70,8 +72,12 @@ export class AttachmentListComponent implements OnInit {
     console.log('[attachment-list] content: ', this.content);
   }
 
-  public updateData() {
+  public updateData(): void {
     this.requestAttachmentData();
+  }
+
+  downloadAttachment(id: number): void {
+    console.log('download attachment with id: ', id);
   }
 
 }
