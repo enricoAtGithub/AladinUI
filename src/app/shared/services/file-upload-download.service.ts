@@ -15,11 +15,13 @@ export class FileUploadDownloadService {
   constructor(private http: HttpClient) { }
 
   public getDownloadUrl(fileId: number): string {
-    return UrlCollection.FILE_API_BASE_PATH() + `/download/${fileId}`;
+    // return UrlCollection.FILE_API_BASE_PATH() + `/download/${fileId}`;
+    return UrlCollection.Files.generateDownloadUrl(fileId);
   }
 
   public getUploadUrl(): string {
-    return UrlCollection.FILE_API_BASE_PATH() + '/upload';
+    // return UrlCollection.FILE_API_BASE_PATH() + '/upload';
+    return UrlCollection.Files.generateUploadUrl();
   }
 
   public readUploadResult(response: HttpResponse<FileUploadResult>): HttpResult<FileUploadResult> {

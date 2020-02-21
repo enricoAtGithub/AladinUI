@@ -104,6 +104,7 @@ import { HttpHeadersService } from './shared/services/http-headers.service';
 import { SharedModule } from './shared/shared.module';
 import { HttpErrorRepsonseInterceptor } from 'src/http-error-repsonse.interceptor';
 import { FileUploadDialogComponent } from './shared/components/file-upload-dialog/file-upload-dialog.component';
+import { FileSaverModule } from 'ngx-filesaver';
 
 export function initializeApp(appConfig: AppConfig) {
     return () => appConfig.load();
@@ -188,7 +189,8 @@ export function initializeApp(appConfig: AppConfig) {
         StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
         EffectsModule.forRoot([AppEffects]),
         StoreRouterConnectingModule.forRoot(),
-        RootStoreModule
+        RootStoreModule,
+        FileSaverModule
     ],
     declarations: [
         AppComponent,

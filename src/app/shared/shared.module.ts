@@ -68,7 +68,7 @@ import { AttachmentListComponent } from './components/attachment-list/attachment
     DynamicTableComponent,
     DynamicTableAttachmentsComponent,
     FileUploadDialogComponent,
-    ArtefactListComponent
+    AttachmentListComponent
   ],
   providers: [
     EntityService,

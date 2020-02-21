@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AttachmentResponseData } from '../../models/attachment-response-data';
 import { AttachmentService } from '../../services/attachment.service';
 import { map, tap } from 'rxjs/operators';
+import { UrlCollection } from '../../url-collection';
 
 @Component({
   selector: 'app-attachment-list',
@@ -78,6 +79,10 @@ export class AttachmentListComponent implements OnInit {
 
   downloadAttachment(id: number): void {
     console.log('download attachment with id: ', id);
+  }
+
+  downloadUrl(id: number): string {
+    return UrlCollection.Files.generateDownloadUrl(id);
   }
 
 }

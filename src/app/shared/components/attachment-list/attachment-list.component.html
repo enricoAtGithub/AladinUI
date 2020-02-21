@@ -13,7 +13,17 @@
             <td *ngFor="let col of header; let i = index">
                 <span *ngIf="attachment[col.field]!=='buttons'; else buttons">{{attachment[col.field]}}</span>
                 <ng-template #buttons>
-                    <p-button icon="fa fa-download" pTooltip="Herunterladen" class="downloadBtn" (click)="downloadAttachment(attachment['id'])"></p-button>
+                    <!-- <p-button icon="fa fa-download" pTooltip="Herunterladen" class="downloadBtn" (click)="downloadAttachment(attachment['id'])"></p-button> -->
+                    <button 
+                        pButton 
+                        type="button" 
+                        icon="fa fa-download" 
+                        pTooltip="Herunterladen" 
+                        fileSaver
+                        [method]="'GET'"
+                        [fileName]="attachment['Dateiname']"
+                        [url]="downloadUrl(attachment['id'])"
+                        ></button>
                 </ng-template>
             </td>
         </tr>
