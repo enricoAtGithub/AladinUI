@@ -51,5 +51,14 @@ export class AttachmentResponseData {
     getAllFileIDs(): number[] {
         return this.data.map(d => <number>d.id);
     }
+
+    getAllImageInfos(): any[] {
+        return this.data.map(d => {
+            return {
+                id: d.id,
+                caption: d.Dateiname
+            };
+        });
+    }
 }
 

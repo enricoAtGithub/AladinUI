@@ -1,7 +1,8 @@
-  <div *ngIf="showHeader">{{catalogueDisplayName}} auswählen</div>
+<div *ngIf="showHeader">{{catalogueDisplayName}} auswählen</div>
   
-  <p-dropdown 
-    [options]="catalogItems" 
-    [(ngModel)]="selectedItem"></p-dropdown>
-  
-  <p-message *ngIf="showErrMsg" severity="warn" [text]="errMsg"></p-message>
+<p-dropdown 
+  [options]="catalogItems" 
+  [(ngModel)]="selectedItem"
+  (onChange)="onApplySelection()"></p-dropdown>
+
+<p-message *ngIf="showErrMsg" severity="warn" [text]="errMsg"></p-message>

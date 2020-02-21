@@ -71,6 +71,7 @@ export class CatalogueChooserDialogComponent implements OnInit, OnDestroy {
         this.catalogue = catalogue;
         this.catalogItems = catalogue.values.map(value => <SelectItem>{label: value, value: value});
         this.selectedItem = this.catalogItems[0].value;
+        this.onApplySelection();
       });
 
     if (this.preSelectedOption !== '') {
@@ -92,6 +93,7 @@ export class CatalogueChooserDialogComponent implements OnInit, OnDestroy {
   }
 
   onApplySelection() {
+    // console.log('[CatalogueChooserDialogComponent - onApplySelection] selected item: ', this.selectItem);
     this.itemSelected.emit(this.selectedItem);
     this.visible = false;
   }
