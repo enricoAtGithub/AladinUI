@@ -37,4 +37,20 @@ export class FileUploadDownloadService {
     };
   }
 
+  public getImage(imageFileId): Observable<Blob> {
+    return this.http.get(this.getDownloadUrl(imageFileId), {responseType: 'blob'});
+  }
+
+  createImageFromBlob(image: Blob) {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+       const imageToShow = reader.result;
+       console.log('image to show: ', imageToShow);
+    }, false);
+
+    if (image) {
+       reader.readAsDataURL(image);
+    }
+ }
+
 }
