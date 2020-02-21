@@ -42,7 +42,7 @@ export class AppConfig {
     load() {
         console.log('[AppConfig-load] start');
 
-        const jsonFile = `assets/config/postbuildconfig.json`;
+        const jsonFile = `./assets/config/postbuildconfig.json`;
         // this.http.get('../../assets/config/postbuildconfig.json').subscribe(json => {
         this.http.get(jsonFile).subscribe(json => {
             const uiInfo = json as UIInfo;
