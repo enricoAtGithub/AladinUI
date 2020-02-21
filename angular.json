@@ -135,4 +135,7 @@
     }
   },
   "defaultProject": "jmeleon"
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }
