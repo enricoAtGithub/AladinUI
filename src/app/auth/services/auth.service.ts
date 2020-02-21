@@ -117,26 +117,41 @@ export class AuthService {
 
   // test!!!
   changePassword(oldpass: string, newpass: string): Observable<boolean> {
-    return this.localUser$
+    return this.http
+      .post(
+        UrlCollection.UserManagement.CHANGE_PASSWD(),
+        {oldpasswd: oldpass, newpasswd: newpass},
+        new HttpOptionsFactory()
+          .addContentTypeJson()
+          .buildWithObserveOption())
       .pipe(
-        switchMap(user => {
-          const httpOptions = {
-            headers: new HttpHeaders({
-              'Content-Type':  'application/json',
-              'authorization': user.token
-            }),
-            observe: 'response' as 'response'
-          };
-
-          return this.http
-            .post(UrlCollection.UserManagement.CHANGE_PASSWD(),
-              JSON.stringify({oldpasswd: oldpass, newpasswd: newpass}), httpOptions)
-            .pipe(
-              map(() => true),
-              catchError(() => of(false))
-            );
-        })
+        map(() => true),
+        catchError(() => of(false))
       );
+
+    // return this.localUser$
+    //   .pipe(
+    //     switchMap(user => {
+    //       const httpOptions = new HttpOptions().addContentTypeJson().addObserveOption();
+    //       // const httpOptions = this.httpHeaderService.getHttpOptions(
+    //       //   this.httpHeaderService.addContentTypeJson(null), true);
+    //       // {
+    //       //   headers: new HttpHeaders({
+    //       //     'Content-Type':  'application/json',
+    //       //     'authorization': user.token
+    //       //   }),
+    //       //   observe: 'response' as 'response'
+    //       // };
+
+    //       return this.http
+    //         .post(UrlCollection.UserManagement.CHANGE_PASSWD(),
+    //           JSON.stringify({oldpasswd: oldpass, newpasswd: newpass}), httpOptions)
+    //         .pipe(
+    //           map(() => true),
+    //           catchError(() => of(false))
+    //         );
+    //     })
+    //   );
 
   }
 
