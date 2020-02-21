@@ -49,4 +49,8 @@ export class AttachmentService {
         of(this.serviceHelper.createErrorResponse('error creating catalogue', err)))
     );
   }
+
+  getAllDownloadUrlsForAttachmentData(attachmentResponseData: AttachmentResponseData): string[] {
+    return attachmentResponseData.getAllFileIDs().map(id => UrlCollection.Files.download(id));
+  }
 }

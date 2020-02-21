@@ -47,4 +47,9 @@ export class AttachmentResponseData {
             values
         };
     }
+
+    getAllFileIDs(): number[] {
+        return this.data.map(d => <number>d.id);
+    }
 }
+

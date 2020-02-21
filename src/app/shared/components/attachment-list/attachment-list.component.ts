@@ -73,12 +73,13 @@ export class AttachmentListComponent implements OnInit {
     console.log('[attachment-list] content: ', this.content);
   }
 
+  /**
+   * Method to request data update from parent element.
+   *
+   * @memberof AttachmentListComponent
+   */
   public updateData(): void {
     this.requestAttachmentData();
-  }
-
-  downloadAttachment(id: number): void {
-    console.log('download attachment with id: ', id);
   }
 
   downloadUrl(id: number): string {
