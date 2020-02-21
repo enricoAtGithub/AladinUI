@@ -28,6 +28,7 @@ import { KeyFilterModule } from 'primeng/primeng';
 import { FileUploadDialogComponent } from './components/file-upload-dialog/file-upload-dialog.component';
 import { CatalogueChooserDialogComponent } from './components/catalogue-chooser-dialog/catalogue-chooser-dialog.component';
 import { AttachmentListComponent } from './components/attachment-list/attachment-list.component';
+import { AddEntityDialogComponent } from './components/add-entity-dialog/add-entity-dialog.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { AttachmentListComponent } from './components/attachment-list/attachment
     DynamicTableAttachmentsComponent,
     FileUploadDialogComponent,
     CatalogueChooserDialogComponent,
-    AttachmentListComponent
+    AttachmentListComponent,
+    AddEntityDialogComponent
   ],
   imports: [
     CommonModule,
