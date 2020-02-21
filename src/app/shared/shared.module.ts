@@ -5,14 +5,7 @@ import { EntityService } from './services/entity.service';
 import { DynamicTableComponent } from './components/dynamic-table/dynamic-table.component';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { DropdownModule } from 'primeng/dropdown';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { InputTextModule } from 'primeng/inputtext';
-import { CheckboxModule } from 'primeng/checkbox';
-import { CalendarModule } from 'primeng/calendar';
 import { TabViewModule } from 'primeng/tabview';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { EditorModule } from 'primeng/editor';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule} from 'primeng/fileupload';
@@ -22,6 +15,13 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { FileSaverModule } from 'ngx-filesaver';
 import { PickListModule } from 'primeng/picklist';
+import { ConfirmDialogModule,
+  DropdownModule,
+  MultiSelectModule,
+  InputTextModule,
+  CheckboxModule,
+  CalendarModule,
+  OverlayPanelModule} from 'primeng/primeng';
 import { ErrorNotificationService } from './services/error-notification.service';
 import { DynamicTableAttachmentsComponent } from './components/dynamic-table-attachments/dynamic-table-attachments.component';
 import { KeyFilterModule } from 'primeng/primeng';
@@ -30,6 +30,7 @@ import { CatalogueChooserDialogComponent } from './components/catalogue-chooser-
 import { AttachmentListComponent } from './components/attachment-list/attachment-list.component';
 import { AddEntityDialogComponent } from './components/add-entity-dialog/add-entity-dialog.component';
 import { EntityLogComponent } from './components/entity-log/entity-log.component';
+import { PictureDialogComponent } from './components/picture-dialog/picture-dialog.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { EntityLogComponent } from './components/entity-log/entity-log.component
     CatalogueChooserDialogComponent,
     AttachmentListComponent,
     AddEntityDialogComponent,
-    EntityLogComponent
+    EntityLogComponent,
+    PictureDialogComponent
   ],
   imports: [
     CommonModule,
@@ -67,6 +69,7 @@ import { EntityLogComponent } from './components/entity-log/entity-log.component
   ],
   entryComponents: [
     EntityDialogComponent,
+    PictureDialogComponent
   ],
   exports: [
     DynamicTableComponent,

@@ -6,6 +6,8 @@ import { AttachmentService } from '../../services/attachment.service';
 import { map, tap } from 'rxjs/operators';
 import { UrlCollection } from '../../url-collection';
 import { EntityService } from '../../services/entity.service';
+import { DialogService } from 'primeng/primeng';
+import { PictureDialogComponent } from '../picture-dialog/picture-dialog.component';
 
 @Component({
   selector: 'app-attachment-list',
@@ -23,6 +25,7 @@ export class AttachmentListComponent implements OnInit {
   @Input() ownerType: string;
   @Input() ownerId: number;
   @Input() attachmentCategory?: string;
+  @Input() showPictureViewerOpenButton = false;
 
   @Input() attachment: AttachmentResponseData;
   @Output() attachmentRemoved = new EventEmitter<AttachmentRequestData>();
@@ -33,8 +36,14 @@ export class AttachmentListComponent implements OnInit {
   header: {field: string, header: string}[];
   content: string[][];
   content2: any[];
+  selectedImageName = 'Image';
+  displayImageViewer = false;
 
-  constructor(private attachmentService: AttachmentService, private entityService: EntityService) { }
+  constructor(
+    private attachmentService: AttachmentService,
+    private entityService: EntityService,
+    public dialogService: DialogService) { }
+
 
   ngOnInit() {
     if (this.receiveDataFromParent) {
@@ -43,6 +52,7 @@ export class AttachmentListComponent implements OnInit {
       this.requestAttachmentData();
     }
   }
+
 
   requestAttachmentData() {
     const attachmentRequestData = {
@@ -90,7 +100,7 @@ export class AttachmentListComponent implements OnInit {
     return UrlCollection.Files.generateDownloadUrl(id);
   }
 
-  detachAndDeleteEntity(id: number) {
+  detachAndDeleteEntity(id: number): void {
     console.log('[AttachmentListComponent-detachAndDeleteEntity]');
     // detach
       // 	{
@@ -113,6 +123,27 @@ export class AttachmentListComponent implements OnInit {
           this.attachmentRemoved.emit(attachmentRequest);
         });
       });
+  }
+
+  openImage(id: number): void {
+    // this.selectedImageName = this.content2[id];
+    // this.displayImageViewer = true;
+    // console.log('content: ', this.content2[id]);
+    console.log('[AttachmentListComponent-openImage] id: ', id);
+    console.log('[AttachmentListComponent-openImage] content: ', JSON.stringify(this.content2));
+    const attachment = this.content2.find(element => element.id === id);
+    const dialogRef = this.dialogService.open(PictureDialogComponent, {
+      data: {
+        fileId: id
+      },
+      header: `${attachment.Dateiname} - ${attachment.Typ}`
+    });
+    dialogRef.onClose.subscribe(event => {
+      // anything?
+    });
+  }
+
+  showImage(): void {
   }
 
 }

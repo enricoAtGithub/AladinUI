@@ -40,17 +40,24 @@ export class AttachmentService {
           'error getting attachments for entity', err))));
   }
 
+  // getAllAttachmentAsFileRefs(attachmentData: AttachmentRequestData): Observable<HttpResult<AttachmentResponseData>> {
+  // }
+
   detachFromEntity(attachmentData: AttachmentRequestData) {
 
-    return this.http.post(UrlCollection.Attachments.attach(), attachmentData)
-    .pipe(
-      map(() => this.serviceHelper.createSuccessResponse()),
-      catchError(err =>
-        of(this.serviceHelper.createErrorResponse('error creating catalogue', err)))
-    );
-  }
+      return this.http.post(UrlCollection.Attachments.attach(), attachmentData)
+      .pipe(
+        map(() => this.serviceHelper.createSuccessResponse()),
+        catchError(err =>
+          of(this.serviceHelper.createErrorResponse('error creating catalogue', err)))
+      );
+    }
 
   getAllDownloadUrlsForAttachmentData(attachmentResponseData: AttachmentResponseData): string[] {
-    return attachmentResponseData.getAllFileIDs().map(id => UrlCollection.Files.download(id));
+    return attachmentResponseData.getAllFileIDs().map(id => UrlCollection.Files.generateDownloadUrl(id));
+  }
+
+  getAllDownloadUrlForAttachmentData(fileId: number): string {
+    return UrlCollection.Files.generateDownloadUrl(fileId);
   }
 }

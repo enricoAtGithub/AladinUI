@@ -12,7 +12,7 @@ export class ImageService {
 
   getImageByFileId(imageFileId: number): Observable<Blob> {
     return this.getImageByUrl(
-      UrlCollection.Files.download(imageFileId));
+      UrlCollection.Files.generateDownloadUrl(imageFileId));
   }
 
   getImageByUrl(url: string): Observable<Blob> {
