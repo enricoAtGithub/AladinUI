@@ -27,6 +27,7 @@ export class AttachmentListComponent implements OnInit {
   attachments$: Observable<AttachmentResponseData>;
   header: {field: string, header: string}[];
   content: string[][];
+  content2: any[];
 
   constructor(private attachmentService: AttachmentService) { }
 
@@ -57,6 +58,16 @@ export class AttachmentListComponent implements OnInit {
     const {keys, values} = attachment.getDataKeysAndValues();
     this.header = keys.map(key => ({field: key, header: key}));
     this.content = values;
+    this.content2 = values.map(row => {
+      const attObj = {};
+      keys.forEach((key, pos) => {
+        attObj[key] = row[pos];
+      });
+      console.log('[attachment-list] attObj: ', attObj);
+      return attObj;
+    });
+    console.log('[attachment-list] header: ', this.header);
+    console.log('[attachment-list] content: ', this.content);
   }
 
 }
