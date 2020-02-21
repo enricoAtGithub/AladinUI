@@ -17,6 +17,7 @@ export class AppFooterComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('[AppFooterComponent-ngOnInit]');
     const uiInfo: UIInfo = AppConfig.getUIInfo();
     const uiDetails = 'UI version=' + uiInfo.version + '.' + uiInfo.git_branch + '.' + uiInfo.build_no + '.' + uiInfo.git_sha;
     this.appDetails = uiDetails + ', loading BE details....';

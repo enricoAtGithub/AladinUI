@@ -107,7 +107,9 @@ import { FileUploadDialogComponent } from './shared/components/file-upload-dialo
 import { FileSaverModule } from 'ngx-filesaver';
 
 export function initializeApp(appConfig: AppConfig) {
+    console.log('initialize app');
     return () => appConfig.load();
+    // return appConfig.load();
 }
 
 @NgModule({

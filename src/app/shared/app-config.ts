@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import PostBuildConfig from '../../assets/config/postbuildconfig.json';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 export class ServerInfo {
     host: string;
@@ -23,13 +24,19 @@ export class UIInfo {
 @Injectable()
 export class AppConfig {
 
-    constructor(private http: HttpClient) {
-        this.load();
-    }
-
+    private static uiInfoSubject = new ReplaySubject<UIInfo>(1);
+    static uiInfo$ = AppConfig.uiInfoSubject.asObservable();
+    private static serverInfoSubject = new ReplaySubject<ServerInfo>(1);
+    static serverInfo$ = AppConfig.serverInfoSubject.asObservable();
     static uiInfo: UIInfo;
 
+    constructor(private http: HttpClient) {
+        this.load();
+
+    }
+
     static getBaseUrl(): string {
+        // console.log('[AppConfig-serverInfo(myFunc)] reading base url. uiInfo: ', AppConfig.uiInfo);
         return AppConfig.uiInfo.baseUrl;
     }
 
@@ -38,27 +45,32 @@ export class AppConfig {
     }
 
     load() {
-        // AppConfig.uiInfo = PostBuildConfig as UIInfo;
-        // if (!AppConfig.uiInfo.baseUrl) {
-        //     console.log('take Backend URL from environment');
-        //     AppConfig.uiInfo.baseUrl = environment.baseUrl;
-        // } else {
-        //     console.log('take Backend URL from postbuildConfig');
-        // }
+        console.log('[AppConfig-load] start');
         this.http.get('../../assets/config/postbuildconfig.json').subscribe(json => {
-            AppConfig.uiInfo = json as UIInfo;
-            if (!AppConfig.uiInfo.baseUrl) {
+            // console.log('[AppConfig-load] subscription activated');
+            const uiInfo = json as UIInfo;
+            if (!uiInfo.baseUrl) {
                 console.log('taking Backend URL from environment');
-                AppConfig.uiInfo.baseUrl = environment.baseUrl;
+                uiInfo.baseUrl = environment.baseUrl;
             } else {
                 console.log('taking Backend URL from postbuildConfig');
             }
+            // console.log('[AppConfig-load] firing first uiInfoSubject message');
+            AppConfig.uiInfo = uiInfo;
+            AppConfig.uiInfoSubject.next(uiInfo);
         });
     }
 
-    serverInfo(myFunc) {
-        return this.http.get<ServerInfo>(AppConfig.getBaseUrl() + '/admin/info').subscribe(myFunc);
+    // serverInfo(myFunc) {
+    //     console.log('[AppConfig-serverInfo(myFunc)] reading server info.');
+    //     return this.http.get<ServerInfo>(AppConfig.getBaseUrl() + '/admin/info').subscribe(myFunc);
+    // }
+
+    loadServerInfo() {
+        this.http.get<ServerInfo>(AppConfig.getBaseUrl() + '/admin/info')
+                    .subscribe(serverInfo => AppConfig.serverInfoSubject.next(serverInfo));
     }
+
 
 
 
