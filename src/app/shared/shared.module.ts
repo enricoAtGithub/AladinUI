@@ -67,7 +67,8 @@ import { ArtefactListComponent } from './components/artefact-list/artefact-list.
   exports: [
     DynamicTableComponent,
     DynamicTableAttachmentsComponent,
-    FileUploadDialogComponent
+    FileUploadDialogComponent,
+    ArtefactListComponent
   ],
   providers: [
     EntityService,

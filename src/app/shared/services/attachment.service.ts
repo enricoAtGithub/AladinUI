@@ -19,7 +19,6 @@ export class AttachmentService {
   attachToEntity(attachmentData: AttachmentRequestData): Observable<HttpResponseState> {
     return this.http.post(UrlCollection.Attachments.attach(), attachmentData, { observe: 'response' })
     .pipe(
-      // map(() => this.serviceHelper.createSuccessResponse()),
       map(response => {
         console.log('attachment response: ', response);
         return this.serviceHelper.createSuccessResponse();
@@ -32,7 +31,10 @@ export class AttachmentService {
   getAllAttachments(attachmentData: AttachmentRequestData): Observable<HttpResult<AttachmentResponseData>> {
 
     return this.http.post<AttachmentResponseData>(UrlCollection.Attachments.all(), attachmentData).pipe(
-      map(result => this.serviceHelper.createSuccessResponseWithContent<AttachmentResponseData>(result)),
+      map(result => this.serviceHelper
+        .createSuccessResponseWithContent<AttachmentResponseData>(
+          // return real objects
+          Object.assign(new AttachmentResponseData(), result))),
       catchError(err =>
         of(this.serviceHelper.createErrorResponseWithContent<AttachmentResponseData>(
           'error getting attachments for entity', err))));

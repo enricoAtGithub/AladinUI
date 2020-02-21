@@ -97,8 +97,8 @@ export class FileUploadDialogComponent implements OnInit {
   onBeforeUpload(event: any) {
     console.log('onBeforeUpload');
     const data: FormData = event.formData;
-    console.log('[onFileBeforeUpload] selected file', this.uploadFileName);
-    data.append('fileName', this.uploadFileName);
+    console.log('[onFileBeforeUpload] selected file', this.newFileName);
+    data.append('fileName', this.newFileName);
     data.append('fileType', 'Document');
     console.log('[onFileBeforeUpload] start upload');
   }
