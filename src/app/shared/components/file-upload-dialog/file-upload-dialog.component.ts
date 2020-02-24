@@ -33,6 +33,7 @@ export class FileUploadDialogComponent implements OnInit {
 
   @Output() fileUploaded = new EventEmitter<FileUploadResult>();
   @Output() error = new EventEmitter<HttpErrorResponse>();
+  @Output() fileAttached = new EventEmitter<FileUploadResult>();
 
   url: string;
   showCatalogChooser = false;
@@ -69,17 +70,18 @@ export class FileUploadDialogComponent implements OnInit {
     this.keepOrgFileName = true;
   }
 
-  attachFileToEntity(fileId: number) {
+  attachFileToEntity(uploadResult: FileUploadResult) {
     this.attachmentService.attachToEntity(
       <AttachmentRequestData>{
         mainType: MAIN_TYPE,
-        mainId: fileId,
+        mainId: uploadResult.id,
         ownerType: this.ownerType,
         ownerId: this.ownerId,
         attachmentCategory: this.attachmentCategory})
       .subscribe(response => {
         if (response.success) {
           this.uploadMessages.push({severity: 'info', summary: 'Erfolg', detail: 'Datei wurde erfolgreich hochgeladen und verknüpft.'});
+          this.fileAttached.emit(uploadResult);
         } else {
           this.uploadMessages.push({severity: 'error', summary: 'Fehler', detail: response.errMsg});
         }
@@ -113,7 +115,7 @@ export class FileUploadDialogComponent implements OnInit {
     console.log('upload result', uploadResult);
     // attach
     if (this.createAttachment) {
-      this.attachFileToEntity(uploadResult.id);
+      this.attachFileToEntity(uploadResult);
     }
     this.fileUploaded.emit(uploadResult);
 
