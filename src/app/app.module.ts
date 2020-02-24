@@ -107,6 +107,7 @@ import { FileUploadDialogComponent } from './shared/components/file-upload-dialo
 import { FileSaverModule } from 'ngx-filesaver';
 import { JmeleonModule } from './jmeleon/jmeleon.module';
 import { DiagramsModule } from './jmeleon/modules/diagrams/diagrams.module';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 export function initializeApp(appConfig: AppConfig) {
     console.log('initialize app');
@@ -192,7 +193,8 @@ export function initializeApp(appConfig: AppConfig) {
         RootStoreModule,
         FileSaverModule,
         JmeleonModule,
-        DiagramsModule
+        DiagramsModule,
+        NgxPermissionsModule.forRoot()
     ],
     declarations: [
         AppComponent,
