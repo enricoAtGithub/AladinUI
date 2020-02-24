@@ -61,6 +61,7 @@ export class CatalogueChooserDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.catalogueSubscription.unsubscribe();
   }
 
   showErrorMessage(errMsg: string) {
