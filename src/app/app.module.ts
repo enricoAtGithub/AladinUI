@@ -105,6 +105,7 @@ import { SharedModule } from './shared/shared.module';
 import { HttpErrorRepsonseInterceptor } from 'src/http-error-repsonse.interceptor';
 import { FileUploadDialogComponent } from './shared/components/file-upload-dialog/file-upload-dialog.component';
 import { FileSaverModule } from 'ngx-filesaver';
+import { JmeleonModule } from './jmeleon/jmeleon.module';
 
 export function initializeApp(appConfig: AppConfig) {
     console.log('initialize app');
@@ -188,7 +189,8 @@ export function initializeApp(appConfig: AppConfig) {
         UserModule,
         VirtualScrollerModule,
         RootStoreModule,
-        FileSaverModule
+        FileSaverModule,
+        JmeleonModule
     ],
     declarations: [
         AppComponent,
