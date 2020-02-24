@@ -187,10 +187,6 @@ export function initializeApp(appConfig: AppConfig) {
         TreeTableModule,
         UserModule,
         VirtualScrollerModule,
-        StoreModule.forRoot(reducers, { metaReducers }),
-        StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
-        EffectsModule.forRoot([AppEffects]),
-        StoreRouterConnectingModule.forRoot(),
         RootStoreModule,
         FileSaverModule
     ],
