@@ -14,6 +14,33 @@
     margin-left: 10px;
 }
 
+.spacing-top-medium {
+    margin-top: 20px !important;
+
+}
+.spacing-right-medium {
+    margin-right: 20px;
+}
+.spacing-bottom-medium {
+    margin-bottom: 20px;
+}
+.spacing-left-medium {
+    margin-left: 20px;
+}
+
+.spacing-top-large {
+    margin-top: 40px;
+}
+.spacing-right-large {
+    margin-right: 40px;
+}
+.spacing-bottom-large {
+    margin-bottom: 40px;
+}
+.spacing-left-large {
+    margin-left: 40px;
+}
+
 .grid-row-background-even {
     background-color: #f0f6ff;
 }
@@ -79,8 +106,8 @@
 .top-card {
     margin-bottom: 10px !important;
 }
-
+/* 
 #buttonPanel {
     margin-top: 50px !important;
 
-}
+} */
