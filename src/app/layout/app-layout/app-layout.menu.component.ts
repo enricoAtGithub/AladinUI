@@ -2,6 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {trigger, state, style, transition, animate} from '@angular/animations';
 import {MenuItem} from 'primeng/primeng';
 import {AppLayoutComponent} from '../app-layout/app-layout.component';
+import { JMeleonPermissionsService } from 'src/app/auth/services/jmeleon-permissions.service';
+
 
 @Component({
     selector: 'app-menu',
@@ -16,7 +18,8 @@ export class AppMenuComponent implements OnInit {
 
     model: any[];
 
-    constructor(public app: AppLayoutComponent) {}
+    constructor(public app: AppLayoutComponent,
+        private jmeleonPermissionsService: JMeleonPermissionsService) {}
 
     ngOnInit() {
         this.model = [
@@ -24,7 +27,10 @@ export class AppMenuComponent implements OnInit {
             {label: 'Aufträge', icon: 'fa fa-fw fa-tasks', routerLink: ['/orders']},
             {label: 'Rechnungen', icon: 'fa fa-fw fa-eur', routerLink: ['/invoices']},
             {label: 'Berichte', icon: 'fa fa-fw fa-file', routerLink: ['/reports']},
-            {label: 'Administration', icon: 'fa fa-fw fa-pencil', items: [
+            {label: 'Administration', icon: 'fa fa-fw fa-pencil',
+            visible: this.jmeleonPermissionsService.currentUserHasPermission(
+                        this.jmeleonPermissionsService.PERMISSION_MANAGE_USERS),
+            items: [
                 {label: 'Benutzer-Übersicht', icon: 'pi pi-users', routerLink: ['/administration/user-management']},
                 {label: 'Rollenverwaltung', icon: 'pi pi-users', routerLink: ['/administration/role-management']},
                 {label: 'Rechteverwaltung', icon: 'pi pi-users', routerLink: ['/administration/permission-management']},
