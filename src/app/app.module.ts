@@ -2,7 +2,7 @@ import {NgModule, APP_INITIALIZER} from '@angular/core';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {LocationStrategy, PathLocationStrategy} from '@angular/common';
+import {LocationStrategy, PathLocationStrategy, HashLocationStrategy} from '@angular/common';
 import {AppRoutes} from './app.routes';
 
 import {AccordionModule} from 'primeng/accordion';
@@ -217,7 +217,8 @@ export function initializeApp(appConfig: AppConfig) {
     providers: [
         AppConfig,
         {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [AppConfig], multi: true },
-        {provide: LocationStrategy, useClass: PathLocationStrategy},
+        // {provide: LocationStrategy, useClass: PathLocationStrategy},
+        {provide: LocationStrategy, useClass: HashLocationStrategy},
         {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
         {provide: HTTP_INTERCEPTORS, useClass: HttpErrorRepsonseInterceptor, multi: true},
         BreadcrumbService,
