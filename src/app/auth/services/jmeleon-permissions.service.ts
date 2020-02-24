@@ -45,6 +45,14 @@ export class JMeleonPermissionsService {
     return Object.keys(permissions).some(key => key === permissionName);
   }
 
+  currentUserHasRole(roleName: string): boolean {
+    return this.localUser.roles.some(role => role === roleName);
+  }
+
+  currentUserHasAdminRole(): boolean {
+    return this.currentUserHasRole(this.ROLE_ADMIN);
+  }
+
 
 
 

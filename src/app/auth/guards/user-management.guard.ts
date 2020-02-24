@@ -13,14 +13,14 @@ export class UserManagementGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    const result = this.jmeleonPermissionService.currentUserHasPermission(this.jmeleonPermissionService.PERMISSION_MANAGE_USERS);
+    const userIsAdmin = this.jmeleonPermissionService.currentUserHasAdminRole();
 
-    if (!result) {
+    if (!userIsAdmin) {
       console.log('Permission check for user management area failed. Redirecting to dashboard');
       this.router.navigate(['/dashboard']);
     }
 
-    return result;
+    return userIsAdmin;
   }
 
 }
