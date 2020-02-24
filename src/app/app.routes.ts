@@ -14,6 +14,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { RoleManagementComponent } from './user/components/role-management/role-management.component';
 import { PermissionManagementComponent } from './user/components/permission-management/permission-management.component';
 import { CatalogueManagementComponent } from './user/components/catalogue-management/catalogue-management.component';
+import { UserManagementGuard } from './auth/user-management.guard';
 
 export const routes: Routes = [
     // App-Layout routes
@@ -30,7 +31,9 @@ export const routes: Routes = [
         // doesn't seem to work with 'ModuleWithProviders
         // {path: 'administration', loadChildren: './user/user.module.ts#UserModule'}
         // {path: 'administration', loadChildren: UserModule}
-        {path: 'administration', children: [
+        {path: 'administration',
+        canActivate: [UserManagementGuard],
+        children: [
           {path: 'user-management', pathMatch: 'full', component: UserManagementComponent},
           {path: 'role-management', pathMatch: 'full', component: RoleManagementComponent},
           {path: 'permission-management', pathMatch: 'full', component: PermissionManagementComponent},
