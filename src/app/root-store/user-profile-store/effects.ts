@@ -44,8 +44,8 @@ export class UserProfileEffects {
     @Effect()
     logoutRequestedEffect$ = this.actions$.pipe(
       ofType<userProfileActions.LogoutRequestedAction>(userProfileActions.ActionTypes.LOGOUT_REQUESTED),
-      switchMap(() =>
-        this.authService.logout()
+      switchMap(action =>
+        this.authService.logout(action.payload.sendLogoutRequestToServer)
           .pipe(
             tap(_ => this.router.navigate(['/login'])),
             switchMap(_ => [

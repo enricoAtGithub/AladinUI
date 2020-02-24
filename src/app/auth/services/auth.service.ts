@@ -111,7 +111,14 @@ export class AuthService {
     return result;
   }
 
-  logout(): Observable<[boolean, string]> {
+  logout(sendLogoutRequestToServer = true): Observable<[boolean, string]> {
+    // for invalid token
+    if (!sendLogoutRequestToServer) {
+      this.userSubject.next(null);
+      this.isLoggedInSubject.next(false);
+      return of([true, '']);
+    }
+
     const logoutResult = this.http.get(UrlCollection.UserManagement.LOGOUT())
     .pipe(
       map(() => {
@@ -121,7 +128,7 @@ export class AuthService {
         return result;
       }),
       catchError(err => {
-        console.log('logout error: ', err);
+        // console.log('logout error: ', err);
         const result: [boolean, string] = [false, err['error']['message'] ? err['error']['message'].toString() : err];
         return of(result);
       })
