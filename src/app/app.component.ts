@@ -12,5 +12,9 @@ export class AppComponent  {
     this.errorNotificationService.errorQueue$.subscribe(errorMessage => {
       this.messageService.add({severity: errorMessage.severity, summary: errorMessage.summary, detail: errorMessage.detail, life: 5000});
     });
+    this.errorNotificationService.successQueue$.subscribe(successMessage => {
+      this.messageService.add(
+        {severity: successMessage.severity, summary: successMessage.summary, detail: successMessage.detail, life: 5000});
+    });
   }
 }
