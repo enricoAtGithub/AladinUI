@@ -41,8 +41,7 @@ export class AppConfig {
     }
 
     load() {
-        console.log('[AppConfig-load] start');
-
+        console.log('[[AppConfig-load]] gets called.');
         const jsonFile = `./assets/config/postbuildconfig.json`;
         // this.http.get('../../assets/config/postbuildconfig.json').subscribe(json => {
         this.http.get(jsonFile).subscribe(json => {

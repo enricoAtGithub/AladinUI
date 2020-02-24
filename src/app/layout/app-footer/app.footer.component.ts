@@ -15,6 +15,7 @@ export class AppFooterComponent implements OnInit {
   constructor(private appConfig: AppConfig) {
     this.companyName = environment.companyName;
     this.uiDetails = '...loading UI details';
+    this.appDetails = '...loading app details';
   }
 
   ngOnInit() {

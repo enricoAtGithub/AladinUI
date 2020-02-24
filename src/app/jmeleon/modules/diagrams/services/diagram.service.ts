@@ -25,7 +25,7 @@ export class DiagramService {
   // just temporary
   public getCapacityData(): Observable<DiagramData> {
     const url = `${this.getBaseUrl()}/capacity`;
-    console.log('[DiagramService-getCapacityData] url: ', url);
+    // console.log('[DiagramService-getCapacityData] url: ', url);
     return this.http.get<DiagramData>(url);
   }
 

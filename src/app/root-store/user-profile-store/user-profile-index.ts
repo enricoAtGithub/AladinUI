@@ -1,6 +1,7 @@
 import * as UserProfileActions from './actions';
 import * as UserProfileSelectors from './selectors';
 import * as UserProfileState from './state';
+import * as UserProfileReducers from './reducers';
 
 export {
     UserProfileStoreModule
@@ -9,5 +10,6 @@ export {
 export {
     UserProfileActions,
     UserProfileSelectors,
-    UserProfileState
+    UserProfileState,
+    UserProfileReducers
 };

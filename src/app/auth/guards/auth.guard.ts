@@ -19,6 +19,7 @@ export class AuthGuard implements CanActivate {
         .pipe(
           tap(isLoggedIn => {
             if (!isLoggedIn) {
+              // console.log('redirecting to login');
               // Store the attempted URL for redirecting
               this.authService.redirectUrl = url;
 

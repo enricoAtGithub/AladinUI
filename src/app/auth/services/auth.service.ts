@@ -7,6 +7,9 @@ import { switchMap, map, tap, catchError, share } from 'rxjs/operators';
 import { HttpHeadersService } from 'src/app/shared/services/http-headers.service';
 import { HttpResult } from 'src/app/shared/models/http/http-result';
 import { HttpOptionsFactory } from 'src/app/shared/models/http/http-options-factory';
+import { Store, select } from '@ngrx/store';
+import { RootStoreState } from 'src/app/root-store/root-index';
+import * as fromUserSelectors from 'src/app/root-store/user-profile-store/selectors';
 
 @Injectable({
   providedIn: 'root'
@@ -27,12 +30,24 @@ export class AuthService {
   private isLoggedInSubject: Subject<boolean>;
   public isLoggedIn$: Observable<boolean>;
 
-  constructor(private http: HttpClient, private httpHeaderService: HttpHeadersService) {
+  constructor(
+    private http: HttpClient,
+    private httpHeaderService: HttpHeadersService,
+    private store$: Store<RootStoreState.State>) {
     this.userSubject = new ReplaySubject<User>(1);
     this.userSubject.next(null);
-    this.localUser$ = this.userSubject.asObservable(); // .pipe(share());
+    // this.localUser$ = this.userSubject.asObservable(); // .pipe(share());
     this.isLoggedInSubject = new BehaviorSubject<boolean>(false);
-    this.isLoggedIn$ = this.isLoggedInSubject.asObservable(); // .pipe(share());
+    // this.isLoggedIn$ = this.isLoggedInSubject.asObservable(); // .pipe(share());
+
+    this.localUser$ = this.store$.pipe(
+      select(fromUserSelectors.selectUserProfileUser),
+      // tap(user => console.log('this.localUser$:', user))
+      );
+    this.isLoggedIn$ = this.store$.pipe(
+      select(fromUserSelectors.selectUserProfileUser),
+      map(user => !!user));
+
 
     this.localUser$.subscribe(
       user => {
@@ -45,8 +60,8 @@ export class AuthService {
         this.isLoggedIn = isLoggedIn;
       }
     );
-  }
 
+  }
 
   login(userName: string, pass: string): Observable<HttpResult<User>> {
     const result = this.http
@@ -65,7 +80,7 @@ export class AuthService {
           this.userSubject.next(user);
           this.isLoggedInSubject.next(true);
           // todo: create local storage service!
-          // localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('user', JSON.stringify(user));
         }),
         map(user => {
           const httpResult: HttpResult<User> = {
@@ -96,7 +111,6 @@ export class AuthService {
     return result;
   }
 
-
   logout(): Observable<[boolean, string]> {
     const logoutResult = this.http.get(UrlCollection.UserManagement.LOGOUT())
     .pipe(
@@ -107,7 +121,7 @@ export class AuthService {
         return result;
       }),
       catchError(err => {
-        // console.log('logout error: ', err);
+        console.log('logout error: ', err);
         const result: [boolean, string] = [false, err['error']['message'] ? err['error']['message'].toString() : err];
         return of(result);
       })
