@@ -5,6 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class DateTimeService {
 
+  readonly CALENDAR_DATE_FORMAT = 'dd.mm.yy';
+
   constructor() { }
 
   /**
@@ -31,6 +33,21 @@ export class DateTimeService {
 
     const result  = `${year}-${month}-${days}T${hours}:${minutes}:${seconds}`;
 
+    return result;
+  }
+
+  convertDateStringToApiConformTimeString(dateString: string): string {
+    const dateComponents = dateString.split('.');
+
+    // this is asking for trouble. todo: switch date management to moment.js
+    const date = new Date(+dateComponents[2], +dateComponents[1] - 1, +dateComponents[0]);
+    return this.convertDateToApiConformTimeString(date);
+  }
+
+  convertApiDateTimeStringToCalendarString(apiDateString: string): string {
+    const datePart = apiDateString.split('T')[0];
+    const dateSubParts = datePart.split('-');
+    const result = `${dateSubParts[2]}.${dateSubParts[1]}.${dateSubParts[0]}`;
     return result;
   }
 
