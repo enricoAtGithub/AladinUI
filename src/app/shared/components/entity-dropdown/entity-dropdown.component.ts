@@ -14,6 +14,7 @@ export class EntityDropdownComponent implements OnInit {
   @Input() fieldName: string;
   @Input() allowNull = true;
   @Input() selectedOptionId?: number;
+  @Input() defaultNullValue: string;
   @Output() selectedOptionChanged = new EventEmitter();
   @Output() selectedOptionIdChanged = new EventEmitter();
 
@@ -29,9 +30,9 @@ export class EntityDropdownComponent implements OnInit {
 
   selectedItemChanged(event: any): void {
     // console.log('[EntityDropdown-selectedItemChanged] event: ', event);
-    // console.log('[EntityDropdown-selectedItemChanged] event.value: ', event.value[this.fieldName]);
-    this.selectedOptionChanged.emit(event.value[this.fieldName]);
-    this.selectedOptionIdChanged.emit(event.value['id']);
+    // console.log('[EntityDropdown-selectedItemChanged] event.value: ', !!event.value ? event.value[this.fieldName] : null);
+    this.selectedOptionChanged.emit(!!event.value ? event.value[this.fieldName] : null);
+    this.selectedOptionIdChanged.emit(!!event.value ? event.value['id'] : null);
   }
 
   getEntityData(): void {
@@ -42,7 +43,7 @@ export class EntityDropdownComponent implements OnInit {
             entityData => {
               this.data = entityData;
               const tempSelectItems: SelectItem[] = [];
-              tempSelectItems.push({label: 'Kein Lieferant', value: null});
+              tempSelectItems.push({label: this.defaultNullValue, value: null});
               this.selectItems = tempSelectItems.concat(this.data.data.map(entity => {
                   const selectItem = <SelectItem>{label: entity[this.fieldName], value: entity};
                   return selectItem;
