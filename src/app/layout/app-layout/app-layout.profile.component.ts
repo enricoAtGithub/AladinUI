@@ -6,6 +6,7 @@ import {Md5} from 'ts-md5/dist/md5';
 import { AppThemeComponent } from './app-layout.theme.component';
 import { DialogService } from 'primeng/primeng';
 import { Router } from '@angular/router';
+import { JMeleonPermissionsService } from 'src/app/auth/services/jmeleon-permissions.service';
 
 @Component({
     selector: 'app-inline-profile',
@@ -14,7 +15,7 @@ import { Router } from '@angular/router';
             <a href="#" (click)="onProfileClick($event)" id="sidebar-profile-button">
                 <img [src]="gravatarLink" style="width: 92px; height:92px; border-radius:46px"/>
                 <span class="sidebar-profile-name">{{fullName}}</span>
-                <span class="sidebar-profile-role">Administrator</span>
+                <span class="sidebar-profile-role">{{role}}</span>
             </a>
 
             <ul id="sidebar-usermenu" class="usermenu" [ngClass]="{'usermenu-active':app.usermenuActive}"
@@ -67,12 +68,14 @@ import { Router } from '@angular/router';
 export class AppProfileComponent implements OnInit {
     fullName = '';
     gravatarLink = '';
+    role = '';
 
     constructor(
         public app: AppLayoutComponent,
         public authService: AuthService,
         public router: Router,
-        private dialogService: DialogService
+        private dialogService: DialogService,
+        private jmeleonPermissionService: JMeleonPermissionsService
     ) {}
 
     ngOnInit() {
@@ -86,6 +89,10 @@ export class AppProfileComponent implements OnInit {
                         email = user.user.email;
                     }
                     this.gravatarLink = 'https://gravatar.com/avatar/' + <string>Md5.hashStr(email.trim().toLowerCase());
+
+                    if (this.jmeleonPermissionService.userHasAdminRole(user)) {
+                        this.role = 'Administrator';
+                    }
                 }
             }
         );
