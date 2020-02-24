@@ -1,5 +1,9 @@
-import { UserProfileState } from './user-profile-store/user-profile-index';
+import * as fromUserProfileState from './user-profile-store/state';
 
 export interface State {
-    userProfile: UserProfileState.UserProfileState;
+    userProfile: fromUserProfileState.UserProfileState;
 }
+
+export const initialRootState: State = {
+    userProfile: fromUserProfileState.initialState,
+};

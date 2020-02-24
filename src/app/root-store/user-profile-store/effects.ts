@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap, tap } from 'rxjs/operators';
 import * as userProfileActions from './actions';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Router } from '@angular/router';
@@ -40,27 +40,18 @@ export class UserProfileEffects {
     )
   );
 
-  /* do we communicate logout errors? */
-  @Effect()
-  logoutRequestedEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<userProfileActions.LogoutRequestedAction>(userProfileActions.ActionTypes.LOGOUT_REQUESTED),
-    switchMap(() =>
-      this.authService.logout()
-        .pipe(
-          map(([success, errMsg]) => {
-            if (!success) {
-              // communicate?
-              // console.log('logout error: ', errMsg);
-            }
-            this.router.navigate(['/login']);
-            return new userProfileActions.LogoutSuccessAction();
-          }),
-          // communicate?
-          catchError(err => {
-            // console.log('logout error: ', err);
-            return of(new userProfileActions.LogoutSuccessAction());
-          })
-        )
-    )
-  );
+    /* do we communicate logout errors? */
+    @Effect()
+    logoutRequestedEffect$ = this.actions$.pipe(
+      ofType<userProfileActions.LogoutRequestedAction>(userProfileActions.ActionTypes.LOGOUT_REQUESTED),
+      switchMap(() =>
+        this.authService.logout()
+          .pipe(
+            tap(_ => this.router.navigate(['/login'])),
+            switchMap(_ => [
+              new userProfileActions.LogoutSuccessAction()
+            ])
+          )
+      )
+    );
 }
