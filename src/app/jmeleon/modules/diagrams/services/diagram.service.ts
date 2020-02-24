@@ -5,6 +5,7 @@ import { DiagramColorService } from './diagram-color.service';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AppConfig } from 'src/app/shared/app-config';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   // providedIn: DiagramsModule
@@ -21,11 +22,11 @@ export class DiagramService {
   public getBaseUrl() {
     return AppConfig.getBaseUrl() + '/storage';
   }
-  // just temporary
-  public getCapacityData(): Observable<DiagramData> {
-    const url = `${this.getBaseUrl()}/capacity`;
-    return this.http.get<DiagramData>(url);
-  }
 
+  public getCapacityData(path: string): Observable<DiagramData> {
+    return AppConfig.uiInfo$.pipe(
+      switchMap(uiInfo => this.http.get<DiagramData>(uiInfo.baseUrl + path))
+    );
+  }
 
 }
