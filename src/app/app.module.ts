@@ -108,6 +108,7 @@ import { FileSaverModule } from 'ngx-filesaver';
 import { JmeleonModule } from './jmeleon/jmeleon.module';
 import { DiagramsModule } from './jmeleon/modules/diagrams/diagrams.module';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { SettingsModule } from './jmeleon/modules/settings/settings.module';
 
 export function initializeApp(appConfig: AppConfig) {
     console.log('initialize app');
@@ -194,7 +195,8 @@ export function initializeApp(appConfig: AppConfig) {
         FileSaverModule,
         JmeleonModule,
         DiagramsModule,
-        NgxPermissionsModule.forRoot()
+        NgxPermissionsModule.forRoot(),
+        SettingsModule
     ],
     declarations: [
         AppComponent,

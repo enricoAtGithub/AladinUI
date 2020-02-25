@@ -16,6 +16,7 @@ import { PermissionManagementComponent } from './user/components/permission-mana
 import { CatalogueManagementComponent } from './user/components/catalogue-management/catalogue-management.component';
 import { UserManagementGuard } from './auth/guards/user-management.guard';
 import { LoginGuard } from './auth/guards/login.guard';
+import { SettingsComponent } from './jmeleon/modules/settings/components/settings/settings.component';
 
 export const routes: Routes = [
     // App-Layout routes
@@ -39,6 +40,7 @@ export const routes: Routes = [
           {path: 'role-management', pathMatch: 'full', component: RoleManagementComponent},
           {path: 'permission-management', pathMatch: 'full', component: PermissionManagementComponent},
           {path: 'catalogue-management', pathMatch: 'full', component: CatalogueManagementComponent},
+          {path: 'settings', component: SettingsComponent}
         ]}
       ]
     },
