@@ -125,3 +125,14 @@
     margin-top: 50px !important;
 
 } */
+
+
+.left-label {
+    text-align: right;
+    float: right;
+}
+
+.right-label {
+    text-align: left;
+    float: left;
+}
