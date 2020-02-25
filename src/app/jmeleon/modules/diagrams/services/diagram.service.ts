@@ -18,11 +18,6 @@ export class DiagramService {
     private http: HttpClient
     ) { }
 
-
-  public getBaseUrl() {
-    return AppConfig.getBaseUrl() + '/storage';
-  }
-
   public getCapacityData(path: string): Observable<DiagramData> {
     return AppConfig.uiInfo$.pipe(
       switchMap(uiInfo => this.http.get<DiagramData>(uiInfo.baseUrl + path))
