@@ -10,6 +10,15 @@ import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-inde
 
 
 
+export enum ServerErrorCode {
+    GENERIC_ERROR = 1,
+    UNKNOWN_TOKEN = 4,
+    LOST_UPDATE_FAILED = 30,
+    BAD_REQUEST = 400,
+    NOT_FOUND = 404,
+    INTERNAL_SERVER_ERROR = 500
+}
+
 
 @Injectable()
 export class HttpErrorRepsonseInterceptor implements HttpInterceptor {
@@ -32,7 +41,7 @@ export class HttpErrorRepsonseInterceptor implements HttpInterceptor {
                     this.errorNotificationService.addErrorNotification(new ErrorMessage('error', 'Could not reach Server!', ''));
                 } else {
                     /* this block avoids multiple 'invalid token' messages */
-                    if (!!error && !!error.error && !!error.error.code && error.error.code === 4) {
+                    if (!!error && !!error.error && !!error.error.code && error.error.code === ServerErrorCode.UNKNOWN_TOKEN) {
                         if (!this.errorCodeFourBlockActive) {
                             this.errorCodeFourBlockActive = true;
                             setTimeout(() => {
@@ -47,6 +56,10 @@ export class HttpErrorRepsonseInterceptor implements HttpInterceptor {
                         if (this.authService.isLoggedIn) {
                             this.store$.dispatch(new UserProfileActions.LogoutRequestedAction({sendLogoutRequestToServer: false}));
                         }
+                    } else if (!!error && !!error.error && !!error.error.code && error.error.code === ServerErrorCode.LOST_UPDATE_FAILED) {
+                        this.errorNotificationService.addErrorNotification(
+                            new ErrorMessage('error', 'Update fehlgeschlagen',
+                                `Element wurde an anderer Stelle geändert.\n (${error['error']['message']})`));
                     } else {
                         this.errorNotificationService.addErrorNotification(
                             new ErrorMessage('error', 'Error code ' + error['error']['code'], error['error']['message']));

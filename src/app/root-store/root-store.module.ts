@@ -16,7 +16,9 @@ const reducers: ActionReducerMap<RootStoreState.State> = {
 };
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
-  return localStorageSync({keys: ['userProfile'], rehydrate: true})(reducer);
+  const jmeleonStoreNames: string[] = ['userProfile'];
+  const customStoreNames: string[] = [];
+  return localStorageSync({keys: jmeleonStoreNames.concat(customStoreNames), rehydrate: true})(reducer);
 }
 const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
 
