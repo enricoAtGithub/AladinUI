@@ -54,6 +54,12 @@ export class DateTimeService {
     return result;
   }
 
+  public addDays(date: Date, days: number) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
   private addZero(n: number): string {
     return n < 10 ? `0${n}` : `${n}`;
   }
