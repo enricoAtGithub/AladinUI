@@ -14,7 +14,7 @@ export class ServiceHelperService {
     console.log(errMsg, err);
     const result: HttpResponseState = {
       success: false,
-      errMsg: `${errMsg}: ${err.error.message}`
+      errMsg: !!errMsg ? `${errMsg}: ${err.error.message}` : err.error.message
     };
     return result;
   }
@@ -23,7 +23,7 @@ export class ServiceHelperService {
     console.log(errMsg, err);
     const httpResult: HttpResult<T> = {
       success: false,
-      errMsg: `${errMsg}: ${err.error.message}`
+      errMsg: !!errMsg ? `${errMsg}: ${err.error.message}` : err.error.message
     };
     return httpResult;
   }
