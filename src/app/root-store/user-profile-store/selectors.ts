@@ -10,7 +10,7 @@ const getError = (state: UserProfileState): any => {
 const getIsLoading = (state: UserProfileState): boolean => state.isInLogin;
 const getUser = (state: UserProfileState): any => state.user;
 
-export const selectUserProfileState: MemoizedSelector<object, UserProfileState> = createFeatureSelector<UserProfileState>('user-profile');
+export const selectUserProfileState: MemoizedSelector<object, UserProfileState> = createFeatureSelector<UserProfileState>('userProfile');
 export const selectUserProfileError: MemoizedSelector<object, any>          = createSelector(selectUserProfileState, getError);
 export const selectUserProfileIsLoading: MemoizedSelector<object, boolean>  = createSelector(selectUserProfileState, getIsLoading);
 export const selectUserProfileUser: MemoizedSelector<object, User>          = createSelector(selectUserProfileState, getUser);

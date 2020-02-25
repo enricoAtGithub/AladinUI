@@ -16,7 +16,7 @@ const reducers: ActionReducerMap<RootStoreState.State> = {
 };
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
-  return localStorageSync({keys: ['user-profile'], rehydrate: true})(reducer);
+  return localStorageSync({keys: ['userProfile'], rehydrate: true})(reducer);
 }
 const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
 

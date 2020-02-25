@@ -45,6 +45,9 @@ export class DateTimeService {
   }
 
   convertApiDateTimeStringToCalendarString(apiDateString: string): string {
+    if (!apiDateString) {
+      return '';
+    }
     const datePart = apiDateString.split('T')[0];
     const dateSubParts = datePart.split('-');
     const result = `${dateSubParts[2]}.${dateSubParts[1]}.${dateSubParts[0]}`;

@@ -9,7 +9,7 @@ import { UserProfileEffects } from './effects';
   declarations: [],
   imports: [
     CommonModule,
-    StoreModule.forFeature('user-profile', userProfileReducer),
+    StoreModule.forFeature('userProfile', userProfileReducer),
     EffectsModule.forFeature([UserProfileEffects])
   ],
   providers: [UserProfileEffects]
