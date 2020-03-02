@@ -19,6 +19,7 @@ import { UserManagementGuard } from './auth/guards/user-management.guard';
 import { LoginGuard } from './auth/guards/login.guard';
 import { DTOConfigEditorComponent } from './jmeleon/components/dtoconfig-editor/dtoconfig-editor.component';
 import { SettingsComponent } from './jmeleon/modules/settings/components/settings/settings.component';
+import { SchedulerComponent } from './jmeleon/modules/scheduler/components/scheduler/scheduler.component';
 
 export const routes: Routes = [
     // App-Layout routes
@@ -32,6 +33,7 @@ export const routes: Routes = [
         { path: 'reports', component: ReportsComponent},
         { path: 'invoices', component: InvoicesComponent},
         { path: 'profile', component: ProfileComponent},
+        { path: 'scheduler', component: SchedulerComponent},
         // doesn't seem to work with 'ModuleWithProviders
         // {path: 'administration', loadChildren: './user/user.module.ts#UserModule'}
         // {path: 'administration', loadChildren: UserModule}

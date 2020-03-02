@@ -26,6 +26,7 @@
     "@ngrx/router-store": "^8.3.0",
     "@ngrx/store": "^8.3.0",
     "@ngrx/store-devtools": "^8.3.0",
+    "@syncfusion/ej2-angular-schedule": "^17.4.51",
     "@types/file-saver": "^2.0.0",
     "@uiowa/digit-only": "^1.2.3",
     "chart.js": "2.8.0",

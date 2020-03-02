@@ -115,6 +115,7 @@ import { DiagramsModule } from './jmeleon/modules/diagrams/diagrams.module';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { DigitOnlyModule } from '@uiowa/digit-only';
 import { SettingsModule } from './jmeleon/modules/settings/settings.module';
+import { SchedulerModule } from './jmeleon/modules/scheduler/scheduler.module';
 
 export function initializeApp(appConfig: AppConfig) {
     console.log('initialize app');
@@ -209,7 +210,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         NgxPermissionsModule.forRoot(),
         DigitOnlyModule,
         AceModule,
-        SettingsModule
+        SettingsModule,
+        SchedulerModule
     ],
     declarations: [
         AppComponent,
