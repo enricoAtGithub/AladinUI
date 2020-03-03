@@ -24,7 +24,7 @@ import { FileSaverModule } from 'ngx-filesaver';
 import { PickListModule } from 'primeng/picklist';
 import { ErrorNotificationService } from './services/error-notification.service';
 import { DynamicTableAttachmentsComponent } from './components/dynamic-table-attachments/dynamic-table-attachments.component';
-import { KeyFilterModule } from 'primeng/primeng';
+import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
 
 @NgModule({
   declarations: [
@@ -53,7 +53,8 @@ import { KeyFilterModule } from 'primeng/primeng';
     FileSaverModule,
     PickListModule,
     OverlayPanelModule,
-    EditorModule
+    EditorModule,
+    ScrollPanelModule
   ],
   entryComponents: [
     EntityDialogComponent,
