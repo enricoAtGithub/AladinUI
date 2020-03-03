@@ -3,7 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Message } from 'primeng/primeng';
 import { AppConfig, ServerInfo, UIInfo } from 'src/app/shared/app-config';
-import { RootStoreState, UserProfileActions, UserProfileSelectors } from 'src/app/root-store/root-index';
+import { RootStoreState, UserProfileActions, UserProfileSelectors, UserProfileState } from 'src/app/root-store/root-index';
 // import {UserProfileSelectors} from 'src/app/root-store/user-profile-store/user-profile-index';
 import { Store, select } from '@ngrx/store';
 // import { selectError } from 'src/app/root-store/root-selectors';
@@ -28,6 +28,9 @@ export class LoginComponent implements OnInit {
   private errMsg$: Observable<string>;
   companyName: string;
   appName: string;
+  enforcePasswdChange = false;
+  safetyBarColor = 'red';
+  safetyBarWidth = '0%';
 
   constructor(
     public authService: AuthService,
@@ -73,21 +76,72 @@ export class LoginComponent implements OnInit {
       //     console.log('err msg: ', errMsg);
       //   });
 
-      this.store$
-        .pipe(select(state => UserProfileSelectors.selectUserProfileError(state)))
-        .subscribe(errMsg => {
-          // console.log('err msg: ', errMsg);
-          if (!errMsg) {
-            // console.log('empty err msg.');
-            return;
-          }
-          this.msgs = [];
-          this.msgs.push({ severity: 'error', summary: '', detail: errMsg });
-        });
-    }
+    this.store$
+      .pipe(select(state => UserProfileSelectors.selectUserProfileError(state)))
+      .subscribe(errMsg => {
+        // console.log('err msg: ', errMsg);
+        if (!errMsg) {
+          // console.log('empty err msg.');
+          return;
+        }
+        this.msgs = [];
+        this.msgs.push({ severity: 'error', summary: '', detail: errMsg });
+      });
 
+    this.store$
+      .pipe(select(state => UserProfileSelectors.selectUserProfileUser(state)))
+      .subscribe(user => {
+          if (user && user.user.enforcePasswdChange) {
+            this.msgs = [];
+            this.msgs.push({ severity: 'error', summary: 'Passwort abgelaufen!', detail: 'Bitte setzen Sie ein neues Passwort' });
+
+            this.enforcePasswdChange = true;
+          }
+      });
+  }
 
   login(userName: string, password: string) {
     this.store$.dispatch(new UserProfileActions.LoginRequestAction({userName, password}));
   }
+
+  passwordChanged(password: string): void {
+    let passwordSafety = 0;
+    if (password.length >= 0) {
+      passwordSafety += (password.length) * (password.length) / 3;
+      if (password !== password.toLowerCase() && password !== password.toUpperCase()) {
+        passwordSafety *= 1.5;
+      }
+      if (password.match(/\d/) !== null) {
+        passwordSafety *= 1.2;
+      }
+      if (password.match(/[^A-Za-z0-9]/) !== null) {
+        passwordSafety *= 1.3;
+      }
+    }
+
+    if (passwordSafety > 100) {
+      passwordSafety = 100;
+    }
+    this.safetyBarColor = 'hsl(' + passwordSafety * 1.2 + ', 100%, 50%)';
+    this.safetyBarWidth = passwordSafety + '%';
+  }
+
+  changePassword(oldpass, newpass, repeatpass) {
+    if (newpass !== repeatpass) {
+      this.msgs = [];
+      this.msgs.push({ severity: 'error', summary: '', detail: 'Die beiden Passwörter stimmen nicht überein!' });
+      return;
+    }
+
+    this.authService.changePassword(oldpass, newpass).subscribe(resp => {
+      this.msgs = [];
+      if (resp === true) {
+        this.msgs.push({ severity: 'success', summary: '', detail: 'Das Passwort wurde erfolgreich geändert!' });
+        this.enforcePasswdChange = false;
+      } else {
+        this.msgs.push({ severity: 'error', summary: '', detail: resp.toString()});
+      }
+    });
+  }
+
 }

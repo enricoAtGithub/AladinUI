@@ -1,0 +1,23 @@
+<p-panel collapsed="true">
+    <p-header>
+        <span class="ui-panel-title" style="padding-top: 8px">Konfigurationseditor</span>
+        <button pButton (click)="saveConfig()" [disabled]="currentConfigName === undefined" icon="pi pi-save" class="ui-button-success" style="float: right"></button>
+        <p-dropdown [options]="dtoConfigs" placeholder="Konfiguration" [style]="{'float': 'right', 'margin-right': '5px'}" (onChange)="selectedConfigChanged($event)"></p-dropdown>
+    </p-header>
+</p-panel>
+
+<div class="content-container" fxLayout="column" fxLayoutAlign="stretch" fxFlex="auto" style="height: 700px; border: 1px solid #CCCCCC; border-top: 0">
+    <ace 
+    fxFlex="auto" 
+    [config]="aceconfig" 
+    [disabled]="!enableEditor" 
+    (blur)="onEditorBlur($event)" 
+    (focus)="onEditorFocus($event)" 
+    (valueChange)="onValueChange($event)" 
+    (selectionChange)="onSelectionChange($event)" 
+    [(value)]="currentConfig"
+    theme="github"
+    mode="json">
+    </ace>
+    <span style="display:block; height: 10px;"></span>
+</div>

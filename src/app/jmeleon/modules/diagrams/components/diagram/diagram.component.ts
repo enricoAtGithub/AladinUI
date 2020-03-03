@@ -11,6 +11,7 @@ export class DiagramComponent implements OnInit {
 
   @Input() showPanel = true;
   @Input() diagramData: DiagramData;
+  @Input() height: string;
 
   constructor() { }
 

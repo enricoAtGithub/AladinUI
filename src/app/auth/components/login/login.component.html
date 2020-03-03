@@ -28,7 +28,7 @@
         <div class="ui-g-12 ui-lg-12 ui-md-12">
           <p-messages [value]="msgs"></p-messages>
         </div>
-        <form #loginForm="ngForm" (ngSubmit)="login(username.value, password.value)">
+        <form *ngIf="!enforcePasswdChange" #loginForm="ngForm" (ngSubmit)="login(username.value, password.value)">
           <div class="ui-g-12 ui-lg-12 ui-md-12">
             <div class="input-wrapper">
               <label>Benutzername</label>
@@ -46,7 +46,27 @@
             <a href="#" style="float: right">Passwort vergessen?</a>
           </div>
         </form>
-    
+
+        <form *ngIf="enforcePasswdChange" #changePasswordForm="ngForm" (ngSubmit)="changePassword(oldpass.value, newpass.value, repeatpass.value)" class="ui-g ui-fluid">
+          <div class="ui-g-12 ui-md-12 form-group">
+            <div class="input-wrapper" style="margin-bottom: 14px;">
+              <label>Altes Passwort</label>
+              <input #oldpass type="password" autocomplete="off" placeholder="Altes Passwort" class="ui-inputtext ui-widget">
+            </div>
+            <div class="input-wrapper" style="margin-bottom: 10px;">
+              <label>Neues Passwort</label>
+              <input #newpass type="password" autocomplete="off" placeholder="Neues Passwort" class="ui-inputtext ui-widget" (input)="passwordChanged(newpass.value)">
+              <div [style.background-color]="safetyBarColor" [style.width]="safetyBarWidth" style="height: 4px; transition: 0.5s;"></div>
+            </div>
+            <div class="input-wrapper" style="margin-bottom: 14px;">
+              <label>Wiederholen</label>
+              <input #repeatpass type="password" autocomplete="off" placeholder="Neues Passwort" class="ui-inputtext ui-widget">
+            </div>
+  
+            <p-button type="submit" label="Speichern" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" icon="fa fa-check"></p-button>
+          </div>
+        </form>
+
       </div>
     </div>
 

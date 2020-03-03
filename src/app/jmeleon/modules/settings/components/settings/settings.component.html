@@ -14,8 +14,9 @@
     
     <p-card styleClass="spacing-bottom-small">
         <div>
-            <h2>{{category.category}}</h2>
-
+            <h2 style="padding: 0px; margin: 0px;">{{category.category}}</h2>
+            <small>{{category.description}}</small>
+            <div  style="margin-bottom: 1cm; border-color:ghostwhite"><hr> </div>
             <ng-template ngFor let-setting [ngForOf]="category.settings">
                 <div class="p-grid">
                     <div class="p-col-4">
