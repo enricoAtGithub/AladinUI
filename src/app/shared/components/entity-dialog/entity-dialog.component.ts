@@ -82,4 +82,23 @@ export class EntityDialogComponent implements OnInit {
       this.ref.close(this.entityService.createEntity(this.configuration.type, entityForm.value));
     }
   }
+
+  shouldDisplayScrollPanel(): boolean {
+    let editableFields = 0;
+    let editOrMandFields = 0;
+    this.configuration.fields.forEach(field => {
+      if (field.mandatory) {
+        editOrMandFields++;
+      } else if (field.editable) {
+        editOrMandFields++;
+        editableFields++;
+      }
+    });
+
+    if (this.update) {
+      return editableFields >= 12;
+    } else {
+      return editOrMandFields >= 12;
+    }
+  }
 }

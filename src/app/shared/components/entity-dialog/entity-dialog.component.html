@@ -4,36 +4,8 @@
 
 <form (ngSubmit)="onSubmit(entityForm)" #entityForm="ngForm" class="ui-g">
   <div class="ui-g-12 ui-md-12 form-group">
-    <p-scrollPanel [style]="{width: '100%', height: '550px'}" styleClass="scrollPanelFix">
-      <div *ngFor="let field of configuration.fields">
-        <div [ngSwitch]="field.type" *ngIf="(field.mandatory && !update) || field.editable" class="p-col form-group ui-g-12 ui-md-12" style="margin-bottom: 5px; display: flex">
-          <span *ngSwitchCase="'String'" class="ui-float-label" style="flex-grow: 1;">
-            <input [required]="field.mandatory" [name]="field.field" [ngModel]="update ? entity[field.field] : ''" id="float-input" type="text" style="width: 100%" pInputText> 
-            <label for="float-input">{{field.header}}</label>
-          </span>
-          <span *ngSwitchCase="'int'" class="ui-float-label" style="flex-grow: 1;">
-            <input [required]="field.mandatory" [name]="field.field" [ngModel]="update ? entity[field.field] : ''" id="float-input" type="number" style="width: 100%" pInputText> 
-            <label for="float-input">{{field.header}}</label>
-          </span>
-          <span *ngSwitchCase="'boolean'" style="flex-grow: 1;">
-            <p-checkbox [required]="field.mandatory" [name]="field.field" [binary]="true" [label]="field.header" [ngModel]="update ? entity[field.field] : false"></p-checkbox>
-          </span>
-          <span *ngSwitchCase="'Date'" style="flex-grow: 1;">
-            {{field.header}}
-            <p-calendar [required]="field.mandatory" [name]="field.field" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [ngModel]="update ? entity[field.field] : undefined"></p-calendar>
-          </span>
-          <span *ngSwitchCase="'CatalogueEntry'" style="flex-grow: 1;">
-            <p-dropdown [required]="field.mandatory" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" optionLabel="name" [ngModel]="update ? entity[field.field] : undefined"></p-dropdown>
-          </span>
-          <span *ngSwitchDefault class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
-            <input #textModule [disabled]="true" placeholder="Unverändert" id="float-input" style="width: 100%" pInputText>
-            <input [required]="field.mandatory" [name]="field.field" [ngModel]="update ? entity[field.field] : undefined" type="hidden">
-            <button pButton type="button" (click)="openEntitySelectionDialog(field, textModule)" icon="pi pi-pencil"></button>
-            <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
-          </span>
-          <button *ngIf="!field.mandatory" pButton type="button" (click)="nullField(field, entityForm)" icon="pi pi-times"></button>
-        </div>
-      </div>
+    <p-scrollPanel *ngIf="shouldDisplayScrollPanel() else formFields" [style]="{width: '100%', height: '550px'}" styleClass="scrollPanelFix">
+      <ng-template [ngTemplateOutlet]="formFields"></ng-template>
     </p-scrollPanel>
 
     <div class="ui-g-12 ui-md-12">
@@ -41,3 +13,35 @@
     </div>
   </div>
 </form>
+
+<ng-template #formFields>
+  <div *ngFor="let field of configuration.fields">
+    <div [ngSwitch]="field.type" *ngIf="(field.mandatory && !update) || field.editable" class="p-col form-group ui-g-12 ui-md-12" style="margin-bottom: 5px; display: flex">
+      <span *ngSwitchCase="'String'" class="ui-float-label" style="flex-grow: 1;">
+        <input [required]="field.mandatory" [name]="field.field" [ngModel]="update ? entity[field.field] : ''" id="float-input" type="text" style="width: 100%" pInputText> 
+        <label for="float-input">{{field.header}}</label>
+      </span>
+      <span *ngSwitchCase="'int'" class="ui-float-label" style="flex-grow: 1;">
+        <input [required]="field.mandatory" [name]="field.field" [ngModel]="update ? entity[field.field] : ''" id="float-input" type="number" style="width: 100%" pInputText> 
+        <label for="float-input">{{field.header}}</label>
+      </span>
+      <span *ngSwitchCase="'boolean'" style="flex-grow: 1;">
+        <p-checkbox [required]="field.mandatory" [name]="field.field" [binary]="true" [label]="field.header" [ngModel]="update ? entity[field.field] : false"></p-checkbox>
+      </span>
+      <span *ngSwitchCase="'Date'" style="flex-grow: 1;">
+        {{field.header}}
+        <p-calendar [required]="field.mandatory" [name]="field.field" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [ngModel]="update ? entity[field.field] : undefined"></p-calendar>
+      </span>
+      <span *ngSwitchCase="'CatalogueEntry'" style="flex-grow: 1;">
+        <p-dropdown [required]="field.mandatory" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" optionLabel="name" [ngModel]="update ? entity[field.field] : undefined"></p-dropdown>
+      </span>
+      <span *ngSwitchDefault class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
+        <input #textModule [disabled]="true" placeholder="Unverändert" id="float-input" style="width: 100%" pInputText>
+        <input [required]="field.mandatory" [name]="field.field" [ngModel]="update ? entity[field.field] : undefined" type="hidden">
+        <button pButton type="button" (click)="openEntitySelectionDialog(field, textModule)" icon="pi pi-pencil"></button>
+        <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
+      </span>
+      <button *ngIf="!field.mandatory" pButton type="button" (click)="nullField(field, entityForm)" icon="pi pi-times"></button>
+    </div>
+  </div>
+</ng-template>

@@ -158,7 +158,7 @@ export class DynamicTableComponent implements OnInit {
         config: this.configuration
       },
       header: 'Hinzufügen',
-      width: '25%'
+      width: '500px'
     });
 
     dialogRef.onClose.subscribe((result: Observable<Object>) => {
@@ -176,7 +176,7 @@ export class DynamicTableComponent implements OnInit {
         config: this.configuration
       },
       header: data['_repr_'] + ' bearbeiten',
-      width: '25%'
+      width: '500px'
     });
 
     dialogRef.onClose.subscribe((result: Observable<Object>) => {
