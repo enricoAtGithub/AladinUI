@@ -52,9 +52,12 @@ export class CatalogueChooserDialogComponent implements OnInit, OnDestroy {
         this.catalogue = catalogue;
         this.catalogItems = catalogue.values.map(value => <SelectItem>{label: value.name, value: value.name});
         if (!!this.preSelectedOption) {
+          if (!catalogue.values.some(entry => entry.name === this.preSelectedOption)) {
+            this.catalogItems.push({label: this.preSelectedOption, value: this.preSelectedOption});
+          }
           this.selectedItem = this.preSelectedOption;
         } else {
-        this.selectedItem = this.catalogItems[0].value;
+          this.selectedItem = this.catalogItems[0].value;
         }
         this.onApplySelection();
       });
