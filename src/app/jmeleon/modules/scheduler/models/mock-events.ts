@@ -6,7 +6,7 @@ export const SCHEDULEREVENTS: SchedulerEvent[] = [
         StartTime: new Date(2020,2,3,9,0), 
         EndTime: new Date(2020,2,3,10,30),
         Description: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-        ResourceID: 1 
+        ResourceID: 1        
     },
     {
         Id: 2,
@@ -14,7 +14,7 @@ export const SCHEDULEREVENTS: SchedulerEvent[] = [
         StartTime: new Date(2020,2,3,15,0),
         EndTime: new Date(2020,2,3,16,30),
         Description: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-        ResourceID: 1 
+        ResourceID: 2 
     },
     {
         Id: 3,
@@ -22,7 +22,7 @@ export const SCHEDULEREVENTS: SchedulerEvent[] = [
         StartTime: new Date(2020,2,3,12,0),
         EndTime: new Date(2020,2,3,14,0),
         Description: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-        ResourceID: 1
+        ResourceID: 2
         //IsBlock: true        
     },
     {

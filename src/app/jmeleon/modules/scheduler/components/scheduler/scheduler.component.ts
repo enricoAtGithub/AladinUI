@@ -17,13 +17,19 @@ export class SchedulerComponent implements OnInit {
   public eventObject: EventSettingsModel; 
   public resourceDataSource: Object[]; 
   public schedulerEvents$: SchedulerEvent[];
-  public schedulerResources$: SchedulerResource[]; 
+  
+  public schedulerResources$: SchedulerResource[];
+  public assignedSchedulerResources: SchedulerResource[];
+
   public showResourceScheduler: Boolean = false;
-  public setViewEvents: View;
-  public setViewResources: View;  
+  public setEventsView: View = 'TimelineWorkWeek';
+  public selectedDateEventsView: Date = new Date(2020,2,3);
   
-  public scheduleObj: ScheduleComponent;
-  
+  public setResourcesView: View ='TimelineDay';  
+  public selectedDateRessourcesView: Date;
+
+  //public scheduleObj: Object;
+
   public groupData: GroupModel = {
     resources: ['Resources']
  //   allowGroupEdit: true
@@ -36,13 +42,8 @@ export class SchedulerComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    this.setViewEvents = 'TimelineWorkWeek';
     this.getSchedulerEvents();
-    this.eventObject  = { dataSource: this.schedulerEvents$ };   
-    
-
-    this.getSchedulerResources();
-    this.resourceDataSource = this.schedulerResources$;    
+    this.eventObject  = { dataSource: this.schedulerEvents$ };           
   }
 
   getSchedulerEvents(): void {
@@ -50,8 +51,8 @@ export class SchedulerComponent implements OnInit {
       .subscribe(schedulerEvents => this.schedulerEvents$ = schedulerEvents)
   }
 
-  getSchedulerResources(): void {
-    this.schedulerResourceService.getSchedulerResources()
+  getSchedulerResources(schedulerEventId: number): void {
+    this.schedulerResourceService.getSchedulerResources(schedulerEventId)
       .subscribe(schedulerResources => this.schedulerResources$ = schedulerResources)
   }
 
@@ -61,19 +62,22 @@ export class SchedulerComponent implements OnInit {
   }
 
   onResizeStart(args: ResizeEventArgs): void {
-    //args.scroll.enable = false;
-    //args.scroll.scrollBy = 500;
     args.interval = 15;
   }
-
+  
   onEventClick(args: EventClickArgs): void {  
+    //access clicked scheduler event
+    //2 type casts necessary since args.event cannot be casted directly to SchedulerEvent
+    const schedulerEvent = <SchedulerEvent>(args.event as unknown);       
     
-    //Methode getAssignedResourcesForEvent implementieren: 
-    //Option a): Backend Service aufrufen
-    //Option b): eventObject im Frontend filtern
-
-    //console.log (args);
-    this.setViewResources = "TimelineDay";
-    this.showResourceScheduler = true;
+    //get all resources with State (assigned, available, blocked) depending on clicked event
+    this.getSchedulerResources(schedulerEvent.Id);
+    
+    //filter resources assigned to clicked event 
+    this.assignedSchedulerResources = this.schedulerResources$.filter(arr=> arr.State === "assigned");
+    this.resourceDataSource = this.assignedSchedulerResources;  
+    
+    this.selectedDateRessourcesView = schedulerEvent.StartTime;    
+    this.showResourceScheduler = true;  
   }
 }

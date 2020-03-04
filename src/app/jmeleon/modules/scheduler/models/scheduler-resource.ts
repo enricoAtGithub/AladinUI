@@ -2,5 +2,6 @@
 export interface SchedulerResource {
     Id: number;
     Name: string;
-    Color?: string;   
+    State: string; //assigned/blocked/available
+    Color?: string;       
 }
