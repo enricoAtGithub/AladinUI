@@ -8,7 +8,7 @@ export const SCHEDULERRESOURCES1: SchedulerResource[] = [
     {
         Id: 2,        
         Name: "Sandra Samtig", 
-        State: "available"
+        State: "assigned"
     },
     {
         Id: 3,

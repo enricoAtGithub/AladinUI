@@ -24,7 +24,8 @@ export class SchedulerComponent implements OnInit {
   public showResourceScheduler: Boolean = false;
   
   //Wann public, wann private, wann nix von beidem?
-  public eventObject: EventSettingsModel; 
+  public eventSchedulerObject: EventSettingsModel; 
+  public resourceSchedulerObject: EventSettingsModel; 
   public resourceDataSource: Object[];
 
   public schedulerEvents$: SchedulerEvent[];
@@ -43,13 +44,22 @@ export class SchedulerComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    this.getSchedulerEvents();
-    this.eventObject  = { dataSource: this.schedulerEvents$ };           
+    //determine scheduler events, remove double entries in case of multiple resources assigned (parameter woDuplicates = true)
+    this.eventSchedulerObject  = { dataSource: this.getSchedulerEvents(true) }
   }
 
-  getSchedulerEvents(): void {
+  getSchedulerEvents(woDuplicates: boolean): SchedulerEvent[] {
     this.schedulerEventService.getSchedulerEvents()
       .subscribe(schedulerEvents => this.schedulerEvents$ = schedulerEvents)
+    if (woDuplicates)  
+    {
+      this.schedulerEvents$ = this.schedulerEvents$.filter((test, index, array) =>
+        index === array.findIndex((findTest) =>
+          findTest.Id === test.Id
+          )
+        );
+    }
+    return this.schedulerEvents$
   }
 
   getSchedulerResources(schedulerEventId: number): void {
@@ -67,10 +77,13 @@ export class SchedulerComponent implements OnInit {
   }
   
   onEventClick(args: EventClickArgs): void {  
+    //determine all scheduler events including double entries in case of multiple resources (parameter woDuplicates = false)
+    this.resourceSchedulerObject  = { dataSource: this.getSchedulerEvents(false) }
+    
     //access clicked scheduler event
     //two type casts necessary since args.event cannot be casted directly to SchedulerEvent
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);  
-        
+    
     //get all resources with State (assigned, available, blocked) depending on clicked event
     this.getSchedulerResources(schedulerEvent.Id);
     
@@ -83,7 +96,7 @@ export class SchedulerComponent implements OnInit {
     const end = <string>(schedulerEvent.EndTime.getHours() as unknown) + ":" + <string>(schedulerEvent.EndTime.getMinutes() as unknown);
     // e.g.: schedulerEventTime="{ start: '08:00', end: '9:30' }"
     this.schedulerEventTime = { start: start, end: end };
-       
+
     this.selectedDateResourceScheduler = schedulerEvent.StartTime;
     this.showResourceScheduler = true;  
   }
