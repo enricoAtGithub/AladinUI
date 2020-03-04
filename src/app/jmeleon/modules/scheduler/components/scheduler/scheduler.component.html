@@ -1,4 +1,4 @@
-<ejs-schedule height="600" [eventSettings]="eventObject" [selectedDate]="selectedDateEventsView" [currentView]="setEventsView" (dragStart) = "onDragStart($event)" (resizeStart) = "onResizeStart($event)" [showQuickInfo]="false" (eventClick)="onEventClick($event)">
+<ejs-schedule height="600" [eventSettings]="eventObject" [selectedDate]="selectedDateEventScheduler" [currentView]="setEventSchedulerView" (dragStart) = "onDragStart($event)" (resizeStart) = "onResizeStart($event)" [showQuickInfo]="false" (eventClick)="onEventClick($event)">
     <e-views>
         <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
         <e-view option='TimelineDay' startHour='07:00' endHour='18:00' [timeScale]='{ enable: true, slotCount: 2 }' ></e-view>
@@ -10,14 +10,14 @@
 
 
 <p [hidden]="!showResourceScheduler">
-<ejs-schedule [eventSettings]="eventObject" [currentView]="setResourcesView" (dragStart) = "onDragStart($event)" (resizeStart) = "onResizeStart($event)" [group]="groupData" [rowAutoHeight]="true" [selectedDate]="selectedDateRessourcesView">
+<ejs-schedule (dragStart) = "onDragStart($event)" (resizeStart) = "onResizeStart($event)" [eventSettings]="eventObject" [currentView]="setResourceSchedulerView" [group]="groupData" [rowAutoHeight]="true" [selectedDate]="selectedDateResourceScheduler" [workHours]="schedulerEventTime">
     <e-resources>
         <e-resource field="ResourceID" title="Mitarbeiter und Ressourcen" name="Resources" textField="Name" idField="Id" [dataSource]="resourceDataSource" [allowMultiple]="true">
         </e-resource>
     </e-resources>
     <e-views>
         <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
-        <e-view option='TimelineDay' startHour='07:00' endHour='18:00' workHours="{ start: '08:00', end: '18:00' }" [timeScale]='{ enable: true, slotCount: 2 }' ></e-view>
+        <e-view option='TimelineDay' startHour='07:00' endHour='18:00' [timeScale]='{ enable: true, slotCount: 2 }' ></e-view>
         <e-view option='TimelineWorkWeek' startHour='07:00' endHour='17:00' [timeScale]='{ enable: true, interval: 120, slotCount: 2 }'></e-view>
     </e-views>
 
