@@ -136,7 +136,10 @@ export class AttachmentListComponent implements OnInit {
       data: {
         fileId: id
       },
-      header: `${attachment.Dateiname} - ${attachment.Typ}`
+      header: `${attachment.fileName} - ${attachment.fileType}`,
+      width: '80%',
+      height: '70%'
+
     });
     dialogRef.onClose.subscribe(event => {
       // anything?
