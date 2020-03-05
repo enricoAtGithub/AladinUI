@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UrlCollection } from '../url-collection';
 import { EntityConfiguration } from '../models/entity-configuration';
-import { Observable, ObservableInput } from 'rxjs';
+import { Observable } from 'rxjs';
 import { EntityData } from '../models/entity-data';
 import { GroupConfiguration } from '../models/group-configuration';
 import { GroupMembers } from '../models/group-members';
@@ -27,7 +27,7 @@ export class EntityService {
 
   filter(type: String, page: Number, pageSize: Number, qualifier: String, sorting: String): Observable<EntityData> {
     return this.http.post<EntityData>(UrlCollection.Entities.FILTER(),
-      JSON.stringify({type: type, page: page, pageSize: pageSize, qualifier: qualifier, sorting: sorting}),
+      {type: type, page: page, pageSize: pageSize, qualifier: qualifier, sorting: sorting},
       new HttpOptionsFactory()
         .addAcceptJson()
         .addContentTypeJson()
@@ -44,7 +44,7 @@ export class EntityService {
   }
 
   createEntity(type: String, data) {
-    return this.http.post(UrlCollection.Entities.CREATE(), JSON.stringify({type: type, fields: data}),
+    return this.http.post(UrlCollection.Entities.CREATE(), {type: type, fields: data},
     new HttpOptionsFactory()
       // .addAcceptJson()
       .addContentTypeJson()
@@ -53,7 +53,7 @@ export class EntityService {
 
   updateEntity(type: String, id: number, data) {
     return this.http.post(UrlCollection.Entities.UPDATE(),
-      JSON.stringify({type: type, fields: data}).replace('"fields":{', '"fields":{"id":' + id + ','),
+      {type: type, fields: {...data, ...{'id': id}}},
       new HttpOptionsFactory()
         .addAcceptJson()
         .addContentTypeJson()
@@ -61,7 +61,7 @@ export class EntityService {
   }
 
   deleteEntity(type: String, id: Number) {
-    return this.http.post(UrlCollection.Entities.DELETE(), JSON.stringify({type: type, fields: {id: id}}),
+    return this.http.post(UrlCollection.Entities.DELETE(), {type: type, fields: {id: id}},
     new HttpOptionsFactory()
       .addAcceptJson()
       .addContentTypeJson()
@@ -74,7 +74,7 @@ export class EntityService {
   }
 
   membersGroup(type: String, holderId: Number): Observable<GroupMembers> {
-    return this.http.post<GroupMembers>(UrlCollection.Groups.MEMBERS(), JSON.stringify({type: type, holderId: holderId}),
+    return this.http.post<GroupMembers>(UrlCollection.Groups.MEMBERS(), {type: type, holderId: holderId},
     new HttpOptionsFactory()
       .addAcceptJson()
       .addContentTypeJson()
@@ -82,7 +82,7 @@ export class EntityService {
   }
 
   addMember(type: String, holderId: Number, memberId: Number): Observable<Boolean> {
-    return this.http.post<Boolean>(UrlCollection.Groups.ADDMEMBER(), JSON.stringify({type: type, holderId: holderId, memberId: memberId}),
+    return this.http.post<Boolean>(UrlCollection.Groups.ADDMEMBER(), {type: type, holderId: holderId, memberId: memberId},
     new HttpOptionsFactory()
       .addAcceptJson()
       .addContentTypeJson()
@@ -92,7 +92,7 @@ export class EntityService {
   removeMember(type: String, holderId: Number, memberId: Number): Observable<Boolean> {
     return this.http.post<Boolean>(
       UrlCollection.Groups.REMOVEMEMBER(),
-      JSON.stringify({type: type, holderId: holderId, memberId: memberId}),
+      {type: type, holderId: holderId, memberId: memberId},
       new HttpOptionsFactory()
         .addAcceptJson()
         .addContentTypeJson()
@@ -105,7 +105,7 @@ export class EntityService {
   }
 
   removeAttachmentEntry(attachmentType: string, id: number) {
-    return this.http.post(UrlCollection.EntityAttachments.REMOVE(attachmentType), JSON.stringify({id: id}),
+    return this.http.post(UrlCollection.EntityAttachments.REMOVE(attachmentType), {id: id},
     new HttpOptionsFactory()
       .addAcceptJson()
       .addContentTypeJson()
@@ -113,7 +113,7 @@ export class EntityService {
   }
 
   updateAttachmentEntry(attachmentType: string, attachmentEntry: any) {
-    return this.http.post(UrlCollection.EntityAttachments.UPDATE(attachmentType), JSON.stringify(attachmentEntry),
+    return this.http.post(UrlCollection.EntityAttachments.UPDATE(attachmentType), attachmentEntry,
     new HttpOptionsFactory()
       .addAcceptJson()
       .addContentTypeJson()
@@ -121,7 +121,7 @@ export class EntityService {
   }
 
   addAttachmentEntry(attachmentType: string, attachmentEntry: any) {
-    return this.http.post(UrlCollection.EntityAttachments.ADD(attachmentType), JSON.stringify(attachmentEntry),
+    return this.http.post(UrlCollection.EntityAttachments.ADD(attachmentType), attachmentEntry,
     new HttpOptionsFactory()
       .addAcceptJson()
       .addContentTypeJson()
