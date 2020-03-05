@@ -20,7 +20,7 @@ export const SCHEDULERRESOURCES1: SchedulerResource[] = [
 export const SCHEDULERRESOURCES2: SchedulerResource[] = [
     {   Id: 1, 
         Name: "Peter Punk", 
-        State: ""
+        State: "available"
     },
     {
         Id: 2,        

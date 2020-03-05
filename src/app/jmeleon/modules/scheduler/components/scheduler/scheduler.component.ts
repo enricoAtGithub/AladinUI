@@ -14,25 +14,26 @@ import { SchedulerResource} from '../../models/scheduler-resource';
 })
 export class SchedulerComponent implements OnInit {
   //can be removed later (mock data created only for March)
-  public selectedDateEventScheduler: Date = new Date(2020,2,3);
+  private selectedDateEventScheduler: Date = new Date(2020,2,3);
   
-  public setEventSchedulerView: View = 'TimelineWorkWeek';
-  public schedulerEventTime: WorkHoursModel;
-  public selectedDateResourceScheduler: Date;
+  private setEventSchedulerView: View = 'TimelineWorkWeek';
+  private schedulerEventTime: WorkHoursModel;
+  private selectedDateResourceScheduler: Date;
   
-  public setResourceSchedulerView: View ='TimelineDay';  
-  public showResourceScheduler: Boolean = false;
+  private setResourceSchedulerView: View ='TimelineDay';  
+  private showResourceScheduler: Boolean = false;
   
   //Wann public, wann private, wann nix von beidem?
-  public eventSchedulerObject: EventSettingsModel; 
-  public resourceSchedulerObject: EventSettingsModel; 
-  public resourceDataSource: Object[];
+  private eventSchedulerObject: EventSettingsModel; 
+  private resourceSchedulerObject: EventSettingsModel; 
+  private resourceDataSource: Object[];
 
-  public schedulerEvents$: SchedulerEvent[];
-  public schedulerResources$: SchedulerResource[];
-  public assignedSchedulerResources: SchedulerResource[];
+  private schedulerEvents$: SchedulerEvent[];
+  private schedulerEventsWithoutDuplicates$: SchedulerEvent[];
+  private schedulerResources$: SchedulerResource[];
+  private assignedSchedulerResources: SchedulerResource[];
 
-  public groupData: GroupModel = {
+  private groupData: GroupModel = {
     resources: ['Resources']
  //   allowGroupEdit: true
   };
@@ -44,21 +45,18 @@ export class SchedulerComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    //determine scheduler events, remove double entries in case of multiple resources assigned (parameter woDuplicates = true)
-    this.eventSchedulerObject  = { dataSource: this.getSchedulerEvents(true) }
+    //determine scheduler events, remove double entries in case of multiple resources assigned 
+    this.schedulerEventsWithoutDuplicates$ = this.getSchedulerEvents().filter((test, index, array) =>
+      index === array.findIndex((findTest) =>
+        findTest.Id === test.Id
+        )
+      );   
+    this.eventSchedulerObject  = { dataSource: this.schedulerEventsWithoutDuplicates$ }
   }
 
-  getSchedulerEvents(woDuplicates: boolean): SchedulerEvent[] {
+  getSchedulerEvents(): SchedulerEvent[] {
     this.schedulerEventService.getSchedulerEvents()
-      .subscribe(schedulerEvents => this.schedulerEvents$ = schedulerEvents)
-    if (woDuplicates)  
-    {
-      this.schedulerEvents$ = this.schedulerEvents$.filter((test, index, array) =>
-        index === array.findIndex((findTest) =>
-          findTest.Id === test.Id
-          )
-        );
-    }
+      .subscribe(schedulerEvents => this.schedulerEvents$ = schedulerEvents)    
     return this.schedulerEvents$
   }
 
@@ -77,8 +75,8 @@ export class SchedulerComponent implements OnInit {
   }
   
   onEventClick(args: EventClickArgs): void {  
-    //determine all scheduler events including double entries in case of multiple resources (parameter woDuplicates = false)
-    this.resourceSchedulerObject  = { dataSource: this.getSchedulerEvents(false) }
+    //pass all scheduler events including double entries in case of multiple resources
+    this.resourceSchedulerObject  = { dataSource: this.schedulerEvents$ }
     
     //access clicked scheduler event
     //two type casts necessary since args.event cannot be casted directly to SchedulerEvent
