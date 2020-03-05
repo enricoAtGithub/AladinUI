@@ -23,14 +23,13 @@ export class SchedulerComponent implements OnInit {
   private setResourceSchedulerView: View ='TimelineDay';  
   private showResourceScheduler: Boolean = false;
   
-  //Wann public, wann private, wann nix von beidem?
   private eventSchedulerObject: EventSettingsModel; 
   private resourceSchedulerObject: EventSettingsModel; 
   private resourceDataSource: Object[];
 
-  private schedulerEvents$: SchedulerEvent[];
-  private schedulerEventsWithoutDuplicates$: SchedulerEvent[];
-  private schedulerResources$: SchedulerResource[];
+  private schedulerEvents: SchedulerEvent[];
+  private schedulerEventsWithoutDuplicates: SchedulerEvent[];
+  private schedulerResources: SchedulerResource[];
   private assignedSchedulerResources: SchedulerResource[];
 
   private groupData: GroupModel = {
@@ -46,37 +45,40 @@ export class SchedulerComponent implements OnInit {
 
   ngOnInit() {
     //determine scheduler events, remove double entries in case of multiple resources assigned 
-    this.schedulerEventsWithoutDuplicates$ = this.getSchedulerEvents().filter((test, index, array) =>
-      index === array.findIndex((findTest) =>
-        findTest.Id === test.Id
-        )
-      );   
-    this.eventSchedulerObject  = { dataSource: this.schedulerEventsWithoutDuplicates$ }
+    this.getSchedulerEvents()
+    
   }
 
-  getSchedulerEvents(): SchedulerEvent[] {
+  private getSchedulerEvents(): void {
     this.schedulerEventService.getSchedulerEvents()
-      .subscribe(schedulerEvents => this.schedulerEvents$ = schedulerEvents)    
-    return this.schedulerEvents$
-  }
+      .subscribe(schedulerEvents => { 
+        this.schedulerEvents = schedulerEvents
+        this.schedulerEventsWithoutDuplicates = schedulerEvents.filter((test, index, array) =>
+          index === array.findIndex((findTest) =>
+          findTest.Id === test.Id
+          )
+        );   
+        this.eventSchedulerObject  = { dataSource: this.schedulerEventsWithoutDuplicates } 
+      })    
+    }
 
-  getSchedulerResources(schedulerEventId: number): void {
+    private getSchedulerResources(schedulerEventId: number): void {
     this.schedulerResourceService.getSchedulerResources(schedulerEventId)
-      .subscribe(schedulerResources => this.schedulerResources$ = schedulerResources)
+      .subscribe(schedulerResources => this.schedulerResources = schedulerResources)
   }
 
-  onDragStart(args: DragEventArgs): void {
+  private onDragStart(args: DragEventArgs): void {
     args.interval = 15;    
     args.excludeSelectors = 'e-all-day-cells'; 
   }
 
-  onResizeStart(args: ResizeEventArgs): void {
+  private onResizeStart(args: ResizeEventArgs): void {
     args.interval = 15;
   }
   
-  onEventClick(args: EventClickArgs): void {  
+  private onEventClick(args: EventClickArgs): void {  
     //pass all scheduler events including double entries in case of multiple resources
-    this.resourceSchedulerObject  = { dataSource: this.schedulerEvents$ }
+    this.resourceSchedulerObject  = { dataSource: this.schedulerEvents }
     
     //access clicked scheduler event
     //two type casts necessary since args.event cannot be casted directly to SchedulerEvent
@@ -86,7 +88,7 @@ export class SchedulerComponent implements OnInit {
     this.getSchedulerResources(schedulerEvent.Id);
     
     //find resources assigned to clicked event 
-    this.assignedSchedulerResources = this.schedulerResources$.filter(arr=> arr.State === "assigned");
+    this.assignedSchedulerResources = this.schedulerResources.filter(arr=> arr.State === "assigned");
     this.resourceDataSource = this.assignedSchedulerResources;  
         
     //Task #1340: show times outside of event time in grey
