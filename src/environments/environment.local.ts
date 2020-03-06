@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  baseUrl: 'http://splylnx2.simply.local:8023/jmeleon/rest/api',
+  baseUrl: 'http://localhost:8081/rest/api'
   companyName: 'DOT-IT',
   appName: 'JMeleon',
   companyEmail:  'info@dot-it.de',
