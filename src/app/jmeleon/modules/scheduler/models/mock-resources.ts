@@ -11,8 +11,7 @@ export const SCHEDULERRESOURCES1: SchedulerResource[] = [
                 Subject: 'Rüschtüsch viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 9, 0),
                 EndTime: new Date(2020, 2, 3, 10, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 1
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             }
         ]
     },
@@ -26,33 +25,28 @@ export const SCHEDULERRESOURCES1: SchedulerResource[] = [
                 Subject: 'Rüschtüsch viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 9, 0),
                 EndTime: new Date(2020, 2, 3, 10, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 2,
                 Subject: 'Noch mehr Arbeit',
                 StartTime: new Date(2020, 2, 3, 15, 0),
                 EndTime: new Date(2020, 2, 3, 16, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 3,
                 Subject: 'Die Base chillen',
                 StartTime: new Date(2020, 2, 3, 12, 0),
                 EndTime: new Date(2020, 2, 3, 14, 0),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 4,
                 Subject: 'Eine schöne Konferenz',
-                StartTime: new Date(2020, 2, 4),
-                EndTime: new Date(2020, 2, 4),
+                StartTime: new Date(2020, 2, 4, 9, 0),
+                EndTime: new Date(2020, 2, 4, 17, 0),
                 Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                IsAllDay: true,
-                // ResourceID: 2,
             },
             {
                 Id: 5,
@@ -60,8 +54,7 @@ export const SCHEDULERRESOURCES1: SchedulerResource[] = [
                 StartTime: new Date(2020, 2, 5, 9, 0),
                 EndTime: new Date(2020, 2, 5, 12, 30),
                 Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                IsReadonly: true,
-                // ResourceID: 2
+                IsReadonly: true
             },
         ]
     },
@@ -75,8 +68,7 @@ export const SCHEDULERRESOURCES1: SchedulerResource[] = [
                 Subject: 'Zu viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 10, 0),
                 EndTime: new Date(2020, 2, 3, 11, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 3
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             }
         ]
     }
@@ -93,8 +85,7 @@ export const SCHEDULERRESOURCES2: SchedulerResource[] = [
                 Subject: 'Rüschtüsch viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 9, 0),
                 EndTime: new Date(2020, 2, 3, 10, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 1
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             }
         ]
     },
@@ -108,33 +99,28 @@ export const SCHEDULERRESOURCES2: SchedulerResource[] = [
                 Subject: 'Rüschtüsch viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 9, 0),
                 EndTime: new Date(2020, 2, 3, 10, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 2,
                 Subject: 'Noch mehr Arbeit',
                 StartTime: new Date(2020, 2, 3, 15, 0),
                 EndTime: new Date(2020, 2, 3, 16, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 3,
                 Subject: 'Die Base chillen',
                 StartTime: new Date(2020, 2, 3, 12, 0),
                 EndTime: new Date(2020, 2, 3, 14, 0),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 4,
                 Subject: 'Eine schöne Konferenz',
-                StartTime: new Date(2020, 2, 4),
-                EndTime: new Date(2020, 2, 4),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                IsAllDay: true,
-                // ResourceID: 2,
+                StartTime: new Date(2020, 2, 4, 9, 0),
+                EndTime: new Date(2020, 2, 4, 17, 0),
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 5,
@@ -142,8 +128,7 @@ export const SCHEDULERRESOURCES2: SchedulerResource[] = [
                 StartTime: new Date(2020, 2, 5, 9, 0),
                 EndTime: new Date(2020, 2, 5, 12, 30),
                 Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                IsReadonly: true,
-                // ResourceID: 2
+                IsReadonly: true
             },
         ]
     },
@@ -157,8 +142,7 @@ export const SCHEDULERRESOURCES2: SchedulerResource[] = [
                 Subject: 'Zu viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 10, 0),
                 EndTime: new Date(2020, 2, 3, 11, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 3
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             }
         ]
     }
@@ -175,8 +159,7 @@ export const SCHEDULERRESOURCES3: SchedulerResource[] = [
                 Subject: 'Rüschtüsch viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 9, 0),
                 EndTime: new Date(2020, 2, 3, 10, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 1
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             }
         ]
     },
@@ -190,33 +173,28 @@ export const SCHEDULERRESOURCES3: SchedulerResource[] = [
                 Subject: 'Rüschtüsch viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 9, 0),
                 EndTime: new Date(2020, 2, 3, 10, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 2,
                 Subject: 'Noch mehr Arbeit',
                 StartTime: new Date(2020, 2, 3, 15, 0),
                 EndTime: new Date(2020, 2, 3, 16, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 3,
                 Subject: 'Die Base chillen',
                 StartTime: new Date(2020, 2, 3, 12, 0),
                 EndTime: new Date(2020, 2, 3, 14, 0),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 4,
                 Subject: 'Eine schöne Konferenz',
-                StartTime: new Date(2020, 2, 4),
-                EndTime: new Date(2020, 2, 4),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                IsAllDay: true,
-                // ResourceID: 2,
+                StartTime: new Date(2020, 2, 4, 9, 0),
+                EndTime: new Date(2020, 2, 4, 17, 0),
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 5,
@@ -224,8 +202,7 @@ export const SCHEDULERRESOURCES3: SchedulerResource[] = [
                 StartTime: new Date(2020, 2, 5, 9, 0),
                 EndTime: new Date(2020, 2, 5, 12, 30),
                 Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                IsReadonly: true,
-                // ResourceID: 2
+                IsReadonly: true
             },
         ]
     },
@@ -239,8 +216,7 @@ export const SCHEDULERRESOURCES3: SchedulerResource[] = [
                 Subject: 'Zu viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 10, 0),
                 EndTime: new Date(2020, 2, 3, 11, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 3
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             }
         ]
     }
@@ -257,8 +233,7 @@ export const SCHEDULERRESOURCES4: SchedulerResource[] = [
                 Subject: 'Rüschtüsch viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 9, 0),
                 EndTime: new Date(2020, 2, 3, 10, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 1
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             }
         ]
     },
@@ -272,33 +247,28 @@ export const SCHEDULERRESOURCES4: SchedulerResource[] = [
                 Subject: 'Rüschtüsch viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 9, 0),
                 EndTime: new Date(2020, 2, 3, 10, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 2,
                 Subject: 'Noch mehr Arbeit',
                 StartTime: new Date(2020, 2, 3, 15, 0),
                 EndTime: new Date(2020, 2, 3, 16, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 3,
                 Subject: 'Die Base chillen',
                 StartTime: new Date(2020, 2, 3, 12, 0),
                 EndTime: new Date(2020, 2, 3, 14, 0),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 4,
                 Subject: 'Eine schöne Konferenz',
-                StartTime: new Date(2020, 2, 4),
-                EndTime: new Date(2020, 2, 4),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                IsAllDay: true,
-                // ResourceID: 2,
+                StartTime: new Date(2020, 2, 4, 9, 0),
+                EndTime: new Date(2020, 2, 4, 17, 0),
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 5,
@@ -306,8 +276,7 @@ export const SCHEDULERRESOURCES4: SchedulerResource[] = [
                 StartTime: new Date(2020, 2, 5, 9, 0),
                 EndTime: new Date(2020, 2, 5, 12, 30),
                 Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                IsReadonly: true,
-                // ResourceID: 2
+                IsReadonly: true
             },
         ]
     },
@@ -321,8 +290,7 @@ export const SCHEDULERRESOURCES4: SchedulerResource[] = [
                 Subject: 'Zu viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 10, 0),
                 EndTime: new Date(2020, 2, 3, 11, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 3
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             }
         ]
     }
@@ -339,8 +307,7 @@ export const SCHEDULERRESOURCES5: SchedulerResource[] = [
                 Subject: 'Rüschtüsch viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 9, 0),
                 EndTime: new Date(2020, 2, 3, 10, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 1
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             }
         ]
     },
@@ -354,33 +321,28 @@ export const SCHEDULERRESOURCES5: SchedulerResource[] = [
                 Subject: 'Rüschtüsch viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 9, 0),
                 EndTime: new Date(2020, 2, 3, 10, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 2,
                 Subject: 'Noch mehr Arbeit',
                 StartTime: new Date(2020, 2, 3, 15, 0),
                 EndTime: new Date(2020, 2, 3, 16, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 3,
                 Subject: 'Die Base chillen',
                 StartTime: new Date(2020, 2, 3, 12, 0),
                 EndTime: new Date(2020, 2, 3, 14, 0),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 4,
                 Subject: 'Eine schöne Konferenz',
-                StartTime: new Date(2020, 2, 4),
-                EndTime: new Date(2020, 2, 4),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                IsAllDay: true,
-                // ResourceID: 2,
+                StartTime: new Date(2020, 2, 4, 9, 0),
+                EndTime: new Date(2020, 2, 4, 17, 0),
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 5,
@@ -388,8 +350,7 @@ export const SCHEDULERRESOURCES5: SchedulerResource[] = [
                 StartTime: new Date(2020, 2, 5, 9, 0),
                 EndTime: new Date(2020, 2, 5, 12, 30),
                 Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                IsReadonly: true,
-                // ResourceID: 2
+                IsReadonly: true
             },
         ]
     },
@@ -403,8 +364,7 @@ export const SCHEDULERRESOURCES5: SchedulerResource[] = [
                 Subject: 'Zu viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 10, 0),
                 EndTime: new Date(2020, 2, 3, 11, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 3
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             }
         ]
     }
@@ -421,8 +381,7 @@ export const SCHEDULERRESOURCES6: SchedulerResource[] = [
                 Subject: 'Rüschtüsch viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 9, 0),
                 EndTime: new Date(2020, 2, 3, 10, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 1
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             }
         ]
     },
@@ -436,33 +395,28 @@ export const SCHEDULERRESOURCES6: SchedulerResource[] = [
                 Subject: 'Rüschtüsch viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 9, 0),
                 EndTime: new Date(2020, 2, 3, 10, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 2,
                 Subject: 'Noch mehr Arbeit',
                 StartTime: new Date(2020, 2, 3, 15, 0),
                 EndTime: new Date(2020, 2, 3, 16, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 3,
                 Subject: 'Die Base chillen',
                 StartTime: new Date(2020, 2, 3, 12, 0),
                 EndTime: new Date(2020, 2, 3, 14, 0),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 2
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 4,
                 Subject: 'Eine schöne Konferenz',
-                StartTime: new Date(2020, 2, 4),
-                EndTime: new Date(2020, 2, 4),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                IsAllDay: true,
-                // ResourceID: 2,
+                StartTime: new Date(2020, 2, 4, 9, 0),
+                EndTime: new Date(2020, 2, 4, 17, 0),
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             },
             {
                 Id: 5,
@@ -470,8 +424,7 @@ export const SCHEDULERRESOURCES6: SchedulerResource[] = [
                 StartTime: new Date(2020, 2, 5, 9, 0),
                 EndTime: new Date(2020, 2, 5, 12, 30),
                 Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                IsReadonly: true,
-                // ResourceID: 2
+                IsReadonly: true
             },
         ]
     },
@@ -485,8 +438,7 @@ export const SCHEDULERRESOURCES6: SchedulerResource[] = [
                 Subject: 'Zu viel Arbeit',
                 StartTime: new Date(2020, 2, 3, 10, 0),
                 EndTime: new Date(2020, 2, 3, 11, 30),
-                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.',
-                // ResourceID: 3
+                Description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.'
             }
         ]
     }

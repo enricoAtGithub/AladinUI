@@ -38,7 +38,7 @@ export class SchedulerComponent implements OnInit {
   private resourceSchedulerObject: EventSettingsModel;
   private resourceDataSource: Object[];
 
-  public schedulerEvents: SchedulerEvent[] = [];
+  private schedulerEvents: SchedulerEvent[];
   private schedulerResources: SchedulerResource[];
   private assignedSchedulerResources: SchedulerResource[];
 
@@ -67,20 +67,25 @@ export class SchedulerComponent implements OnInit {
   private getSchedulerResourcesAndSchedulerEvents(schedulerEventId: number): void {
     this.schedulerResourceService.getSchedulerResources(schedulerEventId)
       .subscribe(schedulerResources => {
+        this.schedulerEvents = [];
+        this.resourceDataSource = [];
+
         // filter resources assigned to clicked event
         this.resourceDataSource = schedulerResources.filter(arr => arr.State === 'assigned');
+
+        // Ugly workaround since this.schedulerEvents cannot be accessed from inside forEach()
         const thisref = this;
 
+        // Add ResourceID property to schedulerEvents and aggregate ALL schedulerEvents
+        // Todo: refactor using flatmap
         schedulerResources.forEach(schResource => {
           schResource.isAssignedTo.forEach(schEvent => {
             schEvent.ResourceID = schResource.Id;
-            // SchedulerComponent.prototype.schedulerEvents.push(schEvent);
             thisref.schedulerEvents.push(schEvent);
           });
-
         });
 
-        console.log(this.schedulerEvents);
+        this.resourceSchedulerObject = { dataSource: this.schedulerEvents };
       });
   }
 
