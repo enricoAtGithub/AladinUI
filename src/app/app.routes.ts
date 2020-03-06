@@ -14,8 +14,10 @@ import { ProfileComponent } from './profile/profile.component';
 import { RoleManagementComponent } from './user/components/role-management/role-management.component';
 import { PermissionManagementComponent } from './user/components/permission-management/permission-management.component';
 import { CatalogueManagementComponent } from './user/components/catalogue-management/catalogue-management.component';
+import { UseraltComponent } from './useralt/useralt.component';
 import { UserManagementGuard } from './auth/guards/user-management.guard';
 import { LoginGuard } from './auth/guards/login.guard';
+import { DTOConfigEditorComponent } from './jmeleon/components/dtoconfig-editor/dtoconfig-editor.component';
 import { SettingsComponent } from './jmeleon/modules/settings/components/settings/settings.component';
 
 export const routes: Routes = [
@@ -37,9 +39,11 @@ export const routes: Routes = [
         canActivate: [UserManagementGuard],
         children: [
           {path: 'user-management', pathMatch: 'full', component: UserManagementComponent},
+          {path: 'useralt-management', pathMatch: 'full', component: UseraltComponent},
           {path: 'role-management', pathMatch: 'full', component: RoleManagementComponent},
           {path: 'permission-management', pathMatch: 'full', component: PermissionManagementComponent},
           {path: 'catalogue-management', pathMatch: 'full', component: CatalogueManagementComponent},
+          {path: 'dto-configuration', pathMatch: 'full', component: DTOConfigEditorComponent},
           {path: 'settings', component: SettingsComponent}
         ]}
       ]

@@ -50,7 +50,8 @@ export class DiagramColorService {
     let currentColorId = 0;
     let colorUsed = false;
 
-    if (!!diagramData || !!diagramData.data || !!diagramData.data.datasets) {
+    if (!diagramData || !diagramData.data || !diagramData.data.datasets) {
+      console.log('[DiagramColorService-checkAndSetChartColors] no diagram data', diagramData);
       return;
     }
 

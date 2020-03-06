@@ -42,39 +42,39 @@ export class LoginComponent implements OnInit {
     this.appName = environment.appName;
     }
 
-    ngOnInit() {
-      AppConfig.uiInfo$.subscribe(uiInfo => {
-        // console.log('[LoginComponent-ngOnInit-subscribe(uiInfo)]');
-        this.uiDetails = 'UI version=' + uiInfo.version + '.' + uiInfo.git_branch + '.' + uiInfo.build_no + '.' + uiInfo.git_sha;
-        this.appDetails = this.uiDetails + ', loading BE details....';
-        // } );
-        // console.log('[LoginComponent-ngOnInit-subscribe(uiInfo)] loading server infos. uiInfo: ', uiInfo);
-        this.appConfig.loadServerInfo();
-      });
-
-      AppConfig.serverInfo$.subscribe(serverInfo => {
-        // console.log('[LoginComponent-ngOnInit-subscribe(serverInfo)]');
-        this.appDetails = this.uiDetails + ', BE host=' + serverInfo.host + ', BE version=' + serverInfo.version;
-      });
-      // const uiInfo: UIInfo = AppConfig.getUIInfo();
-      // console.log('[LoginComponent-ngOnInit]');
-      // this.uiDetails = 'UI version=' + uiInfo.version + '.' + uiInfo.git_branch + '.' + uiInfo.build_no + '.' + uiInfo.git_sha;
-      // this.appDetails = this.uiDetails + ', loading BE details....';
-      // this.appConfig.serverInfo( (serverInfo: ServerInfo) => {
-      //   this.appDetails = this.uiDetails + ', BE host=' + serverInfo.host + ', BE version=' + serverInfo.version;
+  ngOnInit() {
+    AppConfig.uiInfo$.subscribe(uiInfo => {
+      // console.log('[LoginComponent-ngOnInit-subscribe(uiInfo)]');
+      this.uiDetails = 'UI version=' + uiInfo.version + '.' + uiInfo.git_branch + '.' + uiInfo.build_no + '.' + uiInfo.git_sha;
+      this.appDetails = this.uiDetails + ', loading BE details....';
       // } );
-      // this.errMsg$ =
-      // this.store$
-      //   .pipe(select(UserProfileSelectors.selectUserProfileError))
-      //   .subscribe(errMsg => {
-      //     if (!errMsg) {
-      //       console.log('empty err msg.');
-      //       return;
-      //     }
-      //     this.msgs = [];
-      //     this.msgs.push({ severity: 'error', summary: '', detail: errMsg });
-      //     console.log('err msg: ', errMsg);
-      //   });
+      // console.log('[LoginComponent-ngOnInit-subscribe(uiInfo)] loading server infos. uiInfo: ', uiInfo);
+      this.appConfig.loadServerInfo();
+    });
+
+    AppConfig.serverInfo$.subscribe(serverInfo => {
+      // console.log('[LoginComponent-ngOnInit-subscribe(serverInfo)]');
+      this.appDetails = this.uiDetails + ', BE host=' + serverInfo.host + ', BE version=' + serverInfo.version;
+    });
+    // const uiInfo: UIInfo = AppConfig.getUIInfo();
+    // console.log('[LoginComponent-ngOnInit]');
+    // this.uiDetails = 'UI version=' + uiInfo.version + '.' + uiInfo.git_branch + '.' + uiInfo.build_no + '.' + uiInfo.git_sha;
+    // this.appDetails = this.uiDetails + ', loading BE details....';
+    // this.appConfig.serverInfo( (serverInfo: ServerInfo) => {
+    //   this.appDetails = this.uiDetails + ', BE host=' + serverInfo.host + ', BE version=' + serverInfo.version;
+    // } );
+    // this.errMsg$ =
+    // this.store$
+    //   .pipe(select(UserProfileSelectors.selectUserProfileError))
+    //   .subscribe(errMsg => {
+    //     if (!errMsg) {
+    //       console.log('empty err msg.');
+    //       return;
+    //     }
+    //     this.msgs = [];
+    //     this.msgs.push({ severity: 'error', summary: '', detail: errMsg });
+    //     console.log('err msg: ', errMsg);
+    //   });
 
     this.store$
       .pipe(select(state => UserProfileSelectors.selectUserProfileError(state)))

@@ -63,7 +63,7 @@ export class FileUploadDialogComponent implements OnInit {
   }
 
   setMaxUploadSize(setingInMB) {
-    this.maxUploadInByte = setingInMB * 1024;
+    this.maxUploadInByte = setingInMB * 1024 * 1024;
     // console.log('maxUploadInByte: ', this.maxUploadInByte);
   }
 
@@ -116,7 +116,7 @@ export class FileUploadDialogComponent implements OnInit {
     const data: FormData = event.formData;
     console.log('[onFileBeforeUpload] selected file', this.newFileName);
     data.append('fileName', this.newFileName);
-    data.append('fileType', 'Document');
+    data.append('fileType', this.selectedCatalogueEntry);
     console.log('[onFileBeforeUpload] start upload');
   }
 
@@ -166,6 +166,8 @@ export class FileUploadDialogComponent implements OnInit {
   }
 
   onCatalogueItemSelected(event) {
+    // console.log('[onCatalogueItemSelected] catalogue item selected: ', event);
+    this.selectedCatalogueEntry = event;
 
   }
 

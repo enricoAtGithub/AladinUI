@@ -44,6 +44,7 @@ export class AppConfig {
     }
 
     load() {
+        // console.log('[[AppConfig-load]] gets called.');
         if (this.browserStorageService.hasUIInfo()) {
             AppConfig.uiInfo = this.browserStorageService.getUIInfo();
         }
@@ -51,7 +52,7 @@ export class AppConfig {
         const jsonFile = `./assets/config/postbuildconfig.json`;
         this.http.get(jsonFile).subscribe(json => {
             const uiInfo = json as UIInfo;
-            if (!uiInfo.baseUrl) {
+            if (!uiInfo.baseUrl || uiInfo.baseUrl === "#base_url#") {
                 console.log('taking Backend URL from environment');
                 uiInfo.baseUrl = environment.baseUrl;
             } else {

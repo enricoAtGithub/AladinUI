@@ -26,7 +26,7 @@ export class CatalogueService {
 
   addEntriesToCatalogue(catalogueName: string, entries: string[]): Observable<HttpResponseState> {
     return this.http.post(
-        UrlCollection.Catalogues.ADD(),
+        UrlCollection.Catalogues.ADDENTRY(),
         {name: catalogueName, values: entries})
         .pipe(
           map(() => this.serviceHelper.createSuccessResponse()),
@@ -48,7 +48,7 @@ export class CatalogueService {
   }
 
   getAllCatalogues(): Observable<HttpResult<Catalogue[]>> {
-    return this.http.get<Catalogue[]>(UrlCollection.Catalogues.All())
+    return this.http.get<Catalogue[]>(UrlCollection.Catalogues.ALL())
       .pipe(
         map(response => this.serviceHelper.createSuccessResponseWithContent<Catalogue[]>(response)),
         catchError(err =>
@@ -58,7 +58,7 @@ export class CatalogueService {
 
   removeEntriesFromCatalogue(catalogueName: string, entries: string[]): Observable<HttpResponseState> {
     return this.http.post(
-        UrlCollection.Catalogues.REMOVE(),
+        UrlCollection.Catalogues.REMOVEENTRY(),
         {name: catalogueName, values: entries})
       .pipe(
         map(() => this.serviceHelper.createSuccessResponse()),

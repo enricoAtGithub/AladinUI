@@ -10,10 +10,12 @@ export class AppFooterComponent implements OnInit {
   uiDetails: string;
   appDetails: string;
   companyName: string;
+  appName: string;
 
 
   constructor(private appConfig: AppConfig) {
     this.companyName = environment.companyName;
+    this.appName = environment.appName;
     this.uiDetails = '...loading UI details';
     this.appDetails = '...loading app details';
   }

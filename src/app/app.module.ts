@@ -72,6 +72,8 @@ import {TreeModule} from 'primeng/tree';
 import {TreeTableModule} from 'primeng/treetable';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
 import {AuthModule} from './auth/auth.module';
+import { AceModule, ACE_CONFIG, AceConfigInterface } from 'ngx-ace-wrapper';
+
 
 import {AppComponent} from './app.component';
 import {AppRightPanelComponent} from './layout/app-rightpanel/app.rightpanel.component';
@@ -85,10 +87,8 @@ import { BreadcrumbService } from './breadcrumb.service';
 import { UserModule } from './user/user.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReportsComponent } from './reports/reports.component';
-import { InvoicesComponent } from './invoices/invoices.component';
 import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 import { ProfileComponent } from './profile/profile.component';
-import { OrdersComponent } from './orders/orders.component';
 import { AppThemeComponent } from './layout/app-layout/app-layout.theme.component';
 import { StoreModule } from '@ngrx/store';
 import { reducers, metaReducers } from './reducers';
@@ -103,11 +103,17 @@ import { AppConfig } from './shared/app-config';
 import { HttpHeadersService } from './shared/services/http-headers.service';
 import { SharedModule } from './shared/shared.module';
 import { HttpErrorRepsonseInterceptor } from 'src/http-error-repsonse.interceptor';
-import { FileUploadDialogComponent } from './shared/components/file-upload-dialog/file-upload-dialog.component';
+import { FormsModule } from '@angular/forms';
+// import { FileUploadDialogComponent } from './shared/components/file-upload-dialog/file-upload-dialog.component';
 import { FileSaverModule } from 'ngx-filesaver';
+import { InvoicesComponent } from './invoices/invoices.component';
+import { OrdersComponent } from './orders/orders.component';
+import { UseraltComponent } from './useralt/useralt.component';
+import { ProgressSpinnerModule } from 'primeng/primeng';
 import { JmeleonModule } from './jmeleon/jmeleon.module';
 import { DiagramsModule } from './jmeleon/modules/diagrams/diagrams.module';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { DigitOnlyModule } from '@uiowa/digit-only';
 import { SettingsModule } from './jmeleon/modules/settings/settings.module';
 
 export function initializeApp(appConfig: AppConfig) {
@@ -115,6 +121,11 @@ export function initializeApp(appConfig: AppConfig) {
     return () => appConfig.load();
     // return appConfig.load();
 }
+
+const DEFAULT_ACE_CONFIG: AceConfigInterface = {
+    tabSize: 2,
+    fontSize: '16px'
+};
 
 @NgModule({
     imports: [
@@ -192,10 +203,12 @@ export function initializeApp(appConfig: AppConfig) {
         UserModule,
         VirtualScrollerModule,
         RootStoreModule,
-        FileSaverModule,
+        ProgressSpinnerModule,
         JmeleonModule,
         DiagramsModule,
         NgxPermissionsModule.forRoot(),
+        DigitOnlyModule,
+        AceModule,
         SettingsModule
     ],
     declarations: [
@@ -210,11 +223,11 @@ export function initializeApp(appConfig: AppConfig) {
         AppFooterComponent,
         AppProfileComponent,
         DashboardComponent,
-        InvoicesComponent,
-        OrdersComponent,
+        UseraltComponent,
         ProfileComponent,
         ReportsComponent,
-        FileUploadDialogComponent
+        InvoicesComponent,
+        OrdersComponent
     ],
     providers: [
         AppConfig,
@@ -224,7 +237,8 @@ export function initializeApp(appConfig: AppConfig) {
         {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
         {provide: HTTP_INTERCEPTORS, useClass: HttpErrorRepsonseInterceptor, multi: true},
         BreadcrumbService,
-        HttpHeadersService
+        HttpHeadersService,
+        {provide: ACE_CONFIG, useValue: DEFAULT_ACE_CONFIG}
     ],
 
     entryComponents: [ AppThemeComponent ],

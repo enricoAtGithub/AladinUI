@@ -8,8 +8,6 @@ import { AuthService } from './app/auth/services/auth.service';
 import { Store } from '@ngrx/store';
 import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-index';
 
-
-
 export enum ServerErrorCode {
     GENERIC_ERROR = 1,
     UNKNOWN_TOKEN = 4,

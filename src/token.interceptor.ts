@@ -12,7 +12,6 @@ import { mergeMap, catchError } from 'rxjs/operators';
 export class TokenInterceptor implements HttpInterceptor {
   constructor(public auth: AuthService) {}
 
-
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     if (this.auth.isLoggedIn && this.auth.localUser && this.auth.localUser.token) {

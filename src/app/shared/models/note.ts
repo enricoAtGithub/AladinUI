@@ -1,6 +1,6 @@
 export class Note {
     id: number;
-    subject: string;
+    subject: Date;
     note: string;
     ownerType: string;
     ownerId: number;
