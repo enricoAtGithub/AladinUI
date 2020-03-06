@@ -27,8 +27,7 @@ export class SchedulerComponent implements OnInit {
   private resourceSchedulerObject: EventSettingsModel; 
   private resourceDataSource: Object[];
 
-  private schedulerEvents: SchedulerEvent[];
-  private schedulerEventsWithoutDuplicates: SchedulerEvent[];
+  public schedulerEvents: SchedulerEvent[] =[];
   private schedulerResources: SchedulerResource[];
   private assignedSchedulerResources: SchedulerResource[];
 
@@ -44,27 +43,39 @@ export class SchedulerComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    //determine scheduler events, remove double entries in case of multiple resources assigned 
-    this.getSchedulerEvents()
-    
+    this.getSchedulerEvents();    
   }
 
   private getSchedulerEvents(): void {
     this.schedulerEventService.getSchedulerEvents()
       .subscribe(schedulerEvents => { 
-        this.schedulerEvents = schedulerEvents
-        this.schedulerEventsWithoutDuplicates = schedulerEvents.filter((test, index, array) =>
-          index === array.findIndex((findTest) =>
-          findTest.Id === test.Id
-          )
-        );   
-        this.eventSchedulerObject  = { dataSource: this.schedulerEventsWithoutDuplicates } 
+        this.eventSchedulerObject = { dataSource: schedulerEvents }        
       })    
     }
 
-    private getSchedulerResources(schedulerEventId: number): void {
+  private getSchedulerResourcesAndSchedulerEvents(schedulerEventId: number): void {
     this.schedulerResourceService.getSchedulerResources(schedulerEventId)
-      .subscribe(schedulerResources => this.schedulerResources = schedulerResources)
+      .subscribe(schedulerResources => {
+        //filter resources assigned to clicked event 
+        this.resourceDataSource = schedulerResources.filter(arr=> arr.State === "assigned"); 
+        const thisref = this;
+
+        schedulerResources.forEach(schResource => {
+          schResource.isAssignedTo.forEach(schEvent => {
+            schEvent.ResourceID = schResource.Id  
+            //SchedulerComponent.prototype.schedulerEvents.push(schEvent);          
+            thisref.schedulerEvents.push(schEvent)
+          });
+          
+        });
+
+        console.log(this.schedulerEvents);
+        //this.resourceSchedulerObject = { dataSource: this.schedulerEvents };
+        //this.resourceSchedulerObject = { dataSource: schedulerResources[1].isAssignedTo};
+
+        //console.log(schedulerResources[1].isAssignedTo);
+        //console.log(this.schedulerEvents)
+      })
   }
 
   private onDragStart(args: DragEventArgs): void {
@@ -78,18 +89,18 @@ export class SchedulerComponent implements OnInit {
   
   private onEventClick(args: EventClickArgs): void {  
     //pass all scheduler events including double entries in case of multiple resources
-    this.resourceSchedulerObject  = { dataSource: this.schedulerEvents }
+    
+    
+    
     
     //access clicked scheduler event
     //two type casts necessary since args.event cannot be casted directly to SchedulerEvent
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);  
     
     //get all resources with State (assigned, available, blocked) depending on clicked event
-    this.getSchedulerResources(schedulerEvent.Id);
+    this.getSchedulerResourcesAndSchedulerEvents(schedulerEvent.Id);
     
-    //find resources assigned to clicked event 
-    this.assignedSchedulerResources = this.schedulerResources.filter(arr=> arr.State === "assigned");
-    this.resourceDataSource = this.assignedSchedulerResources;  
+    
         
     //Task #1340: show times outside of event time in grey
     const start = <string>(schedulerEvent.StartTime.getHours() as unknown) + ":" + <string>(schedulerEvent.StartTime.getMinutes() as unknown);

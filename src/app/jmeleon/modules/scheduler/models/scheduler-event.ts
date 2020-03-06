@@ -14,5 +14,5 @@ export interface SchedulerEvent {
     RecurrenceException?: string;
     IsReadonly?: boolean;
     IsBlock?: boolean;
-    ResourceID: number
+    ResourceID?: number;
 }
