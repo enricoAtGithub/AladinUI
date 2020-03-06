@@ -11,6 +11,6 @@ export class SchedulerEventService {
   constructor() { }
 
   getSchedulerEvents(): Observable<SchedulerEvent[]> {
-    return of(SCHEDULEREVENTS);   
+    return of(SCHEDULEREVENTS);
   }
 }

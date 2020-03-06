@@ -8,30 +8,29 @@ import { filter } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class SchedulerResourceService {
-  
   constructor() { }
 
   getSchedulerResources(schedulerEventId: number): Observable<SchedulerResource[]> {
     // Switch in order to provide correct Mock Data
-    switch(schedulerEventId) {
+    switch (schedulerEventId) {
       case 1: {
-        return of(SCHEDULERRESOURCES1);   
+        return of(SCHEDULERRESOURCES1);
       }
       case 2: {
-        return of(SCHEDULERRESOURCES2);   
+        return of(SCHEDULERRESOURCES2);
       }
       case 3: {
-        return of(SCHEDULERRESOURCES3);   
+        return of(SCHEDULERRESOURCES3);
       }
       case 4: {
-        return of(SCHEDULERRESOURCES4);   
+        return of(SCHEDULERRESOURCES4);
       }
       case 5: {
-        return of(SCHEDULERRESOURCES5);   
+        return of(SCHEDULERRESOURCES5);
       }
       case 6: {
-        return of(SCHEDULERRESOURCES6);   
+        return of(SCHEDULERRESOURCES6);
       }
-    }  
+    }
   }
 }
