@@ -23,18 +23,19 @@
               "src/assets"
             ],
             "styles": [
-                "node_modules/primeng/resources/primeng.min.css",
-                "node_modules/fullcalendar/dist/fullcalendar.min.css",
-                "node_modules/quill/dist/quill.snow.css",
-                "node_modules/font-awesome/css/font-awesome.min.css",
-                "node_modules/primeicons/primeicons.css",
-                "src/styles.css"
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/fullcalendar/dist/fullcalendar.min.css",
+              "node_modules/quill/dist/quill.snow.css",
+              "node_modules/font-awesome/css/font-awesome.min.css",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeflex/primeflex.css",
+              "src/styles.css"
             ],
             "scripts": [
-                "node_modules/chart.js/dist/Chart.js",
-                "node_modules/fullcalendar/dist/fullcalendar.js",
-                "node_modules/prismjs/prism.js",
-                "node_modules/quill/dist/quill.js"
+              "node_modules/chart.js/dist/Chart.js",
+              "node_modules/fullcalendar/dist/fullcalendar.js",
+              "node_modules/prismjs/prism.js",
+              "node_modules/quill/dist/quill.js"
             ]
           },
           "configurations": {
@@ -54,6 +55,22 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
+            },
+            "local": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ]
+            },
+            "jenkins": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.jenkins.ts"
+                }
+              ]
             }
           }
         },
@@ -65,6 +82,9 @@
           "configurations": {
             "production": {
               "browserTarget": "jmeleon:build:production"
+            },
+            "local": {
+              "browserTarget": "jmeleon:build:local"
             }
           }
         },
@@ -133,5 +153,8 @@
       }
     }
   },
-  "defaultProject": "jmeleon"
+  "defaultProject": "jmeleon",
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }

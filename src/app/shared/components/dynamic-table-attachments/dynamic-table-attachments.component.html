@@ -58,7 +58,13 @@
       </div>
     </p-tabPanel>
 
-    <p-tabPanel *ngIf="this.configuration?.components?.includes('Notes')" header="Notizen" [selected]="true">
+    <p-tabPanel *ngIf="this.configuration?.components?.includes('LogEntries')" header="Logbuch" [selected]="true">
+      <div style="height: 250px">
+        <app-dynamic-table #logsTable *ngIf="logTableData" [tableData]="logTableData"></app-dynamic-table>
+      </div>
+    </p-tabPanel>
+
+    <p-tabPanel *ngIf="this.configuration?.components?.includes('Notes')" header="Notizen">
       <div style="height: 250px">
         <app-dynamic-table #notesTable class="ui-g-6" style="padding: 0px" *ngIf="noteTableData" [tableData]="noteTableData" (onEntitySelection)="noteSelected($event)"></app-dynamic-table>
         <div *ngIf="selectedNote" class="ui-g-6" style="padding: 7px">
@@ -74,12 +80,6 @@
               <i class="pi pi-plus" style="position: relative; top: 20%; font-size: 11em; color: #378D4F"></i>
           </div>
         </div>
-      </div>
-    </p-tabPanel>
-
-    <p-tabPanel *ngIf="this.configuration?.components?.includes('LogEntries')" header="Logbuch">
-      <div style="height: 250px">
-        <app-dynamic-table #logsTable *ngIf="logTableData" [tableData]="logTableData"></app-dynamic-table>
       </div>
     </p-tabPanel>
 

@@ -17,7 +17,7 @@ export class AppLayoutComponent implements AfterViewInit {
 
     megaMenuMode = 'dark';
 
-    menuMode = 'light';
+    menuMode = 'gradient';
 
     profileMode = 'inline';
 

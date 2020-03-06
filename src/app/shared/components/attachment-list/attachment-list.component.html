@@ -1,0 +1,46 @@
+<!-- <h3>{{documentTypeForHeader}}</h3> -->
+
+<p-table [value]=content2>
+    <ng-template pTemplate="header">
+        <tr>
+            <th *ngFor="let col of header">
+                <span *ngIf="col.header!=='buttons'">{{col.header}}</span>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-attachment>
+        <tr>
+            <td *ngFor="let col of header; let i = index">
+                <span *ngIf="attachment[col.field]!=='buttons'; else buttons">{{attachment[col.field]}}</span>
+                <ng-template #buttons>
+                    <div>
+                        <p-button *ngIf="showPictureViewerOpenButton" icon="pi pi-image" pTooltip="Bildbetrachter"
+                                (click)="openImage(attachment['id'])"></p-button>
+                        <button pButton type="button" icon="fa fa-download" pTooltip="Herunterladen" fileSaver
+                            [method]="'GET'" [fileName]="attachment['Dateiname']" [url]="downloadUrl(attachment['id'])"
+                            [ngStyle]="{'margin-right': '2px', 'margin-left': showPictureViewerOpenButton ? '2px' : '0px'}"></button>
+                        <p-button icon="pi pi-trash" pTooltip="Löschen"
+                            (click)="detachAndDeleteEntity(attachment['id'])" class="btnSpacing"></p-button>
+                    </div>
+
+                </ng-template>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<div *ngIf="attachments$ | async as attachments; else noAttachments">
+
+    <!-- <div class="p-grid">
+
+    </div>
+    <div *ngFor="let key of attachments.getDataKeys()" class="p-col">
+        <h5>{{key}}</h5>
+    </div> -->
+
+</div>
+
+<ng-template #noAttachments>
+    ...keine Anhänge.
+</ng-template>
+

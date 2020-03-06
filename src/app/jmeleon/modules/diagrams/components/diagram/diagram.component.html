@@ -1,0 +1,19 @@
+<div *ngIf="showPanel">
+    <div *ngIf="diagramData; else noDiagramData">
+        <p-panel [header]="diagramData.header">    
+            <p-chart [type]="diagramData.type" [data]="diagramData.data" [options]="diagramData.options" [height]="height"></p-chart>
+        </p-panel>    
+    </div>    
+    <ng-template #noDiagramData>
+        <p-progressSpinner></p-progressSpinner>
+    </ng-template>    
+</div>
+
+<div *ngIf="!showPanel">
+    <div *ngIf="diagramData; else noDiagramData">
+        <p-chart [type]="diagramData.type" [data]="diagramData.data" [options]="diagramData.options"></p-chart>
+    </div>
+    <ng-template #noDiagramData>
+        <p-progressSpinner></p-progressSpinner>
+    </ng-template>    
+</div>

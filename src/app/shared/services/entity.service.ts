@@ -25,6 +25,25 @@ export class EntityService {
         .build());
   }
 
+  getEntityConfigurationFile(configName: string): Observable<Object> {
+    return this.http.get(
+      UrlCollection.Entities.CONFIG_FILE(configName),
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
+  }
+
+  updateEntityConfigurationFile(configName: string, config: string) {
+    return this.http.post(
+      UrlCollection.Entities.CONFIG_FILE(configName),
+      { content: config },
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
+  }
+
   filter(type: String, page: Number, pageSize: Number, qualifier: String, sorting: String): Observable<EntityData> {
     return this.http.post<EntityData>(UrlCollection.Entities.FILTER(),
       {type: type, page: page, pageSize: pageSize, qualifier: qualifier, sorting: sorting},

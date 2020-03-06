@@ -2,7 +2,7 @@ import {NgModule, APP_INITIALIZER} from '@angular/core';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {LocationStrategy, PathLocationStrategy} from '@angular/common';
+import {LocationStrategy, PathLocationStrategy, HashLocationStrategy} from '@angular/common';
 import {AppRoutes} from './app.routes';
 
 import {AccordionModule} from 'primeng/accordion';
@@ -72,6 +72,8 @@ import {TreeModule} from 'primeng/tree';
 import {TreeTableModule} from 'primeng/treetable';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
 import {AuthModule} from './auth/auth.module';
+import { AceModule, ACE_CONFIG, AceConfigInterface } from 'ngx-ace-wrapper';
+
 
 import {AppComponent} from './app.component';
 import {AppRightPanelComponent} from './layout/app-rightpanel/app.rightpanel.component';
@@ -85,10 +87,8 @@ import { BreadcrumbService } from './breadcrumb.service';
 import { UserModule } from './user/user.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReportsComponent } from './reports/reports.component';
-import { InvoicesComponent } from './invoices/invoices.component';
 import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 import { ProfileComponent } from './profile/profile.component';
-import { OrdersComponent } from './orders/orders.component';
 import { AppThemeComponent } from './layout/app-layout/app-layout.theme.component';
 import { StoreModule } from '@ngrx/store';
 import { reducers, metaReducers } from './reducers';
@@ -103,10 +103,29 @@ import { AppConfig } from './shared/app-config';
 import { HttpHeadersService } from './shared/services/http-headers.service';
 import { SharedModule } from './shared/shared.module';
 import { HttpErrorRepsonseInterceptor } from 'src/http-error-repsonse.interceptor';
+import { FormsModule } from '@angular/forms';
+// import { FileUploadDialogComponent } from './shared/components/file-upload-dialog/file-upload-dialog.component';
+import { FileSaverModule } from 'ngx-filesaver';
+import { InvoicesComponent } from './invoices/invoices.component';
+import { OrdersComponent } from './orders/orders.component';
+import { UseraltComponent } from './useralt/useralt.component';
+import { ProgressSpinnerModule } from 'primeng/primeng';
+import { JmeleonModule } from './jmeleon/jmeleon.module';
+import { DiagramsModule } from './jmeleon/modules/diagrams/diagrams.module';
+import { NgxPermissionsModule } from 'ngx-permissions';
+import { DigitOnlyModule } from '@uiowa/digit-only';
+import { SettingsModule } from './jmeleon/modules/settings/settings.module';
 
 export function initializeApp(appConfig: AppConfig) {
+    console.log('initialize app');
     return () => appConfig.load();
+    // return appConfig.load();
 }
+
+const DEFAULT_ACE_CONFIG: AceConfigInterface = {
+    tabSize: 2,
+    fontSize: '16px'
+};
 
 @NgModule({
     imports: [
@@ -183,11 +202,14 @@ export function initializeApp(appConfig: AppConfig) {
         TreeTableModule,
         UserModule,
         VirtualScrollerModule,
-        StoreModule.forRoot(reducers, { metaReducers }),
-        StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
-        EffectsModule.forRoot([AppEffects]),
-        StoreRouterConnectingModule.forRoot(),
-        RootStoreModule
+        RootStoreModule,
+        ProgressSpinnerModule,
+        JmeleonModule,
+        DiagramsModule,
+        NgxPermissionsModule.forRoot(),
+        DigitOnlyModule,
+        AceModule,
+        SettingsModule
     ],
     declarations: [
         AppComponent,
@@ -201,19 +223,22 @@ export function initializeApp(appConfig: AppConfig) {
         AppFooterComponent,
         AppProfileComponent,
         DashboardComponent,
-        InvoicesComponent,
-        OrdersComponent,
+        UseraltComponent,
         ProfileComponent,
-        ReportsComponent
+        ReportsComponent,
+        InvoicesComponent,
+        OrdersComponent
     ],
     providers: [
         AppConfig,
         {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [AppConfig], multi: true },
-        {provide: LocationStrategy, useClass: PathLocationStrategy},
+        // {provide: LocationStrategy, useClass: PathLocationStrategy},
+        {provide: LocationStrategy, useClass: HashLocationStrategy},
         {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
         {provide: HTTP_INTERCEPTORS, useClass: HttpErrorRepsonseInterceptor, multi: true},
         BreadcrumbService,
-        HttpHeadersService
+        HttpHeadersService,
+        {provide: ACE_CONFIG, useValue: DEFAULT_ACE_CONFIG}
     ],
 
     entryComponents: [ AppThemeComponent ],

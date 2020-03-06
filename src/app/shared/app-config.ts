@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { BrowserStorageService } from './services/browser-storage.service';
 
 export class ServerInfo {
     host: string;
@@ -23,40 +24,55 @@ export class UIInfo {
 @Injectable()
 export class AppConfig {
 
-    constructor(private http: HttpClient) {}
+    private static uiInfoSubject = new ReplaySubject<UIInfo>(1);
+    static uiInfo$ = AppConfig.uiInfoSubject.asObservable();
+    private static serverInfoSubject = new ReplaySubject<ServerInfo>(1);
+    static serverInfo$ = AppConfig.serverInfoSubject.asObservable();
 
     static uiInfo: UIInfo;
+
+    constructor(
+        private http: HttpClient,
+        private browserStorageService: BrowserStorageService) {
+        // load() gets called in the app-module already.
+        // this.load();
+
+    }
 
     static getBaseUrl(): string {
         return AppConfig.uiInfo.baseUrl;
     }
 
-    static getUIInfo(): UIInfo {
-        return AppConfig.uiInfo;
-    }
-
     load() {
-        const jsonFile = `assets/config/postbuildconfig.json`;
-        return new Promise<void>((resolve, reject) => {
-            this.http.get(jsonFile).toPromise().then((response: UIInfo) => {
-                AppConfig.uiInfo = response;
+        // console.log('[[AppConfig-load]] gets called.');
+        if (this.browserStorageService.hasUIInfo()) {
+            AppConfig.uiInfo = this.browserStorageService.getUIInfo();
+        }
 
-                if (!AppConfig.uiInfo.baseUrl) {
-                    console.log('take Backend URL from environment');
-                    AppConfig.uiInfo.baseUrl = environment.baseUrl;
-                } else {
-                    console.log('take Backend URL from postbuildConfig');
-                }
+        const jsonFile = `./assets/config/postbuildconfig.json`;
+        this.http.get(jsonFile).subscribe(json => {
+            const uiInfo = json as UIInfo;
+            if (!uiInfo.baseUrl || uiInfo.baseUrl === "#base_url#") {
+                console.log('taking Backend URL from environment');
+                uiInfo.baseUrl = environment.baseUrl;
+            } else {
+                console.log('taking Backend URL from postbuildConfig');
+            }
+            AppConfig.uiInfo = uiInfo;
+            AppConfig.uiInfoSubject.next(uiInfo);
 
-                resolve();
-            }).catch((response: any) => {
-               reject(`Could not load file '${jsonFile}': ${JSON.stringify(response)}`);
-            });
+            this.browserStorageService.saveUIInfo(uiInfo);
         });
     }
 
-    serverInfo(myFunc) {
-        return this.http.get<ServerInfo>(AppConfig.getBaseUrl() + '/admin/info').subscribe(myFunc);
+    loadServerInfo() {
+        AppConfig.uiInfo$.subscribe(uiInfo => {
+            this.http.get<ServerInfo>(uiInfo.baseUrl + '/admin/info')
+                    .subscribe(serverInfo => AppConfig.serverInfoSubject.next(serverInfo));
+        });
     }
+
+
+
 
 }

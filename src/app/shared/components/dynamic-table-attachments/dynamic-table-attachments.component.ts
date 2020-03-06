@@ -6,8 +6,8 @@ import { EntityService } from '../../services/entity.service';
 import { GroupMembers } from '../../models/group-members';
 import { EntityData } from '../../models/entity-data';
 import { EntityConfiguration } from '../../models/entity-configuration';
+import { Note } from 'src/app/shared/models/note';
 import { DynamicTableComponent } from '../dynamic-table/dynamic-table.component';
-import { Note } from '../../models/note';
 import { Attribute } from '../../models/attribute';
 
 @Component({

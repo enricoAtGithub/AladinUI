@@ -1,0 +1,9 @@
+<p-dropdown 
+    [options]="selectItems" 
+    [(ngModel)]="selectedItem" 
+    (onChange)="selectedItemChanged($event)"
+    [filter]="true"
+    autoWidth="false" 
+    [style]="{'width':'100%'}"
+    >
+</p-dropdown>

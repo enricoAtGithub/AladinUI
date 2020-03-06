@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import {Md5} from 'ts-md5/dist/md5';
 import { AppThemeComponent } from './app-layout.theme.component';
 import { DialogService } from 'primeng/primeng';
+import { JMeleonPermissionsService } from 'src/app/auth/services/jmeleon-permissions.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,27 +15,27 @@ import { Router } from '@angular/router';
             <a href="#" (click)="onProfileClick($event)" id="sidebar-profile-button">
                 <img [src]="gravatarLink" style="width: 92px; height:92px; border-radius:46px"/>
                 <span class="sidebar-profile-name">{{fullName}}</span>
-                <span class="sidebar-profile-role">Administrator</span>
+                <span class="sidebar-profile-role">{{role}}</span>
             </a>
 
             <ul id="sidebar-usermenu" class="usermenu" [ngClass]="{'usermenu-active':app.usermenuActive}"
                 [@menu]="app.isSlim()? app.usermenuActive ? 'visible' : 'hidden' :
                 app.usermenuActive ? 'visibleAnimated' : 'hiddenAnimated'">
                 <li #profile [ngClass]="{'menuitem-active':app.activeProfileItem === profile}">
-                    <a href="#" (click)="onProfileItemClick($event,profile); router.navigate(['/profile'])">
+                    <a href="#" (click)="onProfileItemClick($event,profile); router.navigate(['/profile'])" id="aProfile">
                         <i class="fa fa-fw fa-user"></i>
                         <span class="topbar-item-name">Profil</span>
                     </a>
                 </li>
                 <li #settings [ngClass]="{'menuitem-active':app.activeProfileItem === settings}">
-                    <a href="#" (click)="onProfileItemClick($event,settings)">
+                    <a href="#" (click)="onProfileItemClick($event,settings)" id="aProfileSettings">
                         <i class="fa fa-fw fa-cog"></i>
                         <span class="topbar-item-name">Einstellungen</span>
                         <i class="layout-menuitem-toggler fa fa-fw fa-angle-down"></i>
                     </a>
                     <ul>
                         <li role="menuitem">
-                            <a href="#" (click)="onProfileSubItemClick($event); showThemeDialog();">
+                            <a href="#" (click)="onProfileSubItemClick($event); showThemeDialog();" id="aProfileColorSettings">
                                 <i class="fa fa-fw fa-paint-brush"></i>
                                 <span>Farbschema ändern</span>
                             </a>
@@ -67,13 +68,14 @@ import { Router } from '@angular/router';
 export class AppProfileComponent implements OnInit {
     fullName = '';
     gravatarLink = '';
+    role = '';
 
     constructor(
         public app: AppLayoutComponent,
         public authService: AuthService,
         public router: Router,
-        private dialogService: DialogService
-    ) {}
+        private dialogService: DialogService,
+        private jmeleonPermissionService: JMeleonPermissionsService) {}
 
     ngOnInit() {
         this.authService.localUser$.subscribe(
@@ -86,6 +88,10 @@ export class AppProfileComponent implements OnInit {
                         email = user.user.email;
                     }
                     this.gravatarLink = 'https://gravatar.com/avatar/' + <string>Md5.hashStr(email.trim().toLowerCase());
+
+                    if (this.jmeleonPermissionService.userHasAdminRole(user)) {
+                        this.role = 'Administrator';
+                    }
                 }
             }
         );

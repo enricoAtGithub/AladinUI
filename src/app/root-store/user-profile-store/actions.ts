@@ -26,6 +26,7 @@ export class LoginSuccessAction implements Action {
 
 export class LogoutRequestedAction implements Action {
   readonly type = ActionTypes.LOGOUT_REQUESTED;
+  constructor(public payload = { sendLogoutRequestToServer: true }) {}
 }
 
 export class LogoutSuccessAction implements Action {

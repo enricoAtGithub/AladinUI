@@ -1,4 +1,141 @@
 /* You can add global styles to this file, and also import other style files */
+
+/*global margins*/
+.spacing-top-small {
+    margin-top: 10px;
+}
+.spacing-right-small {
+    margin-right: 10px;
+}
+.spacing-bottom-small {
+    margin-bottom: 10px;
+}
+.spacing-left-small {
+    margin-left: 10px;
+}
+
+.spacing-top-medium {
+    margin-top: 20px !important;
+
+}
+.spacing-right-medium {
+    margin-right: 20px;
+}
+.spacing-bottom-medium {
+    margin-bottom: 20px;
+}
+.spacing-left-medium {
+    margin-left: 20px;
+}
+
+.spacing-top-large {
+    margin-top: 40px;
+}
+.spacing-right-large {
+    margin-right: 40px;
+}
+.spacing-bottom-large {
+    margin-bottom: 40px;
+}
+.spacing-left-large {
+    margin-left: 40px;
+}
+
+.grid-row-background-even {
+    background-color: #f0f6ff;
+}
+
+.btnSpacing {
+    margin-right: 10px; 
+}
+
+.flexgrid-header {
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.flexgrid-segment {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.flexgrid-odd-line {
+    background-color: #f2f5fa;
+}
+
+.form-segment {
+    margin-top: 10px;
+    /* width: 35%; */
+}
+
+.form-segment-medium-space {
+    margin-top: 20px;
+}
+
+.form-element {
+    margin-top: 10px;
+
+}
+
+.form-header {
+    color: darkslategray;
+}
+
+.form-header-medium {
+    color: darkslategray;
+    font-weight: bold;
+    font-size: 15px;
+
+}
+
+.table-header-medium {
+    color: darkslategray;
+    font-weight: bold;
+    font-size: 15px;
+
+}
+
+.form-input{
+    width: 100%;
+    margin: 0; padding: 0; border: 0;
+    display: block;
+}
+
+.inputContainer {
+    background: #fff;
+    padding: 3px 3px;
+    border: 1px solid #a9a9a9
+}
+
+.inputContainer input {
+    width: 100%;
+    margin: 0; padding: 0; border: 0;
+    display: block
+}
+
+.not-top-card {
+    margin-top: 10px !important;
+}
+
+.top-card {
+    margin-bottom: 10px !important;
+}
+/* 
+#buttonPanel {
+    margin-top: 50px !important;
+
+} */
+
+
+.left-label {
+    text-align: right;
+    float: right;
+}
+
+.right-label {
+    text-align: left;
+    float: left;
+}
 .scrollPanelFix .ui-scrollpanel-content {
     height: 100%;
 }

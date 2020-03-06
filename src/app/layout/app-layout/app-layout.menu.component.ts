@@ -2,6 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {trigger, state, style, transition, animate} from '@angular/animations';
 import {MenuItem} from 'primeng/primeng';
 import {AppLayoutComponent} from '../app-layout/app-layout.component';
+import { JMeleonPermissionsService } from 'src/app/auth/services/jmeleon-permissions.service';
+
 
 @Component({
     selector: 'app-menu',
@@ -16,7 +18,8 @@ export class AppMenuComponent implements OnInit {
 
     model: any[];
 
-    constructor(public app: AppLayoutComponent) {}
+    constructor(public app: AppLayoutComponent,
+        private jmeleonPermissionsService: JMeleonPermissionsService) {}
 
     ngOnInit() {
         this.model = [
@@ -24,11 +27,15 @@ export class AppMenuComponent implements OnInit {
             {label: 'Aufträge', icon: 'fa fa-fw fa-tasks', routerLink: ['/orders']},
             {label: 'Rechnungen', icon: 'fa fa-fw fa-eur', routerLink: ['/invoices']},
             {label: 'Berichte', icon: 'fa fa-fw fa-file', routerLink: ['/reports']},
-            {label: 'Administration', icon: 'fa fa-fw fa-pencil', items: [
+            {label: 'Administration', icon: 'fa fa-fw fa-pencil',
+            visible: this.jmeleonPermissionsService.currentUserHasPermission(
+                        this.jmeleonPermissionsService.PERMISSION_MANAGE_USERS),
+            items: [
                 {label: 'Benutzer-Übersicht', icon: 'pi pi-users', routerLink: ['/administration/user-management']},
                 {label: 'Rollenverwaltung', icon: 'pi pi-users', routerLink: ['/administration/role-management']},
                 {label: 'Rechteverwaltung', icon: 'pi pi-users', routerLink: ['/administration/permission-management']},
                 {label: 'Katalogverwaltung', icon: 'pi pi-folder-open', routerLink: ['/administration/catalogue-management']},
+                {label: 'Einstellungen', icon: 'fa fa-cogs', routerLink: ['/administration/settings']},
             ]},
         ];
     }
@@ -53,7 +60,8 @@ export class AppMenuComponent implements OnInit {
             <li [ngClass]="{'active-menuitem': isActive(i)}" [class]="child.badgeStyleClass" *ngIf="child.visible === false ? false : true">
                 <a [href]="child.url||'#'" (click)="itemClick($event,child,i)" (mouseenter)="onMouseEnter(i)"
                    class="ripplelink" *ngIf="!child.routerLink"
-                   [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target">
+                   [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target"
+                   [id]="!!child.id ? child.id : 'menuItem'+i">
                     <i [ngClass]="child.icon"></i><span>{{child.label}}</span>
                     <span class="menuitem-badge" *ngIf="child.badge">{{child.badge}}</span>
                     <i class="fa fa-fw fa-angle-down layout-menuitem-toggler" *ngIf="child.items"></i>
@@ -61,7 +69,8 @@ export class AppMenuComponent implements OnInit {
 
                 <a (click)="itemClick($event,child,i)" (mouseenter)="onMouseEnter(i)" class="ripplelink" *ngIf="child.routerLink"
                    [routerLink]="child.routerLink" routerLinkActive="active-menuitem-routerlink"
-                   [routerLinkActiveOptions]="{exact: true}" [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target">
+                   [routerLinkActiveOptions]="{exact: true}" [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target"
+                   [id]="!!child.id ? child.id : 'menuItem'+i">
                     <i [ngClass]="child.icon"></i><span>{{child.label}}</span>
                     <span class="menuitem-badge" *ngIf="child.badge">{{child.badge}}</span>
                     <i class="fa fa-fw fa-angle-down layout-menuitem-toggler" *ngIf="child.items"></i>

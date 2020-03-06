@@ -29,6 +29,7 @@ export class UrlCollection {
         static DELETE(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/delete'; }
         static CONFIGS(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/configurations'; }
         static FILTER(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/filter'; }
+        static CONFIG_FILE = (configName: string) => UrlCollection.ENTITY_API_BASE_PATH() + '/configuration/file/' + configName;
 
     };
 

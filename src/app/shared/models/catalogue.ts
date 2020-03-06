@@ -1,4 +1,16 @@
 export class Catalogue {
+    id: number;
     name: string;
-    values: any[];
+    description: string;
+    values: CatalogueEntry[];
+
+    constructor() {
+        this.values = [];
+    }
+}
+
+export class CatalogueEntry {
+    id: number;
+    name: string;
+    description: string;
 }

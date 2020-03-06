@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable, ReplaySubject, BehaviorSubject, of, Subscription } from 'rxjs';
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { User } from 'src/app/shared/models/user';
 import { UrlCollection } from 'src/app/shared/url-collection';
 import { switchMap, map, tap, catchError, share } from 'rxjs/operators';
 import { HttpHeadersService } from 'src/app/shared/services/http-headers.service';
 import { HttpResult } from 'src/app/shared/models/http/http-result';
+import { HttpOptionsFactory } from 'src/app/shared/models/http/http-options-factory';
+import { Store, select } from '@ngrx/store';
+import { RootStoreState } from 'src/app/root-store/root-index';
+import * as fromUserSelectors from 'src/app/root-store/user-profile-store/selectors';
 
 @Injectable({
   providedIn: 'root'
@@ -26,12 +30,24 @@ export class AuthService {
   private isLoggedInSubject: Subject<boolean>;
   public isLoggedIn$: Observable<boolean>;
 
-  constructor(private http: HttpClient, private httpHeaderService: HttpHeadersService) {
+  constructor(
+    private http: HttpClient,
+    private httpHeaderService: HttpHeadersService,
+    private store$: Store<RootStoreState.State>) {
     this.userSubject = new ReplaySubject<User>(1);
     this.userSubject.next(null);
-    this.localUser$ = this.userSubject.asObservable(); // .pipe(share());
+    // this.localUser$ = this.userSubject.asObservable(); // .pipe(share());
     this.isLoggedInSubject = new BehaviorSubject<boolean>(false);
-    this.isLoggedIn$ = this.isLoggedInSubject.asObservable(); // .pipe(share());
+    // this.isLoggedIn$ = this.isLoggedInSubject.asObservable(); // .pipe(share());
+
+    this.localUser$ = this.store$.pipe(
+      select(fromUserSelectors.selectUserProfileUser),
+      // tap(user => console.log('this.localUser$:', user))
+      );
+    this.isLoggedIn$ = this.store$.pipe(
+      select(fromUserSelectors.selectUserProfileUser),
+      map(user => !!user));
+
 
     this.localUser$.subscribe(
       user => {
@@ -44,15 +60,18 @@ export class AuthService {
         this.isLoggedIn = isLoggedIn;
       }
     );
+
   }
 
   login(userName: string, pass: string): Observable<HttpResult<User>> {
-
     const result = this.http
       .post<User>(
         UrlCollection.UserManagement.LOGIN(),
-        JSON.stringify({user: userName, passwd: pass, userAgent: navigator.userAgent}),
-        this.httpHeaderService.getObserveHttpOption())
+        {user: userName, passwd: pass, userAgent: navigator.userAgent},
+        new HttpOptionsFactory()
+          .addContentTypeJson()
+          .buildWithObserveOption()
+        )
       .pipe(
         map(httpResponse => {
           return httpResponse.body as User;
@@ -61,7 +80,7 @@ export class AuthService {
           this.userSubject.next(user);
           this.isLoggedInSubject.next(true);
           // todo: create local storage service!
-          localStorage.setItem('user', JSON.stringify(user));
+          // localStorage.setItem('user', JSON.stringify(user));
         }),
         map(user => {
           const httpResult: HttpResult<User> = {
@@ -70,20 +89,36 @@ export class AuthService {
           };
           return httpResult;
         }),
-        catchError(err => {
-          const httpResult: HttpResult<User> = {
+        catchError((err: HttpErrorResponse) => {
+          console.log('error: ', err);
+          let httpResult: HttpResult<User>;
+          // wrong credentials
+          if (err.status === 403) {
+            httpResult = {
+              success: false,
+              errMsg: err.error.message
+            };
+          // no vpn connection, ...?
+          } else {
+            httpResult = {
             success: false,
-            // errMsg: err['message'].toString() //no vpn connection
-            errMsg: err['error']['message'].toString()
-          };
+            errMsg: err.statusText
+            };
+          }
           return of(httpResult);
         })
       );
-
     return result;
   }
 
-  logout(): Observable<[boolean, string]> {
+  logout(sendLogoutRequestToServer = true): Observable<[boolean, string]> {
+    // for invalid token
+    if (!sendLogoutRequestToServer) {
+      this.userSubject.next(null);
+      this.isLoggedInSubject.next(false);
+      return of([true, '']);
+    }
+
     const logoutResult = this.http.get(UrlCollection.UserManagement.LOGOUT())
     .pipe(
       map(() => {
@@ -103,26 +138,41 @@ export class AuthService {
 
   // test!!!
   changePassword(oldpass: string, newpass: string): Observable<boolean> {
-    return this.localUser$
+    return this.http
+      .post(
+        UrlCollection.UserManagement.CHANGE_PASSWD(),
+        {oldpasswd: oldpass, newpasswd: newpass},
+        new HttpOptionsFactory()
+          .addContentTypeJson()
+          .buildWithObserveOption())
       .pipe(
-        switchMap(user => {
-          const httpOptions = {
-            headers: new HttpHeaders({
-              'Content-Type':  'application/json',
-              'authorization': user.token
-            }),
-            observe: 'response' as 'response'
-          };
-
-          return this.http
-            .post(UrlCollection.UserManagement.CHANGE_PASSWD(),
-              JSON.stringify({oldpasswd: oldpass, newpasswd: newpass}), httpOptions)
-            .pipe(
-              map(() => true),
-              catchError(() => of(false))
-            );
-        })
+        map(() => true),
+        catchError(() => of(false))
       );
+
+    // return this.localUser$
+    //   .pipe(
+    //     switchMap(user => {
+    //       const httpOptions = new HttpOptions().addContentTypeJson().addObserveOption();
+    //       // const httpOptions = this.httpHeaderService.getHttpOptions(
+    //       //   this.httpHeaderService.addContentTypeJson(null), true);
+    //       // {
+    //       //   headers: new HttpHeaders({
+    //       //     'Content-Type':  'application/json',
+    //       //     'authorization': user.token
+    //       //   }),
+    //       //   observe: 'response' as 'response'
+    //       // };
+
+    //       return this.http
+    //         .post(UrlCollection.UserManagement.CHANGE_PASSWD(),
+    //           JSON.stringify({oldpasswd: oldpass, newpasswd: newpass}), httpOptions)
+    //         .pipe(
+    //           map(() => true),
+    //           catchError(() => of(false))
+    //         );
+    //     })
+    //   );
 
   }
 
