@@ -18,6 +18,9 @@ import { SchedulerEvent } from '../../models/scheduler-event';
 import { SchedulerResourceService } from '../../services/scheduler-rescource.service';
 import { SchedulerResource } from '../../models/scheduler-resource';
 
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { MenuItem } from 'primeng/api';
+
 @Component({
   selector: 'app-scheduler',
   templateUrl: './scheduler.component.html',
@@ -40,7 +43,8 @@ export class SchedulerComponent implements OnInit {
 
   private schedulerEvents: SchedulerEvent[];
   private schedulerResources: SchedulerResource[];
-  private assignedSchedulerResources: SchedulerResource[];
+
+  private resourceFilterItems: MenuItem[];
 
   private groupData: GroupModel = {
     resources: ['Resources']
@@ -55,6 +59,44 @@ export class SchedulerComponent implements OnInit {
 
   ngOnInit() {
     this.getSchedulerEvents();
+
+    this.resourceFilterItems = [
+      {
+        label: 'zugewiesen', icon: 'pi pi-minus', command: () => {
+          this.filterDisplayedResources('assigned');
+        }
+      },
+      {
+        label: 'verfügbar', icon: 'pi pi-minus', command: () => {
+          this.filterDisplayedResources('available');
+        }
+      },
+      {
+        label: 'alle', icon: 'pi pi-minus', command: () => {
+          this.filterDisplayedResources('all');
+        }
+      }
+    ];
+  }
+
+  private filterDisplayedResources(filter: string) {
+    this.resourceDataSource = [];
+    if (this.schedulerResources) {
+      switch (filter) {
+        case 'assigned': {
+          this.resourceDataSource = this.schedulerResources.filter(arr => arr.State === 'assigned');
+          break;
+        }
+        case 'available': {
+          this.resourceDataSource = this.schedulerResources.filter(arr => arr.State === 'available');
+          break;
+        }
+        case 'all': {
+          this.resourceDataSource = this.schedulerResources;
+          break;
+        }
+      }
+    }
   }
 
   private getSchedulerEvents(): void {
@@ -68,10 +110,10 @@ export class SchedulerComponent implements OnInit {
     this.schedulerResourceService.getSchedulerResources(schedulerEventId)
       .subscribe(schedulerResources => {
         this.schedulerEvents = [];
-        this.resourceDataSource = [];
 
+        this.schedulerResources = schedulerResources;
         // filter resources assigned to clicked event
-        this.resourceDataSource = schedulerResources.filter(arr => arr.State === 'assigned');
+        this.filterDisplayedResources('assigned');
 
         // Ugly workaround since this.schedulerEvents cannot be accessed from inside forEach()
         const thisref = this;
@@ -99,19 +141,12 @@ export class SchedulerComponent implements OnInit {
   }
 
   private onEventClick(args: EventClickArgs): void {
-    // pass all scheduler events including double entries in case of multiple resources
-
-
-
-
     // access clicked scheduler event
     // two type casts necessary since args.event cannot be casted directly to SchedulerEvent
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);
 
     // get all resources with State (assigned, available, blocked) depending on clicked event
     this.getSchedulerResourcesAndSchedulerEvents(schedulerEvent.Id);
-
-
 
     // Task #1340: show times outside of event time in grey
     const start = <string>(schedulerEvent.StartTime.getHours() as unknown) +
