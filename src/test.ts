@@ -6,6 +6,7 @@ import {
     BrowserDynamicTestingModule,
     platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
+import { timeInterval } from 'rxjs/operators';
 
 declare const require: any;
 
@@ -14,7 +15,14 @@ getTestBed().initTestEnvironment(
     BrowserDynamicTestingModule,
     platformBrowserDynamicTesting()
 );
-// Then we find all the tests.
+
+
+// Test all unit tests.
 const context = require.context('./', true, /\.spec\.ts$/);
+
+// test only one spec file (https://stackoverflow.com/questions/40683673/how-to-execute-only-one-test-spec-with-angular-cli)
+// const context = require.context('./', true, /date-time.service\.spec\.ts$/);
+
+
 // And load the modules.
 context.keys().map(context);
