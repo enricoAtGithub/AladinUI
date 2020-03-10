@@ -17,13 +17,17 @@ interface SchedulerEventInterface {
 })
 export class SchedulerService {
 
+  /*  httpOptions = {
+     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+   }; */
+
   constructor(
     private http: HttpClient) { }
 
   getSchedulerEvents(): Observable<SchedulerEvent[]> {
-    const schedulerEventServiceUrl = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrders';
+    const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrders';
 
-    return this.http.get<SchedulerEventInterface>(schedulerEventServiceUrl)
+    return this.http.get<SchedulerEventInterface>(url)
       .pipe(
         map(temp => temp.schedulerOrders.map(serverEvent => {
           return {
@@ -41,7 +45,15 @@ export class SchedulerService {
   }
 
   getSchedulerResources(schedulerEventId: number): Observable<SchedulerResource[]> {
-    const schedulerResourceServiceUrl = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/resources';
-    return this.http.get<SchedulerResource[]>(schedulerResourceServiceUrl).pipe(pluck('schedulerResources'));
+    const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/resources';
+    return this.http.get<SchedulerResource[]>(url).pipe(pluck('schedulerResources'));
+  }
+
+  /** PUT: update the hero on the server */
+  updateSchedulerEventInterval(schedulerEventId: number, startTime: string, endTime: string): Observable<any> {
+    const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/updateOrderInterval';
+
+    return this.http.post(url, { start: startTime, end: endTime });
+
   }
 }

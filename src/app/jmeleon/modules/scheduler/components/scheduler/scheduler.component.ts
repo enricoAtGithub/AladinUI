@@ -20,6 +20,7 @@ import { SchedulerResource } from '../../models/scheduler-resource';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { MenuItem } from 'primeng/api';
 import { BreadcrumbService } from '../../../../../breadcrumb.service';
+import { DateTimeService } from 'src/app/shared/services/date-time.service';
 
 @Component({
   selector: 'app-scheduler',
@@ -46,6 +47,9 @@ export class SchedulerComponent implements OnInit {
 
   private resourceFilterItems: MenuItem[];
 
+  private currentSchedulerEventId: number;
+  private schedulerStatus: { currentSchedulerEventId: number, currentResourceFilter: string };
+
   private groupData: GroupModel = {
     resources: ['Resources']
     //   allowGroupEdit: true
@@ -62,7 +66,6 @@ export class SchedulerComponent implements OnInit {
 
   ngOnInit() {
     this.getSchedulerEvents();
-
     this.resourceFilterItems = [
       {
         label: 'zugewiesen', icon: 'pi pi-minus', command: () => {
@@ -85,6 +88,7 @@ export class SchedulerComponent implements OnInit {
   private filterDisplayedResources(filter: string) {
     this.resourceDataSource = [];
     if (this.schedulerResources) {
+      this.schedulerStatus.currentResourceFilter = filter;
       switch (filter) {
         case 'assigned': {
           this.resourceDataSource = this.schedulerResources.filter(arr => arr.State === 'assigned');
@@ -103,20 +107,24 @@ export class SchedulerComponent implements OnInit {
   }
 
   private getSchedulerEvents(): void {
+    this.schedulerStatus = { currentSchedulerEventId: null, currentResourceFilter: 'assigned' };
+
     this.schedulerService.getSchedulerEvents()
       .subscribe(schedulerEvents => {
         this.eventSchedulerObject = { dataSource: schedulerEvents };
       });
   }
 
-  private getSchedulerResourcesAndSchedulerEvents(schedulerEventId: number): void {
+  private getSchedulerResourcesAndSchedulerEvents(schedulerEventId: number, filter = 'assigned'): void {
+    this.schedulerStatus = { currentSchedulerEventId: schedulerEventId, currentResourceFilter: filter };
+
     this.schedulerService.getSchedulerResources(schedulerEventId)
       .subscribe(schedulerResources => {
         this.schedulerEvents = [];
 
         this.schedulerResources = schedulerResources;
         // filter resources assigned to clicked event
-        this.filterDisplayedResources('assigned');
+        this.filterDisplayedResources(filter);
 
         // Ugly workaround since this.schedulerEvents cannot be accessed from inside forEach()
         const thisref = this;
@@ -139,8 +147,40 @@ export class SchedulerComponent implements OnInit {
     args.excludeSelectors = 'e-all-day-cells';
   }
 
-  private onResizeStart(args: ResizeEventArgs): void {
-    args.interval = 15;
+  /* Resizing is buggy
+    private onResizeStart(args: ResizeEventArgs): void {
+     args.interval = 15;
+   } */
+
+  /* Resizing is buggy
+    private onResizeStop(args: ResizeEventArgs): void {
+    // temporary until refresh ist correctly implemented
+    this.showResourceScheduler = false;
+
+    this.updateSchedulerEventInterval(<SchedulerEvent>(args.data as unknown));
+  } */
+
+  private onDragStop(args: DragEventArgs): void {
+    // temporary until refresh ist correctly implemented
+    // this.showResourceScheduler = false;
+
+    this.updateSchedulerEventInterval(<SchedulerEvent>(args.data as unknown));
+  }
+
+  private updateSchedulerEventInterval(schedulerEvent: SchedulerEvent) {
+    // convert start and end time from Date to String
+    const startTime: string = DateTimeService.convertDateToApiConformTimeString(schedulerEvent.StartTime);
+    const endTime: string = DateTimeService.convertDateToApiConformTimeString(schedulerEvent.EndTime);
+    console.log('Start: ' + startTime + ' | Ende: ' + endTime);
+    this.schedulerService.updateSchedulerEventInterval(schedulerEvent.Id, startTime, endTime)
+      .subscribe(temp =>
+        console.log('success'));
+
+    // If resourceScheduler is visible update shown resources
+    if (this.showResourceScheduler) {
+      // tslint:disable-next-line: max-line-length
+      this.getSchedulerResourcesAndSchedulerEvents(this.schedulerStatus.currentSchedulerEventId, this.schedulerStatus.currentResourceFilter);
+    } else { console.log('!!!!!KEIN UPDATE!!!!!'); }
   }
 
   private onEventClick(args: EventClickArgs): void {
@@ -149,7 +189,7 @@ export class SchedulerComponent implements OnInit {
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);
 
     // get all resources with State (assigned, available, blocked) depending on clicked event
-    this.getSchedulerResourcesAndSchedulerEvents(schedulerEvent.Id);
+    this.getSchedulerResourcesAndSchedulerEvents(schedulerEvent.Id, 'assigned');
 
     // Task #1340: show times outside of event time in grey
     const start = <string>(schedulerEvent.StartTime.getHours() as unknown) +

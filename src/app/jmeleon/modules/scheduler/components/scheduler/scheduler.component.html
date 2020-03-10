@@ -1,6 +1,7 @@
 <ejs-schedule height="600" [eventSettings]="eventSchedulerObject" [selectedDate]="selectedDateEventScheduler"
     [currentView]="setEventSchedulerView" (dragStart)="onDragStart($event)" (resizeStart)="onResizeStart($event)"
-    [showQuickInfo]="false" (eventClick)="onEventClick($event)">
+    (resizeStop)="onResizeStop($event)" (dragStop)="onDragStop($event)" [showQuickInfo]="false"
+    (eventClick)="onEventClick($event)" [allowResizing]="false">
     <e-views>
         <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
         <e-view option='TimelineDay' startHour='07:00' endHour='18:00' [timeScale]='{ enable: true, slotCount: 2 }'>
