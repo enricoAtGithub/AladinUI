@@ -72,7 +72,8 @@ export class EntityDialogComponent implements OnInit {
           entityForm.value[field.field] = new Date(entityForm.value[field.field]).toISOString();
         }
       } else if (field.type === 'CatalogueEntry') {
-        entityForm.value[field.field] = entityForm.value[field.field]['id'];
+        if (entityForm.value[field.field] != null)
+          entityForm.value[field.field] = entityForm.value[field.field]['id'];
       }
     });
 

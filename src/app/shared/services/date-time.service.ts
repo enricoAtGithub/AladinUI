@@ -44,6 +44,20 @@ export class DateTimeService {
     return this.convertDateToApiConformTimeString(date);
   }
 
+  public static convertApiDateTimeStringToDate(apiDateString: string): Date {
+    if (!apiDateString) {
+      return null;
+    }
+    var [datePart, timePart] = apiDateString.split('T')
+    const dateSubParts = datePart.split('-');
+    const timeSubParts = timePart.split(':');
+    console.log(dateSubParts)
+    console.log(timeSubParts)
+
+    // this is asking for trouble. todo: switch date management to moment.js
+    return new Date(+dateSubParts[0], +dateSubParts[1] - 1, +dateSubParts[2], +timeSubParts[0], +timeSubParts[1], +timeSubParts[2]);
+  }
+
   convertApiDateTimeStringToCalendarString(apiDateString: string): string {
     if (!apiDateString) {
       return '';
