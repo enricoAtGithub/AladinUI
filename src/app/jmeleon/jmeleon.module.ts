@@ -4,16 +4,20 @@ import { DiagramsModule } from './modules/diagrams/diagrams.module';
 import { DTOConfigEditorComponent } from './components/dtoconfig-editor/dtoconfig-editor.component';
 import { DropdownModule, PanelModule, ButtonModule } from 'primeng/primeng';
 import { AceModule } from 'ngx-ace-wrapper';
+import { TestsComponent } from './components/tests/tests.component';
+import { ResourcesComponent } from './components/resources/resources.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-  declarations: [DTOConfigEditorComponent],
+  declarations: [DTOConfigEditorComponent, TestsComponent, ResourcesComponent],
   imports: [
     CommonModule,
     DiagramsModule,
     DropdownModule,
     AceModule,
     PanelModule,
-    ButtonModule
+    ButtonModule,
+    SharedModule
   ]
 })
 export class JmeleonModule { }

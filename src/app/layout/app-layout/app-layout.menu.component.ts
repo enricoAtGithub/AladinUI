@@ -27,6 +27,8 @@ export class AppMenuComponent implements OnInit {
             {label: 'Aufträge', icon: 'fa fa-fw fa-tasks', routerLink: ['/orders']},
             {label: 'Rechnungen', icon: 'fa fa-fw fa-eur', routerLink: ['/invoices']},
             {label: 'Berichte', icon: 'fa fa-fw fa-file', routerLink: ['/reports']},
+            {label: 'Resourcen', icon: 'fa fa-archive', routerLink: ['/resources']},
+            {label: 'Tests', icon: 'fa fa-flask', routerLink: ['/tests']},
             {label: 'Administration', icon: 'fa fa-fw fa-pencil',
             visible: this.jmeleonPermissionsService.currentUserHasPermission(
                         this.jmeleonPermissionsService.PERMISSION_MANAGE_USERS),
