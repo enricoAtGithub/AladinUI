@@ -28,13 +28,14 @@ export class AppMenuComponent implements OnInit {
             { label: 'Einsatzplanung', icon: 'fa fa-fw fa-calendar', routerLink: ['/scheduler'] },
             { label: 'Rechnungen', icon: 'fa fa-fw fa-eur', routerLink: ['/invoices'] },
             { label: 'Berichte', icon: 'fa fa-fw fa-file', routerLink: ['/reports'] },
-            {label: 'Resourcen', icon: 'fa fa-archive', routerLink: ['/resources']},
-            {label: 'Tests', icon: 'fa fa-flask', routerLink: ['/tests']},
+            { label: 'Resourcen', icon: 'fa fa-archive', routerLink: ['/resources'] },
+            { label: 'Tests', icon: 'fa fa-flask', routerLink: ['/tests'] },
+            {
                 label: 'Administration', icon: 'fa fa-fw fa-pencil',
                 visible: this.jmeleonPermissionsService.currentUserHasPermission(
                     this.jmeleonPermissionsService.PERMISSION_MANAGE_USERS),
                 items: [
-                {label: 'Benutzer-Übersicht', icon: 'pi pi-users', routerLink: ['/administration/useralt-management']},
+                    { label: 'Benutzer-Übersicht', icon: 'pi pi-users', routerLink: ['/administration/useralt-management'] },
                     { label: 'Rollenverwaltung', icon: 'pi pi-users', routerLink: ['/administration/role-management'] },
                     { label: 'Rechteverwaltung', icon: 'pi pi-users', routerLink: ['/administration/permission-management'] },
                     { label: 'Katalogverwaltung', icon: 'pi pi-folder-open', routerLink: ['/administration/catalogue-management'] },
