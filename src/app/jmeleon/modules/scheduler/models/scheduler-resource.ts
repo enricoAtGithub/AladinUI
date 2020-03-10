@@ -1,4 +1,3 @@
-import { SchedulerEventService } from '../services/scheduler-event.service';
 import { SchedulerEvent } from '../models/scheduler-event';
 
 // Overview of built in fields for Syncfusion Angular scheduler:

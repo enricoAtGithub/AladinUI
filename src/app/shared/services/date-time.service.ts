@@ -26,12 +26,12 @@ export class DateTimeService {
 
     const seconds = this.addZero(date.getSeconds());
     const minutes = this.addZero(date.getMinutes());
-    const hours   = this.addZero(date.getHours());
-    const days    = this.addZero(date.getDate());
-    const month   = this.addZero(date.getMonth() + 1); // .getMonth is zero-based.
-    const year    = this.addZero(date.getFullYear());
+    const hours = this.addZero(date.getHours());
+    const days = this.addZero(date.getDate());
+    const month = this.addZero(date.getMonth() + 1); // .getMonth is zero-based.
+    const year = this.addZero(date.getFullYear());
 
-    const result  = `${year}-${month}-${days}T${hours}:${minutes}:${seconds}`;
+    const result = `${year}-${month}-${days}T${hours}:${minutes}:${seconds}`;
 
     return result;
   }
@@ -44,15 +44,15 @@ export class DateTimeService {
     return this.convertDateToApiConformTimeString(date);
   }
 
-  public static convertApiDateTimeStringToDate(apiDateString: string): Date {
+  public static convertApiDateTimeStringToDate = function (apiDateString: string): Date {
     if (!apiDateString) {
       return null;
     }
     var [datePart, timePart] = apiDateString.split('T')
     const dateSubParts = datePart.split('-');
     const timeSubParts = timePart.split(':');
-    console.log(dateSubParts)
-    console.log(timeSubParts)
+    //console.log(dateSubParts)
+    //console.log(timeSubParts)
 
     // this is asking for trouble. todo: switch date management to moment.js
     return new Date(+dateSubParts[0], +dateSubParts[1] - 1, +dateSubParts[2], +timeSubParts[0], +timeSubParts[1], +timeSubParts[2]);

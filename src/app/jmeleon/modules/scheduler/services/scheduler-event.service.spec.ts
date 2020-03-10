@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SchedulerEventService } from './scheduler-event.service';
+import { SchedulerEventService } from './scheduler.service';
 
 describe('SchedulerEventService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));

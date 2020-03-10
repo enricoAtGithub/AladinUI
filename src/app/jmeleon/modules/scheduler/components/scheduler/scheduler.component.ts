@@ -12,14 +12,14 @@ import {
   WorkHoursModel
 } from '@syncfusion/ej2-angular-schedule';
 
-import { SchedulerEventService } from '../../services/scheduler-event.service';
+import { SchedulerService } from '../../services/scheduler.service';
 import { SchedulerEvent } from '../../models/scheduler-event';
 
-import { SchedulerResourceService } from '../../services/scheduler-rescource.service';
 import { SchedulerResource } from '../../models/scheduler-resource';
 
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { MenuItem } from 'primeng/api';
+import { BreadcrumbService } from '../../../../../breadcrumb.service';
 
 @Component({
   selector: 'app-scheduler',
@@ -28,7 +28,7 @@ import { MenuItem } from 'primeng/api';
 })
 export class SchedulerComponent implements OnInit {
   // can be removed later (mock data created only for March)
-  private selectedDateEventScheduler: Date = new Date(2020, 2, 3);
+  private selectedDateEventScheduler: Date = new Date(2020, 1, 3);
 
   private setEventSchedulerView: View = 'TimelineWorkWeek';
   private schedulerEventTime: WorkHoursModel;
@@ -51,11 +51,14 @@ export class SchedulerComponent implements OnInit {
     //   allowGroupEdit: true
   };
 
-
   constructor(
-    private schedulerEventService: SchedulerEventService,
-    private schedulerResourceService: SchedulerResourceService,
-  ) { }
+    private breadcrumbService: BreadcrumbService,
+    private schedulerService: SchedulerService
+  ) {
+    this.breadcrumbService.setItems([
+      { label: 'Einsatzplanung' }
+    ]);
+  }
 
   ngOnInit() {
     this.getSchedulerEvents();
@@ -100,14 +103,14 @@ export class SchedulerComponent implements OnInit {
   }
 
   private getSchedulerEvents(): void {
-    this.schedulerEventService.getSchedulerEvents()
+    this.schedulerService.getSchedulerEvents()
       .subscribe(schedulerEvents => {
         this.eventSchedulerObject = { dataSource: schedulerEvents };
       });
   }
 
   private getSchedulerResourcesAndSchedulerEvents(schedulerEventId: number): void {
-    this.schedulerResourceService.getSchedulerResources(schedulerEventId)
+    this.schedulerService.getSchedulerResources(schedulerEventId)
       .subscribe(schedulerResources => {
         this.schedulerEvents = [];
 
