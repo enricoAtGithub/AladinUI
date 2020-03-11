@@ -47,7 +47,6 @@ export class SchedulerComponent implements OnInit {
 
   resourceFilterItems: MenuItem[];
 
-  private currentSchedulerEventId: number;
   private schedulerStatus: { currentSchedulerEventId: number, currentResourceFilter: string };
 
   groupData: GroupModel = {
@@ -115,16 +114,25 @@ export class SchedulerComponent implements OnInit {
       });
   }
 
-  private getSchedulerResourcesAndSchedulerEvents(schedulerEventId: number, filter = 'assigned'): void {
-    this.schedulerStatus = { currentSchedulerEventId: schedulerEventId, currentResourceFilter: filter };
+  private getSchedulerResourcesAndSchedulerEvents(schedulerEvent: SchedulerEvent, filter = 'assigned'): void {
 
-    this.schedulerService.getSchedulerResources(schedulerEventId)
+    this.schedulerService.getSchedulerResources(schedulerEvent.Id)
       .subscribe(schedulerResources => {
         this.schedulerEvents = [];
 
         this.schedulerResources = schedulerResources;
         // filter resources assigned to clicked event
         this.filterDisplayedResources(filter);
+
+        if (schedulerEvent.Id === this.schedulerStatus.currentSchedulerEventId) {
+          // Task #1340: show times outside of event time in grey
+          const start = <string>(schedulerEvent.StartTime.getHours() as unknown) +
+            ':' + <string>(schedulerEvent.StartTime.getMinutes() as unknown);
+          const end = <string>(schedulerEvent.EndTime.getHours() as unknown) +
+            ':' + <string>(schedulerEvent.EndTime.getMinutes() as unknown);
+          // e.g.: schedulerEventTime="{ start: '08:00', end: '9:30' }"
+          this.schedulerEventTime = { start: start, end: end };
+        }
 
         // Ugly workaround since this.schedulerEvents cannot be accessed from inside forEach()
         const thisref = this;
@@ -154,15 +162,10 @@ export class SchedulerComponent implements OnInit {
 
   // Resizing is buggy
   onResizeStop(args: ResizeEventArgs): void {
-    // temporary until refresh ist correctly implemented
-    // this.showResourceScheduler = false;
     this.updateSchedulerEventInterval(<SchedulerEvent>(args.data as unknown));
   }
 
   onDragStop(args: DragEventArgs): void {
-    // temporary until refresh ist correctly implemented
-    // this.showResourceScheduler = false;
-
     this.updateSchedulerEventInterval(<SchedulerEvent>(args.data as unknown));
   }
 
@@ -176,7 +179,7 @@ export class SchedulerComponent implements OnInit {
         // If resourceScheduler is visible update shown resources
         if (this.showResourceScheduler) {
           // tslint:disable-next-line: max-line-length
-          this.getSchedulerResourcesAndSchedulerEvents(this.schedulerStatus.currentSchedulerEventId, this.schedulerStatus.currentResourceFilter);
+          this.getSchedulerResourcesAndSchedulerEvents(schedulerEvent, this.schedulerStatus.currentResourceFilter);
         }
         console.log('success');
       });
@@ -186,17 +189,10 @@ export class SchedulerComponent implements OnInit {
     // access clicked scheduler event
     // two type casts necessary since args.event cannot be casted directly to SchedulerEvent
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);
+    this.schedulerStatus = { currentSchedulerEventId: schedulerEvent.Id, currentResourceFilter: 'assigned' };
 
     // get all resources with State (assigned, available, blocked) depending on clicked event
-    this.getSchedulerResourcesAndSchedulerEvents(schedulerEvent.Id, 'assigned');
-
-    // Task #1340: show times outside of event time in grey
-    const start = <string>(schedulerEvent.StartTime.getHours() as unknown) +
-      ':' + <string>(schedulerEvent.StartTime.getMinutes() as unknown);
-    const end = <string>(schedulerEvent.EndTime.getHours() as unknown) +
-      ':' + <string>(schedulerEvent.EndTime.getMinutes() as unknown);
-    // e.g.: schedulerEventTime="{ start: '08:00', end: '9:30' }"
-    this.schedulerEventTime = { start: start, end: end };
+    this.getSchedulerResourcesAndSchedulerEvents(schedulerEvent, 'assigned');
 
     this.selectedDateResourceScheduler = schedulerEvent.StartTime;
     this.showResourceScheduler = true;
