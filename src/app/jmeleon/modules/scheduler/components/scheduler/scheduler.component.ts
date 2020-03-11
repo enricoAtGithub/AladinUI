@@ -20,7 +20,7 @@ import { SchedulerResource } from '../../models/scheduler-resource';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { MenuItem } from 'primeng/api';
 import { BreadcrumbService } from '../../../../../breadcrumb.service';
-import { DateTimeService } from 'src/app/shared/services/date-time.service';
+import DateTimeUtils from 'src/app/shared/utils/date-time.utils';
 
 @Component({
   selector: 'app-scheduler',
@@ -168,8 +168,8 @@ export class SchedulerComponent implements OnInit {
 
   private updateSchedulerEventInterval(schedulerEvent: SchedulerEvent) {
     // convert start and end time from Date to String
-    const startTime: string = DateTimeService.convertDateToApiConformTimeString(schedulerEvent.StartTime);
-    const endTime: string = DateTimeService.convertDateToApiConformTimeString(schedulerEvent.EndTime);
+    const startTime: string = DateTimeUtils.convertDateToApiConformTimeString(schedulerEvent.StartTime);
+    const endTime: string = DateTimeUtils.convertDateToApiConformTimeString(schedulerEvent.EndTime);
     console.log('Start: ' + startTime + ' | Ende: ' + endTime);
     this.schedulerService.updateSchedulerEventInterval(schedulerEvent.Id, startTime, endTime)
       .subscribe(temp => {
