@@ -35,7 +35,7 @@ export class AppMenuComponent implements OnInit {
                 visible: this.jmeleonPermissionsService.currentUserHasPermission(
                     this.jmeleonPermissionsService.PERMISSION_MANAGE_USERS),
                 items: [
-                    { label: 'Benutzer-Übersicht', icon: 'pi pi-users', routerLink: ['/administration/useralt-management'] },
+                    { label: 'Benutzer', icon: 'pi pi-users', routerLink: ['/administration/useralt-management'] },
                     { label: 'Rollenverwaltung', icon: 'pi pi-users', routerLink: ['/administration/role-management'] },
                     { label: 'Rechteverwaltung', icon: 'pi pi-users', routerLink: ['/administration/permission-management'] },
                     { label: 'Katalogverwaltung', icon: 'pi pi-folder-open', routerLink: ['/administration/catalogue-management'] },
