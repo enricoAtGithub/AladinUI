@@ -47,7 +47,7 @@ export class SchedulerComponent implements OnInit {
 
   resourceFilterItems: MenuItem[];
 
-  private schedulerStatus: { currentSchedulerEventId: number, currentResourceFilter: string };
+  private schedulerStatus: { currentSchedulerEvent: SchedulerEvent, currentResourceFilter: string };
 
   groupData: GroupModel = {
     resources: ['Resources']
@@ -106,7 +106,7 @@ export class SchedulerComponent implements OnInit {
   }
 
   private getSchedulerEvents(): void {
-    this.schedulerStatus = { currentSchedulerEventId: null, currentResourceFilter: 'assigned' };
+    this.schedulerStatus = { currentSchedulerEvent: null, currentResourceFilter: 'assigned' };
 
     this.schedulerService.getSchedulerEvents()
       .subscribe(schedulerEvents => {
@@ -124,15 +124,14 @@ export class SchedulerComponent implements OnInit {
         // filter resources assigned to clicked event
         this.filterDisplayedResources(filter);
 
-        if (schedulerEvent.Id === this.schedulerStatus.currentSchedulerEventId) {
-          // Task #1340: show times outside of event time in grey
-          const start = <string>(schedulerEvent.StartTime.getHours() as unknown) +
-            ':' + <string>(schedulerEvent.StartTime.getMinutes() as unknown);
-          const end = <string>(schedulerEvent.EndTime.getHours() as unknown) +
-            ':' + <string>(schedulerEvent.EndTime.getMinutes() as unknown);
-          // e.g.: schedulerEventTime="{ start: '08:00', end: '9:30' }"
-          this.schedulerEventTime = { start: start, end: end };
-        }
+        // Task #1340: show times outside of event time in grey
+        const start = <string>(schedulerEvent.StartTime.getHours() as unknown) +
+          ':' + <string>(schedulerEvent.StartTime.getMinutes() as unknown);
+        const end = <string>(schedulerEvent.EndTime.getHours() as unknown) +
+          ':' + <string>(schedulerEvent.EndTime.getMinutes() as unknown);
+        // e.g.: schedulerEventTime="{ start: '08:00', end: '9:30' }"
+        this.schedulerEventTime = { start: start, end: end };
+
 
         // Ugly workaround since this.schedulerEvents cannot be accessed from inside forEach()
         const thisref = this;
@@ -179,7 +178,7 @@ export class SchedulerComponent implements OnInit {
         // If resourceScheduler is visible update shown resources
         if (this.showResourceScheduler) {
           // tslint:disable-next-line: max-line-length
-          this.getSchedulerResourcesAndSchedulerEvents(schedulerEvent, this.schedulerStatus.currentResourceFilter);
+          this.getSchedulerResourcesAndSchedulerEvents(this.schedulerStatus.currentSchedulerEvent, this.schedulerStatus.currentResourceFilter);
         }
         console.log('success');
       });
@@ -189,7 +188,7 @@ export class SchedulerComponent implements OnInit {
     // access clicked scheduler event
     // two type casts necessary since args.event cannot be casted directly to SchedulerEvent
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);
-    this.schedulerStatus = { currentSchedulerEventId: schedulerEvent.Id, currentResourceFilter: 'assigned' };
+    this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResourceFilter: 'assigned' };
 
     // get all resources with State (assigned, available, blocked) depending on clicked event
     this.getSchedulerResourcesAndSchedulerEvents(schedulerEvent, 'assigned');
