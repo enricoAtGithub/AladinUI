@@ -32,7 +32,7 @@
           <p-calendar [required]="field.mandatory" [name]="field.field" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [ngModel]="update ? entity[field.field] : undefined"></p-calendar>
         </span>
         <span *ngSwitchCase="'CatalogueEntry'" style="flex-grow: 1;">
-          <p-dropdown [required]="field.mandatory" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" optionLabel="name" [ngModel]="update ? entity[field.field] : undefined"></p-dropdown>
+          <p-dropdown [required]="field.mandatory" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" optionLabel="name" [ngModel]="update ? entity[field.field] : undefined" [placeholder]="field.mandatory ? null : 'Leer'"></p-dropdown>
         </span>
         <span *ngSwitchDefault class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
           <input #textModule [disabled]="true" placeholder="Unverändert" id="float-input" style="width: 100%" pInputText>
