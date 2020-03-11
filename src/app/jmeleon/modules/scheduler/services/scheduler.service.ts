@@ -7,7 +7,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AppConfig } from 'src/app/shared/app-config';
 import { DateTimeService } from 'src/app/shared/services/date-time.service';
 import { SchedulerResource } from '../models/scheduler-resource';
-import { isContext } from 'vm';
 
 interface SchedulerEventInterface {
   schedulerOrders: any[];
