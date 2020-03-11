@@ -29,28 +29,28 @@ import DateTimeUtils from 'src/app/shared/utils/date-time.utils';
 })
 export class SchedulerComponent implements OnInit {
   // can be removed later (mock data created only for March)
-  private selectedDateEventScheduler: Date = new Date(2020, 1, 3);
+  selectedDateEventScheduler: Date = new Date(2020, 1, 3);
 
-  private setEventSchedulerView: View = 'TimelineWorkWeek';
-  private schedulerEventTime: WorkHoursModel;
-  private selectedDateResourceScheduler: Date;
+  setEventSchedulerView: View = 'TimelineWorkWeek';
+  schedulerEventTime: WorkHoursModel;
+  selectedDateResourceScheduler: Date;
 
-  private setResourceSchedulerView: View = 'TimelineDay';
-  private showResourceScheduler: Boolean = false;
+  setResourceSchedulerView: View = 'TimelineDay';
+  showResourceScheduler: Boolean = false;
 
-  private eventSchedulerObject: EventSettingsModel;
-  private resourceSchedulerObject: EventSettingsModel;
-  private resourceDataSource: Object[];
+  eventSchedulerObject: EventSettingsModel;
+  resourceSchedulerObject: EventSettingsModel;
+  resourceDataSource: Object[];
 
   private schedulerEvents: SchedulerEvent[];
   private schedulerResources: SchedulerResource[];
 
-  private resourceFilterItems: MenuItem[];
+  resourceFilterItems: MenuItem[];
 
   private currentSchedulerEventId: number;
   private schedulerStatus: { currentSchedulerEventId: number, currentResourceFilter: string };
 
-  private groupData: GroupModel = {
+  groupData: GroupModel = {
     resources: ['Resources']
     //   allowGroupEdit: true
   };
@@ -142,24 +142,24 @@ export class SchedulerComponent implements OnInit {
       });
   }
 
-  private onDragStart(args: DragEventArgs): void {
+  onDragStart(args: DragEventArgs): void {
     args.interval = 15;
     args.excludeSelectors = 'e-all-day-cells';
   }
 
   // Resizing is buggy
-  private onResizeStart(args: ResizeEventArgs): void {
+  onResizeStart(args: ResizeEventArgs): void {
     args.interval = 15;
   }
 
   // Resizing is buggy
-  private onResizeStop(args: ResizeEventArgs): void {
+  onResizeStop(args: ResizeEventArgs): void {
     // temporary until refresh ist correctly implemented
     // this.showResourceScheduler = false;
     this.updateSchedulerEventInterval(<SchedulerEvent>(args.data as unknown));
   }
 
-  private onDragStop(args: DragEventArgs): void {
+  onDragStop(args: DragEventArgs): void {
     // temporary until refresh ist correctly implemented
     // this.showResourceScheduler = false;
 
@@ -180,10 +180,9 @@ export class SchedulerComponent implements OnInit {
         }
         console.log('success');
       });
-
   }
 
-  private onEventClick(args: EventClickArgs): void {
+  onEventClick(args: EventClickArgs): void {
     // access clicked scheduler event
     // two type casts necessary since args.event cannot be casted directly to SchedulerEvent
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);

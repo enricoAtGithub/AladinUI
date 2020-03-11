@@ -16,7 +16,7 @@
 
 
 <p [hidden]="!showResourceScheduler">
-    <p-splitButton label="Ressourcen filtern" icon="pi pi-filter" (onClick)="save()" [model]="resourceFilterItems">
+    <p-splitButton label="Ressourcen filtern" icon="pi pi-filter" [model]="resourceFilterItems">
     </p-splitButton>
     <ejs-schedule [eventSettings]="resourceSchedulerObject" [currentView]="setResourceSchedulerView" [group]="groupData"
         [rowAutoHeight]="true" [selectedDate]="selectedDateResourceScheduler" [workHours]="schedulerEventTime"
