@@ -1,3 +1,23 @@
+i.pi-check {
+    color: slategrey;
+    font-size: 2.3em;
+}
+
+i.pi-times {
+    color: slategrey;
+    font-size: 2.3em;
+}
+
+i.pi-lock {
+    color: slategrey;
+    font-size: 2.3em;
+}
+
+div.resource-name {
+    display:flex;
+    align-items:center;
+}
+
 
         :host ::ng-deep .ui-splitbutton {
             margin-right: .25em;

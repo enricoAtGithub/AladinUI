@@ -6,6 +6,8 @@ export interface SchedulerResource {
     Id: number;
     Name: string;
     State: string; // assigned/blocked/available
+    Icon?: string;
     Color?: string;
+    AltText?: string;
     isAssignedTo: SchedulerEvent[];
 }

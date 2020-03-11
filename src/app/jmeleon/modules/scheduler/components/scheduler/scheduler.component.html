@@ -21,10 +21,22 @@
         [rowAutoHeight]="true" [selectedDate]="selectedDateResourceScheduler" [workHours]="schedulerEventTime"
         [allowDragAndDrop]="false" [allowResizing]="false">
         <e-resources>
-            <e-resource field="ResourceID" title="Mitarbeiter und Ressourcen" name="Resources" textField="Name"
-                idField="Id" [dataSource]="resourceDataSource" [allowMultiple]="true">
+            <e-resource [dataSource]="resourceDataSource" [allowMultiple]="true" field="ResourceID"
+                title="Mitarbeiter und Ressourcen" name="Resources" textField="Name" idField="Id" stateField='State'>
             </e-resource>
         </e-resources>
+
+        <ng-template #resourceHeaderTemplate let-data>
+            <div class='template-wrap'>
+                <div class="resource-details">
+                    <div class="resource-name">
+                        <i title="{{data.resourceData.AltText}}" class="{{data.resourceData.Icon}}"></i>
+                        {{data.resourceData.Name}}
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
         <e-views>
             <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
             <e-view option='TimelineDay' startHour='08:00' endHour='18:00' [timeScale]='{ enable: true, slotCount: 4 }'>

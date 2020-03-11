@@ -7,6 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AppConfig } from 'src/app/shared/app-config';
 import { DateTimeService } from 'src/app/shared/services/date-time.service';
 import { SchedulerResource } from '../models/scheduler-resource';
+import { isContext } from 'vm';
 
 interface SchedulerEventInterface {
   schedulerOrders: any[];
@@ -20,6 +21,8 @@ interface SchedulerResourceInterface {
   providedIn: 'root'
 })
 export class SchedulerService {
+  icon: string;
+  altText: string;
 
   constructor(
     private http: HttpClient) { }
@@ -50,10 +53,29 @@ export class SchedulerService {
       .pipe(
         // map properties from JSON response, first letter of properties needs to be capitalized
         map(temp => temp.schedulerResources.map(schRes => {
+          switch (schRes.state) {
+            case 'assigned': {
+              this.icon = 'pi pi-check';
+              this.altText = 'zugeordnet';
+              break;
+            }
+            case 'available': {
+              this.icon = 'pi pi-times';
+              this.altText = 'nicht zugeordnet';
+              break;
+            }
+            case 'blocked': {
+              this.icon = 'pi pi-lock';
+              this.altText = 'nicht verfügbar';
+              break;
+            }
+          }
           return {
             Id: schRes.id,
             Name: schRes.name,
             State: schRes.state,
+            Icon: this.icon,
+            AltText: this.altText,
             isAssignedTo: schRes.isAssignedTo.map(schEv => {
               return {
                 Id: schEv.id,
