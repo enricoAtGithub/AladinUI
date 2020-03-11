@@ -1,7 +1,7 @@
-<ejs-schedule height="600" [eventSettings]="eventSchedulerObject" [selectedDate]="selectedDateEventScheduler"
+<ejs-schedule height="350" [eventSettings]="eventSchedulerObject" [selectedDate]="selectedDateEventScheduler"
     [currentView]="setEventSchedulerView" (dragStart)="onDragStart($event)" (resizeStart)="onResizeStart($event)"
     (resizeStop)="onResizeStop($event)" (dragStop)="onDragStop($event)" [showQuickInfo]="false"
-    (eventClick)="onEventClick($event)" [allowResizing]="false">
+    (eventClick)="onEventClick($event)" [allowResizing]="true">
     <e-views>
         <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
         <e-view option='TimelineDay' startHour='07:00' endHour='18:00' [timeScale]='{ enable: true, slotCount: 2 }'>
@@ -28,7 +28,7 @@
         </e-resources>
         <e-views>
             <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
-            <e-view option='TimelineDay' startHour='07:00' endHour='18:00' [timeScale]='{ enable: true, slotCount: 2 }'>
+            <e-view option='TimelineDay' startHour='08:00' endHour='18:00' [timeScale]='{ enable: true, slotCount: 4 }'>
             </e-view>
             <e-view option='TimelineWorkWeek' startHour='07:00' endHour='17:00'
                 [timeScale]='{ enable: true, interval: 120, slotCount: 2 }'></e-view>

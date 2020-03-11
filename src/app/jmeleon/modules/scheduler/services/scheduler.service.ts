@@ -12,14 +12,14 @@ interface SchedulerEventInterface {
   schedulerOrders: any[];
 }
 
+interface SchedulerResourceInterface {
+  schedulerResources: any[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class SchedulerService {
-
-  /*  httpOptions = {
-     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-   }; */
 
   constructor(
     private http: HttpClient) { }
@@ -29,31 +29,48 @@ export class SchedulerService {
 
     return this.http.get<SchedulerEventInterface>(url)
       .pipe(
-        map(temp => temp.schedulerOrders.map(serverEvent => {
+        // map properties from JSON response, first letter of properties needs to be capitalized
+        map(temp => temp.schedulerOrders.map(schEv => {
           return {
-            Id: serverEvent.Id,
-            Subject: serverEvent.Subject,
-            StartTime: serverEvent.StartTime,
-            EndTime: serverEvent.EndTime,
-            Description: serverEvent.Description,
-            IsReadonly: serverEvent.IsReadonly
+            Id: schEv.id,
+            Subject: schEv.subject,
+            StartTime: schEv.startTime,
+            EndTime: schEv.endTime,
+            Description: schEv.description,
+            IsReadonly: schEv.isReadonly
           };
         }))
       );
-
-    // return this.http.get<SchedulerEvent[]>(this.schedulerEventServiceUrl).pipe(pluck('schedulerOrders'));
   }
 
   getSchedulerResources(schedulerEventId: number): Observable<SchedulerResource[]> {
     const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/resources';
-    return this.http.get<SchedulerResource[]>(url).pipe(pluck('schedulerResources'));
+    // return this.http.get<SchedulerResource[]>(url).pipe(pluck('schedulerResources'));
+    return this.http.get<SchedulerResourceInterface>(url)
+      .pipe(
+        // map properties from JSON response, first letter of properties needs to be capitalized
+        map(temp => temp.schedulerResources.map(schRes => {
+          return {
+            Id: schRes.id,
+            Name: schRes.name,
+            State: schRes.state,
+            isAssignedTo: schRes.isAssignedTo.map(schEv => {
+              return {
+                Id: schEv.id,
+                Subject: schEv.subject,
+                Description: schEv.description,
+                StartTime: schEv.startTime,
+                EndTime: schEv.endTime,
+                IsReadonly: schEv.isReadonly
+              };
+            })
+          };
+        }))
+      );
   }
 
-  /** PUT: update the hero on the server */
   updateSchedulerEventInterval(schedulerEventId: number, startTime: string, endTime: string): Observable<any> {
     const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/updateOrderInterval';
-
     return this.http.post(url, { start: startTime, end: endTime });
-
   }
 }

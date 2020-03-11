@@ -147,18 +147,17 @@ export class SchedulerComponent implements OnInit {
     args.excludeSelectors = 'e-all-day-cells';
   }
 
-  /* Resizing is buggy
-    private onResizeStart(args: ResizeEventArgs): void {
-     args.interval = 15;
-   } */
+  // Resizing is buggy
+  private onResizeStart(args: ResizeEventArgs): void {
+    args.interval = 15;
+  }
 
-  /* Resizing is buggy
-    private onResizeStop(args: ResizeEventArgs): void {
+  // Resizing is buggy
+  private onResizeStop(args: ResizeEventArgs): void {
     // temporary until refresh ist correctly implemented
-    this.showResourceScheduler = false;
-
+    // this.showResourceScheduler = false;
     this.updateSchedulerEventInterval(<SchedulerEvent>(args.data as unknown));
-  } */
+  }
 
   private onDragStop(args: DragEventArgs): void {
     // temporary until refresh ist correctly implemented
@@ -173,14 +172,15 @@ export class SchedulerComponent implements OnInit {
     const endTime: string = DateTimeService.convertDateToApiConformTimeString(schedulerEvent.EndTime);
     console.log('Start: ' + startTime + ' | Ende: ' + endTime);
     this.schedulerService.updateSchedulerEventInterval(schedulerEvent.Id, startTime, endTime)
-      .subscribe(temp =>
-        console.log('success'));
+      .subscribe(temp => {
+        // If resourceScheduler is visible update shown resources
+        if (this.showResourceScheduler) {
+          // tslint:disable-next-line: max-line-length
+          this.getSchedulerResourcesAndSchedulerEvents(this.schedulerStatus.currentSchedulerEventId, this.schedulerStatus.currentResourceFilter);
+        }
+        console.log('success');
+      });
 
-    // If resourceScheduler is visible update shown resources
-    if (this.showResourceScheduler) {
-      // tslint:disable-next-line: max-line-length
-      this.getSchedulerResourcesAndSchedulerEvents(this.schedulerStatus.currentSchedulerEventId, this.schedulerStatus.currentResourceFilter);
-    } else { console.log('!!!!!KEIN UPDATE!!!!!'); }
   }
 
   private onEventClick(args: EventClickArgs): void {
