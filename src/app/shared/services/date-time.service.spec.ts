@@ -27,20 +27,20 @@ describe('DateTimeService', () => {
 
   it('convertDateToApiConformTimeString - should convert a date object into a iso-datetime-string', () => {
     const service: DateTimeService = TestBed.get(DateTimeService);
-    const testDate = service.convertDateToApiConformTimeString(new Date(2020, (3 - 1), 10, 11, 9, 43)); // month is zero-based
+    const testDate = DateTimeService.convertDateToApiConformTimeString(new Date(2020, (3 - 1), 10, 11, 9, 43)); // month is zero-based
     expect(testDate !== null && testDate !== undefined).toBeTruthy();
   });
 
   it('convertDateToApiConformTimeString - should convert a date object into a iso-datetime-string with correct value', () => {
     const service: DateTimeService = TestBed.get(DateTimeService);
-    const testDate = service.convertDateToApiConformTimeString(new Date(2020, (3 - 1), 10, 11, 9, 43)); // month is zero-based
+    const testDate = DateTimeService.convertDateToApiConformTimeString(new Date(2020, (3 - 1), 10, 11, 9, 43)); // month is zero-based
     const expectedDate = '2020-03-10T11:09:43';
     expect(testDate).toEqual(expectedDate);
   });
 
   it('convertDateToApiConformTimeString - should convert a date object into a iso-datetime-string with correct value', () => {
     const service: DateTimeService = TestBed.get(DateTimeService);
-    const testDate = service.convertDateToApiConformTimeString(new Date(2020, (3 - 1), 10, 11, 9, 43)); // month is zero-based
+    const testDate = DateTimeService.convertDateToApiConformTimeString(new Date(2020, (3 - 1), 10, 11, 9, 43)); // month is zero-based
     const expectedDate = '2020-03-10T11:09:43';
     expect(testDate).toEqual(expectedDate);
   });
@@ -48,8 +48,8 @@ describe('DateTimeService', () => {
   it('convertDateToApiConformTimeString - should convert a un-initialized date object into null', () => {
     const service: DateTimeService = TestBed.get(DateTimeService);
 
-    expect(service.convertDateToApiConformTimeString(null)).toEqual(null);
-    expect(service.convertDateToApiConformTimeString(undefined)).toEqual(null);
+    expect(DateTimeService.convertDateToApiConformTimeString(null)).toEqual(null);
+    expect(DateTimeService.convertDateToApiConformTimeString(undefined)).toEqual(null);
   });
 
   // convertDateStringToApiConformTimeString(dateString: string): string
