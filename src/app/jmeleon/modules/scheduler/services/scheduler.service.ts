@@ -20,8 +20,6 @@ interface SchedulerResourceInterface {
   providedIn: 'root'
 })
 export class SchedulerService {
-  icon: string;
-  altText: string;
 
   constructor(
     private http: HttpClient) { }
@@ -52,20 +50,22 @@ export class SchedulerService {
       .pipe(
         // map properties from JSON response, first letter of properties needs to be capitalized
         map(temp => temp.schedulerResources.map(schRes => {
+          let icon: string, altText: string;
+
           switch (schRes.state) {
             case 'assigned': {
-              this.icon = 'pi pi-check';
-              this.altText = 'zugeordnet';
+              icon = 'pi pi-check';
+              altText = 'zugeordnet';
               break;
             }
             case 'available': {
-              this.icon = 'pi pi-times';
-              this.altText = 'nicht zugeordnet';
+              icon = 'pi pi-times';
+              altText = 'nicht zugeordnet';
               break;
             }
             case 'blocked': {
-              this.icon = 'pi pi-lock';
-              this.altText = 'nicht verfügbar';
+              icon = 'pi pi-lock';
+              altText = 'nicht verfügbar';
               break;
             }
           }
@@ -73,8 +73,8 @@ export class SchedulerService {
             Id: schRes.id,
             Name: schRes.name,
             State: schRes.state,
-            Icon: this.icon,
-            AltText: this.altText,
+            Icon: icon,
+            AltText: altText,
             isAssignedTo: schRes.isAssignedTo.map(schEv => {
               return {
                 Id: schEv.id,

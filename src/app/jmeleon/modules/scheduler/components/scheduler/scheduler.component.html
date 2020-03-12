@@ -1,6 +1,7 @@
 <ejs-schedule height="350" [eventSettings]="eventSchedulerObject" [currentView]="setEventSchedulerView"
     (dragStart)="onDragStart($event)" (resizeStart)="onResizeStart($event)" (resizeStop)="onResizeStop($event)"
-    (dragStop)="onDragStop($event)" [showQuickInfo]="false" (eventClick)="onEventClick($event)" [allowResizing]="true">
+    (dragStop)="onDragStop($event)" [showQuickInfo]="false" (eventClick)="onSchedulerEventClick($event)"
+    [allowResizing]="true">
     <e-views>
         <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
         <e-view option='TimelineDay' startHour='07:00' endHour='18:00' [timeScale]='{ enable: true, slotCount: 2 }'>
@@ -30,7 +31,9 @@
             <div class='template-wrap'>
                 <div class="resource-details">
                     <div class="resource-name">
-                        <i title="{{data.resourceData.AltText}}" class="{{data.resourceData.Icon}}"></i>
+                        <!-- <i title="{{data.resourceData.AltText}}" class="{{data.resourceData.Icon}}"></i> -->
+                        <i [title]="getAltText(data.resourceData.AltText)"
+                            [class]="getIcon(data.resourceData.Icon)"></i>
                         {{data.resourceData.Name}}
                     </div>
                 </div>
