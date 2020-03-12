@@ -62,6 +62,15 @@ export class EntityService {
         .build());
   }
 
+  postEntityDataFromUrl(path: string, data: any): Observable<EntityData> {
+    return this.http.post<EntityData>(
+      UrlCollection.API_BASE_PATH() + path, data,
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
+  }
+
   createEntity(type: String, data) {
     return this.http.post(UrlCollection.Entities.CREATE(), {type: type, fields: data},
     new HttpOptionsFactory()

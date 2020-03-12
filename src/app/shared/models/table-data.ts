@@ -1,4 +1,5 @@
-import { Subject } from "rxjs";
+import { Subject, Observable } from 'rxjs';
+import { EntityData } from './entity-data';
 
 export class TableData {
     tableName: string;
@@ -8,18 +9,18 @@ export class TableData {
     showCrudButtons: boolean;
     scrollable: boolean;
     pagination: boolean;
-    explicitUrl: string;
+    dataSource: Observable<EntityData>;
     scrollHeight: string;
     showAttachments: boolean;
 
     triggerRefresh: Subject<unknown>;
 
     constructor(tableName: string, configName: string, showHeadline: boolean = true, showHeader: boolean = true,
-        showCrudButtons: boolean = true, scrollable: boolean = false, pagination: boolean = true, explicitUrl?: string,
+        showCrudButtons: boolean = true, scrollable: boolean = false, pagination: boolean = true, dataSource?: Observable<EntityData>,
         scrollHeight?: string, showAttachments: boolean = true) {
             this.tableName = tableName;
             this.configName = configName;
-            this.explicitUrl = explicitUrl;
+            this.dataSource = dataSource;
             this.showHeadline = showHeadline;
             this.showHeader = showHeader;
             this.showCrudButtons = showCrudButtons;

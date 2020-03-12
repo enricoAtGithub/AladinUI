@@ -92,7 +92,7 @@ export class DynamicTableComponent implements OnInit {
 
     this.fields.forEach(field => {
       if (event.filters[field.field]) {
-        let filterContent: string = event.filters[field.field].value.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
+        const filterContent: string = event.filters[field.field].value.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
         if (field.type === 'String') {
           qualifier += 'LIKE(\'' + field.field + '\',\'%' + filterContent  + '%\'),';
         } else {
@@ -116,12 +116,11 @@ export class DynamicTableComponent implements OnInit {
       page = event.first / <number>this.configuration.rowsPerPage + 1;
     }
 
-    if (this.tableData.explicitUrl === undefined) {
+    if (this.tableData.dataSource === undefined) {
       this.entityService.filter(this.tableData.configName, page, 10, qualifier, sorting)
         .subscribe(data => { this.entityData = data; this.loading = false; });
     } else {
-      this.entityService.getEntityDataFromUrl(this.tableData.explicitUrl)
-        .subscribe(data => { this.entityData = data; this.loading = false; });
+      this.tableData.dataSource.subscribe(data => { this.entityData = data; this.loading = false; });
     }
   }
 

@@ -147,5 +147,28 @@
       </div>
     </p-tabPanel>
 
+    <p-tabPanel *ngIf="this.configuration?.components?.includes('FileAttachments')" header="Dateianhänge" [selected]="true">
+      <div style="height: 250px">
+        <p-table>
+          <ng-template pTemplate="caption">
+            Dateianhänge
+            <app-file-upload-dialog
+              catalogueName="FileTypes"
+              catalogueDisplayName="Datei-Typ"
+              chooseLabel="Auswählen"
+              openDialogLabel=""
+              [createAttachment]="true"
+              [ownerId]="entryId"
+              [ownerType]="configuration?.type"
+              (fileAttached)="onFileAttached($event)"
+              style="float: right; margin-top: -5px;"
+            ></app-file-upload-dialog>
+            <button pButton (click)="fileTable.refreshTableContents()" icon="pi pi-undo" style="float: right; margin-top: -5px; margin-right: 5px;"></button>
+          </ng-template>
+        </p-table>
+        <app-dynamic-table #fileTable style="padding: 0px" *ngIf="fileTableData" [tableData]="fileTableData"></app-dynamic-table>
+      </div>
+    </p-tabPanel>
+
   </p-tabView>
 </div>

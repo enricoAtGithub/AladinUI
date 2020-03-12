@@ -1,14 +1,12 @@
 import { Component, OnInit, Input, ViewChild, SimpleChanges, OnChanges } from '@angular/core';
 import { TableData } from '../../models/table-data';
-import { Subject } from 'rxjs';
 import { GroupConfiguration } from '../../models/group-configuration';
 import { EntityService } from '../../services/entity.service';
-import { GroupMembers } from '../../models/group-members';
-import { EntityData } from '../../models/entity-data';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { Note } from 'src/app/shared/models/note';
 import { DynamicTableComponent } from '../dynamic-table/dynamic-table.component';
 import { Attribute } from '../../models/attribute';
+import { DialogService } from 'primeng/api';
 
 @Component({
   selector: 'app-dynamic-table-attachments',
@@ -21,6 +19,7 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
 
   @ViewChild('notesTable', {static: false}) notesTable: DynamicTableComponent;
   @ViewChild('logsTable', {static: false}) logsTable: DynamicTableComponent;
+  @ViewChild('fileTable', {static: false}) fileTable: DynamicTableComponent;
 
   configuration: EntityConfiguration;
   groupConfigsArray: GroupConfiguration[] = [];
@@ -34,6 +33,7 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
 
   logTableData: TableData;
   noteTableData: TableData;
+  fileTableData: TableData;
 
   allNotes: any[];
   selectedNote: Note;
@@ -42,12 +42,12 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
 
   attributes: any[];
   attributeClone: any;
-  displayAddAttribute: boolean;
+  displayAddAttribute = false;
   newAttribute = new Attribute();
 
   types = [{label: 'Long', value: 'Long'}, {label: 'String', value: 'String'}, {label: 'Boolean', value: 'Boolean'}, {label: 'Date', value: 'Date'}];
 
-  constructor(private entityService: EntityService) { }
+  constructor(private entityService: EntityService, public dialogService: DialogService) { }
 
   init() {
     this.entityService.getEntityConfigurations().subscribe(configs => {
@@ -93,23 +93,40 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
       if (this.configuration.components) {
         if (this.configuration.components.includes('LogEntries') && this.logsTable !== null) {
           if (!this.logTableData) {
+            const dataSource = this.entityService.getEntityDataFromUrl('/log/entries/' + this.configuration.type + '/' + this.entryId);
             this.logTableData = new TableData('Logs', 'LogEntry', false, false, false, true, false,
-              '/log/entries/' + this.configuration.type + '/' + this.entryId, '175px');
+              dataSource, '175px', false);
           } else {
-            this.logTableData.explicitUrl  = '/log/entries/' + this.configuration.type + '/' + this.entryId;
+            this.logTableData.dataSource  = this.entityService
+              .getEntityDataFromUrl('/log/entries/' + this.configuration.type + '/' + this.entryId);
             this.logTableData.triggerRefresh.next();
           }
         }
 
         if (this.configuration.components.includes('Notes')) {
           if (!this.noteTableData) {
-          this.noteTableData = new TableData('Note', 'Note', false, false, false, true, false,
-            '/note/entries/' + this.configuration.type + '/' + this.entryId, '175px');
+            const dataSource = this.entityService.getEntityDataFromUrl('/note/entries/' + this.configuration.type + '/' + this.entryId);
+            this.noteTableData = new TableData('Note', 'Note', false, false, false, true, false,
+              dataSource, '175px', false);
           } else {
             this.selectedNote = undefined;
-            this.noteTableData.explicitUrl  = '/note/entries/' + this.configuration.type + '/' + this.entryId;
+            this.noteTableData.dataSource  = this.entityService
+              .getEntityDataFromUrl('/note/entries/' + this.configuration.type + '/' + this.entryId);
             this.noteTableData.triggerRefresh.next();
           }
+        }
+      }
+
+      if (this.configuration.components.includes('FileAttachments')) {
+        if (!this.fileTableData) {
+          const dataSource = this.entityService
+            .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});
+          this.fileTableData = new TableData(
+            'FileAttachment', 'FileAttachment', false, false, false, false, false, dataSource, '175px', false);
+        } else {
+          this.fileTableData.dataSource  = this.entityService
+            .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});
+          this.fileTableData.triggerRefresh.next();
         }
       }
 
@@ -130,12 +147,12 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
 
             this.groupMembers.set(groupConfig.type, members.data);
 
-            var memberIds: Set<number> = new Set(members.data.map( m => m.id ));
+            const memberIds: Set<number> = new Set(members.data.map( m => m.id ));
 
             // deep copy of entities + filtering for non-members
             this.nonGroupMembers.set(groupConfig.type, this.allGroupMembers.get(groupConfig.type).data
               .filter( (d: any) => !memberIds.has(d['id']))
-              .map( (d: any) => { return { ...d }} ));
+              .map( (d: any) => ({ ...d }) ));
           });
         });
       }
@@ -197,6 +214,10 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
       this.selectedNote.category = note['Kategorie'];
       this.selectedNote.id = note['id'];
     }
+  }
+
+  onFileAttached(event) {
+    this.fileTable.refreshTableContents();
   }
 
   openAddAttributeDialog() {
