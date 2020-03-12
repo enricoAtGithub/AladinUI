@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { Catalogue } from '../../models/catalogue';
 import { FileUploadDownloadService } from '../../services/file-upload-download.service';
 import { FileUploadResult } from '../../models/http/file-upload-result';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AttachmentService } from '../../services/attachment.service';
 import { Message } from 'primeng/primeng';
 import { AttachmentRequestData } from '../../models/attachment-request-data';
@@ -17,6 +16,7 @@ const MAIN_TYPE = 'File';
 })
 export class FileUploadDialogComponent implements OnInit {
 
+  @Input() openDialogLabel = 'Datei hochladen';
   @Input() chooseLabel = 'Datei auswählen';
   @Input() uploadLabel = 'Hochladen';
   @Input() cancelLabel = 'Abbrechen';
@@ -82,6 +82,7 @@ export class FileUploadDialogComponent implements OnInit {
   resetFileDialog(): void {
     this.uploadFileName = '';
     this.newFileName = '';
+    this.uploadMessages = [];
     this.keepOrgFileName = true;
   }
 

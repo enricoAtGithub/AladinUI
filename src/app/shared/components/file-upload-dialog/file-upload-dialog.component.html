@@ -1,6 +1,6 @@
 <p-button 
-    label="Datei hochladen"
-    icon="fa fa-plus"
+    [label]="openDialogLabel"
+    icon="pi pi-plus"
     (click)="onButtonClickShowFileDialog()">
 </p-button>
 
@@ -69,7 +69,7 @@
                 label="Dateinamen beibehalten" 
                 [disabled]="disableKeepFileNameCheckbox()">
             </p-checkbox>
-            <div class="ui-inputgroup">
+            <div class="ui-inputgroup" style="padding-top: 3px;">
                 <input 
                     type="text" 
                     pInputText 
