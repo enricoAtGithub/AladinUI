@@ -52,13 +52,14 @@ describe('JMeleonActionsUtils', () => {
   });
 
   it('should build action list from action tree - 01', () => {
-      const result = JMeleonActionsUtils.generateActionListFromTree(TestActionTree1);
+      const result = JMeleonActionsUtils.generateActionObjectMapFromTree(TestActionTree1).map(element => element[1]);
       expect(result).not.toBeNull();
       expect(result.length).toEqual(15, 'should be 15 elements in the result list');
 
     let i = 0;
 
     // console.log('result: ', result);
+    // the position is not relevant. check for included should be enough.
       expect(result[i++]).toEqual('.');
       expect(result[i++]).toEqual('..dto');
       expect(result[i++]).toEqual('..dto.$dtoType');

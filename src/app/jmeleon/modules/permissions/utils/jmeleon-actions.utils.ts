@@ -2,42 +2,62 @@ import { BranchFlags } from '../models/node-types.model';
 
 export default class JMeleonActionsUtils {
 
-    // private static _dict: Record<Function, string> = {}
-    // refactor if possible.
-    // find correct function and return the corresponding full-action-path string
-    // this also should be in a service?
-    private static _dict: [Function, string][] = [];
+    // // this method has no side effects but is still very tidly coupled to the structure of the
+    // // root config file and should therefore be moved to the service.
+    // static generateActionListFromPCC(pcc: Function): string[] {
+    //     let result = JMeleonActionsUtils.generateActionListFromTree((pcc as any).jmeleon);
+    //     result = result.concat(JMeleonActionsUtils.generateActionListFromTree((pcc as any).custom));
+    //     return result;
+    // }
 
-    // this method has no side effects but is still very tidly coupled to the structure of the
-    // root config file and should therefore be moved to the service.
-    static generateActionListFromPCC(pcc: Function): string[] {
-        let result = JMeleonActionsUtils.generateActionListFromTree((pcc as any).jmeleon);
-        result = result.concat(JMeleonActionsUtils.generateActionListFromTree((pcc as any).custom));
+    // static generateActionListFromTree = (tree: Function): string[] => {
+    //     const result: string[] = [];
+    //     JMeleonActionsUtils.fillActionListWithNodeAndChildNodes(tree, result, '', '');
+    //     return result;
+    // }
+
+    // private static fillActionListWithNodeAndChildNodes =
+    //     (node: Function, result: string[], parentPath: string = '', nodeName: string = ''): void => {
+    //     const fullNodeName = `${parentPath}.${nodeName}`;
+    //     if (!JMeleonActionsUtils.nodeHasIngnoreFlag(node)) {
+    //         result.push(fullNodeName);
+    //     }
+    //     const leafs = JMeleonActionsUtils.getActionLeafNames(node);
+    //     // const fullLeafNames = leafs.map(leaf => `${fullNodeName}.${leaf}`);
+    //     // concat doesn't change the reference...
+    //     // result.push(fullLeafNames)
+    //     leafs.forEach(leaf => result.push(`${fullNodeName}.${leaf}`));
+
+    //     const childNodeNames = JMeleonActionsUtils.getNodeChildNames(node);
+    //     childNodeNames
+    //         .forEach(name =>
+    //             JMeleonActionsUtils.fillActionListWithNodeAndChildNodes(node[name], result, fullNodeName, name));
+
+
+    // }
+
+    static generateActionObjectMapFromTree = (tree: Function): [Function, string][] => {
+        const result: [Function, string][] = [];
+        JMeleonActionsUtils.fillActionObjectMapWithNodeAndChildNodes(tree, result, '', '');
         return result;
     }
 
-    static generateActionListFromTree = (tree: Function): string[] => {
-        const result: string[] = [];
-        JMeleonActionsUtils.fillActionListWithNodeAndChildNodes(tree, result, '', '');
-        return result;
-    }
-
-    private static fillActionListWithNodeAndChildNodes =
-        (node: Function, result: string[], parentPath: string = '', nodeName: string = ''): void => {
+    private static fillActionObjectMapWithNodeAndChildNodes =
+        (node: Function, result: [Function, string][], parentPath: string = '', nodeName: string = ''): void => {
         const fullNodeName = `${parentPath}.${nodeName}`;
         if (!JMeleonActionsUtils.nodeHasIngnoreFlag(node)) {
-            result.push(fullNodeName);
+            result.push([node, fullNodeName]);
         }
         const leafs = JMeleonActionsUtils.getActionLeafNames(node);
         // const fullLeafNames = leafs.map(leaf => `${fullNodeName}.${leaf}`);
         // concat doesn't change the reference...
         // result.push(fullLeafNames)
-        leafs.forEach(leaf => result.push(`${fullNodeName}.${leaf}`));
+        leafs.forEach(leaf => result.push([node[leaf], `${fullNodeName}.${leaf}`]));
 
         const childNodeNames = JMeleonActionsUtils.getNodeChildNames(node);
         childNodeNames
             .forEach(name =>
-                JMeleonActionsUtils.fillActionListWithNodeAndChildNodes(node[name], result, fullNodeName, name));
+                JMeleonActionsUtils.fillActionObjectMapWithNodeAndChildNodes(node[name], result, fullNodeName, name));
 
 
     }
