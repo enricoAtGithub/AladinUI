@@ -24,5 +24,12 @@ export interface GuiAction {
     type: 'guiAction';
 }
 
-export const action = () => <GuiAction> ({type: 'guiAction'} as unknown);
+export class BaseGuiAction implements GuiAction {
+    type: 'guiAction';
+
+}
+
+// export const action = () => <GuiAction> ({type: 'guiAction'} as unknown);
+export const action = () => new BaseGuiAction();
+
 

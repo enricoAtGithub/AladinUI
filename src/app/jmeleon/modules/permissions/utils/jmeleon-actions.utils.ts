@@ -1,4 +1,5 @@
 import { BranchFlags } from '../models/node-types.model';
+import StringUtils from 'src/app/shared/utils/string.utils';
 
 export default class JMeleonActionsUtils {
 
@@ -44,8 +45,9 @@ export default class JMeleonActionsUtils {
 
     private static fillActionObjectMapWithNodeAndChildNodes =
         (node: Function, result: [Function, string][], parentPath: string = '', nodeName: string = ''): void => {
-        const fullNodeName = `${parentPath}.${nodeName}`;
-        if (!JMeleonActionsUtils.nodeHasIngnoreFlag(node)) {
+        parentPath = StringUtils.trimAny(parentPath, '.');
+        const fullNodeName = `${(!!parentPath ? parentPath + '.' : parentPath)}${nodeName}`;
+        if (!JMeleonActionsUtils.nodeHasIngnoreFlag(node) && !!fullNodeName) {
             result.push([node, fullNodeName]);
         }
         const leafs = JMeleonActionsUtils.getActionLeafNames(node);
@@ -82,7 +84,7 @@ export default class JMeleonActionsUtils {
             .filter(name => (node[name].hasOwnProperty('type') && node[name]['type'] === 'guiAction'));
 
             if (actionNames.length > 0) {
-                console.log('found actionNames:', actionNames);
+                // console.log('found actionNames:', actionNames);
             }
 
         return actionNames;

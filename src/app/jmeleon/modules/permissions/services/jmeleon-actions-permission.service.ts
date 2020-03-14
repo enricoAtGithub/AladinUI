@@ -62,9 +62,11 @@ export class JmeleonActionsPermissionService {
 
   }
 
-  getActionStringFromFunction = (f: Function): string => this._actionDict.find(tuple => tuple[0] === f)[1];
+  // can't work with type Function here because the leafs are pure objects.
+  getActionStringFromFunction = (f: any): string => this._actionDict.find(tuple => tuple[0] === f)[1];
 
-  userHasPermissionForAction = (f: Function): boolean =>
+
+  userHasPermissionForAction = (f: any): boolean =>
     this._permittedActionsForCurrentUser.includes(this.getActionStringFromFunction(f))
 
 }
