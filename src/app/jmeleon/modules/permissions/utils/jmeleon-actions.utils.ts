@@ -37,6 +37,8 @@ export default class JMeleonActionsUtils {
 
     // }
 
+    static readonly GRAND_RIGHTS_TO_ALL_CHILDREN_SUFFIX = '.*';
+
     static generateActionObjectMapFromTree = (tree: Function): [Function, string][] => {
         const result: [Function, string][] = [];
         JMeleonActionsUtils.fillActionObjectMapWithNodeAndChildNodes(tree, result, '', '');
@@ -48,7 +50,7 @@ export default class JMeleonActionsUtils {
         parentPath = StringUtils.trimAny(parentPath, '.');
         const fullNodeName = `${(!!parentPath ? parentPath + '.' : parentPath)}${nodeName}`;
         if (!JMeleonActionsUtils.nodeHasIngnoreFlag(node) && !!fullNodeName) {
-            result.push([node, fullNodeName]);
+            result.push([node, `${fullNodeName}${JMeleonActionsUtils.GRAND_RIGHTS_TO_ALL_CHILDREN_SUFFIX}`]);
         }
         const leafs = JMeleonActionsUtils.getActionLeafNames(node);
         // const fullLeafNames = leafs.map(leaf => `${fullNodeName}.${leaf}`);
@@ -79,12 +81,24 @@ export default class JMeleonActionsUtils {
     private static getActionLeafNames = (node: Function): string[] => {
 
         const keyNames = Object.keys(node);
-        // console.log('found keyNames:', keyNames);
+        console.log('found keyNames:', keyNames);
         const actionNames = keyNames
-            .filter(name => (node[name].hasOwnProperty('type') && node[name]['type'] === 'guiAction'));
+            // .filter(name => (node[name].hasOwnProperty('type') && node[name]['type'] === 'guiAction'));
+            .filter(name => {
+                // if (name === 'read') {
+
+                //     console.log('node name: ', name);
+                //     console.log('node[name].hasOwnProperty(type): ', node[name].hasOwnProperty('type'));
+                //     console.log('node[name][type] === guiAction:', node[name]['type'] === 'guiAction');
+                //     console.log('node[name][type]', node[name]['type']);
+                //     console.log(node[name]);
+                // }
+                // return (node[name].hasOwnProperty('type') && node[name]['type'] === 'guiAction');
+                return node[name]['type'] === 'guiAction';
+            });
 
             if (actionNames.length > 0) {
-                // console.log('found actionNames:', actionNames);
+                console.log('found actionNames:', actionNames);
             }
 
         return actionNames;

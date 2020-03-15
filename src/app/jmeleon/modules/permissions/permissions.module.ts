@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PermissionCheckDirective } from './directives/permission-check.directive';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [PermissionCheckDirective],
   imports: [
     CommonModule
   ]

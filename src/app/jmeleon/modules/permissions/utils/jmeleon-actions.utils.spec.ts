@@ -53,28 +53,27 @@ describe('JMeleonActionsUtils', () => {
 
   it('should build action list from action tree - 01', () => {
       const result = JMeleonActionsUtils.generateActionObjectMapFromTree(TestActionTree1).map(element => element[1]);
+    //   console.log('hould build action list from action tree - 01 - result: ', result);
       expect(result).not.toBeNull();
-      expect(result.length).toEqual(15, 'should be 15 elements in the result list');
+      expect(result.length).toEqual(14, 'should be 14 elements in the result list');
 
-    let i = 0;
+    const i = 0;
 
-    // console.log('result: ', result);
-    // the position is not relevant. check for included should be enough.
-      expect(result[i++]).toEqual('.');
-      expect(result[i++]).toEqual('..dto');
-      expect(result[i++]).toEqual('..dto.$dtoType');
-      expect(result[i++]).toEqual('..dto.$dtoType.$dtoField');
-      expect(result[i++]).toEqual('..dto.$dtoType.$dtoField.create');
-      expect(result[i++]).toEqual('..dto.$dtoType.$dtoField.read');
-      expect(result[i++]).toEqual('..dto.$dtoType.$dtoField.write');
-      expect(result[i++]).toEqual('..dto.$dtoType.$dtoField.delete');
-      expect(result[i++]).toEqual('..dto.test.subTest');
-      expect(result[i++]).toEqual('..dto.test.subTest.read');
-      expect(result[i++]).toEqual('..dto.same1');
-      expect(result[i++]).toEqual('..dto.same1.test');
-      expect(result[i++]).toEqual('..dto.same1.test.read');
-      expect(result[i++]).toEqual('..dto.same2');
-      expect(result[i++]).toEqual('..dto.same2.test');
+
+    expect(result.includes('dto.*')).toBeTruthy();
+    expect(result.includes('dto.$dtoType.*')).toBeTruthy();
+    expect(result.includes('dto.$dtoType.$dtoField.*')).toBeTruthy();
+    expect(result.includes('dto.$dtoType.$dtoField.create')).toBeTruthy();
+    expect(result.includes('dto.$dtoType.$dtoField.read')).toBeTruthy();
+    expect(result.includes('dto.$dtoType.$dtoField.write')).toBeTruthy();
+    expect(result.includes('dto.$dtoType.$dtoField.delete')).toBeTruthy();
+    expect(result.includes('dto.test.subTest.*')).toBeTruthy();
+    expect(result.includes('dto.test.subTest.*')).toBeTruthy();
+    expect(result.includes('dto.same1.*')).toBeTruthy();
+    expect(result.includes('dto.same1.test.*')).toBeTruthy();
+    expect(result.includes('dto.same1.test.read')).toBeTruthy();
+    expect(result.includes('dto.same2.*')).toBeTruthy();
+    expect(result.includes('dto.same2.test.*')).toBeTruthy();
 
       // this one has the ignore flag
       expect(result.includes('..dto.test')).not.toBeTruthy();

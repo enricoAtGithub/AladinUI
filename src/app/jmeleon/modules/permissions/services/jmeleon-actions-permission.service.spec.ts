@@ -61,7 +61,7 @@ describe('JmeleonPermissionService', () => {
   it('should to be initialized as expected with custom data', () => {
     const service: JmeleonActionsPermissionService = TestBed.get(JmeleonActionsPermissionService);
     service.initializeDict(TestActionTree2);
-    console.log('action list: ', service.actionsList);
+    // console.log('action list: ', service.actionsList);
     expect(service.actionsList.includes('dto')).toBeTruthy();
     expect(service.actionsList.includes('dto.$dtoType')).toBeTruthy();
     expect(service.actionsList.includes('dto.$dtoType.$dtoField')).toBeTruthy();

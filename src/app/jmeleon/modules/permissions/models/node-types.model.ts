@@ -20,16 +20,21 @@ export enum BranchFlags {
 
 }
 
+
+
 export interface GuiAction {
     type: 'guiAction';
 }
 
 export class BaseGuiAction implements GuiAction {
-    type: 'guiAction';
+    public get type(): 'guiAction' { return 'guiAction'; }
 
 }
 
 // export const action = () => <GuiAction> ({type: 'guiAction'} as unknown);
 export const action = () => new BaseGuiAction();
+
+// const testAction = action();
+// testAction.type;
 
 
