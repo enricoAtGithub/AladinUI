@@ -1,25 +1,28 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PermissionCheckTestComponent } from './permission-check-test.component';
+import {
+  PermissionCheckTestComponent,
+  // PermissionCheckTestComponentTestTree
+} from './permission-check-test.component';
 import { PermissionCheckDirective } from '../permission-check.directive';
 import { JmeleonActionsPermissionService } from '../../services/jmeleon-actions-permission.service';
-import PCC from '../../config/permission-config-combined';
+import { BranchFlags, action } from '../../models/node-types.model';
 
 // const userHasPermission = false;
-const userHasPermission = false;
+// const userHasPermission = false;
 
-class MockJMeleonPermissionService {
-  userHasPermission = false;
-  userHasPermissionForAction = (f: Function | Object): boolean => {
-    console.log('userHasPermissionForAction was called on mock for: ', f);
-    console.log(' userHasPermissionForAction will return: ', this.userHasPermission);
-    return this.userHasPermission;
-  }
-  setPermission = (permission: boolean): void => {
-    console.log('setting permission value to: ', permission);
-    this.userHasPermission = permission;
-  }
-}
+// class MockJMeleonPermissionService {
+//   userHasPermission = false;
+//   userHasPermissionForAction = (f: Function | Object): boolean => {
+//     console.log('userHasPermissionForAction was called on mock for: ', f);
+//     console.log(' userHasPermissionForAction will return: ', this.userHasPermission);
+//     return this.userHasPermission;
+//   }
+//   setPermission = (permission: boolean): void => {
+//     console.log('setting permission value to: ', permission);
+//     this.userHasPermission = permission;
+//   }
+// }
 
 // class MockJMeleonPermissionService {
 //   // userHasPermissionForAction = (f: Function | Object): boolean => this.userHasPermission;
@@ -30,15 +33,39 @@ class MockJMeleonPermissionService {
 //   }
 // }
 
+export class PermissionCheckTestComponentTestTree {
+  static jmeleon = class {
+      static invoice = class {
+          static invoiceList = class {
+              static read = action();
+              static write = action();
+          };
+      };
+  };
+}
+
+const userActionPermissions: string[] = [
+  // 'invoice.invoiceList.read',
+  // 'invoice.invoiceList.write',
+  'invoice.invoiceList.*',
+
+];
+
 describe('PermissionCheckTestComponent', () => {
   let component: PermissionCheckTestComponent;
   let fixture: ComponentFixture<PermissionCheckTestComponent>;
-  let service: JmeleonActionsPermissionService;
+  // let service: JmeleonActionsPermissionService;
+  const service: JmeleonActionsPermissionService = new JmeleonActionsPermissionService();
+  service.initializeDict(PermissionCheckTestComponentTestTree);
+  service.initActionsPermittedForCurrentUser(userActionPermissions);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PermissionCheckTestComponent, PermissionCheckDirective ],
-      providers: [{provide: JmeleonActionsPermissionService, useClass: MockJMeleonPermissionService}]
+      // providers: [{provide: JmeleonActionsPermissionService, useClass: MockJMeleonPermissionService}]
+      providers: [{provide: JmeleonActionsPermissionService, useValue: service}]
+      // providers: [JmeleonActionsPermissionService]
+
     })
     // ;
     .compileComponents();
@@ -54,7 +81,8 @@ describe('PermissionCheckTestComponent', () => {
     fixture = TestBed.createComponent(PermissionCheckTestComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    service = TestBed.get(JmeleonActionsPermissionService);
+    // service = TestBed.get(JmeleonActionsPermissionService);
+    // service.initializeDict(PermissionCheckTestComponentTestTree);
 
   });
 
@@ -76,15 +104,23 @@ describe('PermissionCheckTestComponent', () => {
     // userHasPermission = true;
     // userHasPermission = false;
     // (service as unknown as MockJMeleonPermissionService).setPermission(true);
-    const mockService = service as unknown as MockJMeleonPermissionService;
-    console.log('mockservice: ', mockService.userHasPermission);
-    mockService.setPermission(false);
-    console.log('mockservice: ', mockService.userHasPermission);
+    // const mockService = service as unknown as MockJMeleonPermissionService;
+    // console.log('mockservice: ', mockService.userHasPermission);
+    // mockService.setPermission(false);
+    // console.log('mockservice: ', mockService.userHasPermission);
 
+    // service.initializeDict(PermissionCheckTestComponentTestTree);
+    // service.initActionsPermittedForCurrentUser(userActionPermissions);
+
+
+    // fixture.detectChanges();
     const element: HTMLElement = fixture.nativeElement;
+    // element.
     console.log('element:', element);
     const p = element.querySelector('p');
     console.log('p:', p);
+    // const button = element.querySelector('button');
+    // console.log('button:', button);
     expect(true).toBeTruthy();
   });
 

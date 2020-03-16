@@ -1,5 +1,6 @@
 import { Directive, ElementRef, Renderer2, OnDestroy, OnInit, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 import { JmeleonActionsPermissionService } from '../services/jmeleon-actions-permission.service';
+import JMeleonActionsUtils from '../utils/jmeleon-actions.utils';
 
 @Directive({
   selector: '[appPermissionCheck]',
@@ -33,7 +34,9 @@ export class PermissionCheckDirective implements OnInit, OnDestroy {
       this.vcRef.clear();
       this.vcRef.createEmbeddedView(this.tRef);
     } else {
-      console.log('user has no permissions for: ', path);
+      console.log('user has no permissions for: ', this.permissionService.getActionStringFromFunction(path));
+      console.log('action-list:', this.permissionService.actionsList);
+      console.log('permitted-action-list:', this.permissionService.permittedActionsList);
       this.vcRef.clear();
     }
   }
