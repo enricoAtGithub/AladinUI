@@ -2,7 +2,8 @@ import { Directive, ElementRef, Renderer2, OnDestroy, OnInit, Input, TemplateRef
 import { JmeleonActionsPermissionService } from '../services/jmeleon-actions-permission.service';
 
 @Directive({
-  selector: '[appPermissionCheck]'
+  selector: '[appPermissionCheck]',
+  // providers: [JmeleonActionsPermissionService]
 })
 export class PermissionCheckDirective implements OnInit, OnDestroy {
   // is there any useful default value? probably not.
@@ -28,8 +29,11 @@ export class PermissionCheckDirective implements OnInit, OnDestroy {
 
   check(path: Function|Object): void {
     if (this.permissionService.userHasPermissionForAction(path)) {
+      console.log('user HAS permissions for: ', path);
+      this.vcRef.clear();
       this.vcRef.createEmbeddedView(this.tRef);
     } else {
+      console.log('user has no permissions for: ', path);
       this.vcRef.clear();
     }
   }

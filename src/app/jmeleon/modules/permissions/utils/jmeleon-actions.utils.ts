@@ -1,41 +1,7 @@
-import { BranchFlags } from '../models/node-types.model';
+import { BranchFlags, BaseGuiAction } from '../models/node-types.model';
 import StringUtils from 'src/app/shared/utils/string.utils';
 
 export default class JMeleonActionsUtils {
-
-    // // this method has no side effects but is still very tidly coupled to the structure of the
-    // // root config file and should therefore be moved to the service.
-    // static generateActionListFromPCC(pcc: Function): string[] {
-    //     let result = JMeleonActionsUtils.generateActionListFromTree((pcc as any).jmeleon);
-    //     result = result.concat(JMeleonActionsUtils.generateActionListFromTree((pcc as any).custom));
-    //     return result;
-    // }
-
-    // static generateActionListFromTree = (tree: Function): string[] => {
-    //     const result: string[] = [];
-    //     JMeleonActionsUtils.fillActionListWithNodeAndChildNodes(tree, result, '', '');
-    //     return result;
-    // }
-
-    // private static fillActionListWithNodeAndChildNodes =
-    //     (node: Function, result: string[], parentPath: string = '', nodeName: string = ''): void => {
-    //     const fullNodeName = `${parentPath}.${nodeName}`;
-    //     if (!JMeleonActionsUtils.nodeHasIngnoreFlag(node)) {
-    //         result.push(fullNodeName);
-    //     }
-    //     const leafs = JMeleonActionsUtils.getActionLeafNames(node);
-    //     // const fullLeafNames = leafs.map(leaf => `${fullNodeName}.${leaf}`);
-    //     // concat doesn't change the reference...
-    //     // result.push(fullLeafNames)
-    //     leafs.forEach(leaf => result.push(`${fullNodeName}.${leaf}`));
-
-    //     const childNodeNames = JMeleonActionsUtils.getNodeChildNames(node);
-    //     childNodeNames
-    //         .forEach(name =>
-    //             JMeleonActionsUtils.fillActionListWithNodeAndChildNodes(node[name], result, fullNodeName, name));
-
-
-    // }
 
     static readonly GRAND_RIGHTS_TO_ALL_CHILDREN_SUFFIX = '.*';
 
@@ -50,12 +16,13 @@ export default class JMeleonActionsUtils {
         parentPath = StringUtils.trimAny(parentPath, '.');
         const fullNodeName = `${(!!parentPath ? parentPath + '.' : parentPath)}${nodeName}`;
         if (!JMeleonActionsUtils.nodeHasIngnoreFlag(node) && !!fullNodeName) {
-            result.push([node, `${fullNodeName}${JMeleonActionsUtils.GRAND_RIGHTS_TO_ALL_CHILDREN_SUFFIX}`]);
+            // result.push([node, `${fullNodeName}${JMeleonActionsUtils.GRAND_RIGHTS_TO_ALL_CHILDREN_SUFFIX}`]);
+            result.push([node, JMeleonActionsUtils.appendSuffix(fullNodeName)]);
         }
         const leafs = JMeleonActionsUtils.getActionLeafNames(node);
-        // const fullLeafNames = leafs.map(leaf => `${fullNodeName}.${leaf}`);
+
         // concat doesn't change the reference...
-        // result.push(fullLeafNames)
+
         leafs.forEach(leaf => result.push([node[leaf], `${fullNodeName}.${leaf}`]));
 
         const childNodeNames = JMeleonActionsUtils.getNodeChildNames(node);
@@ -81,25 +48,14 @@ export default class JMeleonActionsUtils {
     private static getActionLeafNames = (node: Function): string[] => {
 
         const keyNames = Object.keys(node);
-        console.log('found keyNames:', keyNames);
+        // console.log('found keyNames:', keyNames);
         const actionNames = keyNames
-            // .filter(name => (node[name].hasOwnProperty('type') && node[name]['type'] === 'guiAction'));
-            .filter(name => {
-                // if (name === 'read') {
+            // .filter(name => (node[name].hasOwnProperty('type') && node[name]['type'] === BaseGuiAction.TYPE));
+            .filter(name => node[name]['type'] === BaseGuiAction.TYPE);
 
-                //     console.log('node name: ', name);
-                //     console.log('node[name].hasOwnProperty(type): ', node[name].hasOwnProperty('type'));
-                //     console.log('node[name][type] === guiAction:', node[name]['type'] === 'guiAction');
-                //     console.log('node[name][type]', node[name]['type']);
-                //     console.log(node[name]);
-                // }
-                // return (node[name].hasOwnProperty('type') && node[name]['type'] === 'guiAction');
-                return node[name]['type'] === 'guiAction';
-            });
-
-            if (actionNames.length > 0) {
-                console.log('found actionNames:', actionNames);
-            }
+            // if (actionNames.length > 0) {
+            //     console.log('found actionNames:', actionNames);
+            // }
 
         return actionNames;
     }
@@ -110,7 +66,7 @@ export default class JMeleonActionsUtils {
             // filter out all prototype properties (like name and so on)
             .filter(name => node.propertyIsEnumerable(name))
             // filter out all activites
-            .filter(name => !(node[name].hasOwnProperty('type') && node[name]['type'] === 'guiAction'))
+            .filter(name => !(node[name].hasOwnProperty('type') && node[name]['type'] === BaseGuiAction.TYPE))
             // filter out all flags
             .filter(name => name !== 'flags')
             // filter out other properties
@@ -119,8 +75,17 @@ export default class JMeleonActionsUtils {
         return propNames;
     }
 
+    static appendSuffix = (action: string ): string =>
+        !!JMeleonActionsUtils.GRAND_RIGHTS_TO_ALL_CHILDREN_SUFFIX &&
+        action.endsWith(JMeleonActionsUtils.GRAND_RIGHTS_TO_ALL_CHILDREN_SUFFIX) ?
+            action :
+            action + JMeleonActionsUtils.GRAND_RIGHTS_TO_ALL_CHILDREN_SUFFIX
 
-
+    static removeSuffix = (action: string): string =>
+        !!JMeleonActionsUtils.GRAND_RIGHTS_TO_ALL_CHILDREN_SUFFIX &&
+        action.endsWith(JMeleonActionsUtils.GRAND_RIGHTS_TO_ALL_CHILDREN_SUFFIX) ?
+            action.substring(0, action.length - (JMeleonActionsUtils.GRAND_RIGHTS_TO_ALL_CHILDREN_SUFFIX.length + 1)) :
+            action
 
 
 

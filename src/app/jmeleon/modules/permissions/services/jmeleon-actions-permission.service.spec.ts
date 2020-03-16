@@ -61,21 +61,21 @@ describe('JmeleonPermissionService', () => {
   it('should to be initialized as expected with custom data', () => {
     const service: JmeleonActionsPermissionService = TestBed.get(JmeleonActionsPermissionService);
     service.initializeDict(TestActionTree2);
-    // console.log('action list: ', service.actionsList);
-    expect(service.actionsList.includes('dto')).toBeTruthy();
-    expect(service.actionsList.includes('dto.$dtoType')).toBeTruthy();
-    expect(service.actionsList.includes('dto.$dtoType.$dtoField')).toBeTruthy();
+    console.log('action list: ', service.actionsList);
+    expect(service.actionsList.includes('dto.*')).toBeTruthy();
+    expect(service.actionsList.includes('dto.$dtoType.*')).toBeTruthy();
+    expect(service.actionsList.includes('dto.$dtoType.$dtoField.*')).toBeTruthy();
     expect(service.actionsList.includes('dto.$dtoType.$dtoField.create')).toBeTruthy();
     expect(service.actionsList.includes('dto.$dtoType.$dtoField.read')).toBeTruthy();
     expect(service.actionsList.includes('dto.$dtoType.$dtoField.write')).toBeTruthy();
     expect(service.actionsList.includes('dto.$dtoType.$dtoField.delete')).toBeTruthy();
-    expect(service.actionsList.includes('dto.test.subTest')).toBeTruthy();
+    expect(service.actionsList.includes('dto.test.subTest.*')).toBeTruthy();
     expect(service.actionsList.includes('dto.test.subTest.read')).toBeTruthy();
-    expect(service.actionsList.includes('dto.same1')).toBeTruthy();
-    expect(service.actionsList.includes('dto.same1.test')).toBeTruthy();
+    expect(service.actionsList.includes('dto.same1.*')).toBeTruthy();
+    expect(service.actionsList.includes('dto.same1.test.*')).toBeTruthy();
     expect(service.actionsList.includes('dto.same1.test.read')).toBeTruthy();
-    expect(service.actionsList.includes('dto.same2')).toBeTruthy();
-    expect(service.actionsList.includes('dto.same2.test')).toBeTruthy();
+    expect(service.actionsList.includes('dto.same2.*')).toBeTruthy();
+    expect(service.actionsList.includes('dto.same2.test.*')).toBeTruthy();
   });
 
 
@@ -95,12 +95,40 @@ describe('JmeleonPermissionService', () => {
     service.initializeDict(TestActionTree2);
 
     // recognize node
-    expect(service.getActionStringFromFunction(TestActionTree2.customTest.dto.$dtoType)).toEqual('dto.$dtoType');
+    expect(service.getActionStringFromFunction(TestActionTree2.customTest.dto.$dtoType)).toEqual('dto.$dtoType.*');
     // recognize leaf
     expect(service.getActionStringFromFunction(TestActionTree2.customTest.dto.$dtoType.$dtoField.read)).toEqual('dto.$dtoType.$dtoField.read');
     // expect(service.getActionStringFromFunction(console.log)).toThrow(TypeError);
   });
 
+
+
+  it('should detect users permissions correctly - relative path', () => {
+    const service: JmeleonActionsPermissionService = TestBed.get(JmeleonActionsPermissionService);
+    service.initializeDict(TestActionTree2);
+    const userPermissions = ['dto.same1.test.read', 'dto.$dtoType.$dtoField.*'];
+    service.initActionsPermittedForCurrentUser(userPermissions);
+
+    expect(service.userHasPermissionForAction(TestActionTree2.customTest.dto.$dtoType.$dtoField.read)).toBeTruthy();
+  });
+
+  it('should detect users permissions correctly - full path', () => {
+    const service: JmeleonActionsPermissionService = TestBed.get(JmeleonActionsPermissionService);
+    service.initializeDict(TestActionTree2);
+    const userPermissions = ['dto.same1.test.read', 'dto.$dtoType.$dtoField.*'];
+    service.initActionsPermittedForCurrentUser(userPermissions);
+
+    expect(service.userHasPermissionForAction(TestActionTree2.customTest.dto.same1.test.read)).toBeTruthy();
+  });
+
+  it('should detect users missing permissions correctly - full path', () => {
+    const service: JmeleonActionsPermissionService = TestBed.get(JmeleonActionsPermissionService);
+    service.initializeDict(TestActionTree2);
+    const userPermissions = ['dto.$dtoType.$dtoField.*'];
+    service.initActionsPermittedForCurrentUser(userPermissions);
+
+    expect(service.userHasPermissionForAction(TestActionTree2.customTest.dto.same1.test.read)).not.toBeTruthy();
+  });
 
 
 

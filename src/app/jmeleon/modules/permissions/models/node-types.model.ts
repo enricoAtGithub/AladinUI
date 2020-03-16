@@ -27,6 +27,7 @@ export interface GuiAction {
 }
 
 export class BaseGuiAction implements GuiAction {
+    static TYPE = 'guiAction';
     public get type(): 'guiAction' { return 'guiAction'; }
 
 }
