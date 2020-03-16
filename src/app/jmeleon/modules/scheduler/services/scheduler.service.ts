@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map, pluck } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { SchedulerEvent } from '../models/scheduler-event';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AppConfig } from 'src/app/shared/app-config';
-import { DateTimeService } from 'src/app/shared/services/date-time.service';
 import { SchedulerResource } from '../models/scheduler-resource';
 
 interface SchedulerEventInterface {
@@ -50,31 +49,11 @@ export class SchedulerService {
       .pipe(
         // map properties from JSON response, first letter of properties needs to be capitalized
         map(temp => temp.schedulerResources.map(schRes => {
-          let icon: string, altText: string;
-
-          switch (schRes.state) {
-            case 'assigned': {
-              icon = 'pi pi-check';
-              altText = 'zugeordnet';
-              break;
-            }
-            case 'available': {
-              icon = 'pi pi-times';
-              altText = 'nicht zugeordnet';
-              break;
-            }
-            case 'blocked': {
-              icon = 'pi pi-lock';
-              altText = 'nicht verfügbar';
-              break;
-            }
-          }
           return {
             Id: schRes.id,
             Name: schRes.name,
-            State: schRes.state,
-            Icon: icon,
-            AltText: altText,
+            Assigned: schRes.assigned,
+            HasConflict: schRes.hasConflict,
             isAssignedTo: schRes.isAssignedTo.map(schEv => {
               return {
                 Id: schEv.id,

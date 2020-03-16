@@ -102,10 +102,18 @@ export class SchedulerComponent implements OnInit {
         // filter and display resources assigned to clicked event
         this.filterAndDisplayResources({ filter, schedulerResources });
 
-        // Add ResourceID property to schedulerEvents and aggregate ALL schedulerEvents
+        // modify/enrich scheduler resources server response
         // Todo: refactor using flatmap
         const schedulerEvents: SchedulerEvent[] = [];
         schedulerResources.forEach(schResource => {
+
+          // add custom properties (icons and alternative text)
+          schResource.AssignedIcon = this.getIcon({ property: 'Assigned', boolVal: schResource.Assigned });
+          schResource.HasConflictIcon = this.getIcon({ property: 'HasConflict', boolVal: schResource.HasConflict });
+          schResource.AssignedAltText = this.getAltText({ property: 'Assigned', boolVal: schResource.Assigned });
+          schResource.HasConflictAltText = this.getAltText({ property: 'HasConflict', boolVal: schResource.HasConflict });
+
+          // Add ResourceID to each schedulerEvent and aggregate ALL schedulerEvents
           schResource.isAssignedTo.forEach(schEvent => {
             schEvent.ResourceID = schResource.Id;
             schedulerEvents.push(schEvent);
@@ -130,11 +138,6 @@ export class SchedulerComponent implements OnInit {
           this.filterAndDisplayResources({ filter: 'available', schedulerResources: this.schedulerStatus.currentResources });
         }
       },
-      {
-        label: 'alle', icon: 'pi pi-minus', command: () => {
-          this.filterAndDisplayResources({ filter: 'all', schedulerResources: this.schedulerStatus.currentResources });
-        }
-      }
     ];
   }
 
@@ -145,15 +148,11 @@ export class SchedulerComponent implements OnInit {
       this.schedulerStatus.currentResourceFilter = filter;
       switch (filter) {
         case 'assigned': {
-          this.resourceDataSource = schedulerResources.filter(arr => arr.State === 'assigned');
+          this.resourceDataSource = schedulerResources.filter(arr => arr.Assigned === true);
           break;
         }
         case 'available': {
-          this.resourceDataSource = schedulerResources.filter(arr => arr.State === 'available');
-          break;
-        }
-        case 'all': {
-          this.resourceDataSource = schedulerResources;
+          this.resourceDataSource = schedulerResources.filter(arr => arr.Assigned === false);
           break;
         }
       }
@@ -191,14 +190,6 @@ export class SchedulerComponent implements OnInit {
     this.schedulerEventTime = { start: start, end: end };
   }
 
-  getAltText(test: string): string {
-    if (test) { return test; }
-  }
-
-  getIcon(assigned: string): string {
-    if (assigned) { return assigned; }
-  }
-
   onResizeStart(args: ResizeEventArgs): void {
     args.interval = 15;
   }
@@ -208,4 +199,27 @@ export class SchedulerComponent implements OnInit {
     args.excludeSelectors = 'e-all-day-cells';
   }
 
+  // return icon depending on properties "assigned" and "hasConflict"
+  private getIcon({ property, boolVal }: { property: string, boolVal: boolean }): string {
+    let icon: string;
+    switch (property) {
+      case ('Assigned'): if (boolVal) { icon = 'pi pi-check'; break; } else { icon = 'pi pi-user-plus'; break; }
+      case ('HasConflict'): if (boolVal) { icon = 'pi pi-exclamation-triangle'; } else { icon = ''; }
+    }
+    return icon;
+  }
+
+  // return alternative text depending on properties "assigned" and "hasConflict"
+  private getAltText({ property, boolVal }: { property: string, boolVal: boolean }): string {
+    let altText: string;
+    switch (property) {
+      case ('Assigned'): if (boolVal) { altText = 'zugewiesen'; break; } else { altText = 'zuweisen'; break; }
+      case ('HasConflict'): if (boolVal) { altText = 'nicht verfügbar'; } else { altText = ''; }
+    }
+    return altText;
+  }
+
+  /* loadConfig(): void {
+    let config: Config = require('../../config/scheduler.config.json');
+  } */
 }

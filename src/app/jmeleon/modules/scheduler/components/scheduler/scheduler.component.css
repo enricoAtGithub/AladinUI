@@ -3,12 +3,12 @@ i.pi-check {
     font-size: 2.3em;
 }
 
-i.pi-times {
-    color: slategrey;
+i.pi-exclamation-triangle {
+    color:red;
     font-size: 2.3em;
 }
 
-i.pi-lock {
+i.pi-user-plus {
     color: slategrey;
     font-size: 2.3em;
 }

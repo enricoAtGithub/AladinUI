@@ -31,9 +31,9 @@
             <div class='template-wrap'>
                 <div class="resource-details">
                     <div class="resource-name">
-                        <!-- <i title="{{data.resourceData.AltText}}" class="{{data.resourceData.Icon}}"></i> -->
-                        <i [title]="getAltText(data.resourceData.AltText)"
-                            [class]="getIcon(data.resourceData.Icon)"></i>
+                        <i title="{{data.resourceData.HasConflictAltText}}"
+                            class="{{data.resourceData.HasConflictIcon}}"></i>
+                        <i title="{{data.resourceData.AssignedAltText}}" class="{{data.resourceData.AssignedIcon}}"></i>
                         {{data.resourceData.Name}}
                     </div>
                 </div>
