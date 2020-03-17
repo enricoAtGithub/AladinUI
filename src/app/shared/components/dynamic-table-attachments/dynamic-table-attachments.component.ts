@@ -115,28 +115,28 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
             this.noteTableData.triggerRefresh.next();
           }
         }
-      }
 
-      if (this.configuration.components.includes('FileAttachments')) {
-        if (!this.fileTableData) {
-          const dataSource = this.entityService
-            .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});
-          this.fileTableData = new TableData(
-            'FileAttachment', 'FileAttachment', false, false, false, false, false, dataSource, '175px', false);
-        } else {
-          this.fileTableData.dataSource  = this.entityService
-            .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});
-          this.fileTableData.triggerRefresh.next();
+        if (this.configuration.components.includes('FileAttachments')) {
+          if (!this.fileTableData) {
+            const dataSource = this.entityService
+              .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});
+            this.fileTableData = new TableData(
+              'FileAttachment', 'FileAttachment', false, false, false, false, false, dataSource, '175px', false);
+          } else {
+            this.fileTableData.dataSource  = this.entityService
+              .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});
+            this.fileTableData.triggerRefresh.next();
+          }
         }
-      }
 
-      if (this.configuration.components && this.configuration.components.includes('Attributes')) {
-        this.updateAttachments();
-      }
+        if (this.configuration.components.includes('Attributes')) {
+          this.updateAttachments();
+        }
 
-      if (this.configuration.components && this.configuration.components.includes('Notes')) {
-        this.entityService.getAttachments('note', this.configuration.type, this.entryId).subscribe(response =>
-          this.allNotes = response['data']);
+        if (this.configuration.components.includes('Notes')) {
+          this.entityService.getAttachments('note', this.configuration.type, this.entryId).subscribe(response =>
+            this.allNotes = response['data']);
+        }
       }
 
       if (this.groupConfigurations) {
