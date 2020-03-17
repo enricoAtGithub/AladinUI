@@ -39,7 +39,10 @@ class TestActionTree2 {
 }
 
 describe('JmeleonPermissionService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    console.log('JmeleonPermissionService-beforeEach==========================================================================================================================================================================');
+  });
 
   it('should be created', () => {
     const service: JmeleonActionsPermissionService = TestBed.get(JmeleonActionsPermissionService);

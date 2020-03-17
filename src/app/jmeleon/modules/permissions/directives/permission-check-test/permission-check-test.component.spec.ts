@@ -124,4 +124,13 @@ describe('PermissionCheckTestComponent', () => {
     expect(true).toBeTruthy();
   });
 
+  // it('should work with initializing all manually', () => {
+  //   const s = new JmeleonActionsPermissionService();
+  //   s.initializeDict(PermissionCheckTestComponentTestTree);
+  //   s.initActionsPermittedForCurrentUser(userActionPermissions);
+  //   // const d = new PermissionCheckDirective()
+  //   TestBed.overrideDirective(PermissionCheckDirective, {});
+
+  // });
+
 });

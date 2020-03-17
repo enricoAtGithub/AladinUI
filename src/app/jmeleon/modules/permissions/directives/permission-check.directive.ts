@@ -29,15 +29,17 @@ export class PermissionCheckDirective implements OnInit, OnDestroy {
   }
 
   check(path: Function|Object): void {
+    this.vcRef.clear();
     if (this.permissionService.userHasPermissionForAction(path)) {
       console.log('user HAS permissions for: ', path);
-      this.vcRef.clear();
+      // this.vcRef.clear();
       this.vcRef.createEmbeddedView(this.tRef);
-    } else {
-      console.log('user has no permissions for: ', this.permissionService.getActionStringFromFunction(path));
-      console.log('action-list:', this.permissionService.actionsList);
-      console.log('permitted-action-list:', this.permissionService.permittedActionsList);
-      this.vcRef.clear();
     }
+    // else {
+    //   console.log('user has no permissions for: ', this.permissionService.getActionStringFromFunction(path));
+    //   console.log('action-list:', this.permissionService.actionsList);
+    //   console.log('permitted-action-list:', this.permissionService.permittedActionsList);
+    //   // this.vcRef.clear();
+    // }
   }
 }

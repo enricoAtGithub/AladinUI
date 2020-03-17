@@ -61,6 +61,11 @@ export class JmeleonActionsPermissionService {
     this._initialized = true;
   }
 
+  reset(): void {
+    this._initialized = false;
+    this._actionDict = [];
+  }
+
   initActionsPermittedForCurrentUser(actions: string[]): void {
 
     // remove star-suffix from node-paths so that they can be matched with full action paths.

@@ -38,4 +38,4 @@ export const action = () => new BaseGuiAction();
 // const testAction = action();
 // testAction.type;
 
-
+export type PermissionTreeElement = Function | Object;

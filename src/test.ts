@@ -23,7 +23,9 @@ getTestBed().initTestEnvironment(
 // test only one spec file (https://stackoverflow.com/questions/40683673/how-to-execute-only-one-test-spec-with-angular-cli)
 // const context = require.context('./', true, /jmeleon-actions-permission.service\.spec\.ts$/);
 // const context = require.context('./', true, /jmeleon-actions.utils\.spec\.ts$/);
-const context = require.context('./', true, /permission-check-test.component\.spec\.ts$/);
+// const context = require.context('./', true, /permission-check-test.component\.spec\.ts$/);
+const context = require.context('./', true, /permission-check.directive\.spec\.ts$/);
+
 
 
 
