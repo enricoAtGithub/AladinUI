@@ -1,4 +1,4 @@
-import { BranchFlags, BaseGuiAction } from '../models/node-types.model';
+import { BranchFlags, BaseGuiAction, PermissionTreeElement } from '../models/node-types.model';
 import StringUtils from 'src/app/shared/utils/string.utils';
 
 export default class JMeleonActionsUtils {
@@ -86,6 +86,10 @@ export default class JMeleonActionsUtils {
         action.endsWith(JMeleonActionsUtils.GRAND_RIGHTS_TO_ALL_CHILDREN_SUFFIX) ?
             action.substring(0, action.length - (JMeleonActionsUtils.GRAND_RIGHTS_TO_ALL_CHILDREN_SUFFIX.length + 1)) :
             action
+
+    // static isPermissionTreeElement = (element: any) : element is PermissionTreeElement => typeof (element) === 'PermissionTreeElement';
+    static isPermissionTreeElement = (element: any): element is PermissionTreeElement =>
+        typeof (element) === 'function' || typeof (element) === 'object'
 
 
 

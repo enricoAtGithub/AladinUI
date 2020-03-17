@@ -1,20 +1,16 @@
-import { Directive, ElementRef, Renderer2, OnDestroy, OnInit, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, ElementRef, Renderer2, OnDestroy, OnInit, Input, TemplateRef, ViewContainerRef, OnChanges, SimpleChanges } from '@angular/core';
 import { JmeleonActionsPermissionService } from '../services/jmeleon-actions-permission.service';
 import JMeleonActionsUtils from '../utils/jmeleon-actions.utils';
+import { PermissionTreeElement } from '../models/node-types.model';
 
 @Directive({
-  selector: '[appPermissionCheck]',
-  // providers: [JmeleonActionsPermissionService]
+  selector: '[appPermissionCheck]'
 })
-export class PermissionCheckDirective implements OnInit, OnDestroy {
-  // is there any useful default value? probably not.
-  // can we here use function even when a leaf is provided? maybe a union type? (also for service)
-  // @Input('appPermissionCheck') actionPath: Function;
+export class PermissionCheckDirective implements OnInit, OnDestroy, OnChanges {
+
   private _actionPath: Function|Object;
-  @Input('appPermissionCheck') set actionPath(path: Function|Object) {
-    this._actionPath = path;
-    this.check(path);
-  }
+
+  @Input('appPermissionCheck') actionPath: PermissionTreeElement;
 
   constructor(
     private tRef: TemplateRef<any>,
@@ -24,6 +20,17 @@ export class PermissionCheckDirective implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.check(this._actionPath);
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    // should we even support changes in the path???
+    const actionPath = changes.actionPath;
+    if (actionPath) {
+      this._actionPath = actionPath.currentValue;
+      if (actionPath.firstChange) {
+        return;
+      }
+      this.check(actionPath.currentValue);
+    }
+  }
   ngOnDestroy(): void {
     // subscription? or else remove this.
   }
@@ -32,14 +39,7 @@ export class PermissionCheckDirective implements OnInit, OnDestroy {
     this.vcRef.clear();
     if (this.permissionService.userHasPermissionForAction(path)) {
       console.log('user HAS permissions for: ', path);
-      // this.vcRef.clear();
       this.vcRef.createEmbeddedView(this.tRef);
     }
-    // else {
-    //   console.log('user has no permissions for: ', this.permissionService.getActionStringFromFunction(path));
-    //   console.log('action-list:', this.permissionService.actionsList);
-    //   console.log('permitted-action-list:', this.permissionService.permittedActionsList);
-    //   // this.vcRef.clear();
-    // }
   }
 }
