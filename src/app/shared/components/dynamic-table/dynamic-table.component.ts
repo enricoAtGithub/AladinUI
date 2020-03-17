@@ -85,7 +85,6 @@ export class DynamicTableComponent implements OnInit {
 
     this.lastLazyLoadEvent = event;
     this.loading = true;
-    this.cd.detectChanges();
 
     let sorting = '';
     let qualifier = '';
