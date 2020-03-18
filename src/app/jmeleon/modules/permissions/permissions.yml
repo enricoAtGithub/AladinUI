@@ -1,0 +1,19 @@
+- foo:
+  - hossa
+
+- dto:
+  - $dtoType:      # $dtoType is a placeholder for any DTO Type like Order, User, ...
+    - $dtoField:   # $dtoField represents a certain field available on the particular DTO Type
+      - create
+      - read
+      - write
+- foo:
+  - bar:
+    - one
+    - two
+  - leaf
+  # - ignore
+  - baz:
+    - three
+    - four
+
