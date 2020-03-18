@@ -18,21 +18,36 @@ div.resource-name {
     align-items:center;
 }
 
+/* ### BEGIN primeng MultiSelect  */
+:host ::ng-deep .ui-multiselected-item-token,
+:host ::ng-deep .ui-multiselected-empty-token {
+    padding: 2px 4px;
+    margin: 0 0.286em 0 0;
+    display: inline-block;
+    vertical-align:middle;
+    height: 1.857em;
+}
 
-        :host ::ng-deep .ui-splitbutton {
-            margin-right: .25em;
-        }
-        :host ::ng-deep .ui-toast {
-            top: 80px;
-        }
-        :host ::ng-deep .news-active .ui-toast {
-            top: 150px;
-        }
-        @media screen and (max-width: 64em) {
-            :host ::ng-deep .ui-toast {
-                top: 110px;
-            }
-            :host ::ng-deep .news-active .ui-toast {
-                top: 180px;
-            }
-        }
+:host ::ng-deep .ui-multiselect-label-container {
+    background:#275885;
+    color: #ffffff;
+    width: 160px;
+    font-weight: bold;            
+}
+
+:host ::ng-deep .ui-multiselect-trigger-icon {
+    color: #275885;
+    font-weight: bold;
+}
+
+:host ::ng-deep .ui-multiselect-panel .ui-multiselect-items .ui-multiselect-item.ui-state-highlight {
+    color: black;
+    background-color: white;        
+}
+
+:host ::ng-deep .ui-chkbox .ui-chkbox-box.ui-state-active {
+    border-color: #275885;
+    background-color: #275885;
+    color: #ffffff;
+}
+/* primeng MultiSelect END ### */

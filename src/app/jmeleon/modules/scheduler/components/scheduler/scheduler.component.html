@@ -16,8 +16,11 @@
 
 
 <p [hidden]="!showResourceScheduler">
-    <p-splitButton label="Ressourcen filtern" icon="pi pi-filter" [model]="resourceFilterItems">
-    </p-splitButton>
+    <p-multiSelect [options]="resourceFilter" [(ngModel)]="selectedResources" [panelStyle]="{minWidth:'20em'}"
+        [displaySelectedLabel]="false" [filter]="false" [defaultLabel]="'Ressourcen filtern'"
+        (onChange)="setResourceFilter($event.value)">
+    </p-multiSelect>
+
     <ejs-schedule [eventSettings]="resourceSchedulerObject" [currentView]="setResourceSchedulerView" [group]="groupData"
         [rowAutoHeight]="true" [selectedDate]="selectedDateResourceScheduler" [workHours]="schedulerEventTime"
         [allowDragAndDrop]="false" [allowResizing]="false">
@@ -31,10 +34,10 @@
             <div class='template-wrap'>
                 <div class="resource-details">
                     <div class="resource-name">
+                        <i title="{{data.resourceData.AssignedAltText}}" class="{{data.resourceData.AssignedIcon}}"></i>
+                        {{data.resourceData.Name}} &nbsp;&nbsp;
                         <i title="{{data.resourceData.HasConflictAltText}}"
                             class="{{data.resourceData.HasConflictIcon}}"></i>
-                        <i title="{{data.resourceData.AssignedAltText}}" class="{{data.resourceData.AssignedIcon}}"></i>
-                        {{data.resourceData.Name}}
                     </div>
                 </div>
             </div>

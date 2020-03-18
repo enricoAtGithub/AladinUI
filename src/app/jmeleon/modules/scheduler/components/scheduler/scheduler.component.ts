@@ -15,7 +15,7 @@ import {
 import { SchedulerService } from '../../services/scheduler.service';
 import { SchedulerEvent } from '../../models/scheduler-event';
 import { SchedulerResource } from '../../models/scheduler-resource';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, SelectItem } from 'primeng/api';
 import { BreadcrumbService } from '../../../../../breadcrumb.service';
 import DateTimeUtils from 'src/app/shared/utils/date-time.utils';
 
@@ -29,6 +29,7 @@ export class SchedulerComponent implements OnInit {
   constructor(
     private breadcrumbService: BreadcrumbService,
     private schedulerService: SchedulerService
+
   ) {
     this.breadcrumbService.setItems([
       { label: 'Einsatzplanung' }
@@ -46,16 +47,26 @@ export class SchedulerComponent implements OnInit {
   resourceDataSource: Object[];
   resourceFilterItems: MenuItem[] = [];
 
+  // multiselect
+  resourcesFilterItems: SelectItem[];
+  selectedResources: string[] = [];
+
   private schedulerStatus: {
     currentSchedulerEvent: SchedulerEvent,
     currentResources: SchedulerResource[],
-    currentResourceFilter: string
+    currentResourceFilter: string[]
   };
 
   groupData: GroupModel = {
     resources: ['Resources']
     //   allowGroupEdit: true
   };
+
+  resourceFilter: SelectItem[] = [
+    { label: 'eingeteilt', value: 'eingeteilt' },
+    { label: 'verfügbar', value: 'verfügbar' },
+    { label: 'indisponibel', value: 'indisponibel' }
+  ];
 
   ngOnInit() {
     this.schedulerStatus = { currentSchedulerEvent: null, currentResources: null, currentResourceFilter: null };
@@ -76,13 +87,10 @@ export class SchedulerComponent implements OnInit {
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);
 
     // set global scheduler status
-    this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResources: null, currentResourceFilter: 'assigned' };
+    this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResources: null, currentResourceFilter: ['eingeteilt'] };
 
     // get all resources with State (assigned, available, blocked) depending on clicked event
-    this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter: 'assigned' });
-
-    // initialize Resource filter
-    this.setResourcefilterItems(this.schedulerStatus.currentResources);
+    this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter: ['eingeteilt'] });
 
     // show times outside of event time in grey
     this.setTimeFrameForCurrentSchedulerEvent(schedulerEvent);
@@ -93,14 +101,14 @@ export class SchedulerComponent implements OnInit {
   }
 
   // get resources and events for the Resourcescheduler (at the bottom)
-  private getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter = 'assigned' }: { schedulerEvent: SchedulerEvent; filter?: string; }): void {
+  private getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter = ['eingeteilt'] }: { schedulerEvent: SchedulerEvent; filter?: string[]; }): void {
     this.schedulerService.getSchedulerResources(schedulerEvent.Id)
       .subscribe(schedulerResources => {
         // set global scheduler status
         this.schedulerStatus.currentResources = schedulerResources;
 
         // filter and display resources assigned to clicked event
-        this.filterAndDisplayResources({ filter, schedulerResources });
+        this.filterAndDisplayResources(['eingeteilt']);
 
         // modify/enrich scheduler resources server response
         // Todo: refactor using flatmap
@@ -125,37 +133,29 @@ export class SchedulerComponent implements OnInit {
       });
   }
 
-  // set filter options in resource scheduler ("Ressourcen filtern")
-  private setResourcefilterItems(schedulerResources: SchedulerResource[]): void {
-    this.resourceFilterItems = [
-      {
-        label: 'zugewiesen', icon: 'pi pi-minus', command: () => {
-          this.filterAndDisplayResources({ filter: 'assigned', schedulerResources: this.schedulerStatus.currentResources });
-        }
-      },
-      {
-        label: 'verfügbar', icon: 'pi pi-minus', command: () => {
-          this.filterAndDisplayResources({ filter: 'available', schedulerResources: this.schedulerStatus.currentResources });
-        }
-      },
-    ];
+  setResourceFilter(filter: string[]) {
+    this.filterAndDisplayResources(filter);
   }
 
-  // determine resources based on filter set in GUI
-  private filterAndDisplayResources({ filter, schedulerResources }: { filter: string; schedulerResources: SchedulerResource[]; }): void {
+  private filterAndDisplayResources(filter: string[]): void {
     this.resourceDataSource = [];
-    if (schedulerResources) {
+    if (this.schedulerStatus.currentResources) {
       this.schedulerStatus.currentResourceFilter = filter;
-      switch (filter) {
-        case 'assigned': {
-          this.resourceDataSource = schedulerResources.filter(arr => arr.Assigned === true);
-          break;
+      filter.forEach(filter => {
+        switch (filter) {
+          case 'eingeteilt': {
+            this.resourceDataSource = this.resourceDataSource.concat(<SchedulerResource[]>(this.schedulerStatus.currentResources.filter(arr => arr.Assigned === true)));
+            break;
+          }
+          case 'verfügbar': {
+            this.resourceDataSource = this.resourceDataSource.concat(this.schedulerStatus.currentResources.filter(arr => arr.Assigned === false).filter(arr2 => arr2.HasConflict === false));
+            break;
+          }
+          case 'indisponibel': {
+            this.resourceDataSource = this.resourceDataSource.concat(this.schedulerStatus.currentResources.filter(arr => arr.HasConflict === true).filter(arr2 => arr2.HasConflict === true));
+          }
         }
-        case 'available': {
-          this.resourceDataSource = schedulerResources.filter(arr => arr.Assigned === false);
-          break;
-        }
-      }
+      });
     }
   }
 
