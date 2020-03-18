@@ -23,6 +23,10 @@ class TestActionTree2 {
             static read = action();
 
          };
+         static subTestB = class {
+          static read = action();
+
+       };
       };
       static same1 = class {
           static test = class {
@@ -41,7 +45,7 @@ class TestActionTree2 {
 describe('JmeleonPermissionService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    console.log('JmeleonPermissionService-beforeEach==========================================================================================================================================================================');
+    // console.log('JmeleonPermissionService-beforeEach==========================================================================================================================================================================');
   });
 
   it('should be created', () => {

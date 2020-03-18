@@ -17,15 +17,23 @@ export class PermissionCheckTestComponentTestTree {
   };
 }
 
+/**
+ <div *appPermissionCheck="dto.$dtoType.read" appPermission>
+ </div>
+ */
+
 describe('PermissionCheckDirective', () => {
   @Component({
     selector: 'app-permission-test-comp',
-    template: ` <ng-template [appPermissionCheck]="permission">
+    template: ` <ng-template [appPermissionCheck]="'permission'" readOnly >
                     <div>123</div>
                 </ng-template>`
   })
   class TestComponent {
-    permission: PermissionTreeElement = PermissionCheckTestComponentTestTree.jmeleon.invoice.invoiceList.read;
+    root: PermissionTreeElement = PermissionCheckTestComponentTestTree.jmeleon.invoice;
+    // permission: PermissionTreeElement = PermissionCheckTestComponentTestTree.jmeleon.invoice.invoiceList.read;
+    // permission: PermissionTreeElement = this.root.invoiceList.read;
+
 
   }
 

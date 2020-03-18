@@ -11,6 +11,7 @@ export class PermissionCheckDirective implements OnInit, OnDestroy, OnChanges {
   private _actionPath: Function|Object;
 
   @Input('appPermissionCheck') actionPath: PermissionTreeElement;
+  // input apppermissionreadnly
 
   constructor(
     private tRef: TemplateRef<any>,

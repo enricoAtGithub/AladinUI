@@ -4,6 +4,7 @@ import { GuiAction, BranchFlags, action } from '../models/node-types.model';
 
 export default class PCJemeleon {
     static dto = class {
+        static nodeName:  'dto';
         static $dtoType = class {
             static $dtoField = class {
                 static flags: BranchFlags = BranchFlags.None;
@@ -11,7 +12,6 @@ export default class PCJemeleon {
                 static read = action();
                 static write = action();
                 static delete = action();
-                static test2 = '';
             };
         };
         static test = class {
