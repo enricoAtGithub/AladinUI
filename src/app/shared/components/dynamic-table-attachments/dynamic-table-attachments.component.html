@@ -58,13 +58,15 @@
       </div>
     </p-tabPanel>
 
-    <p-tabPanel *ngIf="this.configuration?.components?.includes('LogEntries')" header="Logbuch" [selected]="true">
+    <p-tabPanel *ngIf="this.configuration?.components?.includes('LogEntries')" header="Logbuch"
+    [selected]="this.configuration.components[0] === 'LogEntries' && this.configuration.groups === null">
       <div style="height: 250px">
         <app-dynamic-table #logsTable *ngIf="logTableData" [tableData]="logTableData"></app-dynamic-table>
       </div>
     </p-tabPanel>
 
-    <p-tabPanel *ngIf="this.configuration?.components?.includes('Notes')" header="Notizen">
+    <p-tabPanel *ngIf="this.configuration?.components?.includes('Notes')" header="Notizen"
+    [selected]="this.configuration.components[0] === 'LogEntries' && this.configuration.groups === null">
       <div style="height: 250px">
         <app-dynamic-table #notesTable class="ui-g-6" style="padding: 0px" *ngIf="noteTableData" [tableData]="noteTableData" (onEntitySelection)="noteSelected($event)"></app-dynamic-table>
         <div *ngIf="selectedNote" class="ui-g-6" style="padding: 7px">
@@ -83,7 +85,8 @@
       </div>
     </p-tabPanel>
 
-    <p-tabPanel *ngIf="this.configuration?.components?.includes('Attributes')" header="Attribute">
+    <p-tabPanel *ngIf="this.configuration?.components?.includes('Attributes')" header="Attribute"
+    [selected]="this.configuration.components[0] === 'LogEntries' && this.configuration.groups === null">
       <div style="height: 250px">
         <p-table [value]="attributes" dataKey="id" editMode="row">
           <ng-template pTemplate="header">
@@ -147,7 +150,8 @@
       </div>
     </p-tabPanel>
 
-    <p-tabPanel *ngIf="this.configuration?.components?.includes('FileAttachments')" header="Dateianhänge" [selected]="true">
+    <p-tabPanel *ngIf="this.configuration?.components?.includes('FileAttachments')" header="Dateianhänge"
+    [selected]="this.configuration.components[0] === 'LogEntries' && this.configuration.groups === null">
       <div style="height: 250px">
         <p-table>
           <ng-template pTemplate="caption">
