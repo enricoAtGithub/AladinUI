@@ -4,8 +4,7 @@
     [options]="catalogItems" 
     [(ngModel)]="selectedItem"
     (onChange)="onApplySelection()" 
-    class="attachment-dropdown" 
-    autoWidth="false" 
+    class="attachment-dropdown"
     [style]="{'width':'100%'}"></p-dropdown>
   
   <p-message *ngIf="showErrMsg" severity="warn" [text]="errMsg"></p-message>
