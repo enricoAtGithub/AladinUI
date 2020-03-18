@@ -146,6 +146,15 @@ export class SchedulerComponent implements OnInit {
           (filter.includes('available') && isAvailable(schRes)) ||
           (filter.includes('hasConflict') && hasConflict(schRes));
       });
+
+      // sorting: Prio 1: assigned resources Prio 2: name
+      this.resourceDataSource.sort((schRes1: SchedulerResource, schRes2: SchedulerResource) => {
+        if (schRes1.Assigned && !schRes2.Assigned) { return -1; }
+        if (schRes2.Assigned && !schRes1.Assigned) { return 1; }
+        if (schRes1.Name < schRes2.Name) { return -1; }
+        if (schRes1.Name > schRes2.Name) { return 1; }
+        return 0;
+      });
     }
   }
 
