@@ -2,13 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {
   View,
   EventSettingsModel,
-  TimeScaleModel,
   DragEventArgs,
   ResizeEventArgs,
   GroupModel,
   EventClickArgs,
-  ScheduleComponent,
-  EJ2Instance,
   WorkHoursModel
 } from '@syncfusion/ej2-angular-schedule';
 
@@ -47,7 +44,6 @@ export class SchedulerComponent implements OnInit {
   resourceDataSource: Object[];
   resourceFilterItems: MenuItem[] = [];
 
-  // multiselect
   resourcesFilterItems: SelectItem[];
   selectedResources: string[] = [];
 
@@ -63,9 +59,9 @@ export class SchedulerComponent implements OnInit {
   };
 
   resourceFilter: SelectItem[] = [
-    { label: 'eingeteilt', value: 'eingeteilt' },
-    { label: 'verfügbar', value: 'verfügbar' },
-    { label: 'indisponibel', value: 'indisponibel' }
+    { label: 'eingeteilt', value: 'assigned' },
+    { label: 'verfügbar', value: 'available' },
+    { label: 'indisponibel', value: 'hasConflict' }
   ];
 
   ngOnInit() {
@@ -87,10 +83,10 @@ export class SchedulerComponent implements OnInit {
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);
 
     // set global scheduler status
-    this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResources: null, currentResourceFilter: ['eingeteilt'] };
+    this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResources: null, currentResourceFilter: ['assigned'] };
 
     // get all resources with State (assigned, available, blocked) depending on clicked event
-    this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter: ['eingeteilt'] });
+    this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter: ['assigned'] });
 
     // show times outside of event time in grey
     this.setTimeFrameForCurrentSchedulerEvent(schedulerEvent);
@@ -101,14 +97,14 @@ export class SchedulerComponent implements OnInit {
   }
 
   // get resources and events for the Resourcescheduler (at the bottom)
-  private getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter = ['eingeteilt'] }: { schedulerEvent: SchedulerEvent; filter?: string[]; }): void {
+  private getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter = ['asigned'] }: { schedulerEvent: SchedulerEvent; filter?: string[]; }): void {
     this.schedulerService.getSchedulerResources(schedulerEvent.Id)
       .subscribe(schedulerResources => {
         // set global scheduler status
         this.schedulerStatus.currentResources = schedulerResources;
 
         // filter and display resources assigned to clicked event
-        this.filterAndDisplayResources(['eingeteilt']);
+        this.filterAndDisplayResources(['assigned']);
 
         // modify/enrich scheduler resources server response
         // Todo: refactor using flatmap
@@ -141,20 +137,14 @@ export class SchedulerComponent implements OnInit {
     this.resourceDataSource = [];
     if (this.schedulerStatus.currentResources) {
       this.schedulerStatus.currentResourceFilter = filter;
-      filter.forEach(filter => {
-        switch (filter) {
-          case 'eingeteilt': {
-            this.resourceDataSource = this.resourceDataSource.concat(<SchedulerResource[]>(this.schedulerStatus.currentResources.filter(arr => arr.Assigned === true)));
-            break;
-          }
-          case 'verfügbar': {
-            this.resourceDataSource = this.resourceDataSource.concat(this.schedulerStatus.currentResources.filter(arr => arr.Assigned === false).filter(arr2 => arr2.HasConflict === false));
-            break;
-          }
-          case 'indisponibel': {
-            this.resourceDataSource = this.resourceDataSource.concat(this.schedulerStatus.currentResources.filter(arr => arr.HasConflict === true).filter(arr2 => arr2.HasConflict === true));
-          }
-        }
+      const isAssigned = schRes => schRes.Assigned;
+      const isAvailable = schRes => !schRes.Assigned && !schRes.HasConflict;
+      const hasConflict = schRes => !schRes.Assigned && schRes.HasConflict;
+
+      this.resourceDataSource = this.schedulerStatus.currentResources.filter(schRes => {
+        return (filter.includes('assigned') && isAssigned(schRes)) ||
+          (filter.includes('available') && isAvailable(schRes)) ||
+          (filter.includes('hasConflict') && hasConflict(schRes));
       });
     }
   }
@@ -203,7 +193,7 @@ export class SchedulerComponent implements OnInit {
   private getIcon({ property, boolVal }: { property: string, boolVal: boolean }): string {
     let icon: string;
     switch (property) {
-      case ('Assigned'): if (boolVal) { icon = 'pi pi-check'; break; } else { icon = 'pi pi-user-plus'; break; }
+      case ('Assigned'): if (boolVal) { icon = 'pi pi-user-minus'; break; } else { icon = 'pi pi-user-plus'; break; }
       case ('HasConflict'): if (boolVal) { icon = 'pi pi-exclamation-triangle'; } else { icon = ''; }
     }
     return icon;
@@ -213,8 +203,8 @@ export class SchedulerComponent implements OnInit {
   private getAltText({ property, boolVal }: { property: string, boolVal: boolean }): string {
     let altText: string;
     switch (property) {
-      case ('Assigned'): if (boolVal) { altText = 'zugewiesen'; break; } else { altText = 'zuweisen'; break; }
-      case ('HasConflict'): if (boolVal) { altText = 'nicht verfügbar'; } else { altText = ''; }
+      case ('Assigned'): if (boolVal) { altText = 'Zuordnung lösen'; break; } else { altText = 'einteilen'; break; }
+      case ('HasConflict'): if (boolVal) { altText = 'Konflikt'; } else { altText = ''; }
     }
     return altText;
   }
