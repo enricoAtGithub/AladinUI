@@ -16,7 +16,7 @@ import { AppLayoutComponent } from './app-layout.component';
         </div>
         <div class="ui-g">
             <div class="ui-g-12 ui-md-6">
-                <p-dropdown [options]="themes" [(ngModel)]="selectedTheme" [autoWidth]="false"></p-dropdown>
+                <p-dropdown [options]="themes" [(ngModel)]="selectedTheme"></p-dropdown>
             </div>
             <div class="ui-g-12 ui-md-6">
                 <p-button type="submit" style="float: right" icon="pi pi-user-plus" iconPos="left" label="Speichern" (click)="changeTheme();"></p-button>
