@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import PCC from '../config/permission-config-combined';
 import JMeleonActionsUtils from '../utils/jmeleon-actions.utils';
 import { _runtimeChecksFactory } from '@ngrx/store/src/runtime_checks';
 import { NgxPermissionsService } from 'ngx-permissions';
@@ -17,6 +16,7 @@ export class JmeleonActionsPermissionService {
   }
 
   initActionsPermittedForCurrentUser(actions: string[]): void {
+     console.log('adding permission for actions: ', actions);
       this.ngrxPermissionService.addPermission(actions);
   }
 
@@ -28,4 +28,6 @@ export class JmeleonActionsPermissionService {
     // converting promise into observable
     return defer(() => this.ngrxPermissionService.hasPermission(action));
   }
+
+  resolveVars = (path: string, dict: object): string => JMeleonActionsUtils.resolveVars(path, dict);
 }

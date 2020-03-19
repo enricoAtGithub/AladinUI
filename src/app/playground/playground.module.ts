@@ -6,6 +6,7 @@ import { PlaygroundRoutingModule } from './playground-routing.module';
 import { PermissionTestComponent } from './permission-test/permission-test.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { SharedModule } from '../shared/shared.module';
+import { PermissionsModule } from '../jmeleon/modules/permissions/permissions.module';
 
 @NgModule({
   declarations: [BaseAreaComponent, PermissionTestComponent],
@@ -13,7 +14,8 @@ import { SharedModule } from '../shared/shared.module';
     CommonModule,
     PlaygroundRoutingModule,
     SharedModule,
-    NgxPermissionsModule.forChild()
+    NgxPermissionsModule.forChild(),
+    PermissionsModule
   ]
 })
 export class PlaygroundModule { }

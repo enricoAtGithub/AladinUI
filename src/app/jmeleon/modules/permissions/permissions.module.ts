@@ -8,6 +8,7 @@ import { PermissionCheckDirective } from './directives/permission-check.directiv
   declarations: [PermissionCheckDirective],
   imports: [
     CommonModule
-  ]
+  ],
+  exports: [PermissionCheckDirective]
 })
 export class PermissionsModule { }

@@ -33,6 +33,8 @@ import { PictureDialogComponent } from './components/picture-dialog/picture-dial
 import { EntityDropdownComponent } from './components/entity-dropdown/entity-dropdown.component';
 import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { JmeleonModule } from '../jmeleon/jmeleon.module';
+import { PermissionsModule } from '../jmeleon/modules/permissions/permissions.module';
 
 @NgModule({
   declarations: [
@@ -70,7 +72,8 @@ import { NgxPermissionsModule } from 'ngx-permissions';
     OverlayPanelModule,
     EditorModule,
     ScrollPanelModule,
-    NgxPermissionsModule
+    NgxPermissionsModule,
+    PermissionsModule
   ],
   entryComponents: [
     EntityDialogComponent,
@@ -83,7 +86,8 @@ import { NgxPermissionsModule } from 'ngx-permissions';
     AttachmentListComponent,
     CatalogueChooserDialogComponent,
     EntityDropdownComponent,
-    NgxPermissionsModule
+    NgxPermissionsModule,
+    PermissionsModule
   ],
   providers: [
     EntityService,

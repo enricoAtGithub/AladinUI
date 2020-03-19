@@ -1,31 +1,71 @@
-import { Directive, ElementRef, Renderer2, OnDestroy, OnInit, Input, TemplateRef, ViewContainerRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Directive, OnInit, Input, TemplateRef, ViewContainerRef,
+  ChangeDetectorRef } from '@angular/core';
+import { NgxPermissionsDirective, NgxPermissionsService, NgxPermissionsConfigurationService,
+  NgxRolesService } from 'ngx-permissions';
+import { SelectMultipleControlValueAccessor } from '@angular/forms';
 import { JmeleonActionsPermissionService } from '../services/jmeleon-actions-permission.service';
 import JMeleonActionsUtils from '../utils/jmeleon-actions.utils';
-import { PermissionTreeElement } from '../models/node-types.model';
+// import { NgxPermissionsDirective, NgxPermissionsService,
+//   NgxPermissionsConfigurationService, NgxRolesService } from 'ngx-permissions/lib';
+
 
 @Directive({
-  selector: '[appPermissionCheck]'
+  selector: '[appPermissionCheck]',
+  exportAs: 'appPermissionCheck',
+  // inputs: ['ngxPermissionsOnlyThen']
 })
-export class PermissionCheckDirective implements OnInit {
+export class PermissionCheckDirective extends NgxPermissionsDirective implements OnInit {
+  _jmlVarDict: Object;
 
-  @Input('appPermissionCheck') actionPath: string;
 
-  @Input() jmlVarDict: Object;
+  // @Input('appPermissionCheck') actionPath: string;
+  @Input('appPermissionCheck') set actionPath(value: string|string[]) {
+    console.log('value was set.', value);
+    console.log('dict (for appPermissionCheck): ', this._jmlVarDict);
+    this.ngxPermissionsOnly = value;
 
-  constructor(
-    private tRef: TemplateRef<any>,
-    private vcRef: ViewContainerRef,
-    private permissionService: JmeleonActionsPermissionService) { }
-
-  ngOnInit(): void {
-    this.check(this.actionPath);
   }
 
-  check(path: string, jmlVarDict: Object = null): void {
-    this.vcRef.clear();
-    if (this.permissionService.userHasPermissionForAction(path, jmlVarDict)) {
-      console.log('user HAS permissions for: ', path);
-      this.vcRef.createEmbeddedView(this.tRef);
-    }
+  @Input('appPermissionCheckElse') set permCheckElse(value: TemplateRef<any>) {
+    this.ngxPermissionsElse = value;
+  }
+
+  // @Input() set jmlVarDict(dict: Object) {
+  //   console.log('dict was set to: ', dict);
+  //   this._jmlVarDict = dict;
+  // }
+  // @Input() appPermissionCheckVarDict: Object;
+  @Input() set appPermissionCheckVarDict(dict: Object) {
+      console.log('dict was set to: ', dict);
+      this._jmlVarDict = dict;
+      this.ngxPermissionsOnly = JMeleonActionsUtils.resolveVars(
+        // multiple permissions are not supported by the jmeleon permission concept
+        typeof(this.ngxPermissionsOnly) === 'string' ? this.ngxPermissionsOnly : this.ngxPermissionsOnly[0], dict);
+
+  }
+
+
+  /**
+   *
+   */
+  constructor(
+    permissionsService: NgxPermissionsService,
+    configurationService: NgxPermissionsConfigurationService,
+    rolesService: NgxRolesService,
+    viewContainer: ViewContainerRef,
+    changeDetector: ChangeDetectorRef,
+    templateRef: TemplateRef<any>,
+    private jmlPermissionService: JmeleonActionsPermissionService
+    ) {
+    super(permissionsService, configurationService, rolesService, viewContainer, changeDetector, templateRef);
+  }
+
+  ngOnInit() {
+    console.log('ng on init start');
+    console.log('dict: ', this._jmlVarDict);
+    super.ngOnInit();
+    // this.ngxPermissionsOnly = this.actionPath;
+    console.log('ng on init stop');
+    console.log('dict: ', this._jmlVarDict);
   }
 }

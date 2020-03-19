@@ -1,4 +1,38 @@
 <h2>Permission-Usability-Checks</h2>
-
+<!-- 
 <div *ngxPermissionsOnly="'default.permCheck.seeFirstParagraph'; else failure1">You should see this (1)</div>
 <ng-template #failure1>You should not see this (1)</ng-template>
+
+<div *appPermissionCheck="'default.$check.seeFirstParagraph'" jmlVarDict="{'$check': 'permCheck'}">You should see this (2)</div>
+<ng-template #failure2>You should not see this (2)</ng-template> 
+
+<div *ngxPermissionsOnly="'doesNotExist'">You should not see this (doesNotExist)</div>
+
+<div *ngxPermissionsOnly="checkPermission('default.$check.seeFirstParagraph', {'$check': 'permCheck'})">
+    You should see this (checkPermission)</div>
+
+
+    <div *ngxPermissionsOnly="checkPermission('default.$check.seeFirstParagraph', {'$check': 'fooCheck'})">
+        You should not see this (checkPermission)</div>
+    
+<div *ngxPermissionsOnly="japs.resolveVars('default.$check.seeFirstParagraph', {'$check': 'permCheck'})">
+    You should see this (service.resolveVar)</div> -->
+
+    
+<!-- <div *appPermissionCheck="'default.1permCheck.seeFirstParagraph';else failure3" >You should see this (3!)</div>
+<ng-template #failure3>You should not see this (3)</ng-template> 
+
+<div *appPermissionCheck="'a'" >You should see this (appPermissionCheck)</div>
+<div *ngxPermissionsOnly="'a'" >You should see this (ngxPermissionsOnly)</div> -->
+
+<!-- <div *appPermissionCheck="'a'" [appPermissionCheckVarDict]="{'$check': 'permCheck'}">You should see this (appPermissionCheck)</div> -->
+
+<!-- <ng-template [appPermissionCheck]="'a'" [appPermissionCheckVarDict]="{'$check': 'permCheck'}">You should see this (appPermissionCheck)</ng-template> -->
+
+<ng-template [appPermissionCheck]="'default.$check.seeFirstParagraph'" [appPermissionCheckVarDict]="{'$check': 'permCheck'}">You should see this (appPermissionCheck)</ng-template>
+
+<!-- div *appPermissionCheck="'default.$check.seeFirstParagraph';checkVarDict '{$check: 'permCheck'}'">You should see this (appPermissionCheck)</div>  -->
+
+<!-- div *appPermissionCheck="'default.$check.seeFirstParagraph';checkVarDict genVarDict($check)">You should see this (appPermissionCheck)</div>  -->
+
+
