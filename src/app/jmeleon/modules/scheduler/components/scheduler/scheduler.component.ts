@@ -83,7 +83,6 @@ export class SchedulerComponent implements OnInit {
     this.currentResourceFilter = ['assigned'];
 
     // get all resources with State (assigned, available, blocked) depending on clicked event
-    // this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, this.schedulerStatus.currentResourceFilter });
     this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: schedulerEvent, filter: this.currentResourceFilter });
 
     // show times outside of event time in grey
@@ -179,13 +178,12 @@ export class SchedulerComponent implements OnInit {
     const endTime: string = DateTimeUtils.convertDateToApiConformTimeString(schedulerEvent.EndTime);
 
     this.schedulerService.updateSchedulerEventInterval(schedulerEvent.Id, startTime, endTime)
-      .subscribe(temp => {
+      .subscribe(() => {
         // If resourceScheduler is visible update shown resources
         if (this.showResourceScheduler) {
           this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter });
           if (schedulerEvent.Id === this.schedulerStatus.currentSchedulerEvent.Id) { this.setTimeFrameForCurrentSchedulerEvent(schedulerEvent); }
         }
-        console.log('success');
       });
   }
 

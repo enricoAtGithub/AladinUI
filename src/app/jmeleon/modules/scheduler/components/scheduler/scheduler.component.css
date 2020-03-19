@@ -1,6 +1,7 @@
 i.pi-user-minus {
     color: slategrey;
     font-size: 2.3em;
+    cursor: pointer;
 }
 
 i.pi-exclamation-triangle {
@@ -11,6 +12,7 @@ i.pi-exclamation-triangle {
 i.pi-user-plus {
     color: slategrey;
     font-size: 2.3em;
+    cursor: pointer;
 }
 
 div.resource-name {
