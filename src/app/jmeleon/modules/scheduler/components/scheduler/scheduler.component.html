@@ -34,7 +34,8 @@
             <div class='template-wrap'>
                 <div class="resource-details">
                     <div class="resource-name">
-                        <i title="{{data.resourceData.AssignedAltText}}" class="{{data.resourceData.AssignedIcon}}"></i>
+                        <i title="{{data.resourceData.AssignedAltText}}" class="{{data.resourceData.AssignedIcon}}"
+                            (click)="modifyAssignment(data.resourceData)"></i>
                         &nbsp;{{data.resourceData.Name}}&nbsp;
                         <i title="{{data.resourceData.HasConflictAltText}}"
                             class="{{data.resourceData.HasConflictIcon}}"></i>

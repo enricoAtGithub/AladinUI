@@ -134,9 +134,9 @@ export class SchedulerComponent implements OnInit {
   private filterAndDisplayResources(filter: string[]): void {
     this.resourceDataSource = [];
     if (this.schedulerStatus.currentResources) {
-      const isAssigned = schRes => schRes.Assigned;
-      const isAvailable = schRes => !schRes.Assigned && !schRes.HasConflict;
-      const hasConflict = schRes => !schRes.Assigned && schRes.HasConflict;
+      const isAssigned = (schRes: SchedulerResource) => schRes.Assigned;
+      const isAvailable = (schRes: SchedulerResource) => !schRes.Assigned && !schRes.HasConflict;
+      const hasConflict = (schRes: SchedulerResource) => !schRes.Assigned && schRes.HasConflict;
 
       this.resourceDataSource = this.schedulerStatus.currentResources.filter(schRes => {
         return (filter.includes('assigned') && isAssigned(schRes)) ||
@@ -152,6 +152,17 @@ export class SchedulerComponent implements OnInit {
         if (schRes1.Name > schRes2.Name) { return 1; }
         return 0;
       });
+    }
+  }
+
+  // assign or unassign resources
+  modifyAssignment(schedulerResource: SchedulerResource) {
+    if (schedulerResource.Assigned) {
+      this.schedulerService.removeResourceFromSchedulerEvent(this.schedulerStatus.currentSchedulerEvent.Id, schedulerResource.Id)
+        .subscribe(() => this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter }));
+    } else if (!schedulerResource.Assigned) {
+      this.schedulerService.assignResourceToSchedulerEvent(this.schedulerStatus.currentSchedulerEvent.Id, schedulerResource.Id)
+        .subscribe(() => this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter }));
     }
   }
 

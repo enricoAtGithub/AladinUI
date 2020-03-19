@@ -73,4 +73,15 @@ export class SchedulerService {
     const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/updateOrderInterval';
     return this.http.post(url, { start: startTime, end: endTime });
   }
+
+  assignResourceToSchedulerEvent(schedulerEventId: number, resourceId: number): Observable<any> {
+    const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/resource/' + resourceId + '/assign';
+    return this.http.post(url, {});
+  }
+
+  removeResourceFromSchedulerEvent(schedulerEventId: number, resourceId: number): Observable<any> {
+    const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/resource/' + resourceId + '/remove';
+    return this.http.post(url, {});
+  }
+
 }
