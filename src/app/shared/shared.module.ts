@@ -32,6 +32,7 @@ import { EntityLogComponent } from './components/entity-log/entity-log.component
 import { PictureDialogComponent } from './components/picture-dialog/picture-dialog.component';
 import { EntityDropdownComponent } from './components/entity-dropdown/entity-dropdown.component';
 import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
     PickListModule,
     OverlayPanelModule,
     EditorModule,
-    ScrollPanelModule
+    ScrollPanelModule,
+    NgxPermissionsModule
   ],
   entryComponents: [
     EntityDialogComponent,
@@ -80,7 +82,8 @@ import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
     FileUploadDialogComponent,
     AttachmentListComponent,
     CatalogueChooserDialogComponent,
-    EntityDropdownComponent
+    EntityDropdownComponent,
+    NgxPermissionsModule
   ],
   providers: [
     EntityService,

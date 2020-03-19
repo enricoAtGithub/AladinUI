@@ -1,0 +1,4 @@
+<h2>Permission-Usability-Checks</h2>
+
+<div *ngxPermissionsOnly="'default.permCheck.seeFirstParagraph'; else failure1">You should see this (1)</div>
+<ng-template #failure1>You should not see this (1)</ng-template>
