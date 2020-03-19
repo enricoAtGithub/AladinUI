@@ -6,12 +6,11 @@ import { PermissionTreeElement } from '../models/node-types.model';
 @Directive({
   selector: '[appPermissionCheck]'
 })
-export class PermissionCheckDirective implements OnInit, OnDestroy, OnChanges {
+export class PermissionCheckDirective implements OnInit {
 
-  private _actionPath: Function|Object;
+  @Input('appPermissionCheck') actionPath: string;
 
-  @Input('appPermissionCheck') actionPath: PermissionTreeElement;
-  // input apppermissionreadnly
+  @Input() jmlVarDict: Object;
 
   constructor(
     private tRef: TemplateRef<any>,
@@ -19,26 +18,12 @@ export class PermissionCheckDirective implements OnInit, OnDestroy, OnChanges {
     private permissionService: JmeleonActionsPermissionService) { }
 
   ngOnInit(): void {
-    this.check(this._actionPath);
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    // should we even support changes in the path???
-    const actionPath = changes.actionPath;
-    if (actionPath) {
-      this._actionPath = actionPath.currentValue;
-      if (actionPath.firstChange) {
-        return;
-      }
-      this.check(actionPath.currentValue);
-    }
-  }
-  ngOnDestroy(): void {
-    // subscription? or else remove this.
+    this.check(this.actionPath);
   }
 
-  check(path: Function|Object): void {
+  check(path: string, jmlVarDict: Object = null): void {
     this.vcRef.clear();
-    if (this.permissionService.userHasPermissionForAction(path)) {
+    if (this.permissionService.userHasPermissionForAction(path, jmlVarDict)) {
       console.log('user HAS permissions for: ', path);
       this.vcRef.createEmbeddedView(this.tRef);
     }
