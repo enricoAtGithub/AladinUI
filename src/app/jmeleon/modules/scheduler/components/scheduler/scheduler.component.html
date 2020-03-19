@@ -16,7 +16,7 @@
 
 
 <p [hidden]="!showResourceScheduler">
-    <p-multiSelect [options]="resourceFilter" [(ngModel)]="selectedResources" [panelStyle]="{minWidth:'20em'}"
+    <p-multiSelect [options]="resourceFilter" [(ngModel)]="currentResourceFilter" [panelStyle]="{minWidth:'20em'}"
         [displaySelectedLabel]="false" [filter]="false" [defaultLabel]="'Ressourcen filtern'"
         (onChange)="setResourceFilter($event.value)">
     </p-multiSelect>

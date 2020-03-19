@@ -12,7 +12,7 @@ import {
 import { SchedulerService } from '../../services/scheduler.service';
 import { SchedulerEvent } from '../../models/scheduler-event';
 import { SchedulerResource } from '../../models/scheduler-resource';
-import { MenuItem, SelectItem } from 'primeng/api';
+import { SelectItem } from 'primeng/api';
 import { BreadcrumbService } from '../../../../../breadcrumb.service';
 import DateTimeUtils from 'src/app/shared/utils/date-time.utils';
 
@@ -42,16 +42,12 @@ export class SchedulerComponent implements OnInit {
   eventSchedulerObject: EventSettingsModel;
   resourceSchedulerObject: EventSettingsModel;
   resourceDataSource: Object[];
-  resourceFilterItems: MenuItem[] = [];
-
-  resourcesFilterItems: SelectItem[];
-  selectedResources: string[] = [];
 
   private schedulerStatus: {
     currentSchedulerEvent: SchedulerEvent,
     currentResources: SchedulerResource[],
-    currentResourceFilter: string[]
   };
+  currentResourceFilter: string[] = [];
 
   groupData: GroupModel = {
     resources: ['Resources']
@@ -65,7 +61,7 @@ export class SchedulerComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.schedulerStatus = { currentSchedulerEvent: null, currentResources: null, currentResourceFilter: null };
+    this.schedulerStatus = { currentSchedulerEvent: null, currentResources: null };
     this.getSchedulerEvents();
   }
 
@@ -83,10 +79,12 @@ export class SchedulerComponent implements OnInit {
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);
 
     // set global scheduler status
-    this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResources: null, currentResourceFilter: ['assigned'] };
+    this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResources: null };
+    this.currentResourceFilter = ['assigned'];
 
     // get all resources with State (assigned, available, blocked) depending on clicked event
-    this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter: ['assigned'] });
+    // this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, this.schedulerStatus.currentResourceFilter });
+    this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: schedulerEvent, filter: this.currentResourceFilter });
 
     // show times outside of event time in grey
     this.setTimeFrameForCurrentSchedulerEvent(schedulerEvent);
@@ -97,14 +95,14 @@ export class SchedulerComponent implements OnInit {
   }
 
   // get resources and events for the Resourcescheduler (at the bottom)
-  private getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter = ['asigned'] }: { schedulerEvent: SchedulerEvent; filter?: string[]; }): void {
+  private getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter }: { schedulerEvent: SchedulerEvent; filter: string[]; }): void {
     this.schedulerService.getSchedulerResources(schedulerEvent.Id)
       .subscribe(schedulerResources => {
         // set global scheduler status
         this.schedulerStatus.currentResources = schedulerResources;
 
         // filter and display resources assigned to clicked event
-        this.filterAndDisplayResources(['assigned']);
+        this.filterAndDisplayResources(filter);
 
         // modify/enrich scheduler resources server response
         // Todo: refactor using flatmap
@@ -136,7 +134,6 @@ export class SchedulerComponent implements OnInit {
   private filterAndDisplayResources(filter: string[]): void {
     this.resourceDataSource = [];
     if (this.schedulerStatus.currentResources) {
-      this.schedulerStatus.currentResourceFilter = filter;
       const isAssigned = schRes => schRes.Assigned;
       const isAvailable = schRes => !schRes.Assigned && !schRes.HasConflict;
       const hasConflict = schRes => !schRes.Assigned && schRes.HasConflict;
@@ -174,7 +171,7 @@ export class SchedulerComponent implements OnInit {
       .subscribe(temp => {
         // If resourceScheduler is visible update shown resources
         if (this.showResourceScheduler) {
-          this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.schedulerStatus.currentResourceFilter });
+          this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter });
           if (schedulerEvent.Id === this.schedulerStatus.currentSchedulerEvent.Id) { this.setTimeFrameForCurrentSchedulerEvent(schedulerEvent); }
         }
         console.log('success');
