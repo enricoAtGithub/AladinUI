@@ -117,6 +117,7 @@ import { DigitOnlyModule } from '@uiowa/digit-only';
 import { SettingsModule } from './jmeleon/modules/settings/settings.module';
 import { SchedulerModule } from './jmeleon/modules/scheduler/scheduler.module';
 import { PermissionsModule } from './jmeleon/modules/permissions/permissions.module';
+import { PlaygroundModule } from './playground/playground.module';
 
 export function initializeApp(appConfig: AppConfig) {
     console.log('initialize app');
@@ -213,7 +214,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         AceModule,
         SettingsModule,
         SchedulerModule,
-        PermissionsModule
+        PermissionsModule,
+        PlaygroundModule
     ],
     declarations: [
         AppComponent,

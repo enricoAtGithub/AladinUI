@@ -3,6 +3,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { MenuItem } from 'primeng/primeng';
 import { AppLayoutComponent } from '../app-layout/app-layout.component';
 import { JMeleonPermissionsService } from 'src/app/auth/services/jmeleon-permissions.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -43,6 +44,9 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
         ];
+        if (!environment.production) {
+            this.model.push({label: 'Playground', routerLink: ['/playground']});
+        }
     }
 
     changeTheme(theme: string, scheme: string) {
