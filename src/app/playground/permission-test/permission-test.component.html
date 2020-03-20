@@ -29,10 +29,16 @@
 
 <!-- <ng-template [appPermissionCheck]="'a'" [appPermissionCheckVarDict]="{'$check': 'permCheck'}">You should see this (appPermissionCheck)</ng-template> -->
 
-<ng-template [appPermissionCheck]="'default.$check.seeFirstParagraph'" [appPermissionCheckVarDict]="{'$check': 'permCheck'}">You should see this (appPermissionCheck)</ng-template>
+<ng-template [appPermissionCheck]="'default.$check.seeFirstParagraph'" [appPermissionCheckVarDict]="{'$check': 'permCheck'}">You should see this ([appPermissionCheck])</ng-template>
 
-<!-- div *appPermissionCheck="'default.$check.seeFirstParagraph';checkVarDict '{$check: 'permCheck'}'">You should see this (appPermissionCheck)</div>  -->
+<!-- <div *appPermissionCheck="'default.$check.seeFirstParagraph';checkVarDict '{$check: permCheck}'">You should see this (appPermissionCheck){$check: 'permCheck'}</div>  -->
 
-<!-- div *appPermissionCheck="'default.$check.seeFirstParagraph';checkVarDict genVarDict($check)">You should see this (appPermissionCheck)</div>  -->
+<div *appPermissionCheck="'default.$check.seeFirstParagraph';varDict genVarDict(['$check', 'permCheck'])">You should see this (appPermissionCheck);varDict genVarDict(['$check', 'permCheck'])</div> 
 
+<div *appPermissionCheck="'default.$check.seeFirstParagraph';varDict dict">You should see this (*appPermissionCheck);varDict dict</div> 
 
+<div *appPermissionCheck="'default.$check.seeFirstParagraph';varDict genVarDict(['$check', 'permCheck2']);else failure4">You should see this (appPermissionCheck);varDict genVarDict(['$check', 'permCheck']);else failure4</div> 
+
+<ng-template #failure4>You should not see this (failure4)</ng-template> 
+
+ 
