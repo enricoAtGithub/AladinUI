@@ -2,7 +2,7 @@
     <ejs-schedule height="300" [eventSettings]="eventSchedulerObject" [currentView]="setEventSchedulerView"
         (dragStart)="onDragStart($event)" (resizeStart)="onResizeStart($event)" (resizeStop)="onResizeStop($event)"
         (dragStop)="onDragStop($event)" [showQuickInfo]="false" (eventClick)="onSchedulerEventClick($event)"
-        [allowResizing]="true">
+        [allowResizing]="true" locale='de'>
         <e-views>
             <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
             <e-view option='TimelineDay' startHour='07:00' endHour='18:00' [timeScale]='{ enable: true, slotCount: 2 }'>
@@ -24,7 +24,7 @@
 
         <ejs-schedule [eventSettings]="resourceSchedulerObject" [currentView]="setResourceSchedulerView"
             [group]="groupData" [rowAutoHeight]="true" [selectedDate]="selectedDateResourceScheduler"
-            [workHours]="schedulerEventTime" [allowDragAndDrop]="false" [allowResizing]="false">
+            [workHours]="schedulerEventTime" [allowDragAndDrop]="false" [allowResizing]="false" locale='de'>
             <e-resources>
                 <e-resource [dataSource]="resourceDataSource" [allowMultiple]="true" field="ResourceID"
                     title="Mitarbeiter und Ressourcen" name="Resources" textField="Name" idField="Id"
