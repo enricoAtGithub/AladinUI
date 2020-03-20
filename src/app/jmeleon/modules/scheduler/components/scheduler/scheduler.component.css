@@ -20,6 +20,24 @@ div.resource-name {
     align-items:center;
 }
 
+/* selected scheduler event  */
+::ng-deep div.eventScheduler .e-schedule .e-timeline-view .e-appointment.e-appointment-border {
+    box-shadow: 0 6px 10px 0 rgb(0, 0, 0, 0.12), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.2);
+    /* background-color: #275885; */
+    background-color: #295b89;
+    border: 1px solid slategray;
+    color: #fff;
+    font-style: italic;
+}
+
+/* all scheduler Events */
+::ng-deep .e-schedule .e-timeline-view .e-appointment, .e-schedule .e-timeline-month-view .e-appointment {
+    background: #f9dd84;;
+    border: 1px solid lightgray;
+    border-radius: 2px;
+    color: #000;    
+}
+
 /* ### BEGIN primeng MultiSelect  */
 :host ::ng-deep .ui-multiselected-item-token,
 :host ::ng-deep .ui-multiselected-empty-token {
@@ -31,14 +49,13 @@ div.resource-name {
 }
 
 :host ::ng-deep .ui-multiselect-label-container {
-    background:#275885;
+    background:#295b89;
     color: #ffffff;
-    width: 160px;
-    font-weight: bold;            
+    width: 160px;            
 }
 
 :host ::ng-deep .ui-multiselect-trigger-icon {
-    color: #275885;
+    color: #295b89;
     font-weight: bold;
 }
 
@@ -48,8 +65,8 @@ div.resource-name {
 }
 
 :host ::ng-deep .ui-chkbox .ui-chkbox-box.ui-state-active {
-    border-color: #275885;
-    background-color: #275885;
+    border-color: #295b89;
+    background-color: #295b89;
     color: #ffffff;
 }
 /* primeng MultiSelect END ### */
