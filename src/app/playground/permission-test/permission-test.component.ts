@@ -11,9 +11,13 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class PermissionTestComponent implements OnInit {
 
   dict: {};
+  valuesForObj = ['obj1', 'obj2', 'obj3'];
+  valuesForProp = ['prop1', 'prop2'];
 
-  constructor(private japs: JmeleonActionsPermissionService,
-    private ngrxPermissionService: NgxPermissionsService) { }
+  constructor(
+    private japs: JmeleonActionsPermissionService,
+    // private ngrxPermissionService: NgxPermissionsService
+    ) { }
 
   ngOnInit() {
     this.dict = {
@@ -21,7 +25,11 @@ export class PermissionTestComponent implements OnInit {
     };
     this.japs.initActionsPermittedForCurrentUser([
       'default.permCheck.seeFirstParagraph',
-      'a'
+      'a',
+      'default.foo.read',
+      'default.obj1.prop2.read',
+      'default.obj2.prop1.read'
+
     ]);
     // JMeleonActionsUtils.resolveVars();
     // console.log('ngxP has permission for \'a\'', );
@@ -29,19 +37,19 @@ export class PermissionTestComponent implements OnInit {
     // this.japs.userHasPermissionForAction('a').subscribe(has => console.log('ngxP has permission for \'a\' (subscribe)', has));
   }
   genVarDict(vars: string[]) {
-    console.log('vars: ', vars);
+    // console.log('vars: ', vars);
     let i = 0;
     const result = {};
     while (i < vars.length) {
       const key = vars[i];
       const value = vars[i + 1];
         // result[vars[i]] = vars[i + i];
-      console.log('key: ', key);
-      console.log('value: ', value);
+      // console.log('key: ', key);
+      // console.log('value: ', value);
       result[key] = value;
         i += 2;
     }
-    console.log('result: ', result);
+    // console.log('result: ', result);
     return result;
   }
 

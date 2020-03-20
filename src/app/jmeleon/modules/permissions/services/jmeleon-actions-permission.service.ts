@@ -29,5 +29,24 @@ export class JmeleonActionsPermissionService {
     return defer(() => this.ngrxPermissionService.hasPermission(action));
   }
 
+
   resolveVars = (path: string, dict: object): string => JMeleonActionsUtils.resolveVars(path, dict);
+  resolveVars2 = (path: string, vars: string[]): string => JMeleonActionsUtils.resolveVars(path, this.genVarDict(vars));
+
+  genVarDict(vars: string[]) {
+    // console.log('vars: ', vars);
+    let i = 0;
+    const result = {};
+    while (i < vars.length) {
+      const key = vars[i];
+      const value = vars[i + 1];
+        // result[vars[i]] = vars[i + i];
+      // console.log('key: ', key);
+      // console.log('value: ', value);
+      result[key] = value;
+        i += 2;
+    }
+    // console.log('result: ', result);
+    return result;
+  }
 }

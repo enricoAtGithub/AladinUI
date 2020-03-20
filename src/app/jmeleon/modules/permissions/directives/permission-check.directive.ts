@@ -20,8 +20,8 @@ export class PermissionCheckDirective extends NgxPermissionsDirective implements
 
   // @Input('appPermissionCheck') actionPath: string;
   @Input('appPermissionCheck') set actionPath(value: string|string[]) {
-    console.log('value was set.', value);
-    console.log('dict (for appPermissionCheck): ', this._jmlVarDict);
+    // console.log('value was set.', value);
+    // console.log('dict (for appPermissionCheck): ', this._jmlVarDict);
     this.ngxPermissionsOnly = value;
 
   }
@@ -36,12 +36,16 @@ export class PermissionCheckDirective extends NgxPermissionsDirective implements
   // }
   // @Input() appPermissionCheckVarDict: Object;
   @Input() set appPermissionCheckVarDict(dict: Object) {
-      console.log('dict was set to: ', dict);
+      // console.log('dict was set to: ', dict);
       this._jmlVarDict = dict;
       this.ngxPermissionsOnly = JMeleonActionsUtils.resolveVars(
         // multiple permissions are not supported by the jmeleon permission concept
         typeof(this.ngxPermissionsOnly) === 'string' ? this.ngxPermissionsOnly : this.ngxPermissionsOnly[0], dict);
 
+  }
+
+  @Input() set appPermissionCheckVarArr(values: string[]) {
+    this.appPermissionCheckVarDict = this.jmlPermissionService.genVarDict(values);
   }
 
 
@@ -61,11 +65,11 @@ export class PermissionCheckDirective extends NgxPermissionsDirective implements
   }
 
   ngOnInit() {
-    console.log('ng on init start');
-    console.log('dict: ', this._jmlVarDict);
+    // console.log('ng on init start');
+    // console.log('dict: ', this._jmlVarDict);
     super.ngOnInit();
     // this.ngxPermissionsOnly = this.actionPath;
-    console.log('ng on init stop');
-    console.log('dict: ', this._jmlVarDict);
+    // console.log('ng on init stop');
+    // console.log('dict: ', this._jmlVarDict);
   }
 }
