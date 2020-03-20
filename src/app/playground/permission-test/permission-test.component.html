@@ -148,6 +148,66 @@
     </div>
 </div> 
 
+<span class="header">
+    Using the original directive with string building and using the releated var-names in ngFor-loop
+</span>
+<br/>
+<div class="p-grid">
+    <div class="p-col">
+        &lt;div *ngxPermissionsOnly=&quot;'default.' + $obj + '.' + $prop + '.read';else failure4&quot;&gt;
+                    &lt;p&gt;You&nbsp;have&nbsp;permissions&nbsp;for:&nbsp;default.{{ '{' }}{{ '{' }}$obj{{ '}' }}{{ '}' }}.{{ '{' }}{{ '{' }}$prop{{ '}' }}{{ '}' }}.read&lt;/p&gt;
+                &lt;/div&gt; 
+                &lt;ng-template #failure4&gt;You have NO permissions for: default.{{ '{' }}{{ '{' }}$obj{{ '}' }}{{ '}' }}.{{ '{' }}{{ '{' }}$prop{{ '}' }}{{ '}' }}.read&lt;/ng-template&gt; 
+    </div>
+    <div class="p-col">
+        <div *ngFor="let $obj of valuesForObj">
+            <div *ngFor="let $prop of valuesForProp">                
+                <div *ngxPermissionsOnly="'default.' + $obj + '.' + $prop + '.read';else failure4">
+                    <p>You have permissions for: default.{{$obj}}.{{$prop}}.read</p>
+                </div> 
+                <ng-template #failure4>You have NO permissions for: default.{{$obj}}.{{$prop}}.read</ng-template> 
+            </div>
+        </div>
+
+    </div>
+</div> 
+
+
+
+
+
+<span class="header">
+    Using the jmeleon directive with the action permission tree object
+</span>
+<br/>
+<div class="p-grid">
+        <div class="p-col">
+
+        &lt;div&nbsp;*appPermissionCheck=&quot;root.dto.$dtoType.$dtoField.read;&nbsp;varArr&nbsp;['$dtoType',&nbsp;type[0],&nbsp;'$dtoField',&nbsp;field];else&nbsp;failure5&quot;&gt;<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;You&nbsp;have&nbsp;permissions&nbsp;for:&nbsp;default.{{ '{' }}{{ '{' }}{{ '{' }}{{ '{' }}type[0]{{ '}' }}{{ '}' }}{{ '}' }}{{ '}' }}.{{ '{' }}{{ '{' }}{{ '{' }}{{ '{' }}field{{ '}' }}{{ '}' }}{{ '}' }}{{ '}' }}.read&lt;/p&gt;<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;&nbsp;<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ng-template&nbsp;#failure5&gt;You&nbsp;have&nbsp;NO&nbsp;permissions&nbsp;for: dto.{{ '{' }}{{ '{' }}{{ '{' }}{{ '{' }}type[0]{{ '}' }}{{ '}' }}{{ '}' }}{{ '}' }}.{{ '{' }}{{ '{' }}{{ '{' }}{{ '{' }}field{{ '}' }}{{ '}' }}{{ '}' }}{{ '}' }}.read&nbsp;({{ '{' }}{{ '{' }}{{ '{' }}{{ '{' }}root.dto.$dtoType.$dtoField.read{{ '}' }}{{ '}' }}{{ '}' }}{{ '}' }}&lt;/ng-template&gt;&nbsp;&nbsp;<br/>
+
+        </div>
+        <div class="p-col">
+            <div *ngFor="let type of valuesForDtoType">
+                <div *ngFor="let field of type[1]">                
+                                  
+                     <div *appPermissionCheck="root.dto.$dtoType.$dtoField.read; varArr ['$dtoType', type[0], '$dtoField', field];else failure5">
+                        <p>You have permissions for: default.{{type[0]}}.{{field}}.read</p>
+                    </div> 
+                    <ng-template #failure5>You have NO permissions for: dto.{{type[0]}}.{{field}}.read ({{root.dto.$dtoType.$dtoField.read}}</ng-template>  
+                   
+                    
+                </div>
+            </div>
+        </div>
+    </div> 
+
+<!-- <div *appPermissionCheck="root.dto.$dtoType.$dtoField.read; varArr ['$dtoType', 'User', '$dtoField', 'firstName'];else failure5">
+    <p>You have permissions for: default.{{type[0]}}.{{field}}.read</p>
+</div>  -->
+
 
 <div class="p-grid">
     <div class="p-col"></div>

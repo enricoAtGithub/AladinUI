@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 import JMeleonActionsUtils from 'src/app/jmeleon/modules/permissions/utils/jmeleon-actions.utils';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { root } from 'src/app/jmeleon/modules/permissions/permissions';
 
 @Component({
   selector: 'app-permission-test',
@@ -11,8 +12,17 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class PermissionTestComponent implements OnInit {
 
   dict: {};
-  valuesForObj = ['obj1', 'obj2', 'obj3'];
+  valuesForObj = ['obj1', 'obj2', 'obj3',
+    'obj4', 'obj5'
+  ];
   valuesForProp = ['prop1', 'prop2'];
+
+
+  valuesForDtoType: [string, string[]][] = [
+    ['Order', ['name', 'invoiceAddress']],
+    ['User', ['loginName', 'firstName', 'lastName']],
+  ];
+  root = root;
 
   constructor(
     private japs: JmeleonActionsPermissionService,
@@ -23,12 +33,15 @@ export class PermissionTestComponent implements OnInit {
     this.dict = {
       $check: 'permCheck'
     };
+
     this.japs.initActionsPermittedForCurrentUser([
       'default.permCheck.seeFirstParagraph',
       'a',
       'default.foo.read',
       'default.obj1.prop2.read',
-      'default.obj2.prop1.read'
+      'default.obj2.prop1.read',
+      // 'root.dto.User.firstName.read'
+      'dto.User.firstName.read'
 
     ]);
     // JMeleonActionsUtils.resolveVars();

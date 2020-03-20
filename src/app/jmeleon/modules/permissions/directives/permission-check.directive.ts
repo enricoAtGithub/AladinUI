@@ -5,6 +5,7 @@ import { NgxPermissionsDirective, NgxPermissionsService, NgxPermissionsConfigura
 import { SelectMultipleControlValueAccessor } from '@angular/forms';
 import { JmeleonActionsPermissionService } from '../services/jmeleon-actions-permission.service';
 import JMeleonActionsUtils from '../utils/jmeleon-actions.utils';
+import { root } from '../permissions';
 // import { NgxPermissionsDirective, NgxPermissionsService,
 //   NgxPermissionsConfigurationService, NgxRolesService } from 'ngx-permissions/lib';
 
@@ -20,7 +21,7 @@ export class PermissionCheckDirective extends NgxPermissionsDirective implements
 
   // @Input('appPermissionCheck') actionPath: string;
   @Input('appPermissionCheck') set actionPath(value: string|string[]) {
-    // console.log('value was set.', value);
+    console.log('value was set.', value);
     // console.log('dict (for appPermissionCheck): ', this._jmlVarDict);
     this.ngxPermissionsOnly = value;
 
@@ -36,15 +37,20 @@ export class PermissionCheckDirective extends NgxPermissionsDirective implements
   // }
   // @Input() appPermissionCheckVarDict: Object;
   @Input() set appPermissionCheckVarDict(dict: Object) {
-      // console.log('dict was set to: ', dict);
+      console.log('dict was set to: ', dict);
       this._jmlVarDict = dict;
       this.ngxPermissionsOnly = JMeleonActionsUtils.resolveVars(
         // multiple permissions are not supported by the jmeleon permission concept
         typeof(this.ngxPermissionsOnly) === 'string' ? this.ngxPermissionsOnly : this.ngxPermissionsOnly[0], dict);
+      console.log('new value: ', this.ngxPermissionsOnly);
 
   }
 
   @Input() set appPermissionCheckVarArr(values: string[]) {
+    if (this.ngxPermissionsOnly === root.dto.$dtoType.$dtoField.read) {
+      console.log('setting varArr: ', values);
+
+    }
     this.appPermissionCheckVarDict = this.jmlPermissionService.genVarDict(values);
   }
 
