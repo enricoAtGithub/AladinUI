@@ -133,8 +133,11 @@ export class DynamicTableComponent implements OnInit {
         return this.processDate(new Date(input));
       case 'boolean':
         return input ? '✓' : '🞩';
-      default:
+      case 'String':
+      case 'int':
         return input;
+      default:
+        return input['_repr_'];
     }
   }
 
