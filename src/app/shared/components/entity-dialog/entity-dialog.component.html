@@ -32,7 +32,7 @@
           <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
         </span>
         <span *ngSwitchCase="'CatalogueEntry'" style="flex-grow: 1;">
-          <p-dropdown [required]="field.mandatory" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" [ngModel]="update ? entity[field.field]?.id : undefined"></p-dropdown>
+          <p-dropdown [required]="field.mandatory" [placeholder]="field.header" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" [ngModel]="update ? entity[field.field]?.id : undefined"></p-dropdown>
         </span>
         <span *ngSwitchDefault class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
           <input #textModule [disabled]="true" [placeholder]="entity !== undefined ? entity[field.field]?._repr_ : ''" id="float-input" style="width: 100%" pInputText>
