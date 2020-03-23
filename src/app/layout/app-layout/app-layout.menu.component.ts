@@ -39,6 +39,7 @@ export class AppMenuComponent implements OnInit {
                     { label: 'Rollenverwaltung', icon: 'pi pi-users', routerLink: ['/administration/role-management'] },
                     { label: 'Rechteverwaltung', icon: 'pi pi-users', routerLink: ['/administration/permission-management'] },
                     { label: 'Katalogverwaltung', icon: 'pi pi-folder-open', routerLink: ['/administration/catalogue-management'] },
+                    { label: 'DTO Konfiguration', icon: 'pi pi-pencil', routerLink: ['/administration/dto-configuration'] },
                     { label: 'Einstellungen', icon: 'fa fa-cogs', routerLink: ['/administration/settings'] },
                 ]
             },
