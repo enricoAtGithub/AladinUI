@@ -43,6 +43,9 @@ export class SchedulerComponent implements OnInit {
     ]);
   }
 
+  windowHeight: number;
+  eventSchedulerHeight: number;
+  resourceSchedulerHeight: number;
   setEventSchedulerView: View = 'TimelineWorkWeek';
   setResourceSchedulerView: View = 'TimelineDay';
   schedulerEventTime: WorkHoursModel;
@@ -72,6 +75,7 @@ export class SchedulerComponent implements OnInit {
 
   ngOnInit() {
     this.schedulerStatus = { currentSchedulerEvent: null, currentResources: null };
+    this.detectWindowsize();
     this.getSchedulerEvents();
   }
 
@@ -232,6 +236,28 @@ export class SchedulerComponent implements OnInit {
       case ('HasConflict'): if (boolVal) { altText = 'Konflikt'; } else { altText = ''; }
     }
     return altText;
+  }
+
+  resizeSchedulers(args: any) {
+    if (<number>(args.sizes[0])) {
+      this.eventSchedulerHeight = <number>(args.sizes[0]);
+      this.resourceSchedulerHeight = this.windowHeight - this.eventSchedulerHeight - 70;
+
+    }
+  }
+
+  onBrowserResize() {
+    const ratio = this.windowHeight / (window.innerHeight - 183);
+    this.windowHeight = window.innerHeight - 183;
+    this.eventSchedulerHeight = this.eventSchedulerHeight / ratio;
+    this.resourceSchedulerHeight = this.resourceSchedulerHeight / ratio;
+  }
+
+  private detectWindowsize() {
+    this.windowHeight = window.innerHeight - 183;
+    this.eventSchedulerHeight = (this.windowHeight * 1 / 3) - 70;
+    this.resourceSchedulerHeight = (this.windowHeight * 2 / 3);
+
   }
 
   /* loadConfig(): void {

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { AngularSplitModule } from 'angular-split';
 
 // import the ScheduleModule for the Schedule component
 import {
@@ -25,6 +26,7 @@ import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [SchedulerComponent],
   imports: [
+    AngularSplitModule.forRoot(),
     BrowserModule,
     MultiSelectModule,
     ScheduleModule,

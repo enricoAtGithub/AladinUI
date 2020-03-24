@@ -23,8 +23,8 @@ div.resource-name {
 /* selected scheduler event  */
 ::ng-deep div.eventScheduler .e-schedule .e-timeline-view .e-appointment.e-appointment-border {
     box-shadow: 0 6px 10px 0 rgb(0, 0, 0, 0.12), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.2);
-    /* background-color: #275885; */
-    background-color: #295b89;
+    /* background-color: #295b89; */
+    background-color: #0071bc;
     border: 1px solid slategray;
     color: #fff;
     font-style: italic;
@@ -39,6 +39,10 @@ div.resource-name {
 }
 
 /* ### BEGIN primeng MultiSelect  */
+:host ::ng-deep .ui-multiselect {
+    margin-top: 10px;
+}
+
 :host ::ng-deep .ui-multiselected-item-token,
 :host ::ng-deep .ui-multiselected-empty-token {
     padding: 2px 4px;
@@ -49,13 +53,13 @@ div.resource-name {
 }
 
 :host ::ng-deep .ui-multiselect-label-container {
-    background:#295b89;
+    background:#0071bc;
     color: #ffffff;
-    width: 160px;            
+    width: 160px;          
 }
 
 :host ::ng-deep .ui-multiselect-trigger-icon {
-    color: #295b89;
+    color: #0071bc;
     font-weight: bold;
 }
 
@@ -65,8 +69,22 @@ div.resource-name {
 }
 
 :host ::ng-deep .ui-chkbox .ui-chkbox-box.ui-state-active {
-    border-color: #295b89;
-    background-color: #295b89;
+    border-color: #0071bc;
+    background-color: #0071bc;
     color: #ffffff;
 }
 /* primeng MultiSelect END ### */
+
+/* Split component */
+ ::ng-deep .as-split-gutter {
+    background-color: white !important;
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightgray;
+    margin-top: 10px;
+}
+
+::ng-deep .as-split-gutter.as-dragged .as-split-gutter-icon,
+::ng-deep .as-split-gutter-icon:hover {
+    opacity: .1;
+}
