@@ -24,3 +24,10 @@ export const root = {
 		}
 	}
 };
+
+export const actionList = [
+	'foo.hossa',
+	'foo.leaf',
+	'foo.bar.one',
+	// ...
+];

@@ -7,6 +7,9 @@
       - create
       - read
       - write
+  - FileAttachment: # 
+    - upload
+    - download
 - foo:
   - bar:
     - one
