@@ -7,9 +7,10 @@ import { PermissionTestComponent } from './permission-test/permission-test.compo
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { SharedModule } from '../shared/shared.module';
 import { PermissionsModule } from '../jmeleon/modules/permissions/permissions.module';
+import { EntityTestComponent } from './entity-test/entity-test.component';
 
 @NgModule({
-  declarations: [BaseAreaComponent, PermissionTestComponent],
+  declarations: [BaseAreaComponent, PermissionTestComponent, EntityTestComponent],
   imports: [
     CommonModule,
     PlaygroundRoutingModule,

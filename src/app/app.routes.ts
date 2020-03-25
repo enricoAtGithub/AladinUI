@@ -19,7 +19,6 @@ import { UserManagementGuard } from './auth/guards/user-management.guard';
 import { LoginGuard } from './auth/guards/login.guard';
 import { DTOConfigEditorComponent } from './jmeleon/components/dtoconfig-editor/dtoconfig-editor.component';
 import { SettingsComponent } from './jmeleon/modules/settings/components/settings/settings.component';
-import { TestsComponent } from './jmeleon/components/tests/tests.component';
 import { ResourcesComponent } from './jmeleon/components/resources/resources.component';
 import { SchedulerComponent } from './jmeleon/modules/scheduler/components/scheduler/scheduler.component';
 import { environment } from 'src/environments/environment';
@@ -38,7 +37,6 @@ export const routes: Routes = [
         { path: 'reports', component: ReportsComponent},
         { path: 'invoices', component: InvoicesComponent},
         { path: 'profile', component: ProfileComponent},
-        { path: 'tests', component: TestsComponent},
         { path: 'resources', component: ResourcesComponent},
         { path: 'scheduler', component: SchedulerComponent},
         // doesn't seem to work with 'ModuleWithProviders
