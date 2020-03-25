@@ -23,6 +23,8 @@ export class PermissionTestComponent implements OnInit {
     ['User', ['loginName', 'firstName', 'lastName']],
   ];
   root = root;
+  actionPath = root.foo.bar.one;
+  vars: string[] = [];
 
   constructor(
     private japs: JmeleonActionsPermissionService,
@@ -41,7 +43,12 @@ export class PermissionTestComponent implements OnInit {
       'default.obj1.prop2.read',
       'default.obj2.prop1.read',
       // 'root.dto.User.firstName.read'
-      'dto.User.firstName.read'
+      'dto.Order.name.read',
+      'dto.Order.invoiceAddress.read',
+      // 'dto.User.loginName.read',
+      'dto.User.firstName.read',
+      'dto.User.lastName.read',
+      'foo.bar.one'
 
     ]);
     // JMeleonActionsUtils.resolveVars();

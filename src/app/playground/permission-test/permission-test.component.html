@@ -94,6 +94,9 @@
                 <div *appPermissionCheck="'default.$obj.$prop.read'; varArr ['$obj', obj, '$prop', prop]">
                     <p>You have permissions for: default.{{obj}}.{{prop}}.read</p>
                 </div> 
+                <ng-template [appPermissionCheck]="'default.$obj.$prop.read'" [appPermissionCheckVarArr]="['$obj', obj, '$prop', prop]">
+                    
+                </ng-template>
             </div>
         </div>
 
@@ -194,7 +197,8 @@
                 <div *ngFor="let field of type[1]">                
                                   
                      <div *appPermissionCheck="root.dto.$dtoType.$dtoField.read; varArr ['$dtoType', type[0], '$dtoField', field];else failure5">
-                        <p>You have permissions for: default.{{type[0]}}.{{field}}.read</p>
+    <!--                     <p>You have permissions for: default.{{type[0]}}.{{field}}.read</p> -->
+                        You have permissions for: default.{{type[0]}}.{{field}}.read
                     </div> 
                     <ng-template #failure5>You have NO permissions for: dto.{{type[0]}}.{{field}}.read ({{root.dto.$dtoType.$dtoField.read}}</ng-template>  
                    
@@ -208,6 +212,26 @@
     <p>You have permissions for: default.{{type[0]}}.{{field}}.read</p>
 </div>  -->
 
+
+<span class="header">
+    Template for directive unit tests
+</span>
+<br/>
+
+<div class="p-grid">
+    <div class="p-col"></div>
+    <div class="p-col">
+        <ng-template [appPermissionCheck]="actionPath" [appPermissionCheckVarArr]="vars" [appPermissionCheckElse]="failureA" >
+            <div>yes</div>
+        </ng-template>
+        <ng-template #failureA><div>No</div></ng-template>
+    </div>
+</div> 
+
+<ng-template [ngxPermissionsOnly]="'root.layer1.layer2.read'" [ngxPermissionsOnlyElse]="failure">
+    <div>yes</div>
+</ng-template>
+<ng-template #failure><div>No</div></ng-template>
 
 <div class="p-grid">
     <div class="p-col"></div>
