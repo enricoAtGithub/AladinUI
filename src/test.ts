@@ -24,7 +24,9 @@ getTestBed().initTestEnvironment(
 // const context = require.context('./', true, /jmeleon-actions-permission.service\.spec\.ts$/);
 // const context = require.context('./', true, /jmeleon-actions.utils\.spec\.ts$/);
 // const context = require.context('./', true, /permission-check-test.component\.spec\.ts$/);
-const context = require.context('./', true, /permission-check.directive\.spec\.ts$/);
+// const context = require.context('./', true, /permission-check.directive\.spec\.ts$/);
+const context = require.context('./', true, /permission-check.directive.base.it\.spec\.ts$/);
+
 
 
 
