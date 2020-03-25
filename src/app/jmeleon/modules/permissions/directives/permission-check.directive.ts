@@ -39,18 +39,18 @@ export class PermissionCheckDirective extends NgxPermissionsDirective implements
   @Input() set appPermissionCheckVarDict(dict: Object) {
       console.log('dict was set to: ', dict);
       this._jmlVarDict = dict;
+      // const currentPermission = typeof(this.ngxPermissionsOnly) === 'string' ? this.ngxPermissionsOnly : this.ngxPermissionsOnly[0];
+      const currentPermission = this.ngxPermissionsOnly as string;
+      console.log('current permission: ', currentPermission);
       this.ngxPermissionsOnly = JMeleonActionsUtils.resolveVars(
         // multiple permissions are not supported by the jmeleon permission concept
-        typeof(this.ngxPermissionsOnly) === 'string' ? this.ngxPermissionsOnly : this.ngxPermissionsOnly[0], dict);
+        currentPermission, dict);
       console.log('new value: ', this.ngxPermissionsOnly);
 
   }
 
   @Input() set appPermissionCheckVarArr(values: string[]) {
-    if (this.ngxPermissionsOnly === root.dto.$dtoType.$dtoField.read) {
-      console.log('setting varArr: ', values);
 
-    }
     this.appPermissionCheckVarDict = this.jmlPermissionService.genVarDict(values);
   }
 

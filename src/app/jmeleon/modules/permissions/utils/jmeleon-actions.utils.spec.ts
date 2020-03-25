@@ -51,32 +51,32 @@ describe('JMeleonActionsUtils', () => {
       expect(branchFlags).not.toEqual(BranchFlags.None);
   });
 
-  it('should build action list from action tree - 01', () => {
-      const result = JMeleonActionsUtils.generateActionObjectMapFromTree(TestActionTree1).map(element => element[1]);
-    //   console.log('hould build action list from action tree - 01 - result: ', result);
-      expect(result).not.toBeNull();
-      expect(result.length).toEqual(14, 'should be 14 elements in the result list');
+//   it('should build action list from action tree - 01', () => {
+//       const result = JMeleonActionsUtils.generateActionObjectMapFromTree(TestActionTree1).map(element => element[1]);
+//     //   console.log('hould build action list from action tree - 01 - result: ', result);
+//       expect(result).not.toBeNull();
+//       expect(result.length).toEqual(14, 'should be 14 elements in the result list');
 
-    const i = 0;
+//     const i = 0;
 
 
-    expect(result.includes('dto.*')).toBeTruthy();
-    expect(result.includes('dto.$dtoType.*')).toBeTruthy();
-    expect(result.includes('dto.$dtoType.$dtoField.*')).toBeTruthy();
-    expect(result.includes('dto.$dtoType.$dtoField.create')).toBeTruthy();
-    expect(result.includes('dto.$dtoType.$dtoField.read')).toBeTruthy();
-    expect(result.includes('dto.$dtoType.$dtoField.write')).toBeTruthy();
-    expect(result.includes('dto.$dtoType.$dtoField.delete')).toBeTruthy();
-    expect(result.includes('dto.test.subTest.*')).toBeTruthy();
-    expect(result.includes('dto.test.subTest.*')).toBeTruthy();
-    expect(result.includes('dto.same1.*')).toBeTruthy();
-    expect(result.includes('dto.same1.test.*')).toBeTruthy();
-    expect(result.includes('dto.same1.test.read')).toBeTruthy();
-    expect(result.includes('dto.same2.*')).toBeTruthy();
-    expect(result.includes('dto.same2.test.*')).toBeTruthy();
+//     expect(result.includes('dto.*')).toBeTruthy();
+//     expect(result.includes('dto.$dtoType.*')).toBeTruthy();
+//     expect(result.includes('dto.$dtoType.$dtoField.*')).toBeTruthy();
+//     expect(result.includes('dto.$dtoType.$dtoField.create')).toBeTruthy();
+//     expect(result.includes('dto.$dtoType.$dtoField.read')).toBeTruthy();
+//     expect(result.includes('dto.$dtoType.$dtoField.write')).toBeTruthy();
+//     expect(result.includes('dto.$dtoType.$dtoField.delete')).toBeTruthy();
+//     expect(result.includes('dto.test.subTest.*')).toBeTruthy();
+//     expect(result.includes('dto.test.subTest.*')).toBeTruthy();
+//     expect(result.includes('dto.same1.*')).toBeTruthy();
+//     expect(result.includes('dto.same1.test.*')).toBeTruthy();
+//     expect(result.includes('dto.same1.test.read')).toBeTruthy();
+//     expect(result.includes('dto.same2.*')).toBeTruthy();
+//     expect(result.includes('dto.same2.test.*')).toBeTruthy();
 
-      // this one has the ignore flag
-      expect(result.includes('..dto.test')).not.toBeTruthy();
+//       // this one has the ignore flag
+//       expect(result.includes('..dto.test')).not.toBeTruthy();
 
-    });
+//     });
 });
