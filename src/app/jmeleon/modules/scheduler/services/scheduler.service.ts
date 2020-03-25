@@ -36,7 +36,8 @@ export class SchedulerService {
             StartTime: schEv.startTime,
             EndTime: schEv.endTime,
             Description: schEv.description,
-            IsReadonly: schEv.isReadonly
+            IsReadonly: schEv.isReadonly,
+            AssignedResources: schEv.assignedResources
           };
         }))
       );
@@ -44,7 +45,6 @@ export class SchedulerService {
 
   getSchedulerResources(schedulerEventId: number): Observable<SchedulerResource[]> {
     const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/resources';
-    // return this.http.get<SchedulerResource[]>(url).pipe(pluck('schedulerResources'));
     return this.http.get<SchedulerResourceInterface>(url)
       .pipe(
         // map properties from JSON response, first letter of properties needs to be capitalized
@@ -61,7 +61,8 @@ export class SchedulerService {
                 Description: schEv.description,
                 StartTime: schEv.startTime,
                 EndTime: schEv.endTime,
-                IsReadonly: schEv.isReadonly
+                IsReadonly: schEv.isReadonly,
+                AssignedResources: schEv.assignedResources
               };
             })
           };

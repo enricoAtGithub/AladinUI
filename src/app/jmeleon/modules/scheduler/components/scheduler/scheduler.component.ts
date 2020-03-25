@@ -94,7 +94,13 @@ export class SchedulerComponent implements OnInit {
 
     // set global scheduler status
     this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResources: null };
-    this.currentResourceFilter = ['assigned'];
+
+    // set resource file: If no resources are assigned show also available resources
+    if (<number>schedulerEvent.AssignedResources > 0) {
+      this.currentResourceFilter = ['assigned'];
+    } else if (<number>schedulerEvent.AssignedResources === 0) {
+      this.currentResourceFilter = ['assigned', 'available'];
+    }
 
     // get all resources with State (assigned, available, blocked) depending on clicked event
     this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: schedulerEvent, filter: this.currentResourceFilter });

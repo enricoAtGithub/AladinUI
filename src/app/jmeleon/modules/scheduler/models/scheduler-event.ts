@@ -3,17 +3,19 @@
 export interface SchedulerEvent {
     Id: number;
     Subject: string;
+    Description: String;
     StartTime: Date;
     EndTime: Date;
+    AssignedResources: number;
+    IsReadonly: boolean;
+    Color?: string;
     StartTimezone?: string;
     EndTimezone?: string;
     Location?: string;
-    Description?: String;
     IsAllDay?: boolean;
     RecurrenceID?: number;
     RecurrenceRule?: string;
     RecurrenceException?: string;
-    IsReadonly?: boolean;
     IsBlock?: boolean;
     ResourceID?: number;
 }
