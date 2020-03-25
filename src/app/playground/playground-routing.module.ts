@@ -5,7 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { PermissionTestComponent } from './permission-test/permission-test.component';
 
 const routes: Routes = [
-  {path: '', component: BaseAreaComponent},
+  {path: '', component: BaseAreaComponent, pathMatch: 'full'},
   {path: 'permission', component: PermissionTestComponent}
 ];
 

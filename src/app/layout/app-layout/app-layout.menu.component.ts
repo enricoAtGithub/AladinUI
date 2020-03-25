@@ -32,6 +32,14 @@ export class AppMenuComponent implements OnInit {
             { label: 'Resourcen', icon: 'fa fa-archive', routerLink: ['/resources'] },
             { label: 'Tests', icon: 'fa fa-flask', routerLink: ['/tests'] },
             {
+                label: 'Playground', 
+                visible: environment.loadPlayground,
+                items: [
+                    {label: 'Start', routerLink: ['/playground']},
+                    {label: 'JMeleonPermissionDirective', routerLink: ['/playground/permission']}
+                ]
+            },
+            {
                 label: 'Administration', icon: 'fa fa-fw fa-pencil',
                 visible: this.jmeleonPermissionsService.currentUserHasPermission(
                     this.jmeleonPermissionsService.PERMISSION_MANAGE_USERS),
@@ -44,9 +52,6 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
         ];
-        if (!environment.production) {
-            this.model.push({label: 'Playground', routerLink: ['/playground']});
-        }
     }
 
     changeTheme(theme: string, scheme: string) {

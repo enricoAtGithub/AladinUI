@@ -23,6 +23,7 @@ import { TestsComponent } from './jmeleon/components/tests/tests.component';
 import { ResourcesComponent } from './jmeleon/components/resources/resources.component';
 import { SchedulerComponent } from './jmeleon/modules/scheduler/components/scheduler/scheduler.component';
 import { environment } from 'src/environments/environment';
+import { PlaygroundGuard } from './playground/guards/playground.guard';
 
 
 export const routes: Routes = [
@@ -42,7 +43,12 @@ export const routes: Routes = [
         { path: 'scheduler', component: SchedulerComponent},
         // doesn't seem to work with 'ModuleWithProviders
         // {path: 'administration', loadChildren: './user/user.module.ts#UserModule'}
-        // {path: 'administration', loadChildren: UserModule}
+        // {path: 'administration', loadChildren: UserModule},
+        {
+          path: 'playground',
+          loadChildren: () => import('./playground/playground.module').then(m => m.PlaygroundModule),
+          canLoad: [PlaygroundGuard]
+        },
         {path: 'administration',
         canActivate: [UserManagementGuard],
         children: [
@@ -53,8 +59,7 @@ export const routes: Routes = [
           {path: 'catalogue-management', pathMatch: 'full', component: CatalogueManagementComponent},
           {path: 'dto-configuration', pathMatch: 'full', component: DTOConfigEditorComponent},
           {path: 'settings', component: SettingsComponent}
-        ]},
-        // {path: 'playground', loadChildren: () => import('./playground/playground.module').then(m => m.PlaygroundModule)}
+        ]}
       ]
     },
 
@@ -63,11 +68,6 @@ export const routes: Routes = [
 
     { path: '**', redirectTo: 'dashboard', pathMatch: 'full'},
 ];
-
-if (!environment.production) {
-  const baseRoutes = routes.find(route => route.path === '').children;
-  baseRoutes.push({path: 'playground', loadChildren: () => import('./playground/playground.module').then(m => m.PlaygroundModule)});
-}
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(
   routes,

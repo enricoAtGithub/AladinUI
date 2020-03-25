@@ -1,5 +1,7 @@
 export const environment = {
   production: true,
+  loadPlayground: true,
+
   baseUrl: 'http://localhost:8081/rest/api',
   companyName: 'DOT-IT',
   appName: 'JMeleon',
