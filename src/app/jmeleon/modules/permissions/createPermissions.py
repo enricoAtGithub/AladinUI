@@ -79,4 +79,10 @@ output.write(',\n'.join([node.ts('\t') for node in nodes]))
 
 output.write("\n}\n")
 
+# output.write("export const list = {\n");
+
+# output.write("}")
+
+# for key in
+
 output.close()
