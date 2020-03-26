@@ -1,1 +1,17 @@
-<p>right-actions-editor works!</p>
+<div class="p-grid">
+    <div class="p-col-4">
+        <!-- <p-card [style]="{height: cardHeight}"> -->
+            
+            <p-tree [value]="actionsTree$ | async" selectionMode="checkbox" [(selection)]="selectedActions" (onNodeSelect)="nodeSelect($event)"></p-tree>
+        <!-- </p-card> -->
+    </div>
+    <div class="p-col">
+        <p-card>
+            <div>
+                <h3>Zugewiesene Aktionen</h3>
+
+            </div>
+        </p-card>
+        
+    </div>
+</div>

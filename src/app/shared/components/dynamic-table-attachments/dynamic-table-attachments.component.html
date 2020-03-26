@@ -171,9 +171,7 @@
     </p-tabPanel>
 
   <p-tabPanel *ngIf="showActionTab" header="Aktionen" [selected]="true">
-    <div>
-
-    </div>
+    <app-right-actions-editor [entryId]="entryId"></app-right-actions-editor>
   </p-tabPanel>
 
   </p-tabView>
