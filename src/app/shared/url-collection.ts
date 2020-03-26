@@ -23,6 +23,15 @@ export class UrlCollection {
         }
     };
 
+    static Scheduler = class {
+        static SCHEDULER_ORDERS = () => UrlCollection.SCHEDULER_API_BASE_PATH() + '/schedulerOrders';
+        private static SCHEDULER_ORDER = () => UrlCollection.SCHEDULER_API_BASE_PATH() + '/schedulerOrder';
+        static SCHEDULER_RESOURCES = (schedulerEventId: number) => UrlCollection.Scheduler.SCHEDULER_ORDER() + '/' + schedulerEventId + '/resources';
+        static UPDATE_ORDER_INTERVAL = (schedulerEventId: number) => UrlCollection.Scheduler.SCHEDULER_ORDER() + '/' + schedulerEventId + '/updateOrderInterval';
+        static ASSIGN_RESOURCE = (schedulerEventId: number, resourceId: number) => UrlCollection.Scheduler.SCHEDULER_ORDER() + '/' + schedulerEventId + '/resource/' + resourceId + '/assign';
+        static REMOVE_RESOURCE = (schedulerEventId: number, resourceId: number) => UrlCollection.Scheduler.SCHEDULER_ORDER() + '/' + schedulerEventId + '/resource/' + resourceId + '/remove';
+    }
+
     static Entities = class {
         static CREATE(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/create'; }
         static UPDATE(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/update'; }
@@ -67,6 +76,7 @@ export class UrlCollection {
         static ADD = (attachmentType: string) => UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/add';
     };
 
+    static SCHEDULER_API_BASE_PATH(): string {return AppConfig.getBaseUrl() + '/scheduler'; }
     static ADMIN_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/admin'; }
     static USER_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/user'; }
     static ENTITY_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/entities'; }

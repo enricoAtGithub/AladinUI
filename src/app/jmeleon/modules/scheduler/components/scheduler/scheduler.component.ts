@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   View,
   EventSettingsModel,
@@ -10,8 +10,6 @@ import {
 } from '@syncfusion/ej2-angular-schedule';
 
 import { SchedulerService } from '../../services/scheduler.service';
-import { SchedulerEvent } from '../../models/scheduler-event';
-import { SchedulerResource } from '../../models/scheduler-resource';
 import { SelectItem } from 'primeng/api';
 import { BreadcrumbService } from '../../../../../breadcrumb.service';
 import DateTimeUtils from 'src/app/shared/utils/date-time.utils';
@@ -22,6 +20,8 @@ import * as gregorian from 'cldr-data/main/de/ca-gregorian.json';
 import * as numbers from 'cldr-data/main/de/numbers.json';
 import * as timeZoneNames from 'cldr-data/main/de/timeZoneNames.json';
 import de from './localisation.json';
+import { Subscription } from 'rxjs';
+import { SchedulerEvent, SchedulerResource } from '../../models/scheduler.model';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -31,17 +31,8 @@ L10n.load(de);
   templateUrl: './scheduler.component.html',
   styleUrls: ['./scheduler.component.css']
 })
-export class SchedulerComponent implements OnInit {
+export class SchedulerComponent implements OnInit, OnDestroy {
 
-  constructor(
-    private breadcrumbService: BreadcrumbService,
-    private schedulerService: SchedulerService
-
-  ) {
-    this.breadcrumbService.setItems([
-      { label: 'Einsatzplanung' }
-    ]);
-  }
 
   windowHeight: number;
   eventSchedulerHeight: number;
@@ -50,7 +41,7 @@ export class SchedulerComponent implements OnInit {
   setResourceSchedulerView: View = 'TimelineDay';
   schedulerEventTime: WorkHoursModel;
   selectedDateResourceScheduler: Date;
-  showResourceScheduler: Boolean = false;
+  showResourceScheduler = false;
 
   eventSchedulerObject: EventSettingsModel;
   resourceSchedulerObject: EventSettingsModel;
@@ -65,7 +56,7 @@ export class SchedulerComponent implements OnInit {
   groupData: GroupModel = {
     resources: ['Resources']
     //   allowGroupEdit: true
-  };
+  }; 
 
   resourceFilter: SelectItem[] = [
     { label: 'eingeteilt', value: 'assigned' },
@@ -73,18 +64,35 @@ export class SchedulerComponent implements OnInit {
     { label: 'indisponibel', value: 'hasConflict' }
   ];
 
+  subscriptions: Subscription[] = [];
+
+  constructor(
+    private breadcrumbService: BreadcrumbService,
+    private schedulerService: SchedulerService
+
+  ) {
+    this.breadcrumbService.setItems([
+      { label: 'Einsatzplanung' }
+    ]);
+  }
+
   ngOnInit() {
     this.schedulerStatus = { currentSchedulerEvent: null, currentResources: null };
     this.detectWindowsize();
     this.getSchedulerEvents();
   }
+  
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
 
   private getSchedulerEvents(): void {
-    this.schedulerService.getSchedulerEvents()
-      .subscribe(schedulerEvents => {
-        // provide all schedulerEvents shown in EventScheduler (upper component)
-        this.eventSchedulerObject = { dataSource: schedulerEvents };
-      });
+    this.subscriptions.push(
+      this.schedulerService.getSchedulerEvents()
+        .subscribe(schedulerEvents => {
+          // provide all schedulerEvents shown in EventScheduler (upper component)
+          this.eventSchedulerObject = { dataSource: schedulerEvents };
+      }));
   }
 
   onSchedulerEventClick(args: EventClickArgs): void {
@@ -92,13 +100,14 @@ export class SchedulerComponent implements OnInit {
     // two type casts necessary since args.event cannot be casted directly to SchedulerEvent
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);
 
+
     // set global scheduler status
     this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResources: null };
 
     // set resource file: If no resources are assigned show also available resources
     if (<number>schedulerEvent.AssignedResources > 0) {
       this.currentResourceFilter = ['assigned'];
-    } else if (<number>schedulerEvent.AssignedResources === 0) {
+    } else {
       this.currentResourceFilter = ['assigned', 'available'];
     }
 
@@ -115,7 +124,8 @@ export class SchedulerComponent implements OnInit {
 
   // get resources and events for the Resourcescheduler (at the bottom)
   private getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter }: { schedulerEvent: SchedulerEvent; filter: string[]; }): void {
-    this.schedulerService.getSchedulerResources(schedulerEvent.Id)
+    this.subscriptions.push(
+      this.schedulerService.getSchedulerResources(schedulerEvent.Id)
       .subscribe(schedulerResources => {
         // set global scheduler status
         this.schedulerStatus.currentResources = schedulerResources;
@@ -129,10 +139,10 @@ export class SchedulerComponent implements OnInit {
         schedulerResources.forEach(schResource => {
 
           // add custom properties (icons and alternative text)
-          schResource.AssignedIcon = this.getIcon({ property: 'Assigned', boolVal: schResource.Assigned });
-          schResource.HasConflictIcon = this.getIcon({ property: 'HasConflict', boolVal: schResource.HasConflict });
-          schResource.AssignedAltText = this.getAltText({ property: 'Assigned', boolVal: schResource.Assigned });
-          schResource.HasConflictAltText = this.getAltText({ property: 'HasConflict', boolVal: schResource.HasConflict });
+          schResource.AssignedIcon = schResource.Assigned ? 'pi pi-user-minus' : 'pi pi-user-plus';
+          schResource.HasConflictIcon = schResource.HasConflict ? 'pi pi-exclamation-triangle' : '';
+          schResource.AssignedAltText = schResource.Assigned ? 'Zuordnung lösen' : 'einteilen';
+          schResource.HasConflictAltText = schResource.HasConflict ? 'Konflikt' : '';
 
           // Add ResourceID to each schedulerEvent and aggregate ALL schedulerEvents
           schResource.isAssignedTo.forEach(schEvent => {
@@ -143,25 +153,21 @@ export class SchedulerComponent implements OnInit {
 
         // provide all schedulerEvents shown in ResourceScheduler (bottom component)
         this.resourceSchedulerObject = { dataSource: schedulerEvents };
-      });
+    }));
   }
 
-  setResourceFilter(filter: string[]) {
-    this.filterAndDisplayResources(filter);
-  }
-
-  private filterAndDisplayResources(filter: string[]): void {
+  filterAndDisplayResources(filter: string[]): void {
     this.resourceDataSource = [];
     if (this.schedulerStatus.currentResources) {
       const isAssigned = (schRes: SchedulerResource) => schRes.Assigned;
       const isAvailable = (schRes: SchedulerResource) => !schRes.Assigned && !schRes.HasConflict;
       const hasConflict = (schRes: SchedulerResource) => !schRes.Assigned && schRes.HasConflict;
 
-      this.resourceDataSource = this.schedulerStatus.currentResources.filter(schRes => {
-        return (filter.includes('assigned') && isAssigned(schRes)) ||
-          (filter.includes('available') && isAvailable(schRes)) ||
-          (filter.includes('hasConflict') && hasConflict(schRes));
-      });
+      this.resourceDataSource = this.schedulerStatus.currentResources.filter(schRes =>
+        (filter.includes('assigned') && isAssigned(schRes)) ||
+        (filter.includes('available') && isAvailable(schRes)) ||
+        (filter.includes('hasConflict') && hasConflict(schRes))
+      );
 
       // sorting: Prio 1: assigned resources Prio 2: name
       this.resourceDataSource.sort((schRes1: SchedulerResource, schRes2: SchedulerResource) => {
@@ -177,12 +183,25 @@ export class SchedulerComponent implements OnInit {
   // assign or unassign resources
   modifyAssignment(schedulerResource: SchedulerResource) {
     if (schedulerResource.Assigned) {
-      this.schedulerService.removeResourceFromSchedulerEvent(this.schedulerStatus.currentSchedulerEvent.Id, schedulerResource.Id)
-        .subscribe(() => this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter }));
+      this.subscriptions.push(
+        this.schedulerService.removeResourceFromSchedulerEvent(this.schedulerStatus.currentSchedulerEvent.Id, schedulerResource.Id)
+          .subscribe(() => this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter }))
+      );
     } else if (!schedulerResource.Assigned) {
-      this.schedulerService.assignResourceToSchedulerEvent(this.schedulerStatus.currentSchedulerEvent.Id, schedulerResource.Id)
-        .subscribe(() => this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter }));
+      this.subscriptions.push(
+        this.schedulerService.assignResourceToSchedulerEvent(this.schedulerStatus.currentSchedulerEvent.Id, schedulerResource.Id)
+          .subscribe(() => this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter }))
+      );
     }
+  }
+
+  setResizeParams(args: ResizeEventArgs): void {
+    args.interval = 15;
+  }
+
+  setDraggingParams(args: DragEventArgs): void {
+    args.interval = 15;
+    args.excludeSelectors = 'e-all-day-cells';
   }
 
   onResizeStop(args: ResizeEventArgs): void {
@@ -215,35 +234,6 @@ export class SchedulerComponent implements OnInit {
     this.schedulerEventTime = { start: start, end: end };
   }
 
-  onResizeStart(args: ResizeEventArgs): void {
-    args.interval = 15;
-  }
-
-  onDragStart(args: DragEventArgs): void {
-    args.interval = 15;
-    args.excludeSelectors = 'e-all-day-cells';
-  }
-
-  // return icon depending on properties "assigned" and "hasConflict"
-  private getIcon({ property, boolVal }: { property: string, boolVal: boolean }): string {
-    let icon: string;
-    switch (property) {
-      case ('Assigned'): if (boolVal) { icon = 'pi pi-user-minus'; break; } else { icon = 'pi pi-user-plus'; break; }
-      case ('HasConflict'): if (boolVal) { icon = 'pi pi-exclamation-triangle'; } else { icon = ''; }
-    }
-    return icon;
-  }
-
-  // return alternative text depending on properties "assigned" and "hasConflict"
-  private getAltText({ property, boolVal }: { property: string, boolVal: boolean }): string {
-    let altText: string;
-    switch (property) {
-      case ('Assigned'): if (boolVal) { altText = 'Zuordnung lösen'; break; } else { altText = 'einteilen'; break; }
-      case ('HasConflict'): if (boolVal) { altText = 'Konflikt'; } else { altText = ''; }
-    }
-    return altText;
-  }
-
   resizeSchedulers(args: any) {
     if (<number>(args.sizes[0])) {
       this.eventSchedulerHeight = <number>(args.sizes[0]);
@@ -253,14 +243,16 @@ export class SchedulerComponent implements OnInit {
   }
 
   onBrowserResize() {
-    const ratio = this.windowHeight / (window.innerHeight - 183);
-    this.windowHeight = window.innerHeight - 183;
+    const usedSpace = 183; // top bar, footer and some more...
+    const ratio = this.windowHeight / (window.innerHeight - usedSpace);
+    this.windowHeight = window.innerHeight - usedSpace;
     this.eventSchedulerHeight = this.eventSchedulerHeight / ratio;
     this.resourceSchedulerHeight = this.resourceSchedulerHeight / ratio;
   }
 
   private detectWindowsize() {
-    this.windowHeight = window.innerHeight - 183;
+    const usedSpace = 183; // top bar, footer and some more...
+    this.windowHeight = window.innerHeight - usedSpace;
     this.eventSchedulerHeight = (this.windowHeight * 1 / 3) - 70;
     this.resourceSchedulerHeight = (this.windowHeight * 2 / 3);
 

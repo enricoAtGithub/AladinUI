@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SchedulerEvent } from '../models/scheduler-event';
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { AppConfig } from 'src/app/shared/app-config';
-import { SchedulerResource } from '../models/scheduler-resource';
+import { SchedulerEvent, SchedulerResource } from '../models/scheduler.model';
+import { UrlCollection } from 'src/app/shared/url-collection';
 
 interface SchedulerEventInterface {
   schedulerOrders: any[];
@@ -24,9 +24,9 @@ export class SchedulerService {
     private http: HttpClient) { }
 
   getSchedulerEvents(): Observable<SchedulerEvent[]> {
-    const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrders';
+    // const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrders';
 
-    return this.http.get<SchedulerEventInterface>(url)
+    return this.http.get<SchedulerEventInterface>(UrlCollection.Scheduler.SCHEDULER_ORDERS())
       .pipe(
         // map properties from JSON response, first letter of properties needs to be capitalized
         map(temp => temp.schedulerOrders.map(schEv => {
@@ -44,8 +44,8 @@ export class SchedulerService {
   }
 
   getSchedulerResources(schedulerEventId: number): Observable<SchedulerResource[]> {
-    const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/resources';
-    return this.http.get<SchedulerResourceInterface>(url)
+    // const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/resources';
+    return this.http.get<SchedulerResourceInterface>(UrlCollection.Scheduler.SCHEDULER_RESOURCES(schedulerEventId))
       .pipe(
         // map properties from JSON response, first letter of properties needs to be capitalized
         map(temp => temp.schedulerResources.map(schRes => {
@@ -71,18 +71,18 @@ export class SchedulerService {
   }
 
   updateSchedulerEventInterval(schedulerEventId: number, startTime: string, endTime: string): Observable<any> {
-    const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/updateOrderInterval';
-    return this.http.post(url, { start: startTime, end: endTime });
+    // const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/updateOrderInterval';
+    return this.http.post(UrlCollection.Scheduler.UPDATE_ORDER_INTERVAL(schedulerEventId), { start: startTime, end: endTime });
   }
 
   assignResourceToSchedulerEvent(schedulerEventId: number, resourceId: number): Observable<any> {
-    const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/resource/' + resourceId + '/assign';
-    return this.http.post(url, {});
+    // const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/resource/' + resourceId + '/assign';
+    return this.http.post(UrlCollection.Scheduler.ASSIGN_RESOURCE(schedulerEventId, resourceId), {});
   }
 
   removeResourceFromSchedulerEvent(schedulerEventId: number, resourceId: number): Observable<any> {
-    const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/resource/' + resourceId + '/remove';
-    return this.http.post(url, {});
+    // const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/resource/' + resourceId + '/remove';
+    return this.http.post(UrlCollection.Scheduler.REMOVE_RESOURCE(schedulerEventId, resourceId), {});
   }
 
 }

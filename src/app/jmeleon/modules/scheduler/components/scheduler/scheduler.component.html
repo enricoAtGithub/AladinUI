@@ -6,8 +6,8 @@
             <div class="eventScheduler">
 
                 <ejs-schedule [height]="eventSchedulerHeight" [eventSettings]="eventSchedulerObject"
-                    [currentView]="setEventSchedulerView" (dragStart)="onDragStart($event)"
-                    (resizeStart)="onResizeStart($event)" (resizeStop)="onResizeStop($event)"
+                    [currentView]="setEventSchedulerView" (dragStart)="setDraggingParams($event)"
+                    (resizeStart)="setResizeParams($event)" (resizeStop)="onResizeStop($event)"
                     (dragStop)="onDragStop($event)" [showQuickInfo]="false" (eventClick)="onSchedulerEventClick($event)"
                     [allowResizing]="true" locale='de' [rowAutoHeight]="true">
 
@@ -33,7 +33,7 @@
             <div class="resourceScheduler" *ngIf="showResourceScheduler">
                 <p-multiSelect [options]="resourceFilter" [(ngModel)]="currentResourceFilter"
                     [panelStyle]="{minWidth:'20em'}" [displaySelectedLabel]="false" [filter]="false"
-                    [defaultLabel]="'Ressourcen filtern'" (onChange)="setResourceFilter($event.value)">
+                    [defaultLabel]="'Ressourcen filtern'" (onChange)="filterAndDisplayResources($event.value)">
                 </p-multiSelect>
 
                 <ejs-schedule [height]=resourceSchedulerHeight allowMultiple="true"
