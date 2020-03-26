@@ -14,6 +14,8 @@
   - bar:
     - one
     - two
+    - foo:
+      - three
   - leaf
   # - ignore
   - baz:
