@@ -4,7 +4,6 @@ import { PermissionCheckDirective } from './permission-check.directive';
 import { JmeleonActionsPermissionService } from '../services/jmeleon-actions-permission.service';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { PermissionTreeElement, action } from '../models/node-types.model';
 import { NgxPermissionsService, NgxPermissionsModule, NgxPermissionsDirective } from 'ngx-permissions';
 
 

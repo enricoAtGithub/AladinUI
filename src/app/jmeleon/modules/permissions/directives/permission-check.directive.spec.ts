@@ -4,30 +4,7 @@ import { PermissionCheckDirective } from './permission-check.directive';
 import { JmeleonActionsPermissionService } from '../services/jmeleon-actions-permission.service';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { PermissionTreeElement, action } from '../models/node-types.model';
 import { NgxPermissionsService, NgxPermissionsModule, NgxPermissionsDirective } from 'ngx-permissions';
-
-export class PermissionCheckTestComponentTestTree {
-  static jmeleon = class {
-      static invoice = class {
-          static invoiceList = class {
-              static read = action();
-              static write = action();
-          };
-      };
-  };
-}
-
-const testTree = {
-  jmeleon: {
-    invoice: {
-      invoiceList: {
-        read: 'jmeleon.invoice.invoiceList.read',
-        write: 'jmeleon.invoice.invoiceList.write',
-      }
-    }
-  }
-};
 
 
 describe('PermissionCheckDirective', () => {
