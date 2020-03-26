@@ -45,6 +45,8 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   displayAddAttribute = false;
   newAttribute = new Attribute();
 
+  showActionTab = false;
+
   types = [{label: 'Long', value: 'Long'}, {label: 'String', value: 'String'}, {label: 'Boolean', value: 'Boolean'}, {label: 'Date', value: 'Date'}];
 
   constructor(private entityService: EntityService, public dialogService: DialogService) { }
@@ -54,6 +56,13 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
       this.configuration = configs[this.configName];
       this.isEmpty = !this.configuration.components && this.configuration.groups === null;
       if (this.isEmpty) {
+        
+        if (this.configName !== 'SecurityRight'){
+          return;
+        }
+        this.showActionTab = true;
+
+
         return;
       }
 
@@ -115,20 +124,21 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
             this.noteTableData.triggerRefresh.next();
           }
         }
-      }
-
-      if (this.configuration.components.includes('FileAttachments')) {
-        if (!this.fileTableData) {
-          const dataSource = this.entityService
-            .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});
-          this.fileTableData = new TableData(
-            'FileAttachment', 'FileAttachment', false, false, false, false, false, dataSource, '175px', false);
-        } else {
-          this.fileTableData.dataSource  = this.entityService
-            .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});
-          this.fileTableData.triggerRefresh.next();
+        
+        if (this.configuration.components.includes('FileAttachments')) {
+          if (!this.fileTableData) {
+            const dataSource = this.entityService
+              .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});
+            this.fileTableData = new TableData(
+              'FileAttachment', 'FileAttachment', false, false, false, false, false, dataSource, '175px', false);
+          } else {
+            this.fileTableData.dataSource  = this.entityService
+              .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});
+            this.fileTableData.triggerRefresh.next();
+          }
         }
       }
+
 
       if (this.configuration.components && this.configuration.components.includes('Attributes')) {
         this.updateAttachments();

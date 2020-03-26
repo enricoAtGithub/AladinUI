@@ -35,7 +35,7 @@
   </form>
 </p-dialog>
 
-<div *ngIf="entryId !== undefined && entryId !== null && !isEmpty" style="padding: 0px" class="card">
+<div *ngIf="entryId !== undefined && entryId !== null && (!isEmpty || showActionTab)" style="padding: 0px" class="card">
   <p-tabView>
     <!-- Display group relations if available -->
     <p-tabPanel *ngFor="let groupConfig of groupConfigsArray; let i = index" [header]="groupConfig.displayName" [selected]="i==0">
@@ -169,6 +169,12 @@
         <app-dynamic-table #fileTable style="padding: 0px" *ngIf="fileTableData" [tableData]="fileTableData"></app-dynamic-table>
       </div>
     </p-tabPanel>
+
+  <p-tabPanel *ngIf="showActionTab" header="Aktionen" [selected]="true">
+    <div>
+
+    </div>
+  </p-tabPanel>
 
   </p-tabView>
 </div>
