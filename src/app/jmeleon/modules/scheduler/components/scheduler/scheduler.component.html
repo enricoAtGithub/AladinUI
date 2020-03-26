@@ -7,9 +7,10 @@
 
                 <ejs-schedule [height]="eventSchedulerHeight" [eventSettings]="eventSchedulerObject"
                     [currentView]="setEventSchedulerView" (dragStart)="setDraggingParams($event)"
-                    (resizeStart)="setResizeParams($event)" (resizeStop)="onResizeStop($event)"
-                    (dragStop)="onDragStop($event)" [showQuickInfo]="false" (eventClick)="onSchedulerEventClick($event)"
-                    [allowResizing]="true" locale='de' [rowAutoHeight]="true">
+                    (resizeStart)="setResizeParams($event)" (resizeStop)="updateSchedulerEventInterval($event.data)"
+                    (dragStop)="updateSchedulerEventInterval($event.data)" [showQuickInfo]="false"
+                    (eventClick)="onSchedulerEventClick($event)" [allowResizing]="true" locale='de'
+                    [rowAutoHeight]="true">
 
                     <e-views>
                         <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->

@@ -56,7 +56,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   groupData: GroupModel = {
     resources: ['Resources']
     //   allowGroupEdit: true
-  }; 
+  };
 
   resourceFilter: SelectItem[] = [
     { label: 'eingeteilt', value: 'assigned' },
@@ -81,7 +81,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     this.detectWindowsize();
     this.getSchedulerEvents();
   }
-  
+
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
@@ -92,7 +92,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
         .subscribe(schedulerEvents => {
           // provide all schedulerEvents shown in EventScheduler (upper component)
           this.eventSchedulerObject = { dataSource: schedulerEvents };
-      }));
+        }));
   }
 
   onSchedulerEventClick(args: EventClickArgs): void {
@@ -126,34 +126,34 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   private getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter }: { schedulerEvent: SchedulerEvent; filter: string[]; }): void {
     this.subscriptions.push(
       this.schedulerService.getSchedulerResources(schedulerEvent.Id)
-      .subscribe(schedulerResources => {
-        // set global scheduler status
-        this.schedulerStatus.currentResources = schedulerResources;
+        .subscribe(schedulerResources => {
+          // set global scheduler status
+          this.schedulerStatus.currentResources = schedulerResources;
 
-        // filter and display resources assigned to clicked event
-        this.filterAndDisplayResources(filter);
+          // filter and display resources assigned to clicked event
+          this.filterAndDisplayResources(filter);
 
-        // modify/enrich scheduler resources server response
-        // Todo: refactor using flatmap
-        const schedulerEvents: SchedulerEvent[] = [];
-        schedulerResources.forEach(schResource => {
+          // modify/enrich scheduler resources server response
+          // Todo: refactor using flatmap
+          const schedulerEvents: SchedulerEvent[] = [];
+          schedulerResources.forEach(schResource => {
 
-          // add custom properties (icons and alternative text)
-          schResource.AssignedIcon = schResource.Assigned ? 'pi pi-user-minus' : 'pi pi-user-plus';
-          schResource.HasConflictIcon = schResource.HasConflict ? 'pi pi-exclamation-triangle' : '';
-          schResource.AssignedAltText = schResource.Assigned ? 'Zuordnung lösen' : 'einteilen';
-          schResource.HasConflictAltText = schResource.HasConflict ? 'Konflikt' : '';
+            // add custom properties (icons and alternative text)
+            schResource.AssignedIcon = schResource.Assigned ? 'pi pi-user-minus' : 'pi pi-user-plus';
+            schResource.HasConflictIcon = schResource.HasConflict ? 'pi pi-exclamation-triangle' : '';
+            schResource.AssignedAltText = schResource.Assigned ? 'Zuordnung lösen' : 'einteilen';
+            schResource.HasConflictAltText = schResource.HasConflict ? 'Konflikt' : '';
 
-          // Add ResourceID to each schedulerEvent and aggregate ALL schedulerEvents
-          schResource.isAssignedTo.forEach(schEvent => {
-            schEvent.ResourceID = schResource.Id;
-            schedulerEvents.push(schEvent);
+            // Add ResourceID to each schedulerEvent and aggregate ALL schedulerEvents
+            schResource.isAssignedTo.forEach(schEvent => {
+              schEvent.ResourceID = schResource.Id;
+              schedulerEvents.push(schEvent);
+            });
           });
-        });
 
-        // provide all schedulerEvents shown in ResourceScheduler (bottom component)
-        this.resourceSchedulerObject = { dataSource: schedulerEvents };
-    }));
+          // provide all schedulerEvents shown in ResourceScheduler (bottom component)
+          this.resourceSchedulerObject = { dataSource: schedulerEvents };
+        }));
   }
 
   filterAndDisplayResources(filter: string[]): void {
@@ -202,13 +202,6 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   setDraggingParams(args: DragEventArgs): void {
     args.interval = 15;
     args.excludeSelectors = 'e-all-day-cells';
-  }
-
-  onResizeStop(args: ResizeEventArgs): void {
-    this.updateSchedulerEventInterval(<SchedulerEvent>(args.data as unknown));
-  }
-  onDragStop(args: DragEventArgs): void {
-    this.updateSchedulerEventInterval(<SchedulerEvent>(args.data as unknown));
   }
 
   private updateSchedulerEventInterval(schedulerEvent: SchedulerEvent): void {
