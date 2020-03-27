@@ -51,7 +51,7 @@
           [showSourceControls]="false" [showTargetControls]="false">
           <ng-template let-item pTemplate="item">
             <div *ngFor="let field of groupConfig.memberFields">
-              <div style="display: inline" *ngIf="field.visible">{{item[field.field]}}</div>
+              <div style="display: inline" *ngIf="field.visible">{{item[field.field] ? item[field.field] : (field.field === 'name' ? '(Kein Bezeichner)' : '-')}}</div>
             </div>
           </ng-template>
         </p-pickList>
