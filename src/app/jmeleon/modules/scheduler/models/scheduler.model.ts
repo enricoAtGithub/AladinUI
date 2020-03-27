@@ -1,6 +1,8 @@
-// Overview of built in fields for Syncfusion Angular scheduler:
-// https://ej2.syncfusion.com/angular/documentation/schedule/appointments/?no-cache=1#event-fields
-
+/*
+Overview of built in fields for Syncfusion Angular scheduler:
+https://ej2.syncfusion.com/angular/documentation/schedule/appointments/?no-cache=1#event-fields
+Note: Scheduler Component requires properties starting with capital letter
+ */
 
 export interface SchedulerEvent {
     Id: number;
@@ -10,7 +12,7 @@ export interface SchedulerEvent {
     EndTime: Date;
     AssignedResources: number;
     IsReadonly: boolean;
-    Color?: string;
+    Color: string;
     StartTimezone?: string;
     EndTimezone?: string;
     Location?: string;

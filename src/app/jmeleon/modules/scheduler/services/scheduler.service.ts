@@ -37,7 +37,8 @@ export class SchedulerService {
             EndTime: schEv.endTime,
             Description: schEv.description,
             IsReadonly: schEv.isReadonly,
-            AssignedResources: schEv.assignedResources
+            AssignedResources: schEv.assignedResources,
+            Color: schEv.color
           };
         }))
       );
@@ -62,7 +63,8 @@ export class SchedulerService {
                 StartTime: schEv.startTime,
                 EndTime: schEv.endTime,
                 IsReadonly: schEv.isReadonly,
-                AssignedResources: schEv.assignedResources
+                AssignedResources: schEv.assignedResources,
+                Color: schEv.color
               };
             })
           };

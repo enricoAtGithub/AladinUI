@@ -6,7 +6,8 @@ import {
   ResizeEventArgs,
   GroupModel,
   EventClickArgs,
-  WorkHoursModel
+  WorkHoursModel,
+  EventRenderedArgs
 } from '@syncfusion/ej2-angular-schedule';
 
 import { SchedulerService } from '../../services/scheduler.service';
@@ -32,7 +33,6 @@ L10n.load(de);
   styleUrls: ['./scheduler.component.css']
 })
 export class SchedulerComponent implements OnInit, OnDestroy {
-
 
   windowHeight: number;
   eventSchedulerHeight: number;
@@ -86,6 +86,18 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
+  // colorize scheduler events
+  onEventRendered(args: EventRenderedArgs): void {
+    const color: string = args.data.Color as string;
+    const schedulerEventHTML = args.element;
+    schedulerEventHTML.style.backgroundColor = color;
+
+    // on resource scheduler add css class "selected" to the current scheduler event
+    if (this.schedulerStatus.currentSchedulerEvent && (args.data.Id === this.schedulerStatus.currentSchedulerEvent.Id)) {
+      schedulerEventHTML.classList.add('selected');
+    }
+  }
+
   private getSchedulerEvents(): void {
     this.subscriptions.push(
       this.schedulerService.getSchedulerEvents()
@@ -95,11 +107,9 @@ export class SchedulerComponent implements OnInit, OnDestroy {
         }));
   }
 
-  onSchedulerEventClick(args: EventClickArgs): void {
+  onSchedulerEventClick(args: any): void {
     // access clicked scheduler event
-    // two type casts necessary since args.event cannot be casted directly to SchedulerEvent
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);
-
 
     // set global scheduler status
     this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResources: null };

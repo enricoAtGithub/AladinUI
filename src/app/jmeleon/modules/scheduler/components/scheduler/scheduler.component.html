@@ -10,7 +10,7 @@
                     (resizeStart)="setResizeParams($event)" (resizeStop)="updateSchedulerEventInterval($event.data)"
                     (dragStop)="updateSchedulerEventInterval($event.data)" [showQuickInfo]="false"
                     (eventClick)="onSchedulerEventClick($event)" [allowResizing]="true" locale='de'
-                    [rowAutoHeight]="true">
+                    [rowAutoHeight]="true" (eventRendered)="onEventRendered($event)">
 
                     <e-views>
                         <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
@@ -37,10 +37,11 @@
                     [defaultLabel]="'Ressourcen filtern'" (onChange)="filterAndDisplayResources($event.value)">
                 </p-multiSelect>
 
-                <ejs-schedule [height]=resourceSchedulerHeight allowMultiple="true"
+                <ejs-schedule [height]=resourceSchedulerHeight allowMultiple="true" [showQuickInfo]="false"
                     [eventSettings]="resourceSchedulerObject" [currentView]="setResourceSchedulerView"
                     [group]="groupData" [rowAutoHeight]="true" [selectedDate]="selectedDateResourceScheduler"
-                    [workHours]="schedulerEventTime" [allowDragAndDrop]="false" [allowResizing]="false" locale='de'>
+                    [workHours]="schedulerEventTime" [allowDragAndDrop]="false" [allowResizing]="false" locale='de'
+                    (eventRendered)="onEventRendered($event)">
 
                     <e-resources>
                         <e-resource [dataSource]="resourceDataSource" allowMultiple="true" field="ResourceID"
