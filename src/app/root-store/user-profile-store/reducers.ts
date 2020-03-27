@@ -17,6 +17,12 @@ export function userProfileReducer(state = initialState, action: Actions): UserP
           isInLogin: false,
 
         };
+      case ActionTypes.LOGIN_PASSWORD_CHANGE:
+        return {
+          ...state,
+          user: action.payload.user,
+          error: '',
+        };
       case ActionTypes.LOGIN_FAILURE:
         console.log('login failure state: ', action.payload.error);
         return {

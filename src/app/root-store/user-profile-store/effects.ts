@@ -6,6 +6,7 @@ import { catchError, map, startWith, switchMap, tap } from 'rxjs/operators';
 import * as userProfileActions from './actions';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Router } from '@angular/router';
+import { User } from 'src/app/shared/models/user';
 
 @Injectable()
 export class UserProfileEffects {
@@ -23,10 +24,15 @@ export class UserProfileEffects {
           map(
             (httpResult, index) => {
               if (httpResult.success) {
-                const redirect = this.authService.redirectUrl ? this.router.parseUrl(this.authService.redirectUrl) : '/dashboard';
-                this.router.navigateByUrl(redirect);
-                return new userProfileActions.LoginSuccessAction({user: httpResult.result});
+                const user: User = httpResult.result;
 
+                if (user.user.enforcePasswdChange) {
+                  return new userProfileActions.LoginPasswordChangeAction({user: user});
+                } else {
+                  const redirect = this.authService.redirectUrl ? this.router.parseUrl(this.authService.redirectUrl) : '/dashboard';
+                  this.router.navigateByUrl(redirect);
+                  return new userProfileActions.LoginSuccessAction({user: httpResult.result});
+                }
               }
               // console.log('login failure: ', httpResult.errMsg);
               return new userProfileActions.LoginFailureAction({error: httpResult.errMsg});

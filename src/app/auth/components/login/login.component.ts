@@ -129,14 +129,14 @@ export class LoginComponent implements OnInit {
   changePassword(oldpass, newpass, repeatpass) {
     if (newpass !== repeatpass) {
       this.msgs = [];
-      this.msgs.push({ severity: 'error', summary: '', detail: 'Die beiden Passwˆrter stimmen nicht ¸berein!' });
+      this.msgs.push({ severity: 'error', summary: '', detail: 'Die beiden Passw√∂rter stimmen nicht √ºberein!' });
       return;
     }
 
     this.authService.changePassword(oldpass, newpass).subscribe(resp => {
       this.msgs = [];
       if (resp === true) {
-        this.msgs.push({ severity: 'success', summary: '', detail: 'Das Passwort wurde erfolgreich ge‰ndert!' });
+        this.msgs.push({ severity: 'success', summary: '', detail: 'Das Passwort wurde erfolgreich ge√§ndert!' });
         this.enforcePasswdChange = false;
       } else {
         this.msgs.push({ severity: 'error', summary: '', detail: resp.toString()});
