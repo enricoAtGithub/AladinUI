@@ -26,6 +26,31 @@ const actionTreeNodeToTreeNode = (actionTreeNode: ActionTreeNode): TreeNode => {
   return result;
 };
 
+const generateTreeAndSelectedNodes = (actionTreeNode: ActionTreeNode, selectedTreeNodes: TreeNode[]): TreeNode => {
+
+  if (!actionTreeNode) {
+    return null;
+  }
+  const isLeaf = !actionTreeNode.nodes || actionTreeNode.nodes.length < 1;
+  
+
+  const guiTreeNode: TreeNode = {
+    label: actionTreeNode.name,
+    data: 'generate full path',
+    children: [],
+    leaf: isLeaf,
+    expanded: actionTreeNode.activated,
+    partialSelected: actionTreeNode.activated === null
+  };
+
+  if (actionTreeNode.activated === true){
+    selectedTreeNodes.push(guiTreeNode);
+  }
+  guiTreeNode.children = isLeaf ? [] : actionTreeNode.nodes.map(node => generateTreeAndSelectedNodes(node, selectedTreeNodes));
+
+  return guiTreeNode;
+};
+
 /**
  * This facade encapsulates backend-calls and business logic for the right-action-editor
  */
@@ -38,8 +63,12 @@ export class JmeleonActionsFacadeService {
   private _actionTree: ActionTreeNode;
 
   actionGuiTree$: Observable<TreeNode[]>;
+  selectedTreeNodes$: Observable<TreeNode[]>;
+
 
   private $actionTree = new BehaviorSubject<ActionTreeNode>(null);
+  private $selectedTreeNodes = new BehaviorSubject<TreeNode[]>([]);
+  private $rootLevelNodeNames = new BehaviorSubject<string[]>([]);
 
   private subscriptions: Subscription[];
 
@@ -48,14 +77,18 @@ export class JmeleonActionsFacadeService {
   ) {
 
     this.actionsTree$ = this.$actionTree.asObservable();
+    this.selectedTreeNodes$ = this.$selectedTreeNodes.asObservable();
     this.actionsTree$.pipe(
       tap(actionTree => this._actionTree = actionTree)
     );
     this.actionGuiTree$ = this.actionsTree$.pipe(
       // map(node => [actionTreeNodeToTreeNode(node)])
       map(node => {
-        const result = [actionTreeNodeToTreeNode(node)];
+        const selectedNodes: TreeNode[] = [];
+        const result = [generateTreeAndSelectedNodes(node, selectedNodes)];
         console.log('gui tree: ', result);
+        console.log('selected nodes: ', selectedNodes);
+        this.$selectedTreeNodes.next(selectedNodes);
         return result;
       })
 
@@ -108,7 +141,7 @@ export class JmeleonActionsFacadeService {
             "nodes" : null
           }, {
             "name" : "read",
-            "activated" : false,
+            "activated" : true,
             "nodes" : null
           } ]
         } ]

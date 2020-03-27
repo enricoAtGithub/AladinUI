@@ -4,6 +4,7 @@ import { PermissionCheckDirective } from './directives/permission-check.directiv
 import { RightActionsEditorComponent } from './components/right-actions-editor/right-actions-editor.component';
 import { TreeModule } from 'primeng/tree';
 import { CardModule } from 'primeng/card';
+import { ListboxModule } from 'primeng/listbox';
 
 
 
@@ -12,7 +13,8 @@ import { CardModule } from 'primeng/card';
   imports: [
     CommonModule,
     TreeModule,
-    CardModule
+    CardModule,
+    ListboxModule
   ],
   exports: [PermissionCheckDirective, RightActionsEditorComponent]
 })

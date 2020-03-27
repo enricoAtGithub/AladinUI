@@ -16,6 +16,8 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
   actionsTree$: Observable<TreeNode[]>;
   selectedActions: TreeNode[];
 
+  rootLevels$: Observable<string[]>;
+
   subscription: Subscription[] = [];
 
 
@@ -27,6 +29,9 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
     this.subscription.push(this.actionsTree$.subscribe(tree => {
       console.log('tree: ', tree);
     }));
+    this.subscription.push(this.facade.selectedTreeNodes$.subscribe(selectedTreeNodes => {
+      this.selectedActions = selectedTreeNodes;
+    }))
     this.facade.setTreeToDebugData();
 
   }
@@ -39,12 +44,28 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
   }
 
   ngOnDestroy(): void {
-
+    this.subscription.forEach(sub => sub.unsubscribe());
   }
 
   
   nodeSelect(event) {
     //event.node = selected node
 }
+
+  // generateSelectedActions(roots: TreeNode[], selectedOnly = true):string[]{
+
+  // }
+
+  // generateSelectedActionsForName(currentNode: TreeNode, currentPath: string, selectedOnly = true): string[] {
+  //   const result = [];
+  //   if (!currentNode){
+  //     return [];
+  //   }
+  //   if (!selectedOnly || currentNode.)
+  //   result.push(currentPath + '.' + currentNode.label);
+  //   if (!currentNode.leaf){
+
+  //   }
+  // }
 
 }
