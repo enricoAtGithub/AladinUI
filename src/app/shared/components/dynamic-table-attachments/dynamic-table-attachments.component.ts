@@ -121,7 +121,7 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
             const dataSource = this.entityService
               .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});
             this.fileTableData = new TableData(
-              'FileAttachment', 'FileAttachment', false, false, false, false, false, dataSource, '175px', false);
+              'FileAttachment', 'FileAttachment', false, false, true, true, false, dataSource, '175px', false);
           } else {
             this.fileTableData.dataSource  = this.entityService
               .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});

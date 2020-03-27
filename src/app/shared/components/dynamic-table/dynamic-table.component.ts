@@ -10,6 +10,7 @@ import { Observable, Subject } from 'rxjs';
 import { ErrorNotificationService } from '../../services/error-notification.service';
 import { ErrorMessage } from '../../models/error-message';
 import { delay } from 'q';
+import { UrlCollection } from '../../url-collection';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -207,4 +208,7 @@ export class DynamicTableComponent implements OnInit {
     return this.entityData;
   }
 
+  downloadUrl(id: number): string {
+    return UrlCollection.Files.generateDownloadUrl(id);
+  }
 }

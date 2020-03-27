@@ -44,11 +44,13 @@
               {{processData(rowData[col.field], col)}}
           </td>
           <!-- Crud Buttons -->
-          <td *ngIf="tableData.showCrudButtons !== false" style="text-align: center">
-            <button  pButton type="button" icon="pi pi-pencil" class="ui-button-info" 
-            pTooltip="Bearbeiten" styleClass="ui-button-info" style="margin-right: 5px" (click)="updateEntity(rowData)"></button>
-            <button  pButton type="button" icon="pi pi-trash" class="ui-button-info" 
-            pTooltip="Löschen" styleClass="ui-button-info" (click)="deleteEntity(rowData)"></button>
+          <td *ngIf="tableData.showCrudButtons !== false" style="text-align: center; width: 90px;">
+            <button *ngIf="configuration?.type !== 'FileAttachment'" pButton type="button" icon="pi pi-pencil" class="crudButton" 
+              pTooltip="Bearbeiten" (click)="updateEntity(rowData)"></button>
+            <button *ngIf="configuration?.type !== 'FileAttachment'" pButton type="button" icon="pi pi-trash" class="crudButton" 
+              pTooltip="Löschen" (click)="deleteEntity(rowData)"></button>
+            <button *ngIf="configuration?.type === 'FileAttachment'" pButton type="button" icon="fa fa-download" class="crudButton" fileSaver
+              pTooltip="Herunterladen" [method]="'GET'" [fileName]="rowData['fileName']" [url]="downloadUrl(rowData['id'])"></button>
           </td>
         </tr>
       </ng-template>
