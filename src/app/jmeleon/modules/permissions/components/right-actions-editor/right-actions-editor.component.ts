@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
-import { TreeNode } from 'primeng/api';
+import { TreeNode, SelectItem } from 'primeng/api';
 import JMeleonActionTreeUtils from '../../utils/jml-action-tree.utils';
 import { JmeleonActionsFacadeService } from '../../services/jmeleon-actions-facade.service';
 import { Observable, Subscription } from 'rxjs';
@@ -16,18 +16,20 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
   actionsTree$: Observable<TreeNode[]>;
   selectedActions: TreeNode[];
 
-  rootLevels$: Observable<string[]>;
+  sections$: Observable<SelectItem[]>;
 
   subscription: Subscription[] = [];
 
+  selectedSection: string;
 
   constructor(private facade: JmeleonActionsFacadeService) { }
 
   ngOnInit() {
     // this.actionsTree = [];
-    this.actionsTree$ = this.facade.actionGuiTree$;
+    this.actionsTree$ = this.facade.actionGuiTreeForSelectedSection$;
+    this.sections$ = this.facade.sections$;
     this.subscription.push(this.actionsTree$.subscribe(tree => {
-      console.log('tree: ', tree);
+      console.log('tree in component: ', tree);
     }));
     this.subscription.push(this.facade.selectedTreeNodes$.subscribe(selectedTreeNodes => {
       this.selectedActions = selectedTreeNodes;
@@ -39,6 +41,7 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.entryId){
       console.log('entryId: ', changes.entryId);
+      this.facade.updateActionTreeViaBackend(this.entryId);
     }
 
   }
@@ -50,7 +53,17 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
   
   nodeSelect(event) {
     //event.node = selected node
-}
+    // console.log('node selected: ', event);
+  }
+  nodeUnselect(event) {
+    //event.node = selected node
+    // console.log('node selected: ', event);
+  }
+
+  sectionSelected(event){
+    console.log('selection changed: ', event);
+    this.facade.selectSection(event.value);
+  }
 
   // generateSelectedActions(roots: TreeNode[], selectedOnly = true):string[]{
 

@@ -5,6 +5,8 @@ import { RightActionsEditorComponent } from './components/right-actions-editor/r
 import { TreeModule } from 'primeng/tree';
 import { CardModule } from 'primeng/card';
 import { ListboxModule } from 'primeng/listbox';
+import { FormsModule } from '@angular/forms';
+import { TooltipModule } from 'primeng/primeng';
 
 
 
@@ -14,7 +16,9 @@ import { ListboxModule } from 'primeng/listbox';
     CommonModule,
     TreeModule,
     CardModule,
-    ListboxModule
+    ListboxModule,
+    FormsModule,
+    TooltipModule
   ],
   exports: [PermissionCheckDirective, RightActionsEditorComponent]
 })

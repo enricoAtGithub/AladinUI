@@ -1,7 +1,16 @@
 <div class="p-grid">
     <div class="p-col-4">
+        <span class="flexgrid-header">Bereich</span>
+    </div>
+    <div class="p-col">
+        <span class="flexgrid-header">Berechtigte Aktionen</span>
+    </div>
+</div>
+
+<div class="p-grid">
+    <div class="p-col-4">
         <!-- <p-card [style]="{height: cardHeight}"> -->
-            <p-listbox [options]="rootLevels$ | async"></p-listbox>
+            <p-listbox [options]="sections$ | async" [(ngModel)]="selectedSection" (onChange)="sectionSelected($event)"></p-listbox>
         <!-- </p-card> -->
     </div>
     <div class="p-col">
@@ -15,8 +24,14 @@
         <p-tree 
             [value]="actionsTree$ | async" selectionMode="checkbox" 
             [(selection)]="selectedActions" 
-            (onNodeSelect)="nodeSelect($event)" 
+            (onNodeSelect)="nodeSelect($event)"  
+            (onNodeUnselect)="nodeUnselect($event)"
             [loading]="!(actionsTree$ | async)">
+
+            <ng-template let-node  pTemplate="default">
+                <p [pTooltip]="node.data.description">{{node.label}}</p>
+            </ng-template>
+
         </p-tree>
         
     </div>
