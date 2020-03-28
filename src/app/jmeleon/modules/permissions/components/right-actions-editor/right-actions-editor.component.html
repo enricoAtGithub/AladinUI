@@ -15,6 +15,7 @@
                 [(ngModel)]="selectedSection" 
                 (onChange)="sectionSelected($event)"
                 [style]="{width:'300px'}"
+                [disabled]="isLoading$ | async"
                 >
             </p-listbox>
         <!-- </p-card> -->
@@ -32,7 +33,7 @@
             [(selection)]="selectedActions" 
             (onNodeSelect)="nodeSelect($event)"  
             (onNodeUnselect)="nodeUnselect($event)"
-            [loading]="!(actionsTree$ | async)">
+            [loading]="isLoading$ | async">
 
             <ng-template let-node  pTemplate="default">
                 <p [pTooltip]="node.data.description">{{node.label}}</p>

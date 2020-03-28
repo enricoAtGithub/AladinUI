@@ -17,6 +17,7 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
   selectedActions: TreeNode[];
 
   sections$: Observable<SelectItem[]>;
+  isLoading$: Observable<boolean>;
 
   subscription: Subscription[] = [];
 
@@ -28,6 +29,7 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
     // this.actionsTree = [];
     this.actionsTree$ = this.facade.actionGuiTreeForSelectedSection$;
     this.sections$ = this.facade.sections$;
+    this.isLoading$ = this.facade.isLoading$;
     this.subscription.push(this.actionsTree$.subscribe(tree => {
       console.log('tree in component: ', tree);
     }));

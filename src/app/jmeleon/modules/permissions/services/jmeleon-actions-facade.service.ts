@@ -7,59 +7,7 @@ import { TreeNode, SelectItem } from 'primeng/api';
 import * as permissions from '../permissions';
 import { ErrorNotificationService } from 'src/app/shared/services/error-notification.service';
 import { ErrorMessage } from 'src/app/shared/models/error-message';
-
-// partially set node have to be initialized manually:
-// https://github.com/primefaces/primeng/issues/3665
-
-const generateTreeAndSelectedNodes = (actionTreeNode: ActionTreeNode, selectedTreeNodes: TreeNode[]): TreeNode => {
-
-  if (!actionTreeNode) {
-    return null;
-  }
-  const isLeaf = !actionTreeNode.nodes || actionTreeNode.nodes.length < 1;
-
-  if (!actionTreeNode.description){
-    actionTreeNode.description = isLeaf ? 'todo: add description mechanism' : null;
-  }
-
-  const guiTreeNode: TreeNode = {
-    label: actionTreeNode.name,
-    data: actionTreeNode,
-    children: [],
-    leaf: isLeaf,
-    expanded: actionTreeNode.activated || !isLeaf && actionTreeNode.activated === null,
-    partialSelected: !isLeaf && actionTreeNode.activated === null
-  };
-
-  if (actionTreeNode.activated === true) {
-    selectedTreeNodes.push(guiTreeNode);
-  }
-  guiTreeNode.children = isLeaf ? [] : actionTreeNode.nodes.map(node => generateTreeAndSelectedNodes(node, selectedTreeNodes));
-
-  return guiTreeNode;
-};
-
-const generateTreeDict = (rootActionNode: ActionTreeNode): Record<string, [TreeNode[], TreeNode[]]> => {
-
-  // dict with tuple: [tree-data, selected-nodes]
-  const result: Record<string, [TreeNode[], TreeNode[]]> = {};
-  const sectionNodes = rootActionNode.nodes;
-
-  sectionNodes.forEach(sectionNode => {
-    const secondLevelNodes = sectionNode.nodes;
-    const selectedNodes: TreeNode[] = [];
-
-    const secondLevelGuiNodes = secondLevelNodes.map(slNode => {
-      const guiNodes = generateTreeAndSelectedNodes(slNode, selectedNodes);
-      return guiNodes;
-    });
-    result[sectionNode.name] = [secondLevelGuiNodes, selectedNodes];
-  });
-
-  console.log(result);
-
-  return result;
-};
+import JMeleonActionTreeUtils from '../utils/jml-action-tree.utils';
 
 /**
  * This facade encapsulates backend-calls and business logic for the right-action-editor
@@ -73,6 +21,7 @@ export class JmeleonActionsFacadeService {
   actionGuiTreeForSelectedSection$: Observable<TreeNode[]>;
   selectedTreeNodes$: Observable<TreeNode[]>;
   sections$: Observable<SelectItem[]>;
+  isLoading$: Observable<boolean>;
 
   sectionDict: Record<string, [TreeNode[], TreeNode[]]>;
 
@@ -80,6 +29,7 @@ export class JmeleonActionsFacadeService {
   private $selectedTreeNodes = new BehaviorSubject<TreeNode[]>([]);
   private $actionGuiTreeForSelectedSection = new BehaviorSubject<TreeNode[]>([]);
   private $sections = new BehaviorSubject<SelectItem[]>([]);
+  private $isLoading = new BehaviorSubject<boolean>(false);
 
   private subscriptions: Subscription[] = [];
 
@@ -92,12 +42,16 @@ export class JmeleonActionsFacadeService {
     this.selectedTreeNodes$ = this.$selectedTreeNodes.asObservable();
     this.sections$ = this.$sections.asObservable();
     this.actionGuiTreeForSelectedSection$ = this.$actionGuiTreeForSelectedSection.asObservable();
+    this.isLoading$ = this.$isLoading.asObservable();
+    this.init();
+  }
 
+  init(): void {
     this.actionsTree$.pipe(
       tap(actionTree => {
         console.log('root1:', actionTree);
-        if (!!actionTree){
-          this.sectionDict = generateTreeDict(actionTree);
+        if (!!actionTree) {
+          this.sectionDict = JMeleonActionTreeUtils.generateTreeDict(actionTree);
           const keys = Object.keys(this.sectionDict);
           console.log('keys: ', keys);
           this.$sections.next(keys.map(key => ({label: key, value: key})));
@@ -105,7 +59,7 @@ export class JmeleonActionsFacadeService {
       }),
       map(node => {
         const selectedNodes: TreeNode[] = [];
-        const result = [generateTreeAndSelectedNodes(node, selectedNodes)];
+        const result = [JMeleonActionTreeUtils.generateTreeAndSelectedNodes(node, selectedNodes)];
         this.$selectedTreeNodes.next(selectedNodes);
         return result;
       })
@@ -114,14 +68,14 @@ export class JmeleonActionsFacadeService {
   }
 
   updateActionTreeViaBackend(rightId: number): void {
+    this.$isLoading.next(true);
     this.subscriptions.push(
       this.jmlActionsForRightService.getActionsForRight(rightId)
-      // .pipe(
-      //   tap(actionTree => this.$actionTree.next(actionTree))
-      // )
-      .subscribe(actionTree => this.$actionTree.next(actionTree))
+      .subscribe(actionTree => {
+        this.$actionTree.next(actionTree);
+        this.$isLoading.next(false);
+      })
     );
-    // this.setTreeToDebugData();
   }
 
   selectSection(sectionName: string): void {
@@ -130,79 +84,14 @@ export class JmeleonActionsFacadeService {
     this.$selectedTreeNodes.next(this.sectionDict[sectionName][1]);
   }
 
-  // setTreeToDebugData(): void {
-  //   const newTree: ActionTreeNode = JSON.parse(`
-  //   {
-  //     "name" : "root",
-  //     "activated" : false,
-  //     "nodes" : [ {
-  //       "name" : "foobarac4f24",
-  //       "activated" : false,
-  //       "nodes" : [ {
-  //         "name" : "Order",
-  //         "activated" : false,
-  //         "nodes" : [ {
-  //           "name" : "create",
-  //           "activated" : false,
-  //           "nodes" : null
-  //         }, {
-  //           "name" : "read",
-  //           "activated" : false,
-  //           "nodes" : null
-  //         } ]
-  //       }, {
-  //         "name" : "Resource",
-  //         "activated" : false,
-  //         "nodes" : [ {
-  //           "name" : "create",
-  //           "activated" : false,
-  //           "nodes" : null
-  //         }, {
-  //           "name" : "read",
-  //           "activated" : true,
-  //           "nodes" : null
-  //         } ]
-  //       } ]
-  //     },
-  //     {
-  //       "name" : "second",
-  //       "activated" : null,
-  //       "nodes" : [ {
-  //         "name" : "Order2",
-  //         "activated" : false,
-  //         "nodes" : [ {
-  //           "name" : "create",
-  //           "activated" : false,
-  //           "nodes" : null
-  //         }, {
-  //           "name" : "read",
-  //           "activated" : false,
-  //           "nodes" : null
-  //         } ]
-  //       }, {
-  //         "name" : "Resource2",
-  //         "activated" : null,
-  //         "nodes" : [ {
-  //           "name" : "create",
-  //           "activated" : false,
-  //           "nodes" : null
-  //         }, {
-  //           "name" : "read",
-  //           "activated" : true,
-  //           "nodes" : null
-  //         } ]
-  //       } ]
-  //     } ]
-  //   }
-  //   `);
-  //   console.log('setTreeToDebugData-new tree: ', newTree);
-  //   this.$actionTree.next(newTree);
-  //   console.log('setTreeToDebugData-actionTree: ', this.$actionTree);
-  //   // this.$actionTree.next(newTree);
-    
-  // }
+  updateActivationForCheckbox():void{
 
-  syncGuiActionsWithServer(): void{
+  }
+
+
+
+  syncGuiActionsWithServer(): void {
+    // should this be blocked/blocking too? (with isLoading)
     this.subscriptions.push(
       this.jmlActionsForRightService.setAllActions(permissions.list).subscribe(
         () => this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktionen wurden erfolgreich an den Server übermittelt.'))
