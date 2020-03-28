@@ -5,7 +5,8 @@ import { JmeleonActionsForRightService } from './jmeleon-actions-for-right.servi
 import { tap, map } from 'rxjs/operators';
 import { TreeNode, SelectItem } from 'primeng/api';
 
-
+// it should set partial selected items in the tree, if it is set in the node-tree. 
+// https://github.com/primefaces/primeng/issues/3665
 
 const generateTreeAndSelectedNodes = (actionTreeNode: ActionTreeNode, selectedTreeNodes: TreeNode[]): TreeNode => {
 
@@ -14,7 +15,9 @@ const generateTreeAndSelectedNodes = (actionTreeNode: ActionTreeNode, selectedTr
   }
   const isLeaf = !actionTreeNode.nodes || actionTreeNode.nodes.length < 1;
 
-  actionTreeNode.description = isLeaf ? 'todo: add description mechanism' : null;
+  if (!actionTreeNode.description){
+    actionTreeNode.description = isLeaf ? 'todo: add description mechanism' : null;
+  }
 
   const guiTreeNode: TreeNode = {
     label: actionTreeNode.name,
@@ -178,7 +181,7 @@ export class JmeleonActionsFacadeService {
       },
       {
         "name" : "second",
-        "activated" : false,
+        "activated" : null,
         "nodes" : [ {
           "name" : "Order2",
           "activated" : false,
@@ -193,7 +196,7 @@ export class JmeleonActionsFacadeService {
           } ]
         }, {
           "name" : "Resource2",
-          "activated" : false,
+          "activated" : null,
           "nodes" : [ {
             "name" : "create",
             "activated" : false,

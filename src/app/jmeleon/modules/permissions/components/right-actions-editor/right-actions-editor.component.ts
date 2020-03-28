@@ -32,6 +32,7 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
       console.log('tree in component: ', tree);
     }));
     this.subscription.push(this.facade.selectedTreeNodes$.subscribe(selectedTreeNodes => {
+      console.log('selectedActions: ', selectedTreeNodes);
       this.selectedActions = selectedTreeNodes;
     }))
     this.facade.setTreeToDebugData();
