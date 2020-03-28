@@ -24,7 +24,6 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { AttachmentListComponent } from './components/attachment-list/attachment-list.component';
 import { FileSaverModule } from 'ngx-filesaver';
-import { AddEntityDialogComponent } from './components/add-entity-dialog/add-entity-dialog.component';
 import { PickListModule } from 'primeng/picklist';
 import { ErrorNotificationService } from './services/error-notification.service';
 import { DynamicTableAttachmentsComponent } from './components/dynamic-table-attachments/dynamic-table-attachments.component';
@@ -41,7 +40,6 @@ import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
     FileUploadDialogComponent,
     CatalogueChooserDialogComponent,
     AttachmentListComponent,
-    AddEntityDialogComponent,
     EntityLogComponent,
     PictureDialogComponent,
     EntityDropdownComponent
