@@ -35,7 +35,7 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
       console.log('selectedActions: ', selectedTreeNodes);
       this.selectedActions = selectedTreeNodes;
     }))
-    this.facade.setTreeToDebugData();
+    // this.facade.setTreeToDebugData();
 
   }
 

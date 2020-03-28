@@ -10,7 +10,13 @@
 <div class="p-grid">
     <div class="p-col-4">
         <!-- <p-card [style]="{height: cardHeight}"> -->
-            <p-listbox [options]="sections$ | async" [(ngModel)]="selectedSection" (onChange)="sectionSelected($event)"></p-listbox>
+            <p-listbox 
+                [options]="sections$ | async" 
+                [(ngModel)]="selectedSection" 
+                (onChange)="sectionSelected($event)"
+                [style]="{width:'300px'}"
+                >
+            </p-listbox>
         <!-- </p-card> -->
     </div>
     <div class="p-col">

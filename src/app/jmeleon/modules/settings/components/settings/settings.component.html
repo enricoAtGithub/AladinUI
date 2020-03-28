@@ -34,49 +34,16 @@
                                 </div>
                             </ng-template>    
                             <div class="p-col-2" *ngIf="setting.name === activeEditSetting">
-                                <p-button tooltip="Speichern"  icon="fa fa-save" (click)="saveSetting(setting)"></p-button>
-                                <p-button tooltip="Abbrechen"  icon="fa fa-times" (click)="cancelEdit(setting)"></p-button>
+                                <p-button pTooltip="Speichern"  icon="fa fa-save" (click)="saveSetting(setting)"></p-button>
+                                <p-button pTooltip="Abbrechen"  icon="fa fa-times" (click)="cancelEdit(setting)"></p-button>
                             </div>
                             <div class="p-col-2" *ngIf="setting.name !== activeEditSetting">
-                                <p-button tooltip="Bearbeiten"  icon="fa fa-edit" (click)="setActiveForEdit(setting)" [disabled]="!!activeEditSetting"></p-button>
+                                <p-button pTooltip="Bearbeiten"  icon="fa fa-edit" (click)="setActiveForEdit(setting)" [disabled]="!!activeEditSetting"></p-button>
                             </div>
 
                         </div>
 
 
-
-                        <!-- <div *ngIf="setting.name === activeEditSetting; else notInEditMode"  class="p-grid">
-
-                            <div *ngIf="setting.multiline; else singleLine" class="p-col-10">
-                                <textarea [rows]="10" [cols]="100" pInputTextarea [(ngModel)]="setting.value"></textarea>
-                            </div>
-                            <ng-template #singleLine>
-                                <div  class="p-col-10">
-                                    <input type="text" pInputText [(ngModel)]="setting.value" class="ui-g-12">
-                                </div>
-                            </ng-template>    
-                            <div class="p-col-2">
-                                <p-button tooltip="Speichern"  icon="fa fa-save" (click)="saveSetting(setting)"></p-button>
-                                <p-button tooltip="Abbrechen"  icon="fa fa-times" (click)="cancelEdit(setting)"></p-button>
-                            </div>
-
-                        </div>
-                        
-                        <ng-template #notInEditMode>
-                            <div class="p-grid">
-
-                                <div  class="p-col-10">
-                                    {{setting.value}}
-                                </div> 
-                                <div class="p-col-2">
-                                    <p-button tooltip="Bearbeiten"  icon="fa fa-edit" (click)="setActiveForEdit(setting)" [disabled]="!!activeEditSetting"></p-button>
-                                </div>
-                            </div>
-                        </ng-template>     -->
-
-                        <!-- <span class="ui-float-label">    
-                        </span> -->
-                        <!-- {{setting.value}} -->
                     </div>
                 </div>
             </ng-template>
@@ -84,3 +51,34 @@
     </p-card>
 
 </ng-template>
+
+
+<p-card styleClass="spacing-bottom-small">
+    <div>
+        <h2 style="padding: 0px; margin: 0px;">Initialisierung</h2>
+        <!-- <small>Einrichtung</small> -->
+        <div  style="margin-bottom: 1cm; border-color:ghostwhite"><hr> </div>
+        <!-- <ng-template ngFor let-setting [ngForOf]="category.settings"> -->
+            <div class="p-grid">
+                <div class="p-col-4">
+                    GUI-Aktionen mit Backend synchronisieren
+                </div>
+                <div class="p-col-8"> 
+                    <div class="p-grid">
+
+                        
+                        <div  class="p-col-10">
+                            <label></label>
+                        </div>
+                        <div class="p-col-2">
+                            <p-button pTooltip="Synchronisieren"  icon="pi pi-refresh" (click)="syncGuiActionsWithServer()" ></p-button>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        <!-- </ng-template> -->
+    </div> 
+</p-card>

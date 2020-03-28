@@ -10,7 +10,7 @@ export class UrlCollection {
     static UserManagement = class {
 
         static Actions = class {
-            static ADD(): string { return UrlCollection.USER_ACTIONS_BASE_PATH + '/add'; }
+            static ADD(): string { return UrlCollection.USER_ACTIONS_BASE_PATH() + '/add'; }
         };
 
         static Right = class {

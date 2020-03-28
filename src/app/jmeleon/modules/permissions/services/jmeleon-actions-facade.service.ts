@@ -4,8 +4,11 @@ import { ActionTreeNode } from '../models/actions-tree-node.model';
 import { JmeleonActionsForRightService } from './jmeleon-actions-for-right.service';
 import { tap, map } from 'rxjs/operators';
 import { TreeNode, SelectItem } from 'primeng/api';
+import * as permissions from '../permissions';
+import { ErrorNotificationService } from 'src/app/shared/services/error-notification.service';
+import { ErrorMessage } from 'src/app/shared/models/error-message';
 
-// it should set partial selected items in the tree, if it is set in the node-tree. 
+// partially set node have to be initialized manually:
 // https://github.com/primefaces/primeng/issues/3665
 
 const generateTreeAndSelectedNodes = (actionTreeNode: ActionTreeNode, selectedTreeNodes: TreeNode[]): TreeNode => {
@@ -26,9 +29,7 @@ const generateTreeAndSelectedNodes = (actionTreeNode: ActionTreeNode, selectedTr
     leaf: isLeaf,
     expanded: actionTreeNode.activated || !isLeaf && actionTreeNode.activated === null,
     partialSelected: !isLeaf && actionTreeNode.activated === null
-    // icon
   };
-  // if (!isLeaf && actionTreeNode.nodes.some(node => ))
 
   if (actionTreeNode.activated === true) {
     selectedTreeNodes.push(guiTreeNode);
@@ -38,26 +39,11 @@ const generateTreeAndSelectedNodes = (actionTreeNode: ActionTreeNode, selectedTr
   return guiTreeNode;
 };
 
-// const actionNodeIsPartialSelected = (node: ActionTreeNode, firstFoundActivation?: boolean = null): boolean => {
-
-//   const childnode.nodes.map(n => )
-//   for(const child of node.nodes){
-//     if (firstFoundActivation !== null && child.activated !== null && firstFoundActivation !== child.activated){
-//       return true;
-//     }
-//   }
-
-
-//   return true;
-// }
-
 const generateTreeDict = (rootActionNode: ActionTreeNode): Record<string, [TreeNode[], TreeNode[]]> => {
 
   // dict with tuple: [tree-data, selected-nodes]
   const result: Record<string, [TreeNode[], TreeNode[]]> = {};
-  // console.log('root: ', rootActionNode);
   const sectionNodes = rootActionNode.nodes;
-  // console.log('root2: ', rootActionNode);
 
   sectionNodes.forEach(sectionNode => {
     const secondLevelNodes = sectionNode.nodes;
@@ -98,7 +84,8 @@ export class JmeleonActionsFacadeService {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private jmlActionsForRightService: JmeleonActionsForRightService
+    private jmlActionsForRightService: JmeleonActionsForRightService,
+    private notificationService: ErrorNotificationService
   ) {
 
     this.actionsTree$ = this.$actionTree.asObservable();
@@ -119,8 +106,6 @@ export class JmeleonActionsFacadeService {
       map(node => {
         const selectedNodes: TreeNode[] = [];
         const result = [generateTreeAndSelectedNodes(node, selectedNodes)];
-        // console.log('gui tree: ', result);
-        // console.log('selected nodes: ', selectedNodes);
         this.$selectedTreeNodes.next(selectedNodes);
         return result;
       })
@@ -129,14 +114,14 @@ export class JmeleonActionsFacadeService {
   }
 
   updateActionTreeViaBackend(rightId: number): void {
-    // this.subscriptions.push(
-    //   this.jmlActionsForRightService.getActionsForRight(rightId)
-    //   // .pipe(
-    //   //   tap(actionTree => this.$actionTree.next(actionTree))
-    //   // )
-    //   .subscribe(actionTree => this.$actionTree.next(actionTree))
-    // );
-    this.setTreeToDebugData();
+    this.subscriptions.push(
+      this.jmlActionsForRightService.getActionsForRight(rightId)
+      // .pipe(
+      //   tap(actionTree => this.$actionTree.next(actionTree))
+      // )
+      .subscribe(actionTree => this.$actionTree.next(actionTree))
+    );
+    // this.setTreeToDebugData();
   }
 
   selectSection(sectionName: string): void {
@@ -145,75 +130,84 @@ export class JmeleonActionsFacadeService {
     this.$selectedTreeNodes.next(this.sectionDict[sectionName][1]);
   }
 
-  setTreeToDebugData(): void {
-    const newTree: ActionTreeNode = JSON.parse(`
-    {
-      "name" : "root",
-      "activated" : false,
-      "nodes" : [ {
-        "name" : "foobarac4f24",
-        "activated" : false,
-        "nodes" : [ {
-          "name" : "Order",
-          "activated" : false,
-          "nodes" : [ {
-            "name" : "create",
-            "activated" : false,
-            "nodes" : null
-          }, {
-            "name" : "read",
-            "activated" : false,
-            "nodes" : null
-          } ]
-        }, {
-          "name" : "Resource",
-          "activated" : false,
-          "nodes" : [ {
-            "name" : "create",
-            "activated" : false,
-            "nodes" : null
-          }, {
-            "name" : "read",
-            "activated" : true,
-            "nodes" : null
-          } ]
-        } ]
-      },
-      {
-        "name" : "second",
-        "activated" : null,
-        "nodes" : [ {
-          "name" : "Order2",
-          "activated" : false,
-          "nodes" : [ {
-            "name" : "create",
-            "activated" : false,
-            "nodes" : null
-          }, {
-            "name" : "read",
-            "activated" : false,
-            "nodes" : null
-          } ]
-        }, {
-          "name" : "Resource2",
-          "activated" : null,
-          "nodes" : [ {
-            "name" : "create",
-            "activated" : false,
-            "nodes" : null
-          }, {
-            "name" : "read",
-            "activated" : true,
-            "nodes" : null
-          } ]
-        } ]
-      } ]
-    }
-    `);
-    console.log('setTreeToDebugData-new tree: ', newTree);
-    this.$actionTree.next(newTree);
-    console.log('setTreeToDebugData-actionTree: ', this.$actionTree);
-    // this.$actionTree.next(newTree);
+  // setTreeToDebugData(): void {
+  //   const newTree: ActionTreeNode = JSON.parse(`
+  //   {
+  //     "name" : "root",
+  //     "activated" : false,
+  //     "nodes" : [ {
+  //       "name" : "foobarac4f24",
+  //       "activated" : false,
+  //       "nodes" : [ {
+  //         "name" : "Order",
+  //         "activated" : false,
+  //         "nodes" : [ {
+  //           "name" : "create",
+  //           "activated" : false,
+  //           "nodes" : null
+  //         }, {
+  //           "name" : "read",
+  //           "activated" : false,
+  //           "nodes" : null
+  //         } ]
+  //       }, {
+  //         "name" : "Resource",
+  //         "activated" : false,
+  //         "nodes" : [ {
+  //           "name" : "create",
+  //           "activated" : false,
+  //           "nodes" : null
+  //         }, {
+  //           "name" : "read",
+  //           "activated" : true,
+  //           "nodes" : null
+  //         } ]
+  //       } ]
+  //     },
+  //     {
+  //       "name" : "second",
+  //       "activated" : null,
+  //       "nodes" : [ {
+  //         "name" : "Order2",
+  //         "activated" : false,
+  //         "nodes" : [ {
+  //           "name" : "create",
+  //           "activated" : false,
+  //           "nodes" : null
+  //         }, {
+  //           "name" : "read",
+  //           "activated" : false,
+  //           "nodes" : null
+  //         } ]
+  //       }, {
+  //         "name" : "Resource2",
+  //         "activated" : null,
+  //         "nodes" : [ {
+  //           "name" : "create",
+  //           "activated" : false,
+  //           "nodes" : null
+  //         }, {
+  //           "name" : "read",
+  //           "activated" : true,
+  //           "nodes" : null
+  //         } ]
+  //       } ]
+  //     } ]
+  //   }
+  //   `);
+  //   console.log('setTreeToDebugData-new tree: ', newTree);
+  //   this.$actionTree.next(newTree);
+  //   console.log('setTreeToDebugData-actionTree: ', this.$actionTree);
+  //   // this.$actionTree.next(newTree);
+    
+  // }
+
+  syncGuiActionsWithServer(): void{
+    this.subscriptions.push(
+      this.jmlActionsForRightService.setAllActions(permissions.list).subscribe(
+        () => this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktionen wurden erfolgreich an den Server übermittelt.'))
+      )
+    );
   }
 
 
