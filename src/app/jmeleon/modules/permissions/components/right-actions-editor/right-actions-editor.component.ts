@@ -3,6 +3,7 @@ import { TreeNode, SelectItem } from 'primeng/api';
 import JMeleonActionTreeUtils from '../../utils/jml-action-tree.utils';
 import { JmeleonActionsFacadeService } from '../../services/jmeleon-actions-facade.service';
 import { Observable, Subscription } from 'rxjs';
+import { UrlCollection } from 'src/app/shared/url-collection';
 
 @Component({
   selector: 'app-right-actions-editor',
@@ -26,7 +27,6 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
   constructor(private facade: JmeleonActionsFacadeService) { }
 
   ngOnInit() {
-    // this.actionsTree = [];
     this.actionsTree$ = this.facade.actionGuiTreeForSelectedSection$;
     this.sections$ = this.facade.sections$;
     this.isLoading$ = this.facade.isLoading$;
@@ -37,7 +37,8 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
       console.log('selectedActions: ', selectedTreeNodes);
       this.selectedActions = selectedTreeNodes;
     }))
-    // this.facade.setTreeToDebugData();
+
+    console.log('url: ', UrlCollection.UserManagement.Actions.ADD());
 
   }
 
@@ -55,12 +56,12 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
 
   
   nodeSelect(event) {
-    //event.node = selected node
-    // console.log('node selected: ', event);
+    console.log('selected node: ', event.node);
+    this.facade.addActionToRight(this.entryId, event.node);
   }
   nodeUnselect(event) {
-    //event.node = selected node
-    // console.log('node selected: ', event);
+    console.log('unselected node: ', event.node);
+    this.facade.removeActionFromRight(this.entryId, event.node);
   }
 
   sectionSelected(event){
@@ -68,20 +69,5 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
     this.facade.selectSection(event.value);
   }
 
-  // generateSelectedActions(roots: TreeNode[], selectedOnly = true):string[]{
-
-  // }
-
-  // generateSelectedActionsForName(currentNode: TreeNode, currentPath: string, selectedOnly = true): string[] {
-  //   const result = [];
-  //   if (!currentNode){
-  //     return [];
-  //   }
-  //   if (!selectedOnly || currentNode.)
-  //   result.push(currentPath + '.' + currentNode.label);
-  //   if (!currentNode.leaf){
-
-  //   }
-  // }
 
 }

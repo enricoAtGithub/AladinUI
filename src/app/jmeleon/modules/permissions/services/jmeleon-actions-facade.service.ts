@@ -8,6 +8,7 @@ import * as permissions from '../permissions';
 import { ErrorNotificationService } from 'src/app/shared/services/error-notification.service';
 import { ErrorMessage } from 'src/app/shared/models/error-message';
 import JMeleonActionTreeUtils from '../utils/jml-action-tree.utils';
+import { Tree } from 'primeng/tree';
 
 /**
  * This facade encapsulates backend-calls and business logic for the right-action-editor
@@ -23,7 +24,11 @@ export class JmeleonActionsFacadeService {
   sections$: Observable<SelectItem[]>;
   isLoading$: Observable<boolean>;
 
-  sectionDict: Record<string, [TreeNode[], TreeNode[]]>;
+  private sectionDict: Record<string, [TreeNode[], TreeNode[]]>;
+  private rightId: number;
+  private _actionTreeRoot: ActionTreeNode;
+  private _currentSection: string;
+
 
   private $actionTree = new BehaviorSubject<ActionTreeNode>(null);
   private $selectedTreeNodes = new BehaviorSubject<TreeNode[]>([]);
@@ -49,7 +54,8 @@ export class JmeleonActionsFacadeService {
   init(): void {
     this.actionsTree$.pipe(
       tap(actionTree => {
-        console.log('root1:', actionTree);
+        // console.log('root1:', actionTree);
+        this._actionTreeRoot = actionTree;
         if (!!actionTree) {
           this.sectionDict = JMeleonActionTreeUtils.generateTreeDict(actionTree);
           const keys = Object.keys(this.sectionDict);
@@ -68,6 +74,7 @@ export class JmeleonActionsFacadeService {
   }
 
   updateActionTreeViaBackend(rightId: number): void {
+    this.rightId = rightId;
     this.$isLoading.next(true);
     this.subscriptions.push(
       this.jmlActionsForRightService.getActionsForRight(rightId)
@@ -80,12 +87,23 @@ export class JmeleonActionsFacadeService {
 
   selectSection(sectionName: string): void {
 
+    this._currentSection = sectionName;
     this.$actionGuiTreeForSelectedSection.next(this.sectionDict[sectionName][0]);
     this.$selectedTreeNodes.next(this.sectionDict[sectionName][1]);
   }
 
-  updateActivationForCheckbox():void{
+  removeActionFromRight(rightId: number, node: TreeNode):void{
+    const fullName = JMeleonActionTreeUtils.generateFullPathFromTreeNode(node, this._actionTreeRoot);
+    this.subscriptions.push(this.jmlActionsForRightService.removeActionFromRight(fullName, rightId).subscribe(
+      () => this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktion wurde erfolgreich entfernt.'))
+    ));
+  }
 
+  addActionToRight(rightId: number, node: TreeNode):void{
+    const fullName = JMeleonActionTreeUtils.generateFullPathFromTreeNode(node, this._actionTreeRoot);
+    this.subscriptions.push(this.jmlActionsForRightService.addActionToRight(fullName, rightId).subscribe(
+      () => this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktion wurde erfolgreich hinzugefügt.'))
+    ));
   }
 
 

@@ -31,14 +31,14 @@ export default class JMeleonActionTreeUtils {
     static getParentNode = (actualNode: ActionTreeNode, partTree: ActionTreeNode): ActionTreeNode => {
 
         if (!partTree.nodes) {
-            console.log('getParent - no child nodes for node: ', partTree);
+            // console.log('getParent - no child nodes for node: ', partTree);
             return null;
         }
 
         for (const child of partTree.nodes) {
             if (child === actualNode) {
-                console.log('found parent:', partTree);
-                return child;
+                // console.log('found parent:', partTree);
+                return partTree;
 
             }
         }
@@ -73,7 +73,7 @@ export default class JMeleonActionTreeUtils {
     const isLeaf = !actionTreeNode.nodes || actionTreeNode.nodes.length < 1;
 
     if (!actionTreeNode.description) {
-      actionTreeNode.description = isLeaf ? 'todo: add description mechanism' : null;
+      actionTreeNode.description = isLeaf ? 'todo: add description' : null;
     }
 
     const guiTreeNode: TreeNode = {
@@ -113,6 +113,22 @@ export default class JMeleonActionTreeUtils {
 
     console.log(result);
 
+    return result;
+  }
+
+  static generateFullPathFromTreeNode = (node: TreeNode, root: ActionTreeNode) : string => {
+    let currentActionNode : ActionTreeNode = node.data;
+    let result = currentActionNode.name;
+
+    do{
+        result = `${currentActionNode.name}.${result}`;
+        currentActionNode = JMeleonActionTreeUtils.getParentNode(currentActionNode, root);
+        // console.log('path: ', result);
+    }
+    while(currentActionNode !== null && currentActionNode !== root);
+
+    console.log('path: ', result);
+    // return `root.${result}`;
     return result;
   }
 
