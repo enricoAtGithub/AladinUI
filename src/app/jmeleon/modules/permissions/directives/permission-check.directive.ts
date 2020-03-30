@@ -21,7 +21,7 @@ export class PermissionCheckDirective extends NgxPermissionsDirective implements
 
   // @Input('appPermissionCheck') actionPath: string;
   @Input('appPermissionCheck') set actionPath(value: string|string[]) {
-    console.log('value was set.', value);
+    // console.log('value was set.', value);
     // console.log('dict (for appPermissionCheck): ', this._jmlVarDict);
     this.ngxPermissionsOnly = value;
 
@@ -37,15 +37,15 @@ export class PermissionCheckDirective extends NgxPermissionsDirective implements
   // }
   // @Input() appPermissionCheckVarDict: Object;
   @Input() set appPermissionCheckVarDict(dict: Object) {
-      console.log('dict was set to: ', dict);
+      // console.log('dict was set to: ', dict);
       this._jmlVarDict = dict;
       // const currentPermission = typeof(this.ngxPermissionsOnly) === 'string' ? this.ngxPermissionsOnly : this.ngxPermissionsOnly[0];
       const currentPermission = this.ngxPermissionsOnly as string;
-      console.log('current permission: ', currentPermission);
+      // console.log('current permission: ', currentPermission);
       this.ngxPermissionsOnly = JMeleonActionsUtils.resolveVars(
         // multiple permissions are not supported by the jmeleon permission concept
         currentPermission, dict);
-      console.log('new value: ', this.ngxPermissionsOnly);
+      // console.log('new value: ', this.ngxPermissionsOnly);
 
   }
 

@@ -16,7 +16,7 @@ export class JmeleonActionsPermissionService {
   }
 
   initActionsPermittedForCurrentUser(actions: string[]): void {
-     console.log('adding permission for actions: ', actions);
+    //  console.log('adding permission for actions: ', actions);
       this.ngrxPermissionService.addPermission(actions);
   }
 

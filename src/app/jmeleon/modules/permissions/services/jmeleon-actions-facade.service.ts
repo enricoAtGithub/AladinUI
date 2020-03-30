@@ -59,7 +59,7 @@ export class JmeleonActionsFacadeService {
         if (!!actionTree) {
           this.sectionDict = JMeleonActionTreeUtils.generateTreeDict(actionTree);
           const keys = Object.keys(this.sectionDict);
-          console.log('keys: ', keys);
+          // console.log('keys: ', keys);
           this.$sections.next(keys.map(key => ({label: key, value: key})));
         }
       }),
