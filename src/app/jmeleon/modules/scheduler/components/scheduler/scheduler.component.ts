@@ -107,7 +107,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
         }));
   }
 
-  onSchedulerEventClick(args: any): void {
+  onSchedulerEventClick(args: EventClickArgs): void {
     // access clicked scheduler event
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);
 
