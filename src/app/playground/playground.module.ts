@@ -8,9 +8,10 @@ import { NgxPermissionsModule } from 'ngx-permissions';
 import { SharedModule } from '../shared/shared.module';
 import { PermissionsModule } from '../jmeleon/modules/permissions/permissions.module';
 import { EntityTestComponent } from './entity-test/entity-test.component';
+import { DateFormatComponent } from './date-format/date-format.component';
 
 @NgModule({
-  declarations: [BaseAreaComponent, PermissionTestComponent, EntityTestComponent],
+  declarations: [BaseAreaComponent, PermissionTestComponent, EntityTestComponent, DateFormatComponent],
   imports: [
     CommonModule,
     PlaygroundRoutingModule,
