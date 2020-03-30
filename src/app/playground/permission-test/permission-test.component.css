@@ -5,3 +5,11 @@ span {
 /* .header {
     font-weight: bold;
 } */
+
+.hasPermission {
+    color: green;
+}
+
+.hasNoPermission {
+    color: red;
+}

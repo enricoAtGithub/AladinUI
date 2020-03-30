@@ -111,28 +111,56 @@ export default class JMeleonActionTreeUtils {
       result[sectionNode.name] = [secondLevelGuiNodes, selectedNodes];
     });
 
-    console.log(result);
+    // console.log(result);
 
     return result;
   }
 
-  static generateFullPathFromTreeNode = (node: TreeNode, root: ActionTreeNode) : string => {
-    let currentActionNode : ActionTreeNode = node.data;
+  static generateFullPathFromTreeNode = (node: TreeNode, root: ActionTreeNode): string => {
+    let currentActionNode: ActionTreeNode = node.data;
     let result = currentActionNode.name;
 
-    do{
+    do {
         result = `${currentActionNode.name}.${result}`;
         currentActionNode = JMeleonActionTreeUtils.getParentNode(currentActionNode, root);
         // console.log('path: ', result);
     }
-    while(currentActionNode !== null && currentActionNode !== root);
+    while (currentActionNode !== null && currentActionNode !== root);
 
-    console.log('path: ', result);
+    // console.log('path: ', result);
     // return `root.${result}`;
     return result;
   }
 
+  // currently for debugging only
+  static generateActionsList = (root: ActionTreeNode): string[] => {
+    const result: string[] = [];
 
+    JMeleonActionTreeUtils.traverseActionsTree(root, '', result);
+
+    return result;
+  }
+
+  private static traverseActionsTree(node: ActionTreeNode, currentPath: string, leafPaths: string[]): void {
+    currentPath = `${currentPath}.${node.name}`;
+    if (!node.nodes || node.nodes.length === 0) {
+      // const ROOT_PREFIX = 'root.';
+      // const trimmedPath = currentPath.startsWith(ROOT_PREFIX) ?
+      //   currentPath.substring(ROOT_PREFIX.length, currentPath.length - 1) :
+      //   currentPath;
+      //   console.log('current Path: ', currentPath);
+      //   console.log('trimmed paath: ', trimmedPath);
+      // const trimmedPath = currentPath.substring(2, currentPath.length - 1);
+      const trimmedPath = currentPath.substring(2, currentPath.length);
+
+        // console.log('current Path: ', currentPath);
+        // console.log('trimmed paath: ', trimmedPath);
+      
+      leafPaths.push(trimmedPath);
+      return;
+    }
+    node.nodes.forEach(child => JMeleonActionTreeUtils.traverseActionsTree(child, currentPath, leafPaths));
+  }
 
 
 }

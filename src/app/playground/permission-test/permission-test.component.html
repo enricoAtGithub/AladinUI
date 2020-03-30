@@ -236,14 +236,27 @@
         <ng-template #failure><div>No</div></ng-template>
 
         <div class="p-grid">
-            <div class="p-col"></div>
+            <div class="p-col">
+
+            </div>
             <div class="p-col"></div>
         </div> 
 
     </p-tabPanel>
     
     <p-tabPanel header="Permissions for current user">
+        <h3>Permissions for current user</h3>
         
+        <div *ngFor="let action of actionsLiveList$ | async">
+            <div *appPermissionCheck="action;else noPermission" class="hasPermission">
+                {{action}}
+            </div>
+            <ng-template #noPermission>
+                <div class="hasNoPermission">
+                    {{action}}
+                </div>
+            </ng-template>
+        </div>
     </p-tabPanel>
 
 </p-tabView>
