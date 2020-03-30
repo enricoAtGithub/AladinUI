@@ -7,6 +7,7 @@ export class User {
     // public roles: Role[];
     public roles: string[];
     public loggedInSince: string;
+    public allowedActions: string[];
 
     // rolesDisplayText(): string {
     //     const result = this.roles.map(role => role.name).join(', ');

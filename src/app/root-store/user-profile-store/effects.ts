@@ -6,10 +6,15 @@ import { catchError, map, startWith, switchMap, tap } from 'rxjs/operators';
 import * as userProfileActions from './actions';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Router } from '@angular/router';
+import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 
 @Injectable()
 export class UserProfileEffects {
-  constructor(private authService: AuthService, private actions$: Actions, public router: Router) {}
+  constructor(
+    private authService: AuthService, 
+    private actions$: Actions, 
+    public router: Router, 
+    private jmlActionPermissionsService: JmeleonActionsPermissionService) {}
 
   @Effect()
   loginRequestEffect$: Observable<Action> = this.actions$.pipe(
@@ -25,6 +30,9 @@ export class UserProfileEffects {
               if (httpResult.success) {
                 const redirect = this.authService.redirectUrl ? this.router.parseUrl(this.authService.redirectUrl) : '/dashboard';
                 this.router.navigateByUrl(redirect);
+
+                // add allowed actions:
+                this.jmlActionPermissionsService.initActionsPermittedForCurrentUser(httpResult.result.allowedActions);
                 return new userProfileActions.LoginSuccessAction({user: httpResult.result});
 
               }
