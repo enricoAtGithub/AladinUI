@@ -10,6 +10,7 @@ import { PermissionsModule } from '../jmeleon/modules/permissions/permissions.mo
 import { EntityTestComponent } from './entity-test/entity-test.component';
 import { DateFormatComponent } from './date-format/date-format.component';
 import { TabViewModule } from 'primeng/tabview';
+import { AccordionModule } from 'primeng/primeng';
 
 @NgModule({
   declarations: [BaseAreaComponent, PermissionTestComponent, EntityTestComponent, DateFormatComponent],
@@ -19,7 +20,8 @@ import { TabViewModule } from 'primeng/tabview';
     SharedModule,
     NgxPermissionsModule.forChild(),
     PermissionsModule,
-    TabViewModule
+    TabViewModule,
+    AccordionModule
   ]
 })
 export class PlaygroundModule { }

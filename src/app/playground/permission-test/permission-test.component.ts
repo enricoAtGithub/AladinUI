@@ -9,6 +9,8 @@ import { map, tap } from 'rxjs/operators';
 import JMeleonActionTreeUtils from 'src/app/jmeleon/modules/permissions/utils/jml-action-tree.utils';
 import { EntityService } from 'src/app/shared/services/entity.service';
 import { TableData } from 'src/app/shared/models/table-data';
+import { EntityConfiguration } from 'src/app/shared/models/entity-configuration';
+import { Field } from 'src/app/shared/models/field';
 
 @Component({
   selector: 'app-permission-test',
@@ -32,7 +34,11 @@ export class PermissionTestComponent implements OnInit {
   actionPath = root.foo.bar.one;
   vars: string[] = [];
 
-  actionsLiveList$ : Observable<string[]>;
+  actionsLiveList$: Observable<string[]>;
+  entityConfiguration$: Observable<EntityConfiguration[]>;
+
+  currentDtoType: string;
+  currentDtoField: string;
 
   constructor(
     private japs: JmeleonActionsPermissionService,
@@ -72,6 +78,21 @@ export class PermissionTestComponent implements OnInit {
 
     this.initActionList();
 
+    this.entityConfiguration$ = this.entityService.getEntityConfigurations()
+      .pipe(
+        map(configs => Object.keys(configs).map(key => configs[key])
+        //   {
+        //     const keys = Object.keys(configs);
+        //     return keys.map(key => configs[key]);
+        // }
+        )
+      );
+    this.entityConfiguration$.subscribe(configs => {
+      console.log('configs:', configs);
+    });
+
+    // this.root.dto.$dtoType.$dtoField.create
+
 
 
   }
@@ -94,16 +115,33 @@ export class PermissionTestComponent implements OnInit {
 
   checkPermission = (path: string, dict: object): string => this.japs.resolveVars(path, dict);
 
-  initActionList = () => {
+  initActionList = (): void => {
     this.entityService.filter('SecurityRight', 1, 10, '', '')
-        .subscribe(data => { 
+        .subscribe(data => {
           // console.log('entity data: ', data);
           const firstRightId = data.data[0].id;
-          
+
           this.jmlFacade.init();
-          //find better way
+          // find better way
           this.jmlFacade.updateActionTreeViaBackend(firstRightId);
     });
   }
 
+  displayDtoType = (type: string): string => {
+    if (type === this.currentDtoType) {
+      return '';
+    }
+    this.currentDtoType = type;
+    return this.currentDtoType;
+  }
+
+  displayDtoField = (type: string): string => {
+    if (type === this.currentDtoField) {
+      return '';
+    }
+    this.currentDtoField = type;
+    return this.currentDtoField;
+  }
+
+  filterFields = (fields: Field[]) : Field[] => fields.filter(field => field.visible);
 }
