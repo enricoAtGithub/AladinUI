@@ -31,20 +31,20 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
     this.sections$ = this.facade.sections$;
     this.isLoading$ = this.facade.isLoading$;
     this.subscription.push(this.actionsTree$.subscribe(tree => {
-      console.log('tree in component: ', tree);
+      // console.log('tree in component: ', tree);
     }));
     this.subscription.push(this.facade.selectedTreeNodes$.subscribe(selectedTreeNodes => {
-      console.log('selectedActions: ', selectedTreeNodes);
+      // console.log('selectedActions: ', selectedTreeNodes);
       this.selectedActions = selectedTreeNodes;
     }))
 
-    console.log('url: ', UrlCollection.UserManagement.Actions.ADD());
+    // console.log('url: ', UrlCollection.UserManagement.Actions.ADD());
 
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.entryId){
-      console.log('entryId: ', changes.entryId);
+      // console.log('entryId: ', changes.entryId);
       this.facade.updateActionTreeViaBackend(this.entryId);
     }
 
@@ -56,16 +56,16 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
 
   
   nodeSelect(event) {
-    console.log('selected node: ', event.node);
+    // console.log('selected node: ', event.node);
     this.facade.addActionToRight(this.entryId, event.node);
   }
   nodeUnselect(event) {
-    console.log('unselected node: ', event.node);
+    // console.log('unselected node: ', event.node);
     this.facade.removeActionFromRight(this.entryId, event.node);
   }
 
   sectionSelected(event){
-    console.log('selection changed: ', event);
+    // console.log('selection changed: ', event);
     this.facade.selectSection(event.value);
   }
 

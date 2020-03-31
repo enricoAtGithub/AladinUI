@@ -11,13 +11,13 @@ export default class JMeleonActionTreeUtils {
       return tree;
     }
 
-    console.log('update tree - tree: ', tree);
-    console.log('update tree - node: ', node);
+    // console.log('update tree - tree: ', tree);
+    // console.log('update tree - node: ', node);
 
 
     const parent = JMeleonActionTreeUtils.getParentNode(node, tree);
 
-    console.log('parent: ', parent);
+    // console.log('parent: ', parent);
 
     parent.activated = parent.nodes
       .every(child => child.activated === newStateForActivated) ?
@@ -126,7 +126,7 @@ export default class JMeleonActionTreeUtils {
     do {
       result = !!result ? `${currentActionNode.name}.${result}` : currentActionNode.name;
       currentActionNode = JMeleonActionTreeUtils.getParentNode(currentActionNode, root);
-      console.log('path: ', result);
+      // console.log('path: ', result);
     }
     while (currentActionNode !== null && currentActionNode !== root);
 
