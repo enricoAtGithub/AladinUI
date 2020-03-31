@@ -247,7 +247,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getSchedulerHeights() {
+  getSchedulerHeights() {
     this.windowHeight = this.getAvailableHeight();
     // calculate space for the two schedulers.
     // subtract occupied space between the 2 schedulers (split gutter, margin and multiselect = 62px)
