@@ -1,3 +1,5 @@
+<p-confirmDialog header="Bestätigung" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
+
 <p-dialog header="Katalog erstellen" [(visible)]="displayCreateCatalogue" [style]="{width: '300px', height: '200px'}" [draggable]="false" [resizable]="false">
     <form novalidate #catalogueForm="ngForm" (ngSubmit)="createCatalogue(catalogueForm)">
         <div class="ui-g form-group">
@@ -53,13 +55,13 @@
     <p-treeTable [value]="allCatalogues" [autoLayout]="true">
         <ng-template pTemplate="caption">
             Katalogverwaltung
-            <button pButton (click)="showCreateCatalogueDialog()" icon="pi pi-plus" class="ui-button-success" style="float: right; margin-top: -5px; margin-right: 13px"></button>
+            <button pButton (click)="showCreateCatalogueDialog()" icon="pi pi-plus" class="ui-button-success" style="float: right; margin-top: -5px; margin-right: 31px"></button>
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
                 <th>Name</th>
                 <th>Beschreibung</th>
-                <th style="width: 90px">Bearbeiten</th>
+                <th style="width: 127px">Bearbeiten</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
@@ -70,11 +72,14 @@
                 </td>
                 <td>{{rowData.description}}</td>
                 <td *ngIf="rowNode.node.children" style="text-align: center">
-                    <button pButton (click)="showAddEntryDialog(rowNode.node.data.id)" style="margin-right: 5px;" icon="pi pi-plus" class="ui-button-success"></button>
-                    <button pButton (click)="deleteCatalogue(rowNode.node.data.id)" style="margin-left: 5px;" icon="pi pi-trash" class="ui-button-info"></button>
+                    <button pButton (click)="showAddEntryDialog(rowNode.node.data.id)" style="margin-right: 3px;" icon="pi pi-plus" class="ui-button-success"></button>
+                    <button pButton (click)="updateCatalogue(rowNode.node.data)" style="margin-left: 3px; margin-right: 3px;" icon="pi pi-pencil" class="ui-button-info"></button>
+                    <button pButton (click)="deleteCatalogue(rowNode.node.data.id)" style="margin-left: 3px;" icon="pi pi-trash" class="ui-button-info"></button>
+                    
                 </td>
                 <td *ngIf="!rowNode.node.children" style="text-align: center">
-                    <button pButton (click)="deleteEntry(rowNode.node.parent.data.id, rowNode.node.data.id)" icon="pi pi-trash" class="ui-button-info"></button>
+                    <button pButton (click)="updateCatalogueEntry(rowNode.node.data, rowNode.node.parent.data)" style="margin-right: 3px;" icon="pi pi-pencil" class="ui-button-info"></button>
+                    <button pButton (click)="deleteEntry(rowNode.node.parent.data.id, rowNode.node.data.id)" style="margin-left: 3px;" icon="pi pi-trash" class="ui-button-info"></button>
                 </td>
             </tr>
         </ng-template>
