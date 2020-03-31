@@ -214,7 +214,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     args.excludeSelectors = 'e-all-day-cells';
   }
 
-  private updateSchedulerEventInterval(schedulerEvent: SchedulerEvent): void {
+  updateSchedulerEventInterval(schedulerEvent: SchedulerEvent): void {
     // convert start and end time from Date to String
     const startTime: string = DateTimeUtils.convertDateToApiConformTimeString(schedulerEvent.StartTime);
     const endTime: string = DateTimeUtils.convertDateToApiConformTimeString(schedulerEvent.EndTime);
