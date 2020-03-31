@@ -118,12 +118,14 @@ export default class JMeleonActionTreeUtils {
 
   static generateFullPathFromTreeNode = (node: TreeNode, root: ActionTreeNode): string => {
     let currentActionNode: ActionTreeNode = node.data;
-    let result = currentActionNode.name;
+    // let result = currentActionNode.name;
+    let result = '';
+
 
     do {
-        result = `${currentActionNode.name}.${result}`;
+        result = !!result ? `${currentActionNode.name}.${result}` : currentActionNode.name;
         currentActionNode = JMeleonActionTreeUtils.getParentNode(currentActionNode, root);
-        // console.log('path: ', result);
+        console.log('path: ', result);
     }
     while (currentActionNode !== null && currentActionNode !== root);
 
