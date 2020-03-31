@@ -233,6 +233,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
 
   private setTimeFrameForCurrentSchedulerEvent(schedulerEvent: SchedulerEvent): void {
     // Task #1340: show times outside of event time in grey
+    // refactor: https://ej2.syncfusion.com/angular/documentation/schedule/cell-customization/#using-template
     const start = <string>(schedulerEvent.StartTime.getHours() as unknown) + ':' + <string>(schedulerEvent.StartTime.getMinutes() as unknown);
     const end = <string>(schedulerEvent.EndTime.getHours() as unknown) + ':' + <string>(schedulerEvent.EndTime.getMinutes() as unknown);
     // e.g.: schedulerEventTime="{ start: '08:00', end: '9:30' }"

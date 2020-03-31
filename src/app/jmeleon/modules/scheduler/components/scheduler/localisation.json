@@ -3,7 +3,7 @@
         "schedule": {
             "day": "Tag",
             "week": "Woche",
-            "workWeek": "Arbeitswoche",
+            "workWeek": "Wochenkalender",
             "month": "Monat",
             "agenda": "Agenda",
             "weekAgenda": "Week Agenda",
@@ -63,10 +63,10 @@
             "series": "Series",
             "previous": "Previous",
             "next": "Next",
-            "timelineDay": "Zeitleiste Tag",
-            "timelineWeek": "Zeitleiste Woche",
-            "timelineWorkWeek": "Zeitleiste Arbeitswoche",
-            "timelineMonth": "Timeline Month"
+            "timelineDay": "Tag",
+            "timelineWeek": "Woche",
+            "timelineWorkWeek": "Arbeitswoche",
+            "timelineMonth": "Monat"
         },
         "recurrenceeditor": {
             "none": "None",
@@ -103,4 +103,4 @@
             "summaryYear": "year(s)"
         }
     }
-  }
+}
