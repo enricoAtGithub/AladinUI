@@ -1,45 +1,24 @@
 <div class="p-grid">
     <div class="p-col-4">
-        <span class="flexgrid-header">Bereich</span>
-    </div>
-    <div class="p-col">
-        <span class="flexgrid-header">Berechtigte Aktionen</span>
-    </div>
-</div>
-
-<div class="p-grid">
-    <div class="p-col-4">
-        <!-- <p-card [style]="{height: cardHeight}"> -->
-            <p-listbox 
-                [options]="sections$ | async" 
-                [(ngModel)]="selectedSection" 
-                (onChange)="sectionSelected($event)"
-                [style]="{width:'300px'}"
-                [disabled]="isLoading$ | async"
-                >
+        <p-fieldset legend="Bereich">
+            <p-scrollPanel [style]="{width: '100%', height: '250px'}">
+                <p-listbox [options]="sections$ | async" [(ngModel)]="selectedSection" (onChange)="sectionSelected($event)"
+                [style]="{width:'300px'}" [disabled]="isLoading$ | async">
             </p-listbox>
-        <!-- </p-card> -->
+            </p-scrollPanel>
+        </p-fieldset>
     </div>
     <div class="p-col">
-        <!-- <p-card>
-            <div>
-                <h3>Zugewiesene Aktionen</h3>
-
-            </div>
-        </p-card> -->
-        
-        <p-tree 
-            [value]="actionsTree$ | async" selectionMode="checkbox" 
-            [(selection)]="selectedActions" 
-            (onNodeSelect)="nodeSelect($event)"  
-            (onNodeUnselect)="nodeUnselect($event)"
-            [loading]="isLoading$ | async">
-
-            <ng-template let-node  pTemplate="default">
-                <p [pTooltip]="node.data.description">{{node.label}}</p>
-            </ng-template>
-
-        </p-tree>
-        
+        <p-fieldset legend="Berechtigte Aktionen">
+            <p-scrollPanel [style]="{width: '100%', height: '250px'}">
+                <p-tree [value]="actionsTree$ | async" selectionMode="checkbox" [(selection)]="selectedActions"
+                    (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"
+                    [loading]="isLoading$ | async">
+                    <ng-template let-node pTemplate="default">
+                        <p [pTooltip]="node.data.description">{{node.label}}</p>
+                    </ng-template>
+                </p-tree>
+            </p-scrollPanel>
+        </p-fieldset>
     </div>
 </div>

@@ -6,7 +6,7 @@ import { TreeModule } from 'primeng/tree';
 import { CardModule } from 'primeng/card';
 import { ListboxModule } from 'primeng/listbox';
 import { FormsModule } from '@angular/forms';
-import { TooltipModule } from 'primeng/primeng';
+import { TooltipModule, ScrollPanelModule, FieldsetModule } from 'primeng/primeng';
 
 
 
@@ -18,7 +18,9 @@ import { TooltipModule } from 'primeng/primeng';
     CardModule,
     ListboxModule,
     FormsModule,
-    TooltipModule
+    TooltipModule,
+    ScrollPanelModule,
+    FieldsetModule
   ],
   exports: [PermissionCheckDirective, RightActionsEditorComponent]
 })
