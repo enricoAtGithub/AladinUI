@@ -4,68 +4,68 @@ import { TreeNode } from 'primeng/api';
 export default class JMeleonActionTreeUtils {
 
 
-    // is returning the tree really necessary?
-    // newState should not be null
-    static updateTree = (tree: ActionTreeNode, node: ActionTreeNode, newStateForActivated: boolean): ActionTreeNode => {
-        if (node.activated === newStateForActivated) {
-            return tree;
-        }
-
-        console.log('update tree - tree: ', tree);
-        console.log('update tree - node: ', node);
-
-
-        const parent = JMeleonActionTreeUtils.getParentNode(node, tree);
-
-        console.log('parent: ', parent);
-
-        parent.activated = parent.nodes
-            .every(child => child.activated === newStateForActivated) ?
-            newStateForActivated : null;
-
-        JMeleonActionTreeUtils.setValueForChildNodes(node, newStateForActivated);
-
-        return tree;
+  // is returning the tree really necessary?
+  // newState should not be null
+  static updateTree = (tree: ActionTreeNode, node: ActionTreeNode, newStateForActivated: boolean): ActionTreeNode => {
+    if (node.activated === newStateForActivated) {
+      return tree;
     }
 
-    static getParentNode = (actualNode: ActionTreeNode, partTree: ActionTreeNode): ActionTreeNode => {
+    console.log('update tree - tree: ', tree);
+    console.log('update tree - node: ', node);
 
-        if (!partTree.nodes) {
-            // console.log('getParent - no child nodes for node: ', partTree);
-            return null;
-        }
 
-        for (const child of partTree.nodes) {
-            if (child === actualNode) {
-                // console.log('found parent:', partTree);
-                return partTree;
+    const parent = JMeleonActionTreeUtils.getParentNode(node, tree);
 
-            }
-        }
+    console.log('parent: ', parent);
 
-        for (const child of partTree.nodes) {
-            const result = JMeleonActionTreeUtils.getParentNode(actualNode, child);
-            if (!!result) {
-                return result;
-            }
-        }
+    parent.activated = parent.nodes
+      .every(child => child.activated === newStateForActivated) ?
+      newStateForActivated : null;
 
-        return null;
+    JMeleonActionTreeUtils.setValueForChildNodes(node, newStateForActivated);
+
+    return tree;
+  }
+
+  static getParentNode = (actualNode: ActionTreeNode, partTree: ActionTreeNode): ActionTreeNode => {
+
+    if (!partTree.nodes) {
+      // console.log('getParent - no child nodes for node: ', partTree);
+      return null;
     }
 
-    private static setValueForChildNodes = (node: ActionTreeNode, newActivationValue: boolean): void => {
+    for (const child of partTree.nodes) {
+      if (child === actualNode) {
+        // console.log('found parent:', partTree);
+        return partTree;
 
-        if (!!node.nodes && node.nodes.length > 0) {
-            node.nodes.forEach(child => JMeleonActionTreeUtils.setValueForChildNodes(child, newActivationValue));
-        }
-        node.activated = newActivationValue;
+      }
     }
 
+    for (const child of partTree.nodes) {
+      const result = JMeleonActionTreeUtils.getParentNode(actualNode, child);
+      if (!!result) {
+        return result;
+      }
+    }
 
-// partially set node have to be initialized manually:
-// https://github.com/primefaces/primeng/issues/3665
+    return null;
+  }
 
-    static generateTreeAndSelectedNodes = (actionTreeNode: ActionTreeNode, selectedTreeNodes: TreeNode[]): TreeNode => {
+  private static setValueForChildNodes = (node: ActionTreeNode, newActivationValue: boolean): void => {
+
+    if (!!node.nodes && node.nodes.length > 0) {
+      node.nodes.forEach(child => JMeleonActionTreeUtils.setValueForChildNodes(child, newActivationValue));
+    }
+    node.activated = newActivationValue;
+  }
+
+
+  // partially set node have to be initialized manually:
+  // https://github.com/primefaces/primeng/issues/3665
+
+  static generateTreeAndSelectedNodes = (actionTreeNode: ActionTreeNode, selectedTreeNodes: TreeNode[]): TreeNode => {
 
     if (!actionTreeNode) {
       return null;
@@ -81,7 +81,8 @@ export default class JMeleonActionTreeUtils {
       data: actionTreeNode,
       children: [],
       leaf: isLeaf,
-      expanded: actionTreeNode.activated || !isLeaf && actionTreeNode.activated === null,
+      // expanded: actionTreeNode.activated || !isLeaf && actionTreeNode.activated === null,
+      expanded: false,
       partialSelected: !isLeaf && actionTreeNode.activated === null
     };
 
@@ -89,7 +90,7 @@ export default class JMeleonActionTreeUtils {
       selectedTreeNodes.push(guiTreeNode);
     }
     guiTreeNode.children = isLeaf ? [] : actionTreeNode.nodes.map(node =>
-        JMeleonActionTreeUtils.generateTreeAndSelectedNodes(node, selectedTreeNodes));
+      JMeleonActionTreeUtils.generateTreeAndSelectedNodes(node, selectedTreeNodes));
 
     return guiTreeNode;
   }
@@ -123,9 +124,9 @@ export default class JMeleonActionTreeUtils {
 
 
     do {
-        result = !!result ? `${currentActionNode.name}.${result}` : currentActionNode.name;
-        currentActionNode = JMeleonActionTreeUtils.getParentNode(currentActionNode, root);
-        console.log('path: ', result);
+      result = !!result ? `${currentActionNode.name}.${result}` : currentActionNode.name;
+      currentActionNode = JMeleonActionTreeUtils.getParentNode(currentActionNode, root);
+      console.log('path: ', result);
     }
     while (currentActionNode !== null && currentActionNode !== root);
 
@@ -146,18 +147,7 @@ export default class JMeleonActionTreeUtils {
   private static traverseActionsTree(node: ActionTreeNode, currentPath: string, leafPaths: string[]): void {
     currentPath = `${currentPath}.${node.name}`;
     if (!node.nodes || node.nodes.length === 0) {
-      // const ROOT_PREFIX = 'root.';
-      // const trimmedPath = currentPath.startsWith(ROOT_PREFIX) ?
-      //   currentPath.substring(ROOT_PREFIX.length, currentPath.length - 1) :
-      //   currentPath;
-      //   console.log('current Path: ', currentPath);
-      //   console.log('trimmed paath: ', trimmedPath);
-      // const trimmedPath = currentPath.substring(2, currentPath.length - 1);
       const trimmedPath = currentPath.substring(2, currentPath.length);
-
-        // console.log('current Path: ', currentPath);
-        // console.log('trimmed paath: ', trimmedPath);
-      
       leafPaths.push(trimmedPath);
       return;
     }
