@@ -219,14 +219,16 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     const startTime: string = DateTimeUtils.convertDateToApiConformTimeString(schedulerEvent.StartTime);
     const endTime: string = DateTimeUtils.convertDateToApiConformTimeString(schedulerEvent.EndTime);
 
-    this.schedulerService.updateSchedulerEventInterval(schedulerEvent.Id, startTime, endTime)
-      .subscribe(() => {
-        // If resourceScheduler is visible update shown resources
-        if (this.showResourceScheduler) {
-          this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter });
-          if (schedulerEvent.Id === this.schedulerStatus.currentSchedulerEvent.Id) { this.setTimeFrameForCurrentSchedulerEvent(schedulerEvent); }
-        }
-      });
+    this.subscriptions.push(
+      this.schedulerService.updateSchedulerEventInterval(schedulerEvent.Id, startTime, endTime)
+        .subscribe(() => {
+          // If resourceScheduler is visible update shown resources
+          if (this.showResourceScheduler) {
+            this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter });
+            if (schedulerEvent.Id === this.schedulerStatus.currentSchedulerEvent.Id) { this.setTimeFrameForCurrentSchedulerEvent(schedulerEvent); }
+          }
+        })
+    );
   }
 
   private setTimeFrameForCurrentSchedulerEvent(schedulerEvent: SchedulerEvent): void {
