@@ -78,7 +78,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.schedulerStatus = { currentSchedulerEvent: null, currentResources: null };
-    this.detectWindowsize();
+    this.getSchedulerHeights();
     this.getSchedulerEvents();
   }
 
@@ -247,20 +247,18 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     }
   }
 
-  onBrowserResize() {
-    const usedSpace = 183; // top bar, footer and some more...
-    const ratio = this.windowHeight / (window.innerHeight - usedSpace);
-    this.windowHeight = window.innerHeight - usedSpace;
-    this.eventSchedulerHeight = this.eventSchedulerHeight / ratio;
-    this.resourceSchedulerHeight = this.resourceSchedulerHeight / ratio;
+  private getSchedulerHeights() {
+    this.windowHeight = this.getAvailableHeight();
+    // calculate space for the two schedulers.
+    // subtract occupied space between the 2 schedulers (split gutter, margin and multiselect = 62px)
+    this.eventSchedulerHeight = ((this.windowHeight - 62) * 1 / 3);
+    this.resourceSchedulerHeight = ((this.windowHeight - 62) * 2 / 3);
   }
 
-  private detectWindowsize() {
-    const usedSpace = 183; // top bar, footer and some more...
-    this.windowHeight = window.innerHeight - usedSpace;
-    this.eventSchedulerHeight = (this.windowHeight * 1 / 3) - 70;
-    this.resourceSchedulerHeight = (this.windowHeight * 2 / 3);
-
+  private getAvailableHeight(heightTopBar: number = 60, heightRouteBar: number = 32, paddingTop: number = 15, paddingBottom: number = 15, heightFooter: number = 60): number {
+    const usedSpace = heightTopBar + heightRouteBar + paddingTop + heightFooter + paddingBottom;
+    const usableHeight = window.innerHeight - usedSpace;
+    return (usableHeight);
   }
 
   /* loadConfig(): void {

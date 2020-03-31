@@ -1,4 +1,4 @@
-<div (window:resize)="onBrowserResize()" [ngStyle]="{'height.px': windowHeight}">
+<div (window:resize)="getSchedulerHeights()" [ngStyle]="{'height.px': windowHeight}">
 
     <!-- https://www.npmjs.com/package/angular-split -->
     <as-split direction="vertical" (dragEnd)="resizeSchedulers($event)" unit="pixel">
