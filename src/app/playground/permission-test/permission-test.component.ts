@@ -7,6 +7,8 @@ import { JmeleonActionsFacadeService } from 'src/app/jmeleon/modules/permissions
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import JMeleonActionTreeUtils from 'src/app/jmeleon/modules/permissions/utils/jml-action-tree.utils';
+import { EntityService } from 'src/app/shared/services/entity.service';
+import { TableData } from 'src/app/shared/models/table-data';
 
 @Component({
   selector: 'app-permission-test',
@@ -35,7 +37,8 @@ export class PermissionTestComponent implements OnInit {
   constructor(
     private japs: JmeleonActionsPermissionService,
     // private ngrxPermissionService: NgxPermissionsService
-    private jmlFacade: JmeleonActionsFacadeService 
+    private jmlFacade: JmeleonActionsFacadeService,
+    private entityService: EntityService,
     ) { }
 
   ngOnInit() {
@@ -66,9 +69,10 @@ export class PermissionTestComponent implements OnInit {
       map(tree => !!tree ? JMeleonActionTreeUtils.generateActionsList(tree) : []),
       // tap(list => console.log('test action list: ', list))
     );
-    this.jmlFacade.init();
-    //find better way
-    this.jmlFacade.updateActionTreeViaBackend(8);
+
+    this.initActionList();
+
+
 
   }
   genVarDict(vars: string[]) {
@@ -89,5 +93,17 @@ export class PermissionTestComponent implements OnInit {
   }
 
   checkPermission = (path: string, dict: object): string => this.japs.resolveVars(path, dict);
+
+  initActionList = () => {
+    this.entityService.filter('SecurityRight', 1, 10, '', '')
+        .subscribe(data => { 
+          // console.log('entity data: ', data);
+          const firstRightId = data.data[0].id;
+          
+          this.jmlFacade.init();
+          //find better way
+          this.jmlFacade.updateActionTreeViaBackend(firstRightId);
+    });
+  }
 
 }

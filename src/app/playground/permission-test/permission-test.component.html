@@ -245,7 +245,7 @@
     </p-tabPanel>
     
     <p-tabPanel header="Permissions for current user">
-        <h3>Permissions for current user</h3>
+        <h3>Action-permissions for current user</h3>
         
         <div *ngFor="let action of actionsLiveList$ | async">
             <div *appPermissionCheck="action;else noPermission" class="hasPermission">
@@ -257,6 +257,12 @@
                 </div>
             </ng-template>
         </div>
+    </p-tabPanel>
+
+    <p-tabPanel header="variable-resolving for actions">
+        <h3>Action-permission-check with variable resolving for current user</h3>
+        
+        
     </p-tabPanel>
 
 </p-tabView>
