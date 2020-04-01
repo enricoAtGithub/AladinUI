@@ -1,35 +1,61 @@
 <div class="p-grid">
     <div class="p-col-4">
-        <p-fieldset legend="Bereich">
+        <p-panel header="Bereich">
+
             <p-scrollPanel [style]="{width: '100%', height: '250px'}">
-                <p-listbox 
-                    [options]="sections$ | async" 
-                    [(ngModel)]="selectedSection" 
-                    (onChange)="sectionSelected($event)"
-                    [style]="{width:'100%'}" 
-                    [disabled]="isLoading$ | async"
-                    >
-            </p-listbox>
+                <p-listbox [options]="sections$ | async" [(ngModel)]="selectedSection"
+                    (onChange)="sectionSelected($event)" [style]="{width:'100%'}" [disabled]="isLoading$ | async">
+                </p-listbox>
             </p-scrollPanel>
-        </p-fieldset>
+        </p-panel>
     </div>
-    <div class="p-col-8">
-        <p-fieldset legend="Berechtigte Aktionen">
-            <p-scrollPanel [style]="{width: '100%', height: '250px'}">
-                <p-tree 
-                    [value]="actionsTree$ | async"  
-                    selectionMode="checkbox" 
-                    [(selection)]="selectedActions"
-                    (onNodeSelect)="nodeSelect($event)" 
-                    (onNodeUnselect)="nodeUnselect($event)"
-                    [loading]="isLoading$ | async"
-                    [ngClass]="{'not-clickable': disableEditing$ | async}"
-                    >
-                    <ng-template let-node pTemplate="default">
-                        <p [pTooltip]="node.data.description">{{node.label}}</p>
-                    </ng-template>
-                </p-tree>
-            </p-scrollPanel>
-        </p-fieldset>
+    <div *ngIf="actionsTree$ | async as trees" class="p-col-8">
+        <!-- <p-fieldset legend="Berechtigte Aktionen"> -->
+        <p-panel>
+            <p-header>
+                <span class="ui-panel-title">
+                    Berechtigte Aktionen
+
+                    <p-button icon="fa fa-compress" pTooltip="Einklappen" (click)="collapseTrees(trees)"
+                        style="float: right; margin-top: -5px;"></p-button>
+                    <p-button icon="fa fa-expand" pTooltip="Aufklappen" (click)="expandTrees(trees)"
+                        style="float: right; margin-top: -5px; margin-right: 5px;"></p-button>
+                </span>
+            </p-header>
+            <div>
+                <div [style]="{width: '100%'}">
+                </div>
+                <p-scrollPanel [style]="{width: '100%', height: '250px'}">
+                    <p-tree 
+                        [value]="trees" selectionMode="checkbox" 
+                        [(selection)]="selectedActions"
+                        (onNodeSelect)="nodeSelect($event)" 
+                        (onNodeUnselect)="nodeUnselect($event)"
+                        (onNodeExpand)="nodeExpanded($event)"
+                        (onNodeCollapse)="nodeCollapsed($event)"
+                        [loading]="isLoading$ | async" 
+                        [ngClass]="{'not-clickable': disableEditing$ | async}">
+
+                        <ng-template let-node pTemplate="default">
+                            <p [pTooltip]="node.data.description">{{node.label}}</p>
+                        </ng-template>
+                    </p-tree>
+                    <!-- <p-tree 
+                        [value]="actionsTree$ | async"  
+                        selectionMode="checkbox" 
+                        [(selection)]="selectedActions"
+                        (onNodeSelect)="nodeSelect($event)" 
+                        (onNodeUnselect)="nodeUnselect($event)"
+                        [loading]="isLoading$ | async"
+                        [ngClass]="{'not-clickable': disableEditing$ | async}"
+                        >
+                        <ng-template let-node pTemplate="default">
+                            <p [pTooltip]="node.data.description">{{node.label}}</p>
+                        </ng-template>
+                    </p-tree> -->
+                </p-scrollPanel>
+            </div>
+            <!-- </p-fieldset> -->
+        </p-panel>
     </div>
 </div>

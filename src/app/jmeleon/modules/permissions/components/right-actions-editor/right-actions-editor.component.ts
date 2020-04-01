@@ -2,6 +2,7 @@ import { Component, OnInit, Input, OnChanges, OnDestroy, SimpleChanges } from '@
 import { TreeNode, SelectItem } from 'primeng/api';
 import { JmeleonActionsFacadeService } from '../../services/jmeleon-actions-facade.service';
 import { Observable, Subscription } from 'rxjs';
+import JMeleonActionTreeUtils from '../../utils/jml-action-tree.utils';
 
 @Component({
   selector: 'app-right-actions-editor',
@@ -22,6 +23,8 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
   subscription: Subscription[] = [];
 
   selectedSection: string;
+
+  expandingOrCollapsingTreeIsActive: boolean;
 
   constructor(private facade: JmeleonActionsFacadeService) { }
 
@@ -46,6 +49,7 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('change: ', changes);
     if (changes.entryId) {
       // console.log('entryId: ', changes.entryId);
       this.facade.requestActionTreeFromBackend(this.entryId);
@@ -75,5 +79,21 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
     this.facade.selectSection(event.value);
   }
 
+  expandTrees(trees: TreeNode[]):void{
+    this.expandingOrCollapsingTreeIsActive = true;
+    trees.forEach(tree => JMeleonActionTreeUtils.expandOrCollapseTree(tree));
+  }
 
+  collapseTrees(trees: TreeNode[]):void{
+    this.expandingOrCollapsingTreeIsActive = true;
+    trees.forEach(tree => JMeleonActionTreeUtils.expandOrCollapseTree(tree, false));
+  }
+
+  nodeExpanded(event):void{
+    // console.log('expanded: ', event);
+  }
+  nodeCollapsed(event):void{
+    // console.log('collapsed: ', event);
+
+  }
 }

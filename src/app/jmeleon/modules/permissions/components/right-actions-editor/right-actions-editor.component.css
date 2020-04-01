@@ -7,3 +7,12 @@ div.ui-treenode-content:not(.ui-treenode-selectable) div.ui-chkbox{
         cursor: not-allowed;
         pointer-events: none;
     }
+
+    .btn-left {
+        width: 49% !important;
+        margin-right: 2px;
+    }
+    .btn-right {
+        width: 49% !important;
+        margin-left: 2px;
+    }

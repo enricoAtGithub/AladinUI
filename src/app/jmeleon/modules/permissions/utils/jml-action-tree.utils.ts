@@ -162,5 +162,13 @@ export default class JMeleonActionTreeUtils {
     node.nodes.forEach(child => JMeleonActionTreeUtils.traverseActionsTree(child, currentPath, leafPaths));
   }
 
+  static expandOrCollapseTree = (node: TreeNode, expand = true) => {
+    node.expanded = expand;
+    // console.log(expand ? 'expanding: ' : 'collapsing: ', node.label);
+    if (!!node.children){
+      node.children.forEach(child => JMeleonActionTreeUtils.expandOrCollapseTree(child, expand));
+    }
+  }
+
 
 }
