@@ -19,6 +19,7 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
 
   sections$: Observable<SelectItem[]>;
   isLoading$: Observable<boolean>;
+  disableEditing$: Observable<boolean>;
 
   subscription: Subscription[] = [];
 
@@ -36,7 +37,8 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
     this.subscription.push(this.facade.selectedTreeNodes$.subscribe(selectedTreeNodes => {
       // console.log('selectedActions: ', selectedTreeNodes);
       this.selectedActions = selectedTreeNodes;
-    }))
+    }));
+    this.disableEditing$ = this.facade.disableEditing$;
 
     // console.log('url: ', UrlCollection.UserManagement.Actions.ADD());
 

@@ -65,7 +65,11 @@ export default class JMeleonActionTreeUtils {
   // partially set node have to be initialized manually:
   // https://github.com/primefaces/primeng/issues/3665
 
-  static generateTreeAndSelectedNodes = (actionTreeNode: ActionTreeNode, selectedTreeNodes: TreeNode[]): TreeNode => {
+  static generateTreeAndSelectedNodes = (
+    actionTreeNode: ActionTreeNode,
+    selectedTreeNodes: TreeNode[],
+    activateTreeSelection= true
+    ): TreeNode => {
 
     if (!actionTreeNode) {
       return null;
@@ -83,14 +87,16 @@ export default class JMeleonActionTreeUtils {
       leaf: isLeaf,
       // expanded: actionTreeNode.activated || !isLeaf && actionTreeNode.activated === null,
       expanded: false,
-      partialSelected: !isLeaf && actionTreeNode.activated === null
+      partialSelected: !isLeaf && actionTreeNode.activated === null,
+      selectable: activateTreeSelection
     };
+    // console.log(`${actionTreeNode.name} - selectable: ${guiTreeNode.selectable}`);
 
     if (actionTreeNode.activated === true) {
       selectedTreeNodes.push(guiTreeNode);
     }
     guiTreeNode.children = isLeaf ? [] : actionTreeNode.nodes.map(node =>
-      JMeleonActionTreeUtils.generateTreeAndSelectedNodes(node, selectedTreeNodes));
+      JMeleonActionTreeUtils.generateTreeAndSelectedNodes(node, selectedTreeNodes, activateTreeSelection));
 
     return guiTreeNode;
   }
@@ -105,10 +111,12 @@ export default class JMeleonActionTreeUtils {
       const secondLevelNodes = sectionNode.nodes;
       const selectedNodes: TreeNode[] = [];
 
-      const secondLevelGuiNodes = secondLevelNodes.map(slNode => {
-        const guiNodes = JMeleonActionTreeUtils.generateTreeAndSelectedNodes(slNode, selectedNodes);
-        return guiNodes;
-      });
+      const secondLevelGuiNodes = !secondLevelNodes ? [] : 
+        secondLevelNodes
+          .map(slNode => {
+            const guiNodes = JMeleonActionTreeUtils.generateTreeAndSelectedNodes(slNode, selectedNodes);
+            return guiNodes;
+          });
       result[sectionNode.name] = [secondLevelGuiNodes, selectedNodes];
     });
 
@@ -126,13 +134,13 @@ export default class JMeleonActionTreeUtils {
     do {
       result = !!result ? `${currentActionNode.name}.${result}` : currentActionNode.name;
       currentActionNode = JMeleonActionTreeUtils.getParentNode(currentActionNode, root);
-      // console.log('path: ', result);
+      console.log('path: ', result);
     }
     while (currentActionNode !== null && currentActionNode !== root);
 
     // console.log('path: ', result);
-    // return `root.${result}`;
-    return result;
+    return `root.${result}`;
+    // return result;
   }
 
   // currently for debugging only

@@ -1,0 +1,9 @@
+div.ui-treenode-content:not(.ui-treenode-selectable) div.ui-chkbox{
+    display: none;
+    visibility: hidden;
+    }
+
+    .not-clickable {
+        cursor: not-allowed;
+        pointer-events: none;
+    }

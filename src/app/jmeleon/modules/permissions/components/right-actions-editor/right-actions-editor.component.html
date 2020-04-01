@@ -2,18 +2,29 @@
     <div class="p-col-4">
         <p-fieldset legend="Bereich">
             <p-scrollPanel [style]="{width: '100%', height: '250px'}">
-                <p-listbox [options]="sections$ | async" [(ngModel)]="selectedSection" (onChange)="sectionSelected($event)"
-                [style]="{width:'250px'}" [disabled]="isLoading$ | async">
+                <p-listbox 
+                    [options]="sections$ | async" 
+                    [(ngModel)]="selectedSection" 
+                    (onChange)="sectionSelected($event)"
+                    [style]="{width:'100%'}" 
+                    [disabled]="isLoading$ | async"
+                    >
             </p-listbox>
             </p-scrollPanel>
         </p-fieldset>
     </div>
-    <div class="p-col">
+    <div class="p-col-8">
         <p-fieldset legend="Berechtigte Aktionen">
             <p-scrollPanel [style]="{width: '100%', height: '250px'}">
-                <p-tree [value]="actionsTree$ | async" selectionMode="checkbox" [(selection)]="selectedActions"
-                    (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"
-                    [loading]="isLoading$ | async">
+                <p-tree 
+                    [value]="actionsTree$ | async" 
+                    selectionMode="checkbox" 
+                    [(selection)]="selectedActions"
+                    (onNodeSelect)="nodeSelect($event)" 
+                    (onNodeUnselect)="nodeUnselect($event)"
+                    [loading]="isLoading$ | async"
+                    [ngClass]="{'not-clickable': disableEditing$ | async}"
+                    >
                     <ng-template let-node pTemplate="default">
                         <p [pTooltip]="node.data.description">{{node.label}}</p>
                     </ng-template>
