@@ -29,9 +29,9 @@ export class JmeleonActionsFacadeService {
   masterOfDisasterId$: Observable<number>;
   currentRightId$: Observable<number>;
 
+  // dict with tuple: [tree-data, selected-nodes]
   private _sectionDict: Record<string, [TreeNode[], TreeNode[]]>;
   private _rightId: number;
-  private _masterRightId = 0; // id for MASTER_OF_DESASTER-right
   private _actionTreeRoot: ActionTreeNode;
   private _currentSection: string;
 
@@ -118,32 +118,46 @@ export class JmeleonActionsFacadeService {
   }
 
   selectSection(sectionName: string): void {
-
     this._currentSection = sectionName;
+    // console.log('section name: ', sectionName);
+    if (!sectionName){
+      this.$actionGuiTreeForSelectedSection.next(null);
+      this.$selectedTreeNodes.next(null);
+      return;
+    }
     this.$actionGuiTreeForSelectedSection.next(this._sectionDict[sectionName][0]);
     this.$selectedTreeNodes.next(this._sectionDict[sectionName][1]);
+
+
   }
 
-  removeActionFromRight(rightId: number, node: TreeNode):void{
+  addActionToRight(rightId: number, node: TreeNode, sectionNodes: TreeNode[]):void{
     const fullName = JMeleonActionTreeUtils.generateFullPathFromTreeNode(node, this._actionTreeRoot);
-    console.log('removing action to right: ', fullName);
-    this.subscriptions.push(this.jmlActionsForRightService.removeActionFromRight(fullName, rightId).subscribe(
-      () => this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktion wurde erfolgreich entfernt.'))
-    ));
-  }
-
-  addActionToRight(rightId: number, node: TreeNode):void{
-    const fullName = JMeleonActionTreeUtils.generateFullPathFromTreeNode(node, this._actionTreeRoot);
-    console.log('adding action to right: ', fullName);
+    // console.log('adding action to right: ', fullName);
     this.subscriptions.push(this.jmlActionsForRightService.addActionToRight(fullName, rightId).subscribe(
-      () => this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktion wurde erfolgreich hinzugefügt.'))
+      () => {
+        this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktion wurde erfolgreich hinzugefügt.'));
+        this._sectionDict[this._currentSection] = [this._sectionDict[this._currentSection][0], sectionNodes];
+      }
+    ));
+
+    
+  }
+
+  removeActionFromRight(rightId: number, node: TreeNode, sectionNodes: TreeNode[]):void{
+    const fullName = JMeleonActionTreeUtils.generateFullPathFromTreeNode(node, this._actionTreeRoot);
+    // console.log('removing action to right: ', fullName);
+    this.subscriptions.push(this.jmlActionsForRightService.removeActionFromRight(fullName, rightId).subscribe(
+      () => {
+        this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktion wurde erfolgreich entfernt.'));
+        this._sectionDict[this._currentSection] = [this._sectionDict[this._currentSection][0], sectionNodes];
+      }
     ));
   }
 
 
 
   syncGuiActionsWithServer(): void {
-    // should this be blocked/blocking too? (with isLoading)
     this.subscriptions.push(
       this.jmlActionsForRightService.setAllActions(permissions.list).subscribe(
         () => this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktionen wurden erfolgreich an den Server übermittelt.'))

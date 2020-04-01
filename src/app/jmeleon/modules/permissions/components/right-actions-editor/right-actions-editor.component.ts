@@ -1,9 +1,7 @@
 import { Component, OnInit, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { TreeNode, SelectItem } from 'primeng/api';
-import JMeleonActionTreeUtils from '../../utils/jml-action-tree.utils';
 import { JmeleonActionsFacadeService } from '../../services/jmeleon-actions-facade.service';
 import { Observable, Subscription } from 'rxjs';
-import { UrlCollection } from 'src/app/shared/url-collection';
 
 @Component({
   selector: 'app-right-actions-editor',
@@ -31,23 +29,27 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
     this.actionsTree$ = this.facade.actionGuiTreeForSelectedSection$;
     this.sections$ = this.facade.sections$;
     this.isLoading$ = this.facade.isLoading$;
-    this.subscription.push(this.actionsTree$.subscribe(tree => {
-      // console.log('tree in component: ', tree);
-    }));
+    // this.subscription.push(this.actionsTree$.subscribe(tree => {
+    //   // console.log('tree in component: ', tree);
+    // }));
     this.subscription.push(this.facade.selectedTreeNodes$.subscribe(selectedTreeNodes => {
       // console.log('selectedActions: ', selectedTreeNodes);
       this.selectedActions = selectedTreeNodes;
     }));
     this.disableEditing$ = this.facade.disableEditing$;
-
-    // console.log('url: ', UrlCollection.UserManagement.Actions.ADD());
+    this.subscription.push(this.sections$.subscribe(() => {
+      // const selection = this.selectedSection;
+      this.selectedSection = null;
+      // this.selectedSection = selection;
+    }));
 
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.entryId){
+    if (changes.entryId) {
       // console.log('entryId: ', changes.entryId);
       this.facade.requestActionTreeFromBackend(this.entryId);
+      this.facade.selectSection(null);
     }
 
   }
@@ -56,17 +58,19 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
     this.subscription.forEach(sub => sub.unsubscribe());
   }
 
-  
+
   nodeSelect(event) {
     // console.log('selected node: ', event.node);
-    this.facade.addActionToRight(this.entryId, event.node);
+    this.facade.addActionToRight(this.entryId, event.node, this.selectedActions);
+
   }
   nodeUnselect(event) {
     // console.log('unselected node: ', event.node);
-    this.facade.removeActionFromRight(this.entryId, event.node);
+    this.facade.removeActionFromRight(this.entryId, event.node, this.selectedActions);
+
   }
 
-  sectionSelected(event){
+  sectionSelected(event) {
     // console.log('selection changed: ', event);
     this.facade.selectSection(event.value);
   }

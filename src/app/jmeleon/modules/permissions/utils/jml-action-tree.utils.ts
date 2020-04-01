@@ -134,13 +134,13 @@ export default class JMeleonActionTreeUtils {
     do {
       result = !!result ? `${currentActionNode.name}.${result}` : currentActionNode.name;
       currentActionNode = JMeleonActionTreeUtils.getParentNode(currentActionNode, root);
-      console.log('path: ', result);
+      // console.log('path: ', result);
     }
     while (currentActionNode !== null && currentActionNode !== root);
 
     // console.log('path: ', result);
-    return `root.${result}`;
-    // return result;
+    // DO NOT PREFIX THE RESULT WITH 'root.' !!!!!!!
+    return result;
   }
 
   // currently for debugging only
