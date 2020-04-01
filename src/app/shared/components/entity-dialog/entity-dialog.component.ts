@@ -61,7 +61,9 @@ export class EntityDialogComponent implements OnInit {
 
   onSubmit(entityForm: FormGroup) {
     this.configuration.fields.forEach(field => {
-      if (field.type === 'int') {
+      if (this.entity && entityForm.value[field.field] === undefined) {
+        entityForm.value[field.field] = this.entity[field.field];
+      } else if (field.type === 'int') {
         if (entityForm.value[field.field] === '') {
           entityForm.value[field.field] = null;
         }

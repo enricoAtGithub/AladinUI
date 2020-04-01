@@ -19,10 +19,6 @@ import { EntityConfiguration } from 'src/app/shared/models/entity-configuration'
 export class CatalogueManagementComponent implements OnInit {
   allCatalogues: TreeNode[];
 
-  displayCreateCatalogue = false;
-  displayAddEntry = false;
-  catalogueToAddTo = '-1';
-
   catalogueConfig: EntityConfiguration;
   catalogueEntryConfig: EntityConfiguration;
 
@@ -47,26 +43,38 @@ export class CatalogueManagementComponent implements OnInit {
     this.catalogueService.getAllCatalogues().then(catalogues => this.allCatalogues = catalogues);
   }
 
-  showCreateCatalogueDialog() {
-    this.displayCreateCatalogue = true;
-  }
+  createCatalogue() {
+    const dialogRef = this.dialogService.open(EntityDialogComponent, {
+      data: {
+        update: false,
+        config: this.catalogueConfig
+      },
+      header: 'Katalog erstellen',
+      width: '500px'
+    });
 
-  createCatalogue(form: NgForm) {
-    this.catalogueService.createCatalogue(form.value['name'], form.value['description']).subscribe((cat: Catalogue) => {
-      this.displayCreateCatalogue = false;
-      this.allCatalogues.push(<TreeNode>JSON.parse('{"data": ' + JSON.stringify(cat) + ' ,"children": []}'));
-      this.allCatalogues = [...this.allCatalogues];
-      form.resetForm();
+    dialogRef.onClose.subscribe((result: Observable<Object>) => {
+      if (result !== undefined) {
+        result.subscribe(res => this.loadCatalogues());
+      }
     });
   }
 
-  addEntry(form: NgForm) {
-    this.catalogueService.addEntry(this.catalogueToAddTo, form.value['name'], form.value['description']).subscribe((entry) => {
-      this.displayAddEntry = false;
-      this.allCatalogues.find((node) => node.data.id === this.catalogueToAddTo).children.push(
-        <TreeNode>JSON.parse('{"data": ' + JSON.stringify(entry) + '}'));
-      this.allCatalogues = [...this.allCatalogues];
-      form.resetForm();
+  addEntry(catalogue: any) {
+    const dialogRef = this.dialogService.open(EntityDialogComponent, {
+      data: {
+        update: false,
+        entity: {catalogueId: {_repr_: catalogue['name'], id: catalogue['id']}},
+        config: this.catalogueEntryConfig
+      },
+      header: 'Eintrag erstellen',
+      width: '500px'
+    });
+
+    dialogRef.onClose.subscribe((result: Observable<Object>) => {
+      if (result !== undefined) {
+        result.subscribe(() => this.loadCatalogues());
+      }
     });
   }
 
@@ -95,7 +103,6 @@ export class CatalogueManagementComponent implements OnInit {
   }
 
   updateCatalogue(data: any) {
-    console.log(data);
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
@@ -132,10 +139,4 @@ export class CatalogueManagementComponent implements OnInit {
       }
     });
   }
-
-  showAddEntryDialog(catalogueId: string) {
-    this.catalogueToAddTo = catalogueId;
-    this.displayAddEntry = true;
-  }
-
 }
