@@ -18,7 +18,10 @@ import { AccordionModule } from 'primeng/primeng';
     CommonModule,
     PlaygroundRoutingModule,
     SharedModule,
-    NgxPermissionsModule.forChild(),
+    NgxPermissionsModule.forChild({
+      permissionsIsolate: false,
+      rolesIsolate: false
+    }),
     PermissionsModule,
     TabViewModule,
     AccordionModule

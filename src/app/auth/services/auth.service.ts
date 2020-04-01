@@ -10,6 +10,7 @@ import { HttpOptionsFactory } from 'src/app/shared/models/http/http-options-fact
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromUserSelectors from 'src/app/root-store/user-profile-store/selectors';
+import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private httpHeaderService: HttpHeadersService,
-    private store$: Store<RootStoreState.State>) {
+    private store$: Store<RootStoreState.State>, 
+    private jmlActionPermissionsService: JmeleonActionsPermissionService) {
     this.userSubject = new ReplaySubject<User>(1);
     this.userSubject.next(null);
     // this.localUser$ = this.userSubject.asObservable(); // .pipe(share());
@@ -53,6 +55,10 @@ export class AuthService {
       user => {
         // console.log('local user: ', user);
         this.localUser = user;
+
+        if (!!user && !!user.allowedActions){
+          this.jmlActionPermissionsService.initActionsPermittedForCurrentUser(user.allowedActions);
+        }
     });
     this.isLoggedIn$.subscribe(
       isLoggedIn => {

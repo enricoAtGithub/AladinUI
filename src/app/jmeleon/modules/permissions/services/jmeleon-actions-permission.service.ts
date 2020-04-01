@@ -16,8 +16,15 @@ export class JmeleonActionsPermissionService {
   }
 
   initActionsPermittedForCurrentUser(actions: string[]): void {
-    //  console.log('adding permission for actions: ', actions);
-      this.ngrxPermissionService.addPermission(actions);
+    //debug:
+    // actions.sort();
+    // console.log('adding permission for actions: ', actions);
+
+
+
+    // this.ngrxPermissionService.addPermission(actions);
+    this.ngrxPermissionService.loadPermissions(actions);
+
   }
 
   userHasPermissionForAction = (action: string, dict: object = null): Observable<boolean> => {

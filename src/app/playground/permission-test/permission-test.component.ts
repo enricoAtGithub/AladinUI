@@ -11,6 +11,7 @@ import { EntityService } from 'src/app/shared/services/entity.service';
 import { TableData } from 'src/app/shared/models/table-data';
 import { EntityConfiguration } from 'src/app/shared/models/entity-configuration';
 import { Field } from 'src/app/shared/models/field';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Component({
   selector: 'app-permission-test',
@@ -45,6 +46,8 @@ export class PermissionTestComponent implements OnInit {
     // private ngrxPermissionService: NgxPermissionsService
     private jmlFacade: JmeleonActionsFacadeService,
     private entityService: EntityService,
+    //debug:
+    private authService: AuthService
     ) { }
 
   ngOnInit() {
@@ -52,21 +55,22 @@ export class PermissionTestComponent implements OnInit {
       $check: 'permCheck'
     };
 
-    this.japs.initActionsPermittedForCurrentUser([
-      'default.permCheck.seeFirstParagraph',
-      'a',
-      'default.foo.read',
-      'default.obj1.prop2.read',
-      'default.obj2.prop1.read',
-      // 'root.dto.User.firstName.read'
-      'dto.Order.name.read',
-      'dto.Order.invoiceAddress.read',
-      // 'dto.User.loginName.read',
-      'dto.User.firstName.read',
-      'dto.User.lastName.read',
-      'foo.bar.one'
+    // this.japs.initActionsPermittedForCurrentUser([
+    //   'default.permCheck.seeFirstParagraph',
+    //   'a',
+    //   'default.foo.read',
+    //   'default.obj1.prop2.read',
+    //   'default.obj2.prop1.read',
+    //   // 'root.dto.User.firstName.read'
+    //   'dto.Order.name.read',
+    //   'dto.Order.invoiceAddress.read',
+    //   // 'dto.User.loginName.read',
+    //   'dto.User.firstName.read',
+    //   'dto.User.lastName.read',
+    //   'foo.bar.one'
 
-    ]);
+    // ]);
+
     // JMeleonActionsUtils.resolveVars();
     // console.log('ngxP has permission for \'a\'', );
     // this.ngrxPermissionService.hasPermission('a').then(has => console.log('ngxP has permission for \'a\' (promise)', has));
@@ -88,8 +92,17 @@ export class PermissionTestComponent implements OnInit {
         )
       );
     this.entityConfiguration$.subscribe(configs => {
-      console.log('configs:', configs);
+      // console.log('configs:', configs);
     });
+
+    this.authService.localUser$.subscribe(
+      user => {
+        if (!user){
+          return;
+        }
+        this.japs.initActionsPermittedForCurrentUser(user.allowedActions);
+      }
+    )
 
     // this.root.dto.$dtoType.$dtoField.create
 

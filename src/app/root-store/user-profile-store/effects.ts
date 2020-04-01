@@ -13,8 +13,7 @@ export class UserProfileEffects {
   constructor(
     private authService: AuthService, 
     private actions$: Actions, 
-    public router: Router, 
-    private jmlActionPermissionsService: JmeleonActionsPermissionService) {}
+    public router: Router) {}
 
   @Effect()
   loginRequestEffect$: Observable<Action> = this.actions$.pipe(
@@ -32,7 +31,6 @@ export class UserProfileEffects {
                 this.router.navigateByUrl(redirect);
 
                 // add allowed actions:
-                this.jmlActionPermissionsService.initActionsPermittedForCurrentUser(httpResult.result.allowedActions);
                 return new userProfileActions.LoginSuccessAction({user: httpResult.result});
 
               }
