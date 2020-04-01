@@ -123,7 +123,7 @@ export class PermissionTestComponent implements OnInit {
 
           this.jmlFacade.init();
           // find better way
-          this.jmlFacade.updateActionTreeViaBackend(firstRightId);
+          this.jmlFacade.requestActionTreeFromBackend(firstRightId);
     });
   }
 

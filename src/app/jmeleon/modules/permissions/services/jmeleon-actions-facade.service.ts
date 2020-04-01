@@ -23,6 +23,7 @@ export class JmeleonActionsFacadeService {
   selectedTreeNodes$: Observable<TreeNode[]>;
   sections$: Observable<SelectItem[]>;
   isLoading$: Observable<boolean>;
+  enableEditing$: Observable<boolean>;
 
   private sectionDict: Record<string, [TreeNode[], TreeNode[]]>;
   private rightId: number;
@@ -52,6 +53,9 @@ export class JmeleonActionsFacadeService {
   }
 
   init(): void {
+    // this.enableEditing$ = this.actionsTree$.pipe(
+    //   map(actionTree, )
+    // )
     this.actionsTree$.pipe(
       tap(actionTree => {
         // console.log('root1:', actionTree);
@@ -73,7 +77,7 @@ export class JmeleonActionsFacadeService {
     ).subscribe();
   }
 
-  updateActionTreeViaBackend(rightId: number): void {
+  requestActionTreeFromBackend(rightId: number): void {
     this.rightId = rightId;
     this.$isLoading.next(true);
     this.subscriptions.push(
