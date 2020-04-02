@@ -35,7 +35,7 @@
   </form>
 </p-dialog>
 
-<div *ngIf="entryId !== undefined && entryId !== null && (!isEmpty || showActionTab)" style="padding: 0px" class="card">
+<div *ngIf="entryId !== undefined && entryId !== null && !isEmpty" style="padding: 0px" class="card">
   <p-tabView>
     <!-- Display group relations if available -->
     <p-tabPanel *ngFor="let groupConfig of groupConfigsArray; let i = index" [header]="groupConfig.displayName" [selected]="i==0">
@@ -147,7 +147,7 @@
       </div>
     </p-tabPanel>
 
-    <p-tabPanel *ngIf="this.configuration?.components?.includes('FileAttachments')" header="Dateianhänge" [selected]="true">
+    <p-tabPanel *ngIf="this.configuration?.components?.includes('FileAttachments')" header="Dateianhänge" >
       <div style="height: 250px">
         <p-table>
           <ng-template pTemplate="caption">
@@ -170,7 +170,7 @@
       </div>
     </p-tabPanel>
 
-  <p-tabPanel *ngIf="showActionTab" header="Aktionen" [selected]="true">
+  <p-tabPanel *ngIf="showActionTab" header="Aktionen" >
     <app-right-actions-editor [entryId]="entryId"></app-right-actions-editor>
   </p-tabPanel>
 

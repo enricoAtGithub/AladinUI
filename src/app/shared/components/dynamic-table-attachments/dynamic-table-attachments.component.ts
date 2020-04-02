@@ -54,17 +54,12 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   init() {
     this.entityService.getEntityConfigurations().subscribe(configs => {
       this.configuration = configs[this.configName];
-      this.isEmpty = !this.configuration.components && this.configuration.groups === null;
-      if (this.isEmpty) {
-        
-        if (this.configName !== 'SecurityRight'){
-          return;
-        }
+      const hasContent = !!this.configuration.components || this.configuration.groups !== null;
+
+      if (this.configName === 'SecurityRight') {
         this.showActionTab = true;
-
-
-        return;
       }
+      this.isEmpty = !hasContent && !this.showActionTab;
 
       // Get relevant group configurations if available
       if (this.configuration.groups !== null) {
