@@ -45,7 +45,7 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   displayAddAttribute = false;
   newAttribute = new Attribute();
 
-  types = [{label: 'Long', value: 'Long'}, {label: 'String', value: 'String'}, {label: 'Boolean', value: 'Boolean'}, {label: 'Date', value: 'Date'}];
+  types = [{label: 'Long', value: 'Long'}, {label: 'String', value: 'String'}, {label: 'Boolean', value: 'Boolean'}, {label: 'Date', value: 'Date'}, {label: 'Color', value: 'Color'}];
 
   constructor(private entityService: EntityService, public dialogService: DialogService) { }
 
@@ -251,10 +251,10 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   onRowEditSave(attribute: any) {
     const type: string = attribute['attributeType'];
     this.entityService.updateAttachmentEntry('attribute', {id: attribute['id'], name: attribute['name'], attributeType: type,
-      longValue: type === 'Long' ? attribute['longValue'] : undefined,
-      stringValue: type === 'String' ? attribute['stringValue'] : undefined,
-      booleanValue: type === 'Boolean' ? attribute['booleanValue'] : undefined,
-      dateValue: type === 'Date' ? attribute['dateValue'] : undefined
+      longValue: attribute['longValue'],
+      stringValue: attribute['stringValue'],
+      booleanValue: attribute['booleanValue'],
+      dateValue: attribute['dateValue']
     }).subscribe();
   }
 

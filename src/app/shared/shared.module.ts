@@ -31,6 +31,7 @@ import { EntityLogComponent } from './components/entity-log/entity-log.component
 import { PictureDialogComponent } from './components/picture-dialog/picture-dialog.component';
 import { EntityDropdownComponent } from './components/entity-dropdown/entity-dropdown.component';
 import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
+import {ColorPickerModule} from 'primeng/colorpicker';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
     PickListModule,
     OverlayPanelModule,
     EditorModule,
-    ScrollPanelModule
+    ScrollPanelModule,
+    ColorPickerModule
   ],
   entryComponents: [
     EntityDialogComponent,
