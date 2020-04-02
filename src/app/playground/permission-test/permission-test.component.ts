@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 import JMeleonActionsUtils from 'src/app/jmeleon/modules/permissions/utils/jmeleon-actions.utils';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { root } from 'src/app/jmeleon/modules/permissions/permissions';
 import { JmeleonActionsFacadeService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-facade.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import JMeleonActionTreeUtils from 'src/app/jmeleon/modules/permissions/utils/jml-action-tree.utils';
 import { EntityService } from 'src/app/shared/services/entity.service';
@@ -18,7 +18,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
   templateUrl: './permission-test.component.html',
   styleUrls: ['./permission-test.component.css']
 })
-export class PermissionTestComponent implements OnInit {
+export class PermissionTestComponent implements OnInit, OnDestroy {
 
   dict: {};
   valuesForObj = ['obj1', 'obj2', 'obj3',
@@ -41,6 +41,8 @@ export class PermissionTestComponent implements OnInit {
   currentDtoType: string;
   currentDtoField: string;
 
+  subscriptions: Subscription[] = [];
+
   constructor(
     private japs: JmeleonActionsPermissionService,
     private jmlFacade: JmeleonActionsFacadeService,
@@ -54,6 +56,7 @@ export class PermissionTestComponent implements OnInit {
       $check: 'permCheck'
     };
 
+    
     // this.japs.initActionsPermittedForCurrentUser([
     //   'default.permCheck.seeFirstParagraph',
     //   'a',
@@ -79,7 +82,14 @@ export class PermissionTestComponent implements OnInit {
       // tap(list => console.log('test action list: ', list))
     );
 
-    this.initActionList();
+    this.subscriptions.push(
+      this.authService.localUser$.subscribe(user => {
+        if (!user.roles.includes('Admin')){
+          return;
+        }
+        this.initActionList();
+      })
+    );
 
     this.entityConfiguration$ = this.entityService.getEntityConfigurations()
       .pipe(
@@ -108,6 +118,13 @@ export class PermissionTestComponent implements OnInit {
 
 
   }
+
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subs => subs.unsubscribe());
+  }
+
+
   genVarDict(vars: string[]) {
     // console.log('vars: ', vars);
     let i = 0;
