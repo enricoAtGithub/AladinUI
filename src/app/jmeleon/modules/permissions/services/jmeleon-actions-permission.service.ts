@@ -3,6 +3,7 @@ import JMeleonActionsUtils from '../utils/jmeleon-actions.utils';
 import { _runtimeChecksFactory } from '@ngrx/store/src/runtime_checks';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { Observable, from, defer } from 'rxjs';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 /**
  * This service checks if the current user is authorized to perform a ceration action.
@@ -12,18 +13,30 @@ import { Observable, from, defer } from 'rxjs';
 })
 export class JmeleonActionsPermissionService {
 
-  constructor(private ngrxPermissionService: NgxPermissionsService) {
+  private _isInitialized = false;
+
+  constructor(
+    private ngxPermissionService: NgxPermissionsService,
+    private authService: AuthService) {
   }
 
-  initActionsPermittedForCurrentUser(actions: string[]): void {
-    //debug:
-    // actions.sort();
-    // console.log('adding permission for actions: ', actions);
+  initActionsPermittedForCurrentUser = (actions: string[]): void => {
+    this._isInitialized = true;
+    this.ngxPermissionService.loadPermissions(actions)
 
+  }
 
-
-    // this.ngrxPermissionService.addPermission(actions);
-    this.ngrxPermissionService.loadPermissions(actions);
+  initWithCurrentUserActionsIfNotYetInitialized = (): void => {
+    if (this._isInitialized){
+      return;
+    }
+    this._isInitialized = true;
+    this.authService.localUser$.subscribe(user => {
+      if (!user){
+        return;
+      }
+      this.ngxPermissionService.loadPermissions(user.allowedActions);
+    });
 
   }
 
@@ -33,7 +46,7 @@ export class JmeleonActionsPermissionService {
       action = JMeleonActionsUtils.resolveVars(action, dict);
     }
     // converting promise into observable
-    return defer(() => this.ngrxPermissionService.hasPermission(action));
+    return defer(() => this.ngxPermissionService.hasPermission(action));
   }
 
 

@@ -77,5 +77,6 @@ export class PermissionCheckDirective extends NgxPermissionsDirective implements
     // this.ngxPermissionsOnly = this.actionPath;
     // console.log('ng on init stop');
     // console.log('dict: ', this._jmlVarDict);
+    this.jmlPermissionService.initWithCurrentUserActionsIfNotYetInitialized();
   }
 }

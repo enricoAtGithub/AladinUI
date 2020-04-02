@@ -43,7 +43,6 @@ export class PermissionTestComponent implements OnInit {
 
   constructor(
     private japs: JmeleonActionsPermissionService,
-    // private ngrxPermissionService: NgxPermissionsService
     private jmlFacade: JmeleonActionsFacadeService,
     private entityService: EntityService,
     //debug:
@@ -95,14 +94,14 @@ export class PermissionTestComponent implements OnInit {
       // console.log('configs:', configs);
     });
 
-    this.authService.localUser$.subscribe(
-      user => {
-        if (!user){
-          return;
-        }
-        this.japs.initActionsPermittedForCurrentUser(user.allowedActions);
-      }
-    )
+    // this.authService.localUser$.subscribe(
+    //   user => {
+    //     if (!user){
+    //       return;
+    //     }
+    //     this.japs.initActionsPermittedForCurrentUser(user.allowedActions);
+    //   }
+    // )
 
     // this.root.dto.$dtoType.$dtoField.create
 

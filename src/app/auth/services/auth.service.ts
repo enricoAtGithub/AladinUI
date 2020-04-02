@@ -35,7 +35,8 @@ export class AuthService {
     private http: HttpClient,
     private httpHeaderService: HttpHeadersService,
     private store$: Store<RootStoreState.State>, 
-    private jmlActionPermissionsService: JmeleonActionsPermissionService) {
+    // private jmlActionPermissionsService: JmeleonActionsPermissionService
+    ) {
     this.userSubject = new ReplaySubject<User>(1);
     this.userSubject.next(null);
     // this.localUser$ = this.userSubject.asObservable(); // .pipe(share());
@@ -56,9 +57,9 @@ export class AuthService {
         // console.log('local user: ', user);
         this.localUser = user;
 
-        if (!!user && !!user.allowedActions){
-          this.jmlActionPermissionsService.initActionsPermittedForCurrentUser(user.allowedActions);
-        }
+        // if (!!user && !!user.allowedActions){
+        //   this.jmlActionPermissionsService.initActionsPermittedForCurrentUser(user.allowedActions);
+        // }
     });
     this.isLoggedIn$.subscribe(
       isLoggedIn => {
