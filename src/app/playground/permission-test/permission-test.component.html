@@ -293,7 +293,7 @@
     </ng-template>
         
     </p-tabPanel>
-    <p-tabPanel header="Permissions for current user">
+    <p-tabPanel header="Permissions for current user (manual)">
         <h3>Action-permissions for current user</h3>
         <span>This tab checks against manual defined actions</span>
         <br/>
@@ -315,6 +315,15 @@
         <ng-template #hasNoPermissionForFooBarFooThreeDoesNotExist>
             <div class="hasNoPermission">
                 foo.bar.foo.three.doesNotExist
+            </div>
+        </ng-template>
+
+        <div *appPermissionCheck="root.foo.bar.foo.three.doesNotExist;else hasNoPermissionForFooBarFoo" class="hasPermission">
+            foo.bar.foo
+        </div>
+        <ng-template #hasNoPermissionForFooBarFoo>
+            <div class="hasNoPermission">
+                foo.bar.foo -- (only the use of leaves is valid)
             </div>
         </ng-template>
         
