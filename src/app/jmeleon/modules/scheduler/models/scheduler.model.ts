@@ -10,6 +10,7 @@ export interface SchedulerEvent {
     Description: String;
     StartTime: Date;
     EndTime: Date;
+    TimeFrameStr: string;
     AssignedResources: number;
     IsReadonly: boolean;
     Color: string;

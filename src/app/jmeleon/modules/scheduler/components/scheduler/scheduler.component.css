@@ -15,6 +15,11 @@ i.pi-user-plus {
     cursor: pointer;
 }
 
+i.pi-times {
+    color: red;
+    font-size: 2em;
+}
+
 div.resource-name {
     display:flex;
     align-items:center;

@@ -216,11 +216,14 @@ export class SchedulerComponent implements OnInit, OnDestroy {
 
   updateSchedulerEventInterval(schedulerEvent: SchedulerEvent): void {
     // convert start and end time from Date to String
-    const startTime: string = DateTimeUtils.convertDateToApiConformTimeString(schedulerEvent.StartTime);
-    const endTime: string = DateTimeUtils.convertDateToApiConformTimeString(schedulerEvent.EndTime);
+    const startDateTime: string = DateTimeUtils.convertDateToApiConformTimeString(schedulerEvent.StartTime);
+    const endDateTime: string = DateTimeUtils.convertDateToApiConformTimeString(schedulerEvent.EndTime);
+
+    // update time frame (shown in scheduler event)
+    schedulerEvent.TimeFrameStr = this.schedulerService.getTimeframeAsString(schedulerEvent.StartTime, schedulerEvent.EndTime);
 
     this.subscriptions.push(
-      this.schedulerService.updateSchedulerEventInterval(schedulerEvent.Id, startTime, endTime)
+      this.schedulerService.updateSchedulerEventInterval(schedulerEvent.Id, startDateTime, endDateTime)
         .subscribe(() => {
           // If resourceScheduler is visible update shown resources
           if (this.showResourceScheduler) {

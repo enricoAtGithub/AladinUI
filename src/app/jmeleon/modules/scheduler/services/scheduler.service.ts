@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { AppConfig } from 'src/app/shared/app-config';
 import { SchedulerEvent, SchedulerResource } from '../models/scheduler.model';
 import { UrlCollection } from 'src/app/shared/url-collection';
+import { DateTimeService } from 'src/app/shared/services/date-time.service';
 
 interface SchedulerEventInterface {
   schedulerOrders: any[];
@@ -30,11 +31,16 @@ export class SchedulerService {
       .pipe(
         // map properties from JSON response, first letter of properties needs to be capitalized
         map(temp => temp.schedulerOrders.map(schEv => {
+          const startDateTime = DateTimeService.convertApiDateTimeStringToDate(schEv.startTime);
+          const endDateTime = DateTimeService.convertApiDateTimeStringToDate(schEv.endTime);
+          const timeframeStr = this.getTimeframeAsString(startDateTime, endDateTime);
+
           return {
             Id: schEv.id,
             Subject: schEv.subject,
-            StartTime: schEv.startTime,
-            EndTime: schEv.endTime,
+            StartTime: startDateTime,
+            EndTime: endDateTime,
+            TimeFrameStr: timeframeStr,                // 'hh:mm - hh:mm'
             Description: schEv.description,
             IsReadonly: schEv.isReadonly,
             AssignedResources: schEv.assignedResources,
@@ -56,12 +62,17 @@ export class SchedulerService {
             Assigned: schRes.assigned,
             HasConflict: schRes.hasConflict,
             isAssignedTo: schRes.isAssignedTo.map(schEv => {
+              const startDateTime = DateTimeService.convertApiDateTimeStringToDate(schEv.startTime);
+              const endDateTime = DateTimeService.convertApiDateTimeStringToDate(schEv.endTime);
+              const timeframeStr = this.getTimeframeAsString(startDateTime, endDateTime);
+
               return {
                 Id: schEv.id,
                 Subject: schEv.subject,
                 Description: schEv.description,
-                StartTime: schEv.startTime,
-                EndTime: schEv.endTime,
+                StartTime: startDateTime,
+                EndTime: endDateTime,
+                TimeFrameStr: timeframeStr,                // 'hh:mm - hh:mm'
                 IsReadonly: schEv.isReadonly,
                 AssignedResources: schEv.assignedResources,
                 Color: schEv.color
@@ -87,4 +98,10 @@ export class SchedulerService {
     return this.http.post(UrlCollection.Scheduler.REMOVE_RESOURCE(schedulerEventId, resourceId), {});
   }
 
+  getTimeframeAsString(startDateTime: Date, endDateTime: Date): string {
+    const startTimeStr = startDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const endTimeStr = endDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const timeFrameStr = startTimeStr + ' - ' + endTimeStr;
+    return timeFrameStr;
+  }
 }

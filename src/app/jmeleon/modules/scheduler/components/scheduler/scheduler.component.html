@@ -12,6 +12,18 @@
                     (eventClick)="onSchedulerEventClick($event)" [allowResizing]="true" locale='de'
                     [rowAutoHeight]="true" (eventRendered)="onEventRendered($event)">
 
+                    <ng-template #eventSettingsTemplate let-data>
+                        <div style="width: 100%;">
+                            <div *ngIf="toBeImplemented" style="float:right; padding-right: 5px;">
+                                <i class="pi pi-times"></i>
+                            </div>
+                            <div>
+                                <div class="e-subject">{{data.Subject}}</div>
+                                <div class="e-time">{{data.TimeFrameStr}}</div>
+                            </div>
+                        </div>
+                    </ng-template>
+
                     <e-views>
                         <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
                         <e-view option='TimelineDay' startHour='06:00' endHour='18:00'
