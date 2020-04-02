@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { PermissionCheckDirective } from './directives/permission-check.directive';
 import { RightActionsEditorComponent } from './components/right-actions-editor/right-actions-editor.component';
 import { FormsModule } from '@angular/forms';
-import { TooltipModule, ScrollPanelModule, FieldsetModule, 
+import { TooltipModule, ScrollPanelModule, FieldsetModule,
   ButtonModule, TreeModule, CardModule, ListboxModule, PanelModule } from 'primeng/primeng';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 
 
@@ -20,7 +21,11 @@ import { TooltipModule, ScrollPanelModule, FieldsetModule,
     ScrollPanelModule,
     FieldsetModule,
     ButtonModule,
-    PanelModule
+    PanelModule,
+    NgxPermissionsModule.forChild({
+      permissionsIsolate: false,
+      rolesIsolate: false
+    })
   ],
   exports: [PermissionCheckDirective, RightActionsEditorComponent]
 })

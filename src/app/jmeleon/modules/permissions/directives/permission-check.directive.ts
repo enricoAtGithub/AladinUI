@@ -28,15 +28,9 @@ export class PermissionCheckDirective extends NgxPermissionsDirective implements
     this.ngxPermissionsElse = value;
   }
 
-  // @Input() set jmlVarDict(dict: Object) {
-  //   console.log('dict was set to: ', dict);
-  //   this._jmlVarDict = dict;
-  // }
-  // @Input() appPermissionCheckVarDict: Object;
   @Input() set appPermissionCheckVarDict(dict: Object) {
       // console.log('dict was set to: ', dict);
       this._jmlVarDict = dict;
-      // const currentPermission = typeof(this.ngxPermissionsOnly) === 'string' ? this.ngxPermissionsOnly : this.ngxPermissionsOnly[0];
       const currentPermission = this.ngxPermissionsOnly as string;
       // console.log('current permission: ', currentPermission);
       this.ngxPermissionsOnly = JMeleonActionsUtils.resolveVars(
@@ -68,12 +62,7 @@ export class PermissionCheckDirective extends NgxPermissionsDirective implements
   }
 
   ngOnInit() {
-    // console.log('ng on init start');
-    // console.log('dict: ', this._jmlVarDict);
     super.ngOnInit();
-    // this.ngxPermissionsOnly = this.actionPath;
-    // console.log('ng on init stop');
-    // console.log('dict: ', this._jmlVarDict);
     this.jmlPermissionService.initWithCurrentUserActionsIfNotYetInitialized();
   }
 }
