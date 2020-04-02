@@ -6,24 +6,21 @@ import { SelectMultipleControlValueAccessor } from '@angular/forms';
 import { JmeleonActionsPermissionService } from '../services/jmeleon-actions-permission.service';
 import JMeleonActionsUtils from '../utils/jmeleon-actions.utils';
 import { root } from '../permissions';
-// import { NgxPermissionsDirective, NgxPermissionsService,
-//   NgxPermissionsConfigurationService, NgxRolesService } from 'ngx-permissions/lib';
 
 
 @Directive({
   selector: '[appPermissionCheck]',
   exportAs: 'appPermissionCheck',
-  // inputs: ['ngxPermissionsOnlyThen']
 })
 export class PermissionCheckDirective extends NgxPermissionsDirective implements OnInit {
   _jmlVarDict: Object;
 
 
-  // @Input('appPermissionCheck') actionPath: string;
   @Input('appPermissionCheck') set actionPath(value: string|string[]) {
-    // console.log('value was set.', value);
-    // console.log('dict (for appPermissionCheck): ', this._jmlVarDict);
-    this.ngxPermissionsOnly = value;
+    
+    // when the path for an action is invalid, then the value is empty and
+    // sadly the permission lib recognizes empty values as valid
+    this.ngxPermissionsOnly = !!value ? value : '§§§_INVALID_VALUE_§§§';
 
   }
 
