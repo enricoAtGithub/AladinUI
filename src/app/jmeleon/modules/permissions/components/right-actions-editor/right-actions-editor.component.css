@@ -16,3 +16,8 @@ div.ui-treenode-content:not(.ui-treenode-selectable) div.ui-chkbox{
         width: 49% !important;
         margin-left: 2px;
     }
+
+.listItemWithSelectedNodes {
+    /* color: #0071bc; */
+    font-weight: 600;
+}

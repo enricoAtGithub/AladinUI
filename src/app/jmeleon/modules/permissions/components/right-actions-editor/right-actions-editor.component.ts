@@ -17,12 +17,13 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
   selectedActions: TreeNode[];
 
   sections$: Observable<SelectItem[]>;
+
   isLoading$: Observable<boolean>;
   disableEditing$: Observable<boolean>;
 
   subscription: Subscription[] = [];
 
-  selectedSection: string;
+  selectedSection: any;
 
   expandingOrCollapsingTreeIsActive: boolean;
 
@@ -32,26 +33,19 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
     this.actionsTree$ = this.facade.actionGuiTreeForSelectedSection$;
     this.sections$ = this.facade.sections$;
     this.isLoading$ = this.facade.isLoading$;
-    // this.subscription.push(this.actionsTree$.subscribe(tree => {
-    //   // console.log('tree in component: ', tree);
-    // }));
     this.subscription.push(this.facade.selectedTreeNodes$.subscribe(selectedTreeNodes => {
-      // console.log('selectedActions: ', selectedTreeNodes);
       this.selectedActions = selectedTreeNodes;
     }));
     this.disableEditing$ = this.facade.disableEditing$;
-    this.subscription.push(this.sections$.subscribe(() => {
-      // const selection = this.selectedSection;
+    this.subscription.push(this.sections$.subscribe(
+      () => {
       this.selectedSection = null;
-      // this.selectedSection = selection;
     }));
 
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('change: ', changes);
     if (changes.entryId) {
-      // console.log('entryId: ', changes.entryId);
       this.facade.requestActionTreeFromBackend(this.entryId);
       this.facade.selectSection(null);
     }
@@ -75,8 +69,8 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
   }
 
   sectionSelected(event) {
-    // console.log('selection changed: ', event);
-    this.facade.selectSection(event.value);
+    // console.log('selection changed: ', event);    
+    this.facade.selectSection(event.value.key);
   }
 
   expandTrees(trees: TreeNode[]):void{

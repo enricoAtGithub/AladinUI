@@ -74,11 +74,18 @@ export class JmeleonActionsFacadeService {
           this._sectionDict = JMeleonActionTreeUtils.generateTreeDict(actionTree);
           const keys = Object.keys(this._sectionDict);
           // console.log('keys: ', keys);
-          this.$sections.next(keys.map(key => ({label: key, value: key})));
+          this.$sections.next(keys.map(key => (
+            {
+              label: key,
+              value: {
+                key,
+                hasSelectedNodes: this._sectionDict[key][1].length > 0,
+                selectedCount: this._sectionDict[key][1].length
+              }}
+            )));
         }
       }),
-      // withLatestFrom(this.masterOfDisasterId$),
-      // withLatestFrom(this.currentRightId$),
+
       withLatestFrom(this.currentRightId$, this.masterOfDisasterId$),
 
       map(value => {
@@ -120,7 +127,7 @@ export class JmeleonActionsFacadeService {
   selectSection(sectionName: string): void {
     this._currentSection = sectionName;
     // console.log('section name: ', sectionName);
-    if (!sectionName){
+    if (!sectionName) {
       this.$actionGuiTreeForSelectedSection.next(null);
       this.$selectedTreeNodes.next(null);
       return;
@@ -131,26 +138,28 @@ export class JmeleonActionsFacadeService {
 
   }
 
-  addActionToRight(rightId: number, node: TreeNode, sectionNodes: TreeNode[]):void{
+  addActionToRight(rightId: number, node: TreeNode, sectionNodes: TreeNode[]): void {
     const fullName = JMeleonActionTreeUtils.generateFullPathFromTreeNode(node, this._actionTreeRoot);
     // console.log('adding action to right: ', fullName);
     this.subscriptions.push(this.jmlActionsForRightService.addActionToRight(fullName, rightId).subscribe(
       () => {
         this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktion wurde erfolgreich hinzugefügt.'));
         this._sectionDict[this._currentSection] = [this._sectionDict[this._currentSection][0], sectionNodes];
+        this.updateSections();
       }
     ));
 
-    
+
   }
 
-  removeActionFromRight(rightId: number, node: TreeNode, sectionNodes: TreeNode[]):void{
+  removeActionFromRight(rightId: number, node: TreeNode, sectionNodes: TreeNode[]): void {
     const fullName = JMeleonActionTreeUtils.generateFullPathFromTreeNode(node, this._actionTreeRoot);
     // console.log('removing action to right: ', fullName);
     this.subscriptions.push(this.jmlActionsForRightService.removeActionFromRight(fullName, rightId).subscribe(
       () => {
         this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktion wurde erfolgreich entfernt.'));
         this._sectionDict[this._currentSection] = [this._sectionDict[this._currentSection][0], sectionNodes];
+        this.updateSections();
       }
     ));
   }
@@ -166,7 +175,7 @@ export class JmeleonActionsFacadeService {
   }
 
   checkForMasterOfDisasterId(): void {
-    if (this.storageService.hasMasterOfDisasterRightId){
+    if (this.storageService.hasMasterOfDisasterRightId) {
       this.$masterOfDisasterId.next(this.storageService.masterOfDisasterRightId);
       return;
     }
@@ -176,7 +185,21 @@ export class JmeleonActionsFacadeService {
         this.$masterOfDisasterId.next(id);
         this.storageService.masterOfDisasterRightId = id;
       }
-    )
+    );
+  }
+
+  private updateSections = () => {
+    const keys = Object.keys(this._sectionDict);
+    // console.log('keys: ', keys);
+    this.$sections.next(keys.map(key => (
+      {
+        label: key,
+        value: {
+          key,
+          hasSelectedNodes: this._sectionDict[key][1].length > 0,
+          selectedCount: this._sectionDict[key][1].length
+        }}
+      )));
   }
 
 }
