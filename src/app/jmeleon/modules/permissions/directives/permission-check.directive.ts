@@ -14,13 +14,14 @@ import { root } from '../permissions';
 })
 export class PermissionCheckDirective extends NgxPermissionsDirective implements OnInit {
   _jmlVarDict: Object;
+  private readonly INVALID_TOKEN: string;
 
 
   @Input('appPermissionCheck') set actionPath(value: string|string[]) {
     
     // when the path for an action is invalid, then the value is empty and
     // sadly the permission lib recognizes empty values as valid
-    this.ngxPermissionsOnly = !!value ? value : '§§§_INVALID_VALUE_§§§';
+    this.ngxPermissionsOnly = !!value ? value : this.INVALID_TOKEN; // '§§§_INVALID_VALUE_§§§_' + Math.random().toString(36).substr(2, 9);
 
   }
 
@@ -58,7 +59,11 @@ export class PermissionCheckDirective extends NgxPermissionsDirective implements
     templateRef: TemplateRef<any>,
     private jmlPermissionService: JmeleonActionsPermissionService
     ) {
-    super(permissionsService, configurationService, rolesService, viewContainer, changeDetector, templateRef);
+      super(permissionsService, configurationService, rolesService, viewContainer, changeDetector, templateRef);
+
+      // for performance reasons the invalid-token get generated once per session.
+      // https://gist.github.com/gordonbrander/2230317
+      this.INVALID_TOKEN = '§§§_INVALID_VALUE_§§§_' + Math.random().toString(36).substr(2, 9);
   }
 
   ngOnInit() {
