@@ -1,0 +1,22 @@
+<!-- <div class="availabilityScheduler"> -->
+<!-- <div [ngStyle]="{'height.px': windowHeight}"> -->
+<div (window:resize)="getAvailableHeight()" [ngStyle]="{'height.px': windowHeight}">
+    <ejs-schedule height="100%" [rowAutoHeight]="true" [showQuickInfo]="false"
+        [eventSettings]="availabilitySchedulerObject" [currentView]="TimelineWorkWeek" [group]="groupData"
+        [allowDragAndDrop]="true" [allowResizing]="true" locale='de' (eventRendered)="onEventRendered($event)"
+        (resizeStop)="updateSchedulerEventInterval($event.data)" (dragStop)="updateSchedulerEventInterval($event.data)">
+        <e-views>
+            <e-view option='TimelineDay' startHour='06:00' endHour='18:00' [timeScale]='{ enable: true, slotCount: 1 }'>
+            </e-view>
+            <e-view option='TimelineWorkWeek' startHour='06:00' endHour='18:00'
+                [timeScale]='{ enable: true, slotCount: 1 }'> </e-view>
+            <e-view option='TimelineMonth'></e-view>
+            <e-view option='MonthAgenda'></e-view>
+        </e-views>
+        <e-resources>
+            <e-resource [dataSource]="resourceDataSource" field="ResourceID" title="Mitarbeiter und Ressourcen"
+                name="Resources" textField="Name" idField="Id">
+            </e-resource>
+        </e-resources>
+    </ejs-schedule>
+</div>

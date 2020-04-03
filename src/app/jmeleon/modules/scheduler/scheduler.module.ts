@@ -13,6 +13,7 @@ import {
   WorkWeekService,
   MonthService,
   AgendaService,
+  MonthAgendaService,
   TimelineViewsService,
   TimelineMonthService,
   DragAndDropService,
@@ -21,10 +22,11 @@ import {
 
 import { SchedulerComponent } from './components/scheduler/scheduler.component';
 import { FormsModule } from '@angular/forms';
+import { AvailabilityComponent } from './components/availability/availability.component';
 
 
 @NgModule({
-  declarations: [SchedulerComponent],
+  declarations: [SchedulerComponent, AvailabilityComponent],
   imports: [
     AngularSplitModule.forRoot(),
     BrowserModule,
@@ -39,6 +41,7 @@ import { FormsModule } from '@angular/forms';
     WorkWeekService,
     MonthService,
     AgendaService,
+    MonthAgendaService,
     TimelineViewsService,
     TimelineMonthService,
     DragAndDropService,

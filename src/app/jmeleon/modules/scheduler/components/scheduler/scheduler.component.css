@@ -36,7 +36,8 @@ div.resource-name {
 }
 
 /* all scheduler Events */
-::ng-deep .e-schedule .e-timeline-view .e-appointment, .e-schedule .e-timeline-month-view .e-appointment {
+::ng-deep .e-schedule .e-timeline-view .e-appointment, 
+::ng-deep .e-schedule .e-timeline-month-view .e-appointment {
     border: 1px solid lightgray;
     margin: 0px 0px 1px 0px;
     border-radius: 5px;
