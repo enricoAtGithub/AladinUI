@@ -39,6 +39,7 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   selectedNote: Note;
 
   isEmpty: boolean;
+  hasContent: boolean;
 
   attributes: any[];
   attributeClone: any;
@@ -54,12 +55,12 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   init() {
     this.entityService.getEntityConfigurations().subscribe(configs => {
       this.configuration = configs[this.configName];
-      const hasContent = !!this.configuration.components || this.configuration.groups !== null;
+      this.hasContent = !!this.configuration.components || this.configuration.groups !== null;
 
       if (this.configName === 'SecurityRight') {
         this.showActionTab = true;
       }
-      this.isEmpty = !hasContent && !this.showActionTab;
+      this.isEmpty = !this.hasContent && !this.showActionTab;
 
       // Get relevant group configurations if available
       if (this.configuration.groups !== null) {
