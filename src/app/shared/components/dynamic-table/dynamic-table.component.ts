@@ -10,6 +10,7 @@ import { Observable, Subject } from 'rxjs';
 import { ErrorNotificationService } from '../../services/error-notification.service';
 import { ErrorMessage } from '../../models/error-message';
 import { delay } from 'q';
+import { UrlCollection } from '../../url-collection';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -85,7 +86,6 @@ export class DynamicTableComponent implements OnInit {
 
     this.lastLazyLoadEvent = event;
     this.loading = true;
-    this.cd.detectChanges();
 
     let sorting = '';
     let qualifier = '';
@@ -134,8 +134,11 @@ export class DynamicTableComponent implements OnInit {
         return this.processDate(new Date(input));
       case 'boolean':
         return input ? '✓' : '🞩';
-      default:
+      case 'String':
+      case 'int':
         return input;
+      default:
+        return input['_repr_'];
     }
   }
 
@@ -205,4 +208,7 @@ export class DynamicTableComponent implements OnInit {
     return this.entityData;
   }
 
+  downloadUrl(id: number): string {
+    return UrlCollection.Files.generateDownloadUrl(id);
+  }
 }

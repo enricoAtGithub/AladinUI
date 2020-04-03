@@ -38,9 +38,9 @@ export class HttpErrorRepsonseInterceptor implements HttpInterceptor {
                 if (error['status'] === 0) {
                     this.errorNotificationService.addErrorNotification(new ErrorMessage('error', 'Could not reach Server!', ''));
                 } else {
-                    /* this block avoids multiple 'invalid token' messages */
+                    /* this block avoids multiple 'invalid token' messages and hides message if user logs out*/
                     if (!!error && !!error.error && !!error.error.code && error.error.code === ServerErrorCode.UNKNOWN_TOKEN) {
-                        if (!this.errorCodeFourBlockActive) {
+                        if (!this.errorCodeFourBlockActive && !req.url.endsWith('/logout')) {
                             this.errorCodeFourBlockActive = true;
                             setTimeout(() => {
                                 this.errorCodeFourBlockActive = false;

@@ -28,7 +28,7 @@ export class DTOConfigEditorComponent implements OnInit {
     theme: 'github',
     readOnly : false
   };
-  
+
   constructor(private entityService: EntityService, private notificationService: ErrorNotificationService) { }
 
   configToSelectItem(name: string, type: string): SelectItem {
@@ -37,7 +37,7 @@ export class DTOConfigEditorComponent implements OnInit {
 
   ngOnInit() {
     this.entityService.getEntityConfigurations().subscribe(configs => {
-      this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.displayName, config.type));
+      this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
     });
   }
 

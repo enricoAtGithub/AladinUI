@@ -24,7 +24,6 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { AttachmentListComponent } from './components/attachment-list/attachment-list.component';
 import { FileSaverModule } from 'ngx-filesaver';
-import { AddEntityDialogComponent } from './components/add-entity-dialog/add-entity-dialog.component';
 import { PickListModule } from 'primeng/picklist';
 import { ErrorNotificationService } from './services/error-notification.service';
 import { DynamicTableAttachmentsComponent } from './components/dynamic-table-attachments/dynamic-table-attachments.component';
@@ -32,6 +31,7 @@ import { EntityLogComponent } from './components/entity-log/entity-log.component
 import { PictureDialogComponent } from './components/picture-dialog/picture-dialog.component';
 import { EntityDropdownComponent } from './components/entity-dropdown/entity-dropdown.component';
 import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
+import {ColorPickerModule} from 'primeng/colorpicker';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { JmeleonModule } from '../jmeleon/jmeleon.module';
 import { PermissionsModule } from '../jmeleon/modules/permissions/permissions.module';
@@ -44,7 +44,6 @@ import { PermissionsModule } from '../jmeleon/modules/permissions/permissions.mo
     FileUploadDialogComponent,
     CatalogueChooserDialogComponent,
     AttachmentListComponent,
-    AddEntityDialogComponent,
     EntityLogComponent,
     PictureDialogComponent,
     EntityDropdownComponent
@@ -71,9 +70,10 @@ import { PermissionsModule } from '../jmeleon/modules/permissions/permissions.mo
     PickListModule,
     OverlayPanelModule,
     EditorModule,
-    ScrollPanelModule,
+    ColorPickerModule,
     NgxPermissionsModule,
-    PermissionsModule
+    PermissionsModule,
+    ScrollPanelModule
   ],
   entryComponents: [
     EntityDialogComponent,

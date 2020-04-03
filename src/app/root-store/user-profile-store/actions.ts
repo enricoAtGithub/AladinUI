@@ -5,6 +5,7 @@ export enum ActionTypes {
   LOGIN_REQUEST = '[Login] Login Request',
   LOGIN_FAILURE = '[Login] Login Failure',
   LOGIN_SUCCESS = '[Login] Login Success',
+  LOGIN_PASSWORD_CHANGE = '[Login] Login Password change required',
   LOGOUT_REQUESTED = '[Logout] Logout Requested',
   LOGOUT_SUCCESS = '[Logout] Logout Success'
 }
@@ -24,6 +25,11 @@ export class LoginSuccessAction implements Action {
   constructor(public payload: { user: User }) {}
 }
 
+export class LoginPasswordChangeAction implements Action {
+  readonly type = ActionTypes.LOGIN_PASSWORD_CHANGE;
+  constructor(public payload: { user: User }) {}
+}
+
 export class LogoutRequestedAction implements Action {
   readonly type = ActionTypes.LOGOUT_REQUESTED;
   constructor(public payload = { sendLogoutRequestToServer: true }) {}
@@ -37,5 +43,6 @@ export type Actions =
   LoginRequestAction |
   LoginFailureAction |
   LoginSuccessAction |
+  LoginPasswordChangeAction |
   LogoutRequestedAction |
   LogoutSuccessAction;

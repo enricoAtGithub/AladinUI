@@ -6,14 +6,11 @@ import { catchError, map, startWith, switchMap, tap } from 'rxjs/operators';
 import * as userProfileActions from './actions';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Router } from '@angular/router';
-import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
+import { User } from 'src/app/shared/models/user';
 
 @Injectable()
 export class UserProfileEffects {
-  constructor(
-    private authService: AuthService, 
-    private actions$: Actions, 
-    public router: Router) {}
+  constructor(private authService: AuthService, private actions$: Actions, public router: Router) {}
 
   @Effect()
   loginRequestEffect$: Observable<Action> = this.actions$.pipe(
@@ -27,12 +24,15 @@ export class UserProfileEffects {
           map(
             (httpResult, index) => {
               if (httpResult.success) {
-                const redirect = this.authService.redirectUrl ? this.router.parseUrl(this.authService.redirectUrl) : '/dashboard';
-                this.router.navigateByUrl(redirect);
+                const user: User = httpResult.result;
 
-                // add allowed actions:
-                return new userProfileActions.LoginSuccessAction({user: httpResult.result});
-
+                if (user.user.enforcePasswdChange) {
+                  return new userProfileActions.LoginPasswordChangeAction({user: user});
+                } else {
+                  const redirect = this.authService.redirectUrl ? this.router.parseUrl(this.authService.redirectUrl) : '/dashboard';
+                  this.router.navigateByUrl(redirect);
+                  return new userProfileActions.LoginSuccessAction({user: httpResult.result});
+                }
               }
               // console.log('login failure: ', httpResult.errMsg);
               return new userProfileActions.LoginFailureAction({error: httpResult.errMsg});

@@ -36,10 +36,8 @@ export class EntityDialogComponent implements OnInit {
       }
       if (field.type === 'CatalogueEntry') {
         this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
-          this.catalogueOptions.set(catalogue.name, catalogue.values);
-          if (this.update) {
-            this.entity[field.field] = catalogue.values.find(element => element['id'] === this.entity[field.field]);
-          }
+          const values = catalogue.values.map(e => ({label: e['name'], value: e['id']}));
+          this.catalogueOptions.set(catalogue.name, values);
         });
       }
     });
@@ -63,17 +61,15 @@ export class EntityDialogComponent implements OnInit {
 
   onSubmit(entityForm: FormGroup) {
     this.configuration.fields.forEach(field => {
-      if (field.type === 'int') {
+      if (this.entity && entityForm.value[field.field] === undefined) {
+        entityForm.value[field.field] = this.entity[field.field];
+      } else if (field.type === 'int') {
         if (entityForm.value[field.field] === '') {
           entityForm.value[field.field] = null;
         }
       } else if (field.type === 'Date') {
         if (entityForm.value[field.field] != null) {
           entityForm.value[field.field] = new Date(entityForm.value[field.field]).toISOString();
-        }
-      } else if (field.type === 'CatalogueEntry') {
-        if (entityForm.value[field.field] != null) {
-          entityForm.value[field.field] = entityForm.value[field.field]['id'];
         }
       }
     });

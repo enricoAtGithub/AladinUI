@@ -27,15 +27,15 @@
         <span *ngSwitchCase="'boolean'" style="flex-grow: 1;">
           <p-checkbox [required]="field.mandatory" [name]="field.field" [binary]="true" [label]="field.header" [ngModel]="update ? entity[field.field] : false"></p-checkbox>
         </span>
-        <span *ngSwitchCase="'Date'" style="flex-grow: 1;">
-          {{field.header}}
+        <span *ngSwitchCase="'Date'" class="ui-float-label" style="flex-grow: 1;">
           <p-calendar [required]="field.mandatory" [name]="field.field" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [ngModel]="update ? entity[field.field] : undefined"></p-calendar>
+          <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
         </span>
         <span *ngSwitchCase="'CatalogueEntry'" style="flex-grow: 1;">
-          <p-dropdown [required]="field.mandatory" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" optionLabel="name" [ngModel]="update ? entity[field.field] : undefined" [placeholder]="field.mandatory ? null : 'Leer'"></p-dropdown>
+          <p-dropdown [required]="field.mandatory" [placeholder]="field.header" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" [ngModel]="update ? entity[field.field]?.id : undefined"></p-dropdown>
         </span>
         <span *ngSwitchDefault class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
-          <input #textModule [disabled]="true" placeholder="Unverändert" id="float-input" style="width: 100%" pInputText>
+          <input #textModule [disabled]="true" [placeholder]="entity !== undefined ? entity[field.field]?._repr_ : ''" id="float-input" style="width: 100%" pInputText>
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="update ? entity[field.field] : undefined" type="hidden">
           <button pButton type="button" (click)="openEntitySelectionDialog(field, textModule)" icon="pi pi-pencil"></button>
           <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>

@@ -46,9 +46,8 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   displayAddAttribute = false;
   newAttribute = new Attribute();
 
+  types = [{label: 'Long', value: 'Long'}, {label: 'String', value: 'String'}, {label: 'Boolean', value: 'Boolean'}, {label: 'Date', value: 'Date'}, {label: 'Color', value: 'Color'}];
   showActionTab = false;
-
-  types = [{label: 'Long', value: 'Long'}, {label: 'String', value: 'String'}, {label: 'Boolean', value: 'Boolean'}, {label: 'Date', value: 'Date'}];
 
   constructor(private entityService: EntityService, public dialogService: DialogService) { }
 
@@ -120,29 +119,28 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
             this.noteTableData.triggerRefresh.next();
           }
         }
-        
+
         if (this.configuration.components.includes('FileAttachments')) {
           if (!this.fileTableData) {
             const dataSource = this.entityService
               .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});
             this.fileTableData = new TableData(
-              'FileAttachment', 'FileAttachment', false, false, false, false, false, dataSource, '175px', false);
+              'FileAttachment', 'FileAttachment', false, false, true, true, false, dataSource, '175px', false);
           } else {
             this.fileTableData.dataSource  = this.entityService
               .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.configName, ownerId: this.entryId});
             this.fileTableData.triggerRefresh.next();
           }
         }
-      }
 
+        if (this.configuration.components.includes('Attributes')) {
+          this.updateAttachments();
+        }
 
-      if (this.configuration.components && this.configuration.components.includes('Attributes')) {
-        this.updateAttachments();
-      }
-
-      if (this.configuration.components && this.configuration.components.includes('Notes')) {
-        this.entityService.getAttachments('note', this.configuration.type, this.entryId).subscribe(response =>
-          this.allNotes = response['data']);
+        if (this.configuration.components.includes('Notes')) {
+          this.entityService.getAttachments('note', this.configuration.type, this.entryId).subscribe(response =>
+            this.allNotes = response['data']);
+        }
       }
 
       if (this.groupConfigurations) {
@@ -257,10 +255,10 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   onRowEditSave(attribute: any) {
     const type: string = attribute['attributeType'];
     this.entityService.updateAttachmentEntry('attribute', {id: attribute['id'], name: attribute['name'], attributeType: type,
-      longValue: type === 'Long' ? attribute['longValue'] : undefined,
-      stringValue: type === 'String' ? attribute['stringValue'] : undefined,
-      booleanValue: type === 'Boolean' ? attribute['booleanValue'] : undefined,
-      dateValue: type === 'Date' ? attribute['dateValue'] : undefined
+      longValue: attribute['longValue'],
+      stringValue: attribute['stringValue'],
+      booleanValue: attribute['booleanValue'],
+      dateValue: attribute['dateValue']
     }).subscribe();
   }
 
