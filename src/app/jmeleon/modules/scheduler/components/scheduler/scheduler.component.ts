@@ -20,7 +20,7 @@ import * as numberingSystems from 'cldr-data/supplemental/numberingSystems.json'
 import * as gregorian from 'cldr-data/main/de/ca-gregorian.json';
 import * as numbers from 'cldr-data/main/de/numbers.json';
 import * as timeZoneNames from 'cldr-data/main/de/timeZoneNames.json';
-import de from './localisation.json';
+import de from '../../models/localisation.json';
 import { Subscription } from 'rxjs';
 import { SchedulerEvent, SchedulerResource } from '../../models/scheduler.model';
 
