@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EntityLogComponent } from './entity-log.component';
+import { EntityLogsComponent } from './entity-logs.component';
 
-describe('EntityLogComponent', () => {
-  let component: EntityLogComponent;
-  let fixture: ComponentFixture<EntityLogComponent>;
+describe('EntityLogsComponent', () => {
+  let component: EntityLogsComponent;
+  let fixture: ComponentFixture<EntityLogsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EntityLogComponent ]
+      declarations: [ EntityLogsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EntityLogComponent);
+    fixture = TestBed.createComponent(EntityLogsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

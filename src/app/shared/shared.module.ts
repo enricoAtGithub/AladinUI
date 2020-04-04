@@ -27,11 +27,15 @@ import { FileSaverModule } from 'ngx-filesaver';
 import { PickListModule } from 'primeng/picklist';
 import { ErrorNotificationService } from './services/error-notification.service';
 import { DynamicTableAttachmentsComponent } from './components/dynamic-table-attachments/dynamic-table-attachments.component';
-import { EntityLogComponent } from './components/entity-log/entity-log.component';
 import { PictureDialogComponent } from './components/picture-dialog/picture-dialog.component';
 import { EntityDropdownComponent } from './components/entity-dropdown/entity-dropdown.component';
 import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
 import {ColorPickerModule} from 'primeng/colorpicker';
+import { EntityNotesComponent } from './components/entity-attachments/entity-notes/entity-notes.component';
+import { EntityAttributesComponent } from './components/entity-attachments/entity-attributes/entity-attributes.component';
+import { EntityGroupRelationComponent } from './components/entity-attachments/entity-group-relation/entity-group-relation.component';
+import { EntityFileAttachmentsComponent } from './components/entity-attachments/entity-file-attachments/entity-file-attachments.component';
+import { EntityLogsComponent } from './components/entity-attachments/entity-logs/entity-logs.component';
 
 @NgModule({
   declarations: [
@@ -41,9 +45,13 @@ import {ColorPickerModule} from 'primeng/colorpicker';
     FileUploadDialogComponent,
     CatalogueChooserDialogComponent,
     AttachmentListComponent,
-    EntityLogComponent,
     PictureDialogComponent,
-    EntityDropdownComponent
+    EntityDropdownComponent,
+    EntityNotesComponent,
+    EntityAttributesComponent,
+    EntityGroupRelationComponent,
+    EntityFileAttachmentsComponent,
+    EntityLogsComponent
   ],
   imports: [
     CommonModule,

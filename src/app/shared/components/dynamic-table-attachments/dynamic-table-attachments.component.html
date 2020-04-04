@@ -1,191 +1,29 @@
-<p-dialog header="Attribut hinzufügen" [(visible)]="displayAddAttribute" [resizable]="false" [draggable]="false" [style]="{'width': '400px'}">
-  <form (ngSubmit)="addNewAttribute()" #attributeForm="ngForm" class="ui-g">
-    <div class="ui-g-12 ui-md-12 form-group">
-      <span class="ui-float-label" style="margin-bottom: 25px">
-        <input required name="Name" id="float-input" type="text" [(ngModel)]="newAttribute.name" style="width: 100%" pInputText> 
-        <label for="float-input">Name</label>
-      </span> 
-      <span class="ui-float-label form-group">
-        <p-dropdown required [options]="types" name="Typ" [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.attributeType"
-          [autoDisplayFirst]="false"></p-dropdown>
-        <label for="float-input">Typ</label>
-      </span>
-      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
-        *ngIf="newAttribute.attributeType === 'String' || newAttribute.attributeType === undefined">
-        <input required name="Wert" id="float-input" type="text" [(ngModel)]="newAttribute.stringValue" style="width: 100%" pInputText> 
-        <label for="float-input">Wert</label>
-      </span>
-      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" *ngIf="newAttribute.attributeType === 'Long'">
-        <input required name="Wert" id="float-input" type="number" [(ngModel)]="newAttribute.longValue" style="width: 100%" pInputText> 
-        <label for="float-input">Wert</label>
-      </span>
-      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px; height: 26px" *ngIf="newAttribute.attributeType === 'Boolean'">
-        <p-checkbox name="Wert" binary="true" [(ngModel)]="newAttribute.booleanValue"></p-checkbox>
-        <label for="float-input" style="top: -.75em; font-size: 12px;">Wert</label>
-      </span>
-      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" *ngIf="newAttribute.attributeType === 'Date'">
-        <p-calendar name="Wert" [(ngModel)]="newAttribute.dateValue" showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}"></p-calendar>
-        <label for="float-input">Wert</label>
-      </span>
-      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" *ngIf="newAttribute.attributeType === 'Color'">
-        <div>
-          <p-colorPicker  name="Wert" [(ngModel)]="newAttribute.stringValue" ></p-colorPicker>
-          <input required name="Wert" id="float-input" type="text" [(ngModel)]="newAttribute.stringValue" style="width: 92%" pInputText> 
-        </div>
-        <!--label for="float-input">Color</label-->
-      </span>
-    
-      <div class="ui-g-12 ui-md-12" style="padding: 0px">
-        <p-button type="submit" [disabled]="!attributeForm.form.valid" icon="pi pi-user-plus" iconPos="left" label="Erstellen"></p-button>
-      </div>
-    </div>
-  </form>
-</p-dialog>
-
 <div *ngIf="entryId !== undefined && entryId !== null && !isEmpty" style="padding: 0px" class="card">
   <p-tabView>
     <!-- Display group relations if available -->
-    <p-tabPanel *ngFor="let groupConfig of groupConfigsArray; let i = index" [header]="groupConfig.displayName" [selected]="i==0">
-      <!-- Dummy pickList to prevent flickering when group data is changing -->
-      <div *ngIf="!groupMembers || !groupMembers.get(groupConfig.type)">
-        <p-pickList [responsive]="true" sourceHeader="Verfügbar" targetHeader="Zugewiesen" [showSourceControls]="false" [showTargetControls]="false"></p-pickList>
-      </div>
-      <!-- Actual picklist -->
-      <div *ngIf="groupMembers && groupMembers.get(groupConfig.type)">
-        <p-pickList #pickListSelector [responsive]="true" [source]="nonGroupMembers.get(groupConfig.type)"
-          [target]="groupMembers.get(groupConfig.type)" sourceHeader="Verfügbar" targetHeader="Zugewiesen"
-          (onMoveToTarget)="addMembers($event.items, groupConfig.type)" (onMoveToSource)="removeMembers($event.items, groupConfig.type)"
-          [showSourceControls]="false" [showTargetControls]="false">
-          <ng-template let-item pTemplate="item">
-            <div *ngFor="let field of groupConfig.memberFields">
-              <div style="display: inline" *ngIf="field.visible">{{item[field.field] ? item[field.field] : (field.field === 'name' ? '(Kein Bezeichner)' : '-')}}</div>
-            </div>
-          </ng-template>
-        </p-pickList>
-      </div>
+    <p-tabPanel *ngFor="let group of configuration?.groups; let i = index" [header]="group" [selected]="i==0">
+      <app-entity-group-relation [type]="configName" [entryId]="entryId" [relation]="group"></app-entity-group-relation>
     </p-tabPanel>
 
     <p-tabPanel *ngIf="this.configuration?.components?.includes('LogEntries')" header="Logbuch"
     [selected]="this.configuration.components[0] === 'LogEntries' && this.configuration.groups === null">
-      <div style="height: 250px">
-        <app-dynamic-table #logsTable *ngIf="logTableData" [tableData]="logTableData"></app-dynamic-table>
-      </div>
+      <app-entity-logs [type]="configName" [entryId]="entryId"></app-entity-logs>
     </p-tabPanel>
 
     <p-tabPanel *ngIf="this.configuration?.components?.includes('Notes')" header="Notizen"
-    [selected]="this.configuration.components[0] === 'LogEntries' && this.configuration.groups === null">
-      <div style="height: 250px">
-        <app-dynamic-table #notesTable class="ui-g-6" style="padding: 0px" *ngIf="noteTableData" [tableData]="noteTableData" (onEntitySelection)="noteSelected($event)"></app-dynamic-table>
-        <div *ngIf="selectedNote" class="ui-g-6" style="padding: 7px">
-          <div style="margin-bottom: 7px;">
-            <input type="text" style="width: 90%; display: inline" pInputText [(ngModel)]="selectedNote.subject">
-            <button type="button" pButton style="width: 4%; margin-left: 1%" icon="pi pi-trash" class="ui-button-info" (click)="removeNote()"></button>
-            <button type="button" pButton style="width: 4%; margin-left: 1%" icon="pi pi-save" class="ui-button-success" (click)="saveNote()"></button>
-          </div>
-          <p-editor [(ngModel)]="selectedNote.note" [style]="{'height': '170px'}"></p-editor>
-        </div>
-        <div class="ui-g-6" *ngIf="!selectedNote">
-          <div style="border-style: dashed; border-color: #378D4F; height: 247px; text-align: center; cursor: pointer;" (click)="createEmptyNote()">
-              <i class="pi pi-plus" style="position: relative; top: 20%; font-size: 11em; color: #378D4F"></i>
-          </div>
-        </div>
-      </div>
+    [selected]="this.configuration.components[0] === 'Notes' && this.configuration.groups === null">
+      <app-entity-notes [type]="configName" [entryId]="entryId"></app-entity-notes>
     </p-tabPanel>
 
     <p-tabPanel *ngIf="this.configuration?.components?.includes('Attributes')" header="Attribute"
-    [selected]="this.configuration.components[0] === 'LogEntries' && this.configuration.groups === null">
-      <div style="height: 250px">
-        <p-table [value]="attributes" dataKey="id" editMode="row">
-          <ng-template pTemplate="header">
-            <tr>
-                <th>Name</th>
-                <th>Typ</th>
-                <th>Wert</th>
-                <th style="width:8em">
-                  <button pButton type="button" icon="pi pi-plus" class="ui-button-success" (click)="openAddAttributeDialog()"></button>
-                </th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
-            <tr [pEditableRow]="rowData">
-              <td>
-                <p-cellEditor>
-                  <ng-template pTemplate="input">
-                    <input pInputText type="text" [(ngModel)]="rowData.name" style="width: 100%">
-                  </ng-template>
-                  <ng-template pTemplate="output"> 
-                    {{rowData.name}}
-                  </ng-template>
-                </p-cellEditor>
-              </td>
-              <td>
-                <p-cellEditor>
-                  <ng-template pTemplate="input">
-                    <p-dropdown [options]="types" [(ngModel)]="rowData.attributeType" [style]="{'width':'100%'}"></p-dropdown>
-                  </ng-template>
-                  <ng-template pTemplate="output">
-                    {{rowData.attributeType}}
-                  </ng-template>
-                </p-cellEditor>
-              </td>
-              <td>
-                <p-cellEditor>
-                  <ng-template  pTemplate="input">
-                    <p-checkbox *ngIf="rowData.attributeType === 'Boolean'" binary="true" [(ngModel)]="rowData.booleanValue"></p-checkbox>
-                    <input *ngIf="rowData.attributeType === 'Long'" pInputText type="number" [(ngModel)]="rowData.longValue" style="width: 100%">
-                    <input *ngIf="rowData.attributeType === 'String'" pInputText type="text" [(ngModel)]="rowData.stringValue" style="width: 100%">
-                    <p-calendar *ngIf="rowData.attributeType === 'Date'" [(ngModel)]="rowData.dateValue" showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}"></p-calendar>
-                    <div *ngIf="rowData.attributeType === 'Color'">
-                      <p-colorPicker  [(ngModel)]="rowData.stringValue" ></p-colorPicker>
-                      <input pInputText type="text" [(ngModel)]="rowData.stringValue" style="width: 92%"> 
-                    </div>
-                  </ng-template>
-                  
-                  <ng-template pTemplate="output"> 
-                    {{rowData.attributeType === 'Boolean' ? rowData.booleanValue : ''}} 
-                    {{rowData.attributeType === 'String' ? rowData.stringValue : ''}} 
-                    {{rowData.attributeType === 'Long' ? rowData.longValue : ''}} 
-                    {{rowData.attributeType === 'Date' ? rowData.dateValue : ''}}
-                    <div *ngIf="rowData.attributeType === 'Color'">
-                      <input class="ui-colorpicker-preview ui-inputtext ui-state-default ui-corner-all ng-tns-c3-3 ng-star-inserted" readonly="true" type="text" [style.background-color]="rowData.stringValue">
-                      {{rowData.stringValue}}
-                    </div>
-                  </ng-template>
-                </p-cellEditor>
-              </td>
-              <td style="text-align:center">
-                <button *ngIf="!editing" id="editButton{{rowData.id}}" pButton type="button" pInitEditableRow icon="pi pi-pencil" style="margin-right: .5em" class="ui-button-info" (click)="onRowEditInit(rowData)"></button>
-                <button *ngIf="!editing" pButton type="button" icon="pi pi-trash" class="ui-button-info" (click)="onRowDelete(rowData)"></button>
-                <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check" class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData)"></button>
-                <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
+    [selected]="this.configuration.components[0] === 'Attributes' && this.configuration.groups === null">
+        <app-entity-attributes [type]="configName" [entryId]="entryId"></app-entity-attributes>
     </p-tabPanel>
 
     <p-tabPanel *ngIf="this.configuration?.components?.includes('FileAttachments')" header="Dateianhänge"
-    [selected]="this.configuration.components[0] === 'LogEntries' && this.configuration.groups === null">
+    [selected]="this.configuration.components[0] === 'FileAttachments' && this.configuration.groups === null">
       <div style="height: 250px">
-        <p-table>
-          <ng-template pTemplate="caption">
-            Dateianhänge
-            <app-file-upload-dialog
-              catalogueName="FileTypes"
-              catalogueDisplayName="Datei-Typ"
-              chooseLabel="Auswählen"
-              openDialogLabel=""
-              [createAttachment]="true"
-              [ownerId]="entryId"
-              [ownerType]="configuration?.type"
-              (fileAttached)="onFileAttached($event)"
-              style="float: right; margin-top: -5px;"
-            ></app-file-upload-dialog>
-            <button pButton (click)="fileTable.refreshTableContents()" icon="pi pi-undo" style="float: right; margin-top: -5px; margin-right: 5px;"></button>
-          </ng-template>
-        </p-table>
-        <app-dynamic-table #fileTable style="padding: 0px" *ngIf="fileTableData" [tableData]="fileTableData"></app-dynamic-table>
+        <app-entity-file-attachments [type]="configName" [entryId]="entryId"></app-entity-file-attachments>
       </div>
     </p-tabPanel>
 

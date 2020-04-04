@@ -1,0 +1,16 @@
+<div style="height: 250px">
+    <app-dynamic-table #notesTable class="ui-g-6" style="padding: 0px" *ngIf="noteTableData" [tableData]="noteTableData" (onEntitySelection)="noteSelected($event)"></app-dynamic-table>
+    <div *ngIf="selectedNote" class="ui-g-6" style="padding: 7px">
+        <div style="margin-bottom: 7px;">
+            <input type="text" style="width: 90%; display: inline" pInputText [(ngModel)]="selectedNote.subject">
+            <button type="button" pButton style="width: 4%; margin-left: 1%" icon="pi pi-trash" class="ui-button-info" (click)="removeNote()"></button>
+            <button type="button" pButton style="width: 4%; margin-left: 1%" icon="pi pi-save" class="ui-button-success" (click)="saveNote()"></button>
+        </div>
+        <p-editor [(ngModel)]="selectedNote.note" [style]="{'height': '170px'}"></p-editor>
+    </div>
+    <div class="ui-g-6" *ngIf="!selectedNote">
+        <div style="border-style: dashed; border-color: #378D4F; height: 247px; text-align: center; cursor: pointer;" (click)="createEmptyNote()">
+            <i class="pi pi-plus" style="position: relative; top: 20%; font-size: 11em; color: #378D4F"></i>
+        </div>
+    </div>
+</div>

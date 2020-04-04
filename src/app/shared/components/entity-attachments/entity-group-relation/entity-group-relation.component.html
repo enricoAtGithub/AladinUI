@@ -1,0 +1,17 @@
+<!-- Dummy pickList to prevent flickering when group data is changing -->
+<div *ngIf="!groupMembers">
+    <p-pickList [responsive]="true" sourceHeader="Verfügbar" targetHeader="Zugewiesen" [showSourceControls]="false" [showTargetControls]="false"></p-pickList>
+</div>
+<!-- Actual picklist -->
+<div *ngIf="groupMembers">
+    <p-pickList #pickListSelector [responsive]="true" [source]="nonGroupMembers"
+    [target]="groupMembers" sourceHeader="Verfügbar" targetHeader="Zugewiesen"
+    (onMoveToTarget)="addMembers($event.items)" (onMoveToSource)="removeMembers($event.items)"
+    [showSourceControls]="false" [showTargetControls]="false">
+        <ng-template let-item pTemplate="item">
+            <div *ngFor="let field of groupConfig?.memberFields">
+                <div style="display: inline" *ngIf="field.visible">{{item[field.field] ? item[field.field] : (field.field === 'name' ? '(Kein Bezeichner)' : '-')}}</div>
+            </div>
+        </ng-template>
+    </p-pickList>
+</div>
