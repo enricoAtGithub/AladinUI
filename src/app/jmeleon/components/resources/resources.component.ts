@@ -8,7 +8,8 @@ import { TableData } from 'src/app/shared/models/table-data';
 })
 export class ResourcesComponent implements OnInit {
   // data = new TableData('Ressourcen', 'Resource');
-  data = new TableData('Resource', 'Resource');
+  data = new TableData('Ressourcen', 'Resource');
+  availabilityData = new TableData('Verfügbarkeiten', 'ResourceAvailability');
 
 
   constructor() { }
