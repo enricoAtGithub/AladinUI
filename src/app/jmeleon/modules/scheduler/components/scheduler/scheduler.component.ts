@@ -135,7 +135,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   // get resources and events for the Resourcescheduler (at the bottom)
   private getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter }: { schedulerEvent: SchedulerEvent; filter: string[]; }): void {
     this.subscriptions.push(
-      this.schedulerService.getSchedulerResources(schedulerEvent.Id)
+      this.schedulerService.getSchedulerResources(schedulerEvent.RefId)
         .subscribe(schedulerResources => {
           // set global scheduler status
           this.schedulerStatus.currentResources = schedulerResources;
@@ -144,7 +144,6 @@ export class SchedulerComponent implements OnInit, OnDestroy {
           this.filterAndDisplayResources(filter);
 
           // modify/enrich scheduler resources server response
-          // Todo: refactor using flatmap
           const schedulerEvents: SchedulerEvent[] = [];
           schedulerResources.forEach(schResource => {
 
@@ -154,10 +153,17 @@ export class SchedulerComponent implements OnInit, OnDestroy {
             schResource.AssignedAltText = schResource.Assigned ? 'Zuordnung lösen' : 'einteilen';
             schResource.HasConflictAltText = schResource.HasConflict ? 'Konflikt' : '';
 
-            // Add ResourceID to each schedulerEvent and aggregate ALL schedulerEvents
+            // Add ResourceID to each schedulerEvent (type: order) and aggregate ALL schedulerEvents
             schResource.isAssignedTo.forEach(schEvent => {
               schEvent.ResourceID = schResource.Id;
               schedulerEvents.push(schEvent);
+            });
+
+            // Add ResourceID to each schedulerEvent (type: abscence)
+            schResource.IsUnavailable.forEach(absence => {
+              absence.ResourceID = schResource.Id;
+              absence.AssignedResources = 1;
+              schedulerEvents.push(absence);
             });
           });
 
@@ -194,12 +200,12 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   modifyAssignment(schedulerResource: SchedulerResource) {
     if (schedulerResource.Assigned) {
       this.subscriptions.push(
-        this.schedulerService.removeResourceFromSchedulerEvent(this.schedulerStatus.currentSchedulerEvent.Id, schedulerResource.Id)
+        this.schedulerService.removeResourceFromSchedulerEvent(this.schedulerStatus.currentSchedulerEvent.RefId, schedulerResource.Id)
           .subscribe(() => this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter }))
       );
     } else if (!schedulerResource.Assigned) {
       this.subscriptions.push(
-        this.schedulerService.assignResourceToSchedulerEvent(this.schedulerStatus.currentSchedulerEvent.Id, schedulerResource.Id)
+        this.schedulerService.assignResourceToSchedulerEvent(this.schedulerStatus.currentSchedulerEvent.RefId, schedulerResource.Id)
           .subscribe(() => this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter }))
       );
     }
@@ -223,12 +229,12 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     schedulerEvent.TimeFrameStr = this.schedulerService.getTimeframeAsString(schedulerEvent.StartTime, schedulerEvent.EndTime);
 
     this.subscriptions.push(
-      this.schedulerService.updateSchedulerEventInterval(schedulerEvent.Id, startDateTime, endDateTime)
+      this.schedulerService.updateSchedulerEventInterval(schedulerEvent.RefId, startDateTime, endDateTime)
         .subscribe(() => {
           // If resourceScheduler is visible update shown resources
           if (this.showResourceScheduler) {
             this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter });
-            if (schedulerEvent.Id === this.schedulerStatus.currentSchedulerEvent.Id) { this.setTimeFrameForCurrentSchedulerEvent(schedulerEvent); }
+            if (schedulerEvent.RefId === this.schedulerStatus.currentSchedulerEvent.RefId) { this.setTimeFrameForCurrentSchedulerEvent(schedulerEvent); }
           }
         })
     );

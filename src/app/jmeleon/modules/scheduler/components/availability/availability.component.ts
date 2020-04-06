@@ -65,22 +65,22 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     schedulerEventHTML.style.backgroundColor = color;
   }
 
-  // get resources and events for the Resourcescheduler (at the bottom)
-  private getSchedulerResourcesAndSchedulerEvents(schedulerEventId: number): void {
+  // get resources and events (array isUnavailable)
+  private getSchedulerResourcesAndSchedulerEvents(schedulerEventRefId: number): void {
     this.subscriptions.push(
-      this.schedulerService.getSchedulerResources(schedulerEventId)
+      this.schedulerService.getSchedulerResources(schedulerEventRefId)
         .subscribe(schedulerResources => {
-          // set global scheduler status
           this.resourceDataSource = schedulerResources;
 
-          // Todo: refactor using flatmap
           const schedulerEvents: SchedulerEvent[] = [];
           schedulerResources.forEach(schResource => {
 
-            // Add ResourceID to each schedulerEvent and aggregate ALL schedulerEvents
-            schResource.isAssignedTo.forEach(schEvent => {
-              schEvent.ResourceID = schResource.Id;
-              schedulerEvents.push(schEvent);
+            // Add ResourceID to each schedulerEvent (type: abscence)
+            schResource.IsUnavailable.forEach(absence => {
+              absence.ResourceID = schResource.Id;
+              absence.AssignedResources = 1;
+              absence.IsReadonly = false;
+              schedulerEvents.push(absence);
             });
           });
 
@@ -107,7 +107,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     schedulerEvent.TimeFrameStr = this.schedulerService.getTimeframeAsString(schedulerEvent.StartTime, schedulerEvent.EndTime);
 
     this.subscriptions.push(
-      this.schedulerService.updateSchedulerEventInterval(schedulerEvent.Id, startDateTime, endDateTime)
+      this.schedulerService.updateSchedulerEventInterval(schedulerEvent.RefId, startDateTime, endDateTime)
         .subscribe(() => {
         })
     );

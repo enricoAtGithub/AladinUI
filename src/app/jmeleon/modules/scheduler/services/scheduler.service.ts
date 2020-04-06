@@ -36,7 +36,9 @@ export class SchedulerService {
           const timeframeStr = this.getTimeframeAsString(startDateTime, endDateTime);
 
           return {
-            Id: schEv.id,
+            Id: 'order#' + schEv.id,
+            Type: 'order',
+            RefId: schEv.id,
             Subject: schEv.subject,
             StartTime: startDateTime,
             EndTime: endDateTime,
@@ -67,7 +69,9 @@ export class SchedulerService {
               const timeframeStr = this.getTimeframeAsString(startDateTime, endDateTime);
 
               return {
-                Id: schEv.id,
+                Id: 'order#' + schEv.id,
+                Type: 'order',
+                RefId: schEv.id,
                 Subject: schEv.subject,
                 Description: schEv.description,
                 StartTime: startDateTime,
@@ -75,7 +79,25 @@ export class SchedulerService {
                 TimeFrameStr: timeframeStr,                // 'hh:mm - hh:mm'
                 IsReadonly: schEv.isReadonly,
                 AssignedResources: schEv.assignedResources,
-                Color: schEv.color
+                Color: schEv.color,
+              };
+            }),
+            IsUnavailable: schRes.isUnavailable.map(absence => {
+              const startDateTime = DateTimeService.convertApiDateTimeStringToDate(absence.startTime);
+              const endDateTime = DateTimeService.convertApiDateTimeStringToDate(absence.endTime);
+              const timeframeStr = this.getTimeframeAsString(startDateTime, endDateTime);
+
+              return {
+                Id: 'absence#' + absence.id,
+                Type: 'absence',
+                RefId: absence.id,
+                Subject: absence.subject,
+                Description: absence.description,
+                StartTime: startDateTime,
+                EndTime: endDateTime,
+                TimeFrameStr: timeframeStr,
+                IsReadonly: absence.isReadonly,
+                Color: absence.color,
               };
             })
           };

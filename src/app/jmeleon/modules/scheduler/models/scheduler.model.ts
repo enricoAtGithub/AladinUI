@@ -5,23 +5,22 @@ Note: Scheduler Component requires properties starting with capital letter
  */
 
 export interface SchedulerEvent {
-    Id: number;
-    Subject: string;
-    Description: String;
-    StartTime: Date;
-    EndTime: Date;
+    Id: string;
+    RefId: number;
+    Subject: string;                        // from Backend
+    Description: String;                    // from Backend
+    StartTime: Date;                        // from Backend
+    EndTime: Date;                          // from Backend
     TimeFrameStr: string;
-    AssignedResources: number;
-    IsReadonly: boolean;
-    Color: string;
-    StartTimezone?: string;
-    EndTimezone?: string;
-    Location?: string;
-    IsAllDay?: boolean;
-    RecurrenceID?: number;
-    RecurrenceRule?: string;
-    RecurrenceException?: string;
-    IsBlock?: boolean;
+    AssignedResources: number;              // from Backend
+    IsReadonly: boolean;                    // from Backend
+    Color: string;                          // from Backend
+    Type: string;
+    StartTimezone?: string;                 // from Backend
+    EndTimezone?: string;                   // from Backend
+    Location?: string;                      // from Backend
+    IsAllDay?: boolean;                     // from Backend
+    IsBlock?: boolean;                      // from Backend
     ResourceID?: number;
 }
 
@@ -35,4 +34,5 @@ export interface SchedulerResource {
     HasConflictIcon?: string;
     HasConflictAltText?: string;
     isAssignedTo: SchedulerEvent[];         // from Backend
+    IsUnavailable: SchedulerEvent[];        // from Backend
 }
