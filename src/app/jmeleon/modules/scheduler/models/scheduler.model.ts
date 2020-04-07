@@ -33,6 +33,6 @@ export interface SchedulerResource {
     HasConflict: boolean;                   // from Backend
     HasConflictIcon?: string;
     HasConflictAltText?: string;
-    isAssignedTo: SchedulerEvent[];         // from Backend
+    IsAssignedTo: SchedulerEvent[];         // from Backend
     IsUnavailable: SchedulerEvent[];        // from Backend
 }

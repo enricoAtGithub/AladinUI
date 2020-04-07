@@ -1,4 +1,3 @@
-<!-- <div (window:resize)="getAvailableHeight()" [ngStyle]="{'height.px': windowHeight}"> -->
 <ejs-schedule [rowAutoHeight]="true" [showQuickInfo]="true" [eventSettings]="availabilitySchedulerObject"
     [currentView]="TimelineWorkWeek" [group]="groupData" [allowDragAndDrop]="true" [allowResizing]="true" locale='de'
     (eventRendered)="onEventRendered($event)" (resizeStop)="updateSchedulerEventInterval($event.data)"
@@ -17,4 +16,3 @@
         </e-resource>
     </e-resources>
 </ejs-schedule>
-<!-- </div> -->

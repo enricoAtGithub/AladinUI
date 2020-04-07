@@ -63,7 +63,7 @@ export class SchedulerService {
             Name: schRes.name,
             Assigned: schRes.assigned,
             HasConflict: schRes.hasConflict,
-            isAssignedTo: schRes.isAssignedTo.map(schEv => {
+            IsAssignedTo: schRes.isAssignedTo.map(schEv => {
               const startDateTime = DateTimeService.convertApiDateTimeStringToDate(schEv.startTime);
               const endDateTime = DateTimeService.convertApiDateTimeStringToDate(schEv.endTime);
               const timeframeStr = this.getTimeframeAsString(startDateTime, endDateTime);

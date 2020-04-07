@@ -154,7 +154,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
             schResource.HasConflictAltText = schResource.HasConflict ? 'Konflikt' : '';
 
             // Add ResourceID to each schedulerEvent (type: order) and aggregate ALL schedulerEvents
-            schResource.isAssignedTo.forEach(schEvent => {
+            schResource.IsAssignedTo.forEach(schEvent => {
               schEvent.ResourceID = schResource.Id;
               schedulerEvents.push(schEvent);
             });
