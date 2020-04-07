@@ -2,7 +2,7 @@
 <!-- <div [ngStyle]="{'height.px': windowHeight}"> -->
 <div (window:resize)="getAvailableHeight()" [ngStyle]="{'height.px': windowHeight}">
     <ejs-schedule height="100%" [rowAutoHeight]="true" [showQuickInfo]="false"
-        [eventSettings]="availabilitySchedulerObject" [currentView]="TimelineWorkWeek" [group]="groupData"
+        [eventSettings]="availabilitySchedulerObject" currentView="TimelineWorkWeek" [group]="groupData"
         [allowDragAndDrop]="true" [allowResizing]="true" locale='de' (eventRendered)="onEventRendered($event)"
         (resizeStop)="updateSchedulerEventInterval($event.data)" (dragStop)="updateSchedulerEventInterval($event.data)">
         <e-views>

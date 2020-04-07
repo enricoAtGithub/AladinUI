@@ -77,14 +77,15 @@ pipeline {
 def slack_notifier(String buildResult) {
   if ( buildResult == "SUCCESS" ) {
     slackSend color: "good", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful"
+    slackSend teamDomain: "simply4it", channel: "#jenkins_notifications", tokenCredentialId: "simply4it_jenkins", color: "good", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful"
   }
   else if( buildResult == "FAILURE" ) { 
-    slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} failed"
+    slackSend teamDomain: "simply4it", channel: "#jenkins_notifications", tokenCredentialId: "simply4it_jenkins", color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} failed"
   }
   else if( buildResult == "UNSTABLE" ) { 
-    slackSend color: "warning", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unstable"
+    slackSend teamDomain: "simply4it", channel: "#jenkins_notifications", tokenCredentialId: "simply4it_jenkins", color: "warning", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unstable"
   }
   else {
-    slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unclear"	
+    slackSend teamDomain: "simply4it", channel: "#jenkins_notifications", tokenCredentialId: "simply4it_jenkins", color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unclear"	
   }
 }
