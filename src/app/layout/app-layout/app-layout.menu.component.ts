@@ -3,6 +3,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { MenuItem } from 'primeng/primeng';
 import { AppLayoutComponent } from '../app-layout/app-layout.component';
 import { JMeleonPermissionsService } from 'src/app/auth/services/jmeleon-permissions.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -30,7 +31,6 @@ export class AppMenuComponent implements OnInit {
             { label: 'Berichte', icon: 'fa fa-fw fa-file', routerLink: ['/reports'] },
             { label: 'Resourcen', icon: 'fa fa-archive', routerLink: ['/resources'] },
             { label: 'An-/Abwesenheiten', icon: 'fa fa-plane', routerLink: ['/availability'] },
-            { label: 'Tests', icon: 'fa fa-flask', routerLink: ['/tests'] },
             {
                 label: 'Administration', icon: 'fa fa-fw fa-pencil',
                 visible: this.jmeleonPermissionsService.currentUserHasPermission(
@@ -44,6 +44,15 @@ export class AppMenuComponent implements OnInit {
                     { label: 'Einstellungen', icon: 'fa fa-cogs', routerLink: ['/administration/settings'] },
                 ]
             },
+            {
+                label: 'Playground',  icon: 'fa fa-flask',
+                visible: environment.loadPlayground,
+                items: [
+                    {label: 'Start', routerLink: ['/playground']},
+                    {label: 'JMeleonPermissionDirective', routerLink: ['/playground/permission']},
+                    { label: 'Entity-Tests', routerLink: ['/playground/entity-test'] },
+                ]
+            }
         ];
     }
 

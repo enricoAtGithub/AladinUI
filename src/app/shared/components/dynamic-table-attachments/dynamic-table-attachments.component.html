@@ -27,5 +27,9 @@
       </div>
     </p-tabPanel>
 
+  <p-tabPanel *ngIf="showActionTab" header="Aktionen" [selected]="!hasContent && showActionTab">
+    <app-right-actions-editor [entryId]="entryId"></app-right-actions-editor>
+  </p-tabPanel>
+
   </p-tabView>
 </div>

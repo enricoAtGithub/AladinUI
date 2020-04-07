@@ -3,6 +3,7 @@ import { CategoryModel } from '../../models/category.model';
 import { SettingsService } from '../../services/settings.service';
 import { Observable } from 'rxjs';
 import { SettingsModel } from '../../models/setting.model';
+import { JmeleonActionsFacadeService } from '../../../permissions/services/jmeleon-actions-facade.service';
 
 @Component({
   selector: 'app-settings',
@@ -16,7 +17,8 @@ export class SettingsComponent implements OnInit {
   activeEditSetting: string;
   orgSettingValue: string;
   constructor(
-    private settingService: SettingsService
+    private settingService: SettingsService,
+    private jmlActionsFacade: JmeleonActionsFacadeService
   ) { }
 
   ngOnInit() {
@@ -54,6 +56,10 @@ export class SettingsComponent implements OnInit {
     this.activeEditSetting = null;
     setting.value = this.orgSettingValue;
     this.orgSettingValue = null;
+  }
+
+  syncGuiActionsWithServer(){
+    this.jmlActionsFacade.syncGuiActionsWithServer();
   }
 
 }

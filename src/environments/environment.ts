@@ -4,6 +4,9 @@
 
 export const environment = {
   production: false,
+  loadPlayground: true,
+
+
   baseUrl: 'http://splylnx2.simply.local:8023/jmeleon/rest/api',
   companyName: 'DOT-IT',
   appName: 'JMeleon',

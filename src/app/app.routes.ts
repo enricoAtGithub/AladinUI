@@ -19,48 +19,49 @@ import { UserManagementGuard } from './auth/guards/user-management.guard';
 import { LoginGuard } from './auth/guards/login.guard';
 import { DTOConfigEditorComponent } from './jmeleon/components/dtoconfig-editor/dtoconfig-editor.component';
 import { SettingsComponent } from './jmeleon/modules/settings/components/settings/settings.component';
-import { TestsComponent } from './jmeleon/components/tests/tests.component';
 import { ResourcesComponent } from './jmeleon/components/resources/resources.component';
 import { SchedulerComponent } from './jmeleon/modules/scheduler/components/scheduler/scheduler.component';
+import { environment } from 'src/environments/environment';
+import { PlaygroundGuard } from './playground/guards/playground.guard';
 import { AvailabilityComponent } from './jmeleon/modules/scheduler/components/availability/availability.component';
 
 
 export const routes: Routes = [
-  // App-Layout routes
-  {
-    path: '',
-    component: AppLayoutComponent,
-    canActivate: [AuthGuard],
-    children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent },
-      { path: 'orders', component: OrdersComponent },
-      { path: 'reports', component: ReportsComponent },
-      { path: 'invoices', component: InvoicesComponent },
-      { path: 'profile', component: ProfileComponent },
-      { path: 'tests', component: TestsComponent },
-      { path: 'resources', component: ResourcesComponent },
-      { path: 'scheduler', component: SchedulerComponent },
-      { path: 'availability', component: AvailabilityComponent },
-
-      // doesn't seem to work with 'ModuleWithProviders
-      // {path: 'administration', loadChildren: './user/user.module.ts#UserModule'}
-      // {path: 'administration', loadChildren: UserModule}
-      {
-        path: 'administration',
+    // App-Layout routes
+    { path: '',
+      component: AppLayoutComponent,
+      canActivate: [AuthGuard],
+      children: [
+        { path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+        { path: 'dashboard', component: DashboardComponent},
+        { path: 'orders', component: OrdersComponent},
+        { path: 'reports', component: ReportsComponent},
+        { path: 'invoices', component: InvoicesComponent},
+        { path: 'profile', component: ProfileComponent},
+        { path: 'resources', component: ResourcesComponent},
+        { path: 'scheduler', component: SchedulerComponent},
+        // doesn't seem to work with 'ModuleWithProviders
+        // {path: 'administration', loadChildren: './user/user.module.ts#UserModule'}
+        // {path: 'administration', loadChildren: UserModule},
+      	{ path: 'availability', component: AvailabilityComponent },
+        {
+          path: 'playground',
+          loadChildren: () => import('./playground/playground.module').then(m => m.PlaygroundModule),
+          canLoad: [PlaygroundGuard]
+        },
+        {path: 'administration',
         canActivate: [UserManagementGuard],
         children: [
-          { path: 'user-management', pathMatch: 'full', component: UserManagementComponent },
-          { path: 'useralt-management', pathMatch: 'full', component: UseraltComponent },
-          { path: 'role-management', pathMatch: 'full', component: RoleManagementComponent },
-          { path: 'permission-management', pathMatch: 'full', component: PermissionManagementComponent },
-          { path: 'catalogue-management', pathMatch: 'full', component: CatalogueManagementComponent },
-          { path: 'dto-configuration', pathMatch: 'full', component: DTOConfigEditorComponent },
-          { path: 'settings', component: SettingsComponent }
-        ]
-      }
-    ]
-  },
+          {path: 'user-management', pathMatch: 'full', component: UserManagementComponent},
+          {path: 'useralt-management', pathMatch: 'full', component: UseraltComponent},
+          {path: 'role-management', pathMatch: 'full', component: RoleManagementComponent},
+          {path: 'permission-management', pathMatch: 'full', component: PermissionManagementComponent},
+          {path: 'catalogue-management', pathMatch: 'full', component: CatalogueManagementComponent},
+          {path: 'dto-configuration', pathMatch: 'full', component: DTOConfigEditorComponent},
+          {path: 'settings', component: SettingsComponent}
+        ]}
+      ]
+    },
 
   // No-Layout routes
   { path: 'login', canActivate: [LoginGuard], component: LoginComponent },
@@ -68,4 +69,7 @@ export const routes: Routes = [
   { path: '**', redirectTo: 'dashboard', pathMatch: 'full' },
 ];
 
-export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' });
+export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(
+  routes,
+  {scrollPositionRestoration: 'enabled'});
+

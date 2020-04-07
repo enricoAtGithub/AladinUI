@@ -31,6 +31,9 @@ import { PictureDialogComponent } from './components/picture-dialog/picture-dial
 import { EntityDropdownComponent } from './components/entity-dropdown/entity-dropdown.component';
 import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
 import {ColorPickerModule} from 'primeng/colorpicker';
+import { NgxPermissionsModule } from 'ngx-permissions';
+import { JmeleonModule } from '../jmeleon/jmeleon.module';
+import { PermissionsModule } from '../jmeleon/modules/permissions/permissions.module';
 import { EntityNotesComponent } from './components/entity-attachments/entity-notes/entity-notes.component';
 import { EntityAttributesComponent } from './components/entity-attachments/entity-attributes/entity-attributes.component';
 import { EntityGroupRelationComponent } from './components/entity-attachments/entity-group-relation/entity-group-relation.component';
@@ -75,8 +78,10 @@ import { EntityLogsComponent } from './components/entity-attachments/entity-logs
     PickListModule,
     OverlayPanelModule,
     EditorModule,
-    ScrollPanelModule,
-    ColorPickerModule
+    ColorPickerModule,
+    NgxPermissionsModule,
+    PermissionsModule,
+    ScrollPanelModule
   ],
   entryComponents: [
     EntityDialogComponent,
@@ -88,7 +93,9 @@ import { EntityLogsComponent } from './components/entity-attachments/entity-logs
     FileUploadDialogComponent,
     AttachmentListComponent,
     CatalogueChooserDialogComponent,
-    EntityDropdownComponent
+    EntityDropdownComponent,
+    NgxPermissionsModule,
+    PermissionsModule
   ],
   providers: [
     EntityService,

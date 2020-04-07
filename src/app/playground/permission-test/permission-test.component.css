@@ -1,0 +1,15 @@
+span {
+    font-weight: 600;
+}
+
+/* .header {
+    font-weight: bold;
+} */
+
+.hasPermission {
+    color: green;
+}
+
+.hasNoPermission {
+    color: red;
+}
