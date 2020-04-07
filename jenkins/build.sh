@@ -10,6 +10,7 @@ export git_sha=$(git rev-parse --short HEAD)
 export branch=$(git symbolic-ref --short HEAD)
 
 export angular_profile=jenkins
+export NODE_OPTIONS="--max-old-space-size=8192"
 
 if [ "$branch" = "master" ]; then
   mvn --settings $HOME/.m2/settings-simply.xml versions:set -DnewVersion=$2
