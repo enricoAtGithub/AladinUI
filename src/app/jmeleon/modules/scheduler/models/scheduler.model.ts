@@ -40,5 +40,5 @@ export interface SchedulerResource {
     HasConflictIcon?: string;
     HasConflictAltText?: string;
     IsAssignedTo: SchedulerEvent[];         // from Backend
-    IsUnavailable: Absence[];               // from Backend
+    IsUnavailable: SchedulerEvent[];               // from Backend
 }
