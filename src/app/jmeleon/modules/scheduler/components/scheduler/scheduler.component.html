@@ -14,8 +14,11 @@
 
                     <ng-template #eventSettingsTemplate let-data>
                         <div style="width: 100%;">
-                            <div *ngIf="toBeImplemented" style="float:right; padding-right: 5px;">
-                                <i class="pi pi-times"></i>
+                            <div *ngIf="data.MissingResources" style="float:right; padding-right: 5px;"><i
+                                    class="pi pi-times" title="{{data.ResourceConflictDescription}}"></i>
+                            </div>
+                            <div *ngIf="data.TooManyResources" style="float:right; padding-right: 5px;"><i
+                                    class="pi pi-times" title="{{data.ResourceConflictDescription}}"></i>
                             </div>
                             <div>
                                 <div class="e-subject">{{data.Subject}}</div>

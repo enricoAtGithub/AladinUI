@@ -163,6 +163,9 @@ export class SchedulerComponent implements OnInit, OnDestroy {
             schResource.IsUnavailable.forEach(absence => {
               absence.ResourceID = schResource.Id;
               absence.AssignedResources = 1;
+              absence.MissingResources = null;
+              absence.TooManyResources = null;
+              absence.ResourceConflictDescription = null;
               schedulerEvents.push(absence);
             });
           });

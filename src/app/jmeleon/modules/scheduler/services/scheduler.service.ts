@@ -46,7 +46,10 @@ export class SchedulerService {
             Description: schEv.description,
             IsReadonly: schEv.isReadonly,
             AssignedResources: schEv.assignedResources,
-            Color: schEv.color
+            Color: schEv.color,
+            MissingResources: schEv.missingResources,
+            TooManyResources: schEv.tooManyResources,
+            ResourceConflictDescription: schEv.resourceConflictDescription
           };
         }))
       );
@@ -80,6 +83,9 @@ export class SchedulerService {
                 IsReadonly: schEv.isReadonly,
                 AssignedResources: schEv.assignedResources,
                 Color: schEv.color,
+                MissingResources: schEv.missingResources,
+                TooManyResources: schEv.tooManyResources,
+                ResourceConflictDescription: schEv.resourceConflictDescription
               };
             }),
             IsUnavailable: schRes.isUnavailable.map(absence => {
@@ -97,7 +103,7 @@ export class SchedulerService {
                 EndTime: endDateTime,
                 TimeFrameStr: timeframeStr,
                 IsReadonly: absence.isReadonly,
-                Color: absence.color,
+                Color: absence.color
               };
             })
           };

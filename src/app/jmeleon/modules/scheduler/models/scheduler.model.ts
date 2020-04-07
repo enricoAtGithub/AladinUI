@@ -22,6 +22,9 @@ export interface SchedulerEvent {
     IsAllDay?: boolean;                     // from Backend
     IsBlock?: boolean;                      // from Backend
     ResourceID?: number;
+    MissingResources: boolean;              // from Backend
+    TooManyResources: boolean;              // from Backend
+    ResourceConflictDescription: string;    // from backend
 }
 
 export interface SchedulerResource {
