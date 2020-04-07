@@ -1,3 +1,6 @@
+master_version = '1.0.0'
+version = '0.9-SNAPSHOT'
+
 pipeline {
     agent any
 	
@@ -14,29 +17,31 @@ pipeline {
 	}
 	
 	tools {
-        maven 'Maven 3.6.0'
+        //maven 'Maven 3.6.0'
         jdk 'jdk8'
     }
 	
     stages {
         stage ('Initialize') {
             steps {
-				withMaven(maven: 'Maven 3.6.0',	jdk: 'jdk8') {
-					sh '''
-						echo "PATH = ${PATH}"
-						echo "M2_HOME = ${M2_HOME}"
-						echo "M2 version:" + `mvn --version`
-					'''
+				sh '''
+					echo "PATH = ${PATH}"
+					echo "M2_HOME = ${M2_HOME}"
+					echo "M2 version:" + `mvn --version`
+				'''
+				script {
+					if (env.BRANCH_NAME == 'master') {
+						version = master_version
+					} 
+					echo "set build version to ${version}"
 				}
             }
         }
 		
 		stage('Build') {
             steps {
-				withMaven(maven: 'Maven 3.6.0',	jdk: 'jdk8') {
-					sh "bash ./jenkins/build.sh ${env.BUILD_NUMBER}"
-				}
-            }
+				sh "bash ./jenkins/build.sh ${env.BUILD_NUMBER} ${version}"
+	        }
         }
 
         stage('Deploy') {
@@ -48,5 +53,38 @@ pipeline {
 				sh "bash ./jenkins/deploy_develop.sh"
             }
         }
-    }
+		
+        stage('Upload') {
+		    when {
+                branch 'master'
+            }
+            steps {
+                echo 'uploading artefacts'
+				sh "bash ./jenkins/upload_master.sh ${version}"
+				slackSend color: "good", message: "Artefact: ${env.JOB_NAME} with version ${version} was uploaded to owncloud"
+            }
+        }
+    
+	}
+
+    post {
+		always {
+			slack_notifier(currentBuild.currentResult)
+		}
+	}
+}
+
+def slack_notifier(String buildResult) {
+  if ( buildResult == "SUCCESS" ) {
+    slackSend color: "good", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful"
+  }
+  else if( buildResult == "FAILURE" ) { 
+    slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} failed"
+  }
+  else if( buildResult == "UNSTABLE" ) { 
+    slackSend color: "warning", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unstable"
+  }
+  else {
+    slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unclear"	
+  }
 }
