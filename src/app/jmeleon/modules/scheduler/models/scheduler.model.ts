@@ -4,7 +4,7 @@ https://ej2.syncfusion.com/angular/documentation/schedule/appointments/?no-cache
 Note: Scheduler Component requires properties starting with capital letter
  */
 
-export interface SchedulerEvent {
+export interface Absence {
     Id: string;
     RefId: number;
     Subject: string;                        // from Backend
@@ -12,16 +12,19 @@ export interface SchedulerEvent {
     StartTime: Date;                        // from Backend
     EndTime: Date;                          // from Backend
     TimeFrameStr: string;
-    AssignedResources: number;              // from Backend
     IsReadonly: boolean;                    // from Backend
     Color: string;                          // from Backend
     Type: string;
+    IsAllDay?: boolean;                     // from Backend
+    ResourceID?: number;
+}
+
+export interface SchedulerEvent extends Absence {
+    AssignedResources: number;              // from Backend    
     StartTimezone?: string;                 // from Backend
     EndTimezone?: string;                   // from Backend
     Location?: string;                      // from Backend
-    IsAllDay?: boolean;                     // from Backend
     IsBlock?: boolean;                      // from Backend
-    ResourceID?: number;
     MissingResources: boolean;              // from Backend
     TooManyResources: boolean;              // from Backend
     ResourceConflictDescription: string;    // from backend

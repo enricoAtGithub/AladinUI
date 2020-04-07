@@ -19,7 +19,7 @@ import * as numbers from 'cldr-data/main/de/numbers.json';
 import * as timeZoneNames from 'cldr-data/main/de/timeZoneNames.json';
 import de from '../../models/localisation.json';
 import { Subscription } from 'rxjs';
-import { SchedulerEvent } from '../../models/scheduler.model';
+import { SchedulerEvent, Absence } from '../../models/scheduler.model';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -72,20 +72,19 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
         .subscribe(schedulerResources => {
           this.resourceDataSource = schedulerResources;
 
-          const schedulerEvents: SchedulerEvent[] = [];
+          const absenceEvents: Absence[] = [];
           schedulerResources.forEach(schResource => {
 
             // Add ResourceID to each schedulerEvent (type: abscence)
             schResource.IsUnavailable.forEach(absence => {
               absence.ResourceID = schResource.Id;
-              absence.AssignedResources = 1;
               absence.IsReadonly = false;
-              schedulerEvents.push(absence);
+              absenceEvents.push(absence);
             });
           });
 
           // provide all schedulerEvents shown in ResourceScheduler (bottom component)
-          this.availabilitySchedulerObject = { dataSource: schedulerEvents };
+          this.availabilitySchedulerObject = { dataSource: absenceEvents };
         }));
   }
 
