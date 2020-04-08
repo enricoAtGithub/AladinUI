@@ -1,5 +1,9 @@
 master_version = '1.0.0'
 version = '0.9-SNAPSHOT'
+tomcat_service = ''
+tomcat_port = ''
+tomcat_path = ''
+app_name = 'jmeleon-ui'
 
 pipeline {
     agent any
@@ -45,20 +49,28 @@ pipeline {
         }
 
         stage('Deploy') {
-		    when {
-                branch 'develop'
-            }
             steps {
-                echo 'Deploying on develop...'
-				sh "bash ./jenkins/deploy_develop.sh"
-            }
+				script{
+					if (env.BRANCH_NAME == 'master') {
+						tomcat_service = 'jmeleon_qa'
+						tomcat_path = '/opt/tomcat/tomcat_jmeleon_qa'
+						tomcat_port = '8123'
+					} 
+					if (env.BRANCH_NAME == 'develop') {
+						tomcat_service = 'tomcat'
+						tomcat_path = '/opt/tomcat/apache-tomcat-8.5.41'
+						tomcat_port = '8023'
+					} 
+				}
+				sh "bash ./jenkins/deploy.sh ${tomcat_service} ${tomcat_port} ${tomcat_path} ${app_name}"
         }
 		
-        stage('Upload') {
+/*        stage('Upload') {
 		    when {
                 branch 'master'
             }
             steps {
+			
                 echo 'uploading artefacts'
 				sh "bash ./jenkins/upload_master.sh ${version}"
 				slackSend color: "good", message: "Artefact: ${env.JOB_NAME} with version ${version} was uploaded to owncloud"
@@ -66,7 +78,7 @@ pipeline {
         }
     
 	}
-
+*/
     post {
 		always {
 			slack_notifier(currentBuild.currentResult)
@@ -76,7 +88,7 @@ pipeline {
 
 def slack_notifier(String buildResult) {
   if ( buildResult == "SUCCESS" ) {
-    slackSend color: "good", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful"
+	
     slackSend teamDomain: "simply4it", channel: "#jenkins_notifications", tokenCredentialId: "simply4it_jenkins", color: "good", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful"
   }
   else if( buildResult == "FAILURE" ) { 
