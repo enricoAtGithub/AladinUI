@@ -16,10 +16,3 @@ cp target/${APP_NAME}*.war $TOMCAT_PATH/webapps/${APP_NAME}.war
 
 sudo systemctl start $TOMCAT_SERVICE
 
-#wait for tomcat
-python scripts/waitForServerUp.py "http://localhost:${TOMCAT_PORT}/${APP_NAME}" 60
-
-# this might be useless due to set -e?
-if [ $? -ne 0 ]; then
-  exit 1
-fi
