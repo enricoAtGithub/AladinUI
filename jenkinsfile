@@ -76,9 +76,9 @@ pipeline {
 				slackSend color: "good", message: "Artefact: ${env.JOB_NAME} with version ${version} was uploaded to owncloud"
             }
         }
-    
+*/   
 	}
-*/
+
     post {
 		always {
 			slack_notifier(currentBuild.currentResult)
