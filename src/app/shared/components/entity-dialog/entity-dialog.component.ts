@@ -5,6 +5,8 @@ import { FormGroup, NgForm } from '@angular/forms';
 import { EntityService } from '../../services/entity.service';
 import { CatalogueService } from 'src/app/user/services/catalogue.service';
 import { TableData } from '../../models/table-data';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-entity-dialog',
@@ -19,27 +21,56 @@ export class EntityDialogComponent implements OnInit {
   displayEntitySelectionDialog = false;
   entitySelectionTableData: TableData;
   entitySelectionContext: {field: string, textModule: any};
+  displayScrollPanel = false;
 
   constructor(public ref: DynamicDialogRef, public config: DynamicDialogConfig, private entityService: EntityService,
     private catalogueService: CatalogueService) { }
 
   ngOnInit() {
-    this.configuration = this.config.data['config'];
-    this.update = this.config.data['update'];
+    const data = this.config.data;
+    let $config: Observable<EntityConfiguration>;
+    if (data['config']) {
+      $config = new BehaviorSubject<EntityConfiguration>(data['config']).asObservable();
+    } else if (data['configName']) {
+      $config = this.entityService.getEntityConfigurations().pipe(map(configs => configs[data['configName']]));
+    } else {
+      console.log('[entity-dialog] no config supplied');
+      return;
+    }
 
-    this.entity = this.config.data['entity'];
-    this.configuration.fields.forEach(field => {
-      if (field.type === 'Date' && this.update) {
-        if (this.entity[field.field] != null) {
-          this.entity[field.field] = new Date(this.entity[field.field]);
-        }
+    $config.subscribe(config => {
+      console.log(config);
+      this.configuration = config;
+      this.update = this.config.data['update'];
+
+      let $entity: Observable<any>;
+      if (data['entity']) {
+        $entity = new BehaviorSubject(data['entity']).asObservable();
+      } else if (data['entityId']) {
+        $entity = this.entityService.filter(this.configuration.type, 1, 1, 'EQ(\'id\', ' + data['entityId'] + ')', null).pipe(map(res => res.data[0]));
+      } else if (this.update) {
+        console.log('[entity-dialog] no entity supplied');
+        return;
       }
-      if (field.type === 'CatalogueEntry') {
-        this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
-          const values = catalogue.values.map(e => ({label: e['name'], value: e['id']}));
-          this.catalogueOptions.set(catalogue.name, values);
+
+      $entity.subscribe(entity => {
+        console.log(entity);
+        this.entity = entity;
+        this.configuration.fields.forEach(field => {
+          if (field.type === 'Date' && this.update) {
+            if (this.entity[field.field] != null) {
+              this.entity[field.field] = new Date(this.entity[field.field]);
+            }
+          }
+          if (field.type === 'CatalogueEntry') {
+            this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
+              const values = catalogue.values.map(e => ({label: e['name'], value: e['id']}));
+              this.catalogueOptions.set(catalogue.name, values);
+            });
+          }
         });
-      }
+        this.displayScrollPanel = this.shouldDisplayScrollPanel();
+      });
     });
   }
 
@@ -81,7 +112,7 @@ export class EntityDialogComponent implements OnInit {
     }
   }
 
-  shouldDisplayScrollPanel(): boolean {
+  shouldDisplayScrollPanel() {
     let editableFields = 0;
     let editOrMandFields = 0;
     this.configuration.fields.forEach(field => {
