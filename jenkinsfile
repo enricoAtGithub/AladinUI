@@ -63,6 +63,7 @@ pipeline {
 					} 
 				}
 				sh "bash ./jenkins/deploy.sh ${tomcat_service} ${tomcat_port} ${tomcat_path} ${app_name}"
+			}
         }
 		
 /*        stage('Upload') {
