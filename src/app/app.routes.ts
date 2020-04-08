@@ -27,41 +27,49 @@ import { AvailabilityComponent } from './jmeleon/modules/scheduler/components/av
 
 
 export const routes: Routes = [
-    // App-Layout routes
-    { path: '',
-      component: AppLayoutComponent,
-      canActivate: [AuthGuard],
-      children: [
-        { path: '', redirectTo: 'dashboard', pathMatch: 'full'},
-        { path: 'dashboard', component: DashboardComponent},
-        { path: 'orders', component: OrdersComponent},
-        { path: 'reports', component: ReportsComponent},
-        { path: 'invoices', component: InvoicesComponent},
-        { path: 'profile', component: ProfileComponent},
-        { path: 'resources', component: ResourcesComponent},
-        { path: 'scheduler', component: SchedulerComponent},
-        // doesn't seem to work with 'ModuleWithProviders
-        // {path: 'administration', loadChildren: './user/user.module.ts#UserModule'}
-        // {path: 'administration', loadChildren: UserModule},
-      	{ path: 'availability', component: AvailabilityComponent },
-        {
-          path: 'playground',
-          loadChildren: () => import('./playground/playground.module').then(m => m.PlaygroundModule),
-          canLoad: [PlaygroundGuard]
-        },
-        {path: 'administration',
+  // App-Layout routes
+  {
+    path: '',
+    component: AppLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'orders', component: OrdersComponent },
+      { path: 'reports', component: ReportsComponent },
+      { path: 'invoices', component: InvoicesComponent },
+      { path: 'profile', component: ProfileComponent },
+      { path: 'scheduler', component: SchedulerComponent },
+      // doesn't seem to work with 'ModuleWithProviders
+      // {path: 'administration', loadChildren: './user/user.module.ts#UserModule'}
+      // {path: 'administration', loadChildren: UserModule},
+      {
+        path: 'resource-management',
+        children: [
+          { path: 'resources', pathMatch: 'full', component: ResourcesComponent },
+          { path: 'availability', pathMatch: 'full', component: AvailabilityComponent },
+        ]
+      },
+      {
+        path: 'playground',
+        loadChildren: () => import('./playground/playground.module').then(m => m.PlaygroundModule),
+        canLoad: [PlaygroundGuard]
+      },
+      {
+        path: 'administration',
         canActivate: [UserManagementGuard],
         children: [
-          {path: 'user-management', pathMatch: 'full', component: UserManagementComponent},
-          {path: 'useralt-management', pathMatch: 'full', component: UseraltComponent},
-          {path: 'role-management', pathMatch: 'full', component: RoleManagementComponent},
-          {path: 'permission-management', pathMatch: 'full', component: PermissionManagementComponent},
-          {path: 'catalogue-management', pathMatch: 'full', component: CatalogueManagementComponent},
-          {path: 'dto-configuration', pathMatch: 'full', component: DTOConfigEditorComponent},
-          {path: 'settings', component: SettingsComponent}
-        ]}
-      ]
-    },
+          { path: 'user-management', pathMatch: 'full', component: UserManagementComponent },
+          { path: 'useralt-management', pathMatch: 'full', component: UseraltComponent },
+          { path: 'role-management', pathMatch: 'full', component: RoleManagementComponent },
+          { path: 'permission-management', pathMatch: 'full', component: PermissionManagementComponent },
+          { path: 'catalogue-management', pathMatch: 'full', component: CatalogueManagementComponent },
+          { path: 'dto-configuration', pathMatch: 'full', component: DTOConfigEditorComponent },
+          { path: 'settings', component: SettingsComponent }
+        ]
+      }
+    ]
+  },
 
   // No-Layout routes
   { path: 'login', canActivate: [LoginGuard], component: LoginComponent },
@@ -71,5 +79,5 @@ export const routes: Routes = [
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(
   routes,
-  {scrollPositionRestoration: 'enabled'});
+  { scrollPositionRestoration: 'enabled' });
 

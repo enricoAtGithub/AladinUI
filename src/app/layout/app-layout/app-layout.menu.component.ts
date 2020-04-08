@@ -29,8 +29,13 @@ export class AppMenuComponent implements OnInit {
             { label: 'Einsatzplanung', icon: 'fa fa-fw fa-calendar', routerLink: ['/scheduler'] },
             { label: 'Rechnungen', icon: 'fa fa-fw fa-eur', routerLink: ['/invoices'] },
             { label: 'Berichte', icon: 'fa fa-fw fa-file', routerLink: ['/reports'] },
-            { label: 'Resourcen', icon: 'fa fa-archive', routerLink: ['/resources'] },
-            { label: 'An-/Abwesenheiten', icon: 'fa fa-plane', routerLink: ['/availability'] },
+            {
+                label: 'Ressourcenverwaltung', icon: 'fa fa-archive',
+                items: [
+                    { label: 'Ressourcen', icon: 'pi pi-id-card', routerLink: ['/resource-management/resources'] },
+                    { label: 'An-/Abwesenheiten', icon: 'fa fa-plane', routerLink: ['/resource-management/availability'] },
+                ]
+            },
             {
                 label: 'Administration', icon: 'fa fa-fw fa-pencil',
                 visible: this.jmeleonPermissionsService.currentUserHasPermission(
@@ -45,11 +50,11 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             {
-                label: 'Playground',  icon: 'fa fa-flask',
+                label: 'Playground', icon: 'fa fa-flask',
                 visible: environment.loadPlayground,
                 items: [
-                    {label: 'Start', routerLink: ['/playground']},
-                    {label: 'JMeleonPermissionDirective', routerLink: ['/playground/permission']},
+                    { label: 'Start', routerLink: ['/playground'] },
+                    { label: 'JMeleonPermissionDirective', routerLink: ['/playground/permission'] },
                     { label: 'Entity-Tests', routerLink: ['/playground/entity-test'] },
                 ]
             }
