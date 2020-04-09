@@ -6,7 +6,7 @@
             <div class="eventScheduler">
 
                 <ejs-schedule [height]="eventSchedulerHeight" [eventSettings]="eventSchedulerObject"
-                    [currentView]="setEventSchedulerView" (dragStart)="setDraggingParams($event)"
+                    [currentView]="eventSchedulerView" (dragStart)="setDraggingParams($event)"
                     (resizeStart)="setResizeParams($event)" (resizeStop)="updateSchedulerEventInterval($event.data)"
                     (dragStop)="updateSchedulerEventInterval($event.data)" [showQuickInfo]="false"
                     (eventClick)="onSchedulerEventClick($event)" [allowResizing]="true" locale='de'
@@ -53,8 +53,8 @@
                 </p-multiSelect>
 
                 <ejs-schedule [height]=resourceSchedulerHeight allowMultiple="true" [showQuickInfo]="false"
-                    [eventSettings]="resourceSchedulerObject" [currentView]="setResourceSchedulerView"
-                    [group]="groupData" [rowAutoHeight]="true" [selectedDate]="selectedDateResourceScheduler"
+                    [eventSettings]="resourceSchedulerObject" [currentView]="resourceSchedulerView" [group]="groupData"
+                    [rowAutoHeight]="true" [selectedDate]="selectedDateResourceScheduler"
                     [workHours]="schedulerEventTime" [allowDragAndDrop]="false" [allowResizing]="false" locale='de'
                     (eventRendered)="onEventRendered($event)">
 

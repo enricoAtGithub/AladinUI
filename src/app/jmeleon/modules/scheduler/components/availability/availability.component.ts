@@ -17,9 +17,10 @@ import * as numberingSystems from 'cldr-data/supplemental/numberingSystems.json'
 import * as gregorian from 'cldr-data/main/de/ca-gregorian.json';
 import * as numbers from 'cldr-data/main/de/numbers.json';
 import * as timeZoneNames from 'cldr-data/main/de/timeZoneNames.json';
-import de from '../../models/localisation.json';
+import de from '../../config/translations.json';
 import { Subscription } from 'rxjs';
 import { SchedulerEvent, Absence } from '../../models/scheduler.model';
+import { availabiltySchedulerSettings } from '../../config/scheduler.config';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -34,6 +35,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   availabilitySchedulerObject: EventSettingsModel;
   resourceDataSource: Object[];
   windowHeight: number;
+  initialView: View;
 
   groupData: GroupModel = { resources: ['Resources'] };
 
@@ -50,6 +52,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.initialView = <View>availabiltySchedulerSettings.initialView;
     this.getAvailableHeight();
     this.getSchedulerResourcesAndSchedulerEvents(23);
   }

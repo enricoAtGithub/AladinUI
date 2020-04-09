@@ -20,9 +20,10 @@ import * as numberingSystems from 'cldr-data/supplemental/numberingSystems.json'
 import * as gregorian from 'cldr-data/main/de/ca-gregorian.json';
 import * as numbers from 'cldr-data/main/de/numbers.json';
 import * as timeZoneNames from 'cldr-data/main/de/timeZoneNames.json';
-import de from '../../models/localisation.json';
+import de from '../../config/translations.json';
 import { Subscription } from 'rxjs';
 import { SchedulerEvent, SchedulerResource } from '../../models/scheduler.model';
+import { eventSchedulerSettings, resourceSchedulerSettings } from '../../config/scheduler.config';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -37,34 +38,23 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   windowHeight: number;
   eventSchedulerHeight: number;
   resourceSchedulerHeight: number;
-  setEventSchedulerView: View = 'TimelineWorkWeek';
-  setResourceSchedulerView: View = 'TimelineDay';
+  eventSchedulerView: View;
+  resourceSchedulerView: View;
   schedulerEventTime: WorkHoursModel;
   selectedDateResourceScheduler: Date;
-  showResourceScheduler = false;
-
   eventSchedulerObject: EventSettingsModel;
   resourceSchedulerObject: EventSettingsModel;
   resourceDataSource: Object[];
-
+  currentResourceFilter: string[] = [];
+  resourceFilter: SelectItem[];
+  subscriptions: Subscription[] = [];
   private schedulerStatus: {
     currentSchedulerEvent: SchedulerEvent,
     currentResources: SchedulerResource[],
   };
-  currentResourceFilter: string[] = [];
 
-  groupData: GroupModel = {
-    resources: ['Resources']
-    //   allowGroupEdit: true
-  };
-
-  resourceFilter: SelectItem[] = [
-    { label: 'eingeteilt', value: 'assigned' },
-    { label: 'verfügbar', value: 'available' },
-    { label: 'indisponibel', value: 'hasConflict' }
-  ];
-
-  subscriptions: Subscription[] = [];
+  showResourceScheduler = false;
+  groupData: GroupModel = { resources: ['Resources'] };
 
   constructor(
     private breadcrumbService: BreadcrumbService,
@@ -77,6 +67,13 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.eventSchedulerView = <View>eventSchedulerSettings.initialView;
+    this.resourceSchedulerView = <View>resourceSchedulerSettings.initialView;
+    this.resourceFilter = [
+      { label: resourceSchedulerSettings.filterText.assigned, value: 'assigned' },
+      { label: resourceSchedulerSettings.filterText.available, value: 'available' },
+      { label: resourceSchedulerSettings.filterText.hasConflict, value: 'hasConflict' }
+    ];
     this.schedulerStatus = { currentSchedulerEvent: null, currentResources: null };
     this.getSchedulerHeights();
     this.getSchedulerEvents();
@@ -148,10 +145,10 @@ export class SchedulerComponent implements OnInit, OnDestroy {
           schedulerResources.forEach(schResource => {
 
             // add custom properties (icons and alternative text)
-            schResource.AssignedIcon = schResource.Assigned ? 'pi pi-user-minus' : 'pi pi-user-plus';
-            schResource.HasConflictIcon = schResource.HasConflict ? 'pi pi-exclamation-triangle' : '';
-            schResource.AssignedAltText = schResource.Assigned ? 'Zuordnung lösen' : 'einteilen';
-            schResource.HasConflictAltText = schResource.HasConflict ? 'Konflikt' : '';
+            schResource.AssignedIcon = schResource.Assigned ? resourceSchedulerSettings.icons.unassign : resourceSchedulerSettings.icons.assign;
+            schResource.AssignedAltText = schResource.Assigned ? resourceSchedulerSettings.iconText.unassign : resourceSchedulerSettings.iconText.assign;
+            schResource.HasConflictIcon = schResource.HasConflict ? resourceSchedulerSettings.icons.hasConflict : '';
+            schResource.HasConflictAltText = schResource.HasConflict ? resourceSchedulerSettings.iconText.hasConflict : '';
 
             // Add ResourceID to each schedulerEvent (type: order) and aggregate ALL schedulerEvents
             schResource.IsAssignedTo.forEach(schEvent => {
