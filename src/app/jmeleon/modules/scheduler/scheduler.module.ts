@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AngularSplitModule } from 'angular-split';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ContextMenuModule } from 'primeng/contextmenu';
 
 // import the ScheduleModule for the Schedule component
 import {
@@ -33,7 +34,9 @@ import { AvailabilityComponent } from './components/availability/availability.co
     MultiSelectModule,
     ScheduleModule,
     FormsModule,
-    SplitButtonModule
+    SplitButtonModule,
+    ConfirmDialogModule,
+    ContextMenuModule
   ],
   providers: [
     DayService,

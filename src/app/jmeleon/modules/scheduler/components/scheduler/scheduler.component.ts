@@ -11,7 +11,7 @@ import {
 } from '@syncfusion/ej2-angular-schedule';
 
 import { SchedulerService } from '../../services/scheduler.service';
-import { SelectItem } from 'primeng/api';
+import { SelectItem, DialogService, ConfirmationService, MenuItem } from 'primeng/api';
 import { BreadcrumbService } from '../../../../../breadcrumb.service';
 import DateTimeUtils from 'src/app/shared/utils/date-time.utils';
 
@@ -21,9 +21,14 @@ import * as gregorian from 'cldr-data/main/de/ca-gregorian.json';
 import * as numbers from 'cldr-data/main/de/numbers.json';
 import * as timeZoneNames from 'cldr-data/main/de/timeZoneNames.json';
 import de from '../../config/translations.json';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { SchedulerEvent, SchedulerResource } from '../../models/scheduler.model';
 import { eventSchedulerSettings, resourceSchedulerSettings } from '../../config/scheduler.config';
+import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/entity-dialog.component';
+import { EntityService } from 'src/app/shared/services/entity.service';
+import { EntityConfiguration } from 'src/app/shared/models/entity-configuration';
+import { ContextMenu } from 'primeng/contextmenu';
+
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -31,10 +36,10 @@ L10n.load(de);
 @Component({
   selector: 'app-scheduler',
   templateUrl: './scheduler.component.html',
-  styleUrls: ['./scheduler.component.css']
+  styleUrls: ['./scheduler.component.css'],
+  providers: [ConfirmationService]
 })
 export class SchedulerComponent implements OnInit, OnDestroy {
-
   windowHeight: number;
   eventSchedulerHeight: number;
   resourceSchedulerHeight: number;
@@ -48,6 +53,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   currentResourceFilter: string[] = [];
   resourceFilter: SelectItem[];
   subscriptions: Subscription[] = [];
+  schEvConfig: EntityConfiguration;
   private schedulerStatus: {
     currentSchedulerEvent: SchedulerEvent,
     currentResources: SchedulerResource[],
@@ -58,8 +64,10 @@ export class SchedulerComponent implements OnInit, OnDestroy {
 
   constructor(
     private breadcrumbService: BreadcrumbService,
-    private schedulerService: SchedulerService
-
+    private schedulerService: SchedulerService,
+    private dialogService: DialogService,
+    private confirmationService: ConfirmationService,
+    private entityService: EntityService
   ) {
     this.breadcrumbService.setItems([
       { label: 'Einsatzplanung' }
@@ -271,7 +279,75 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     return (usableHeight);
   }
 
-  /* loadConfig(): void {
-    let config: Config = require('../../config/scheduler.config.json');
-  } */
+  // https://stackoverflow.com/questions/43590487/open-the-context-menu-by-primeng-from-code-angular-2?rq=1
+  openContextMenu(schEvCM: ContextMenu, event: MouseEvent, data: any): void {
+    const model: MenuItem[] = [];
+    model.push(
+      {
+        label: 'bearbeiten',
+        icon: 'pi pi-pencil',
+        command: () => { this.updateSchedulerEvent(data); },
+      },
+      {
+        label: 'löschen',
+        icon: 'pi pi-trash',
+        command: () => { this.deleteSchedulerEvent(data); },
+      }
+
+    );
+    schEvCM.model = model;
+    schEvCM.show(event);
+  }
+
+  updateSchedulerEvent(data: SchedulerEvent) {
+    const dialogRef = this.dialogService.open(EntityDialogComponent, {
+      data: {
+        update: true,
+        entityId: data.RefId,
+        configName: 'Order'
+      },
+      header: data['Subject'] + ' bearbeiten',
+      width: '500px'
+    });
+
+    dialogRef.onClose.subscribe((result: Observable<Object>) => {
+      if (result !== undefined) {
+        this.subscriptions.push(
+          result.subscribe(() => this.getSchedulerEvents())
+        );
+      }
+    });
+  }
+
+  addSchedulerEvent(data: any) {
+    const dialogRef = this.dialogService.open(EntityDialogComponent, {
+      data: {
+        update: false,
+        entity: { startDate: data.startTime, endDate: data.endTime },
+        configName: 'Order'
+      },
+      header: 'Eintrag erstellen',
+      width: '500px'
+    });
+
+    dialogRef.onClose.subscribe((result: Observable<Object>) => {
+      if (result !== undefined) {
+        this.subscriptions.push(
+          result.subscribe(() => this.getSchedulerEvents())
+        );
+      }
+    });
+  }
+
+  deleteSchedulerEvent(data: any) {
+    this.confirmationService.confirm({
+      message: 'Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?',
+      accept: () => {
+        this.subscriptions.push(
+          this.entityService.deleteEntity('Order', data['RefId']).subscribe(() => this.getSchedulerEvents())
+        );
+      }
+    });
+  }
+
 }

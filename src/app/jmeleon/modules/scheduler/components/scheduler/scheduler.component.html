@@ -1,4 +1,6 @@
 <div (window:resize)="getSchedulerHeights()" [ngStyle]="{'height.px': windowHeight}">
+    <p-confirmDialog header="Bestätigung" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
+    <p-contextMenu #schEvCM [model]="items"></p-contextMenu>
 
     <!-- https://www.npmjs.com/package/angular-split -->
     <as-split direction="vertical" (dragEnd)="resizeSchedulers($event)" unit="pixel">
@@ -10,12 +12,13 @@
                     (resizeStart)="setResizeParams($event)" (resizeStop)="updateSchedulerEventInterval($event.data)"
                     (dragStop)="updateSchedulerEventInterval($event.data)" [showQuickInfo]="false"
                     (eventClick)="onSchedulerEventClick($event)" [allowResizing]="true" locale='de'
-                    [rowAutoHeight]="true" (eventRendered)="onEventRendered($event)">
+                    [rowAutoHeight]="true" (eventRendered)="onEventRendered($event)"
+                    (cellClick)="addSchedulerEvent($event)">
 
                     <ng-template #eventSettingsTemplate let-data>
-                        <div style="width: 100%;">
-                            <div *ngIf="data.MissingResources" style="float:right; padding-right: 5px;"><i
-                                    class="pi pi-times" title="{{data.ResourceConflictDescription}}"></i>
+                        <div (contextmenu)="openContextMenu(schEvCM, $event, data)" style="width: 100%;">
+                            <div *ngIf="data.MissingResources" style="float:right; padding-right: 5px;">
+                                <i class="pi pi-times" title="{{data.ResourceConflictDescription}}"></i>
                             </div>
                             <div *ngIf="data.TooManyResources" style="float:right; padding-right: 5px;"><i
                                     class="pi pi-times" title="{{data.ResourceConflictDescription}}"></i>
