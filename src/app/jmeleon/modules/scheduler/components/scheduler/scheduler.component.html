@@ -1,102 +1,117 @@
-<div (window:resize)="getSchedulerHeights()" [ngStyle]="{'height.px': windowHeight}">
-    <p-confirmDialog header="Bestätigung" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
-    <p-contextMenu #schEvCM [model]="items"></p-contextMenu>
+<p-confirmDialog header="Bestätigung" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
+<p-contextMenu #schEvCM [model]="items"></p-contextMenu>
 
-    <!-- https://www.npmjs.com/package/angular-split -->
-    <as-split direction="vertical" (dragEnd)="resizeSchedulers($event)" unit="pixel">
-        <as-split-area [size]="eventSchedulerHeight">
-            <div class="eventScheduler">
+<div>    
+    <div
+    class="resizableBox eventScheduler"
+    id=0
+    mwlResizable
+    [style.height.px]="boxHeights[0]"
+    [validateResize]="validate"
+    [enableGhostResize]="false"
+    [resizeSnapGrid]="{ left: 1, right: 1 }"
+    (resizeEnd)="onResizeEnd($event, 0)"
+    (resizing)="onResizing($event, 0)">
+        <ejs-schedule [height]="eventSchedulerHeight" [eventSettings]="eventSchedulerObject"
+            [currentView]="eventSchedulerView" (dragStart)="setDraggingParams($event)"
+            (resizeStart)="setResizeParams($event)" (resizeStop)="updateSchedulerEventInterval($event.data)"
+            (dragStop)="updateSchedulerEventInterval($event.data)" [showQuickInfo]="false"
+            (eventClick)="onSchedulerEventClick($event)" [allowResizing]="true" locale='de'
+            [rowAutoHeight]="true" (eventRendered)="onEventRendered($event)"
+            (cellClick)="addSchedulerEvent($event)">
 
-                <ejs-schedule [height]="eventSchedulerHeight" [eventSettings]="eventSchedulerObject"
-                    [currentView]="eventSchedulerView" (dragStart)="setDraggingParams($event)"
-                    (resizeStart)="setResizeParams($event)" (resizeStop)="updateSchedulerEventInterval($event.data)"
-                    (dragStop)="updateSchedulerEventInterval($event.data)" [showQuickInfo]="false"
-                    (eventClick)="onSchedulerEventClick($event)" [allowResizing]="true" locale='de'
-                    [rowAutoHeight]="true" (eventRendered)="onEventRendered($event)"
-                    (cellClick)="addSchedulerEvent($event)">
+            <ng-template #eventSettingsTemplate let-data>
+                <div (contextmenu)="openContextMenu(schEvCM, $event, data)" style="width: 100%;">
+                    <div *ngIf="data.MissingResources" style="float:right; padding-right: 5px;">
+                        <i class="pi pi-times" title="{{data.ResourceConflictDescription}}"></i>
+                    </div>
+                    <div *ngIf="data.TooManyResources" style="float:right; padding-right: 5px;"><i
+                            class="pi pi-times" title="{{data.ResourceConflictDescription}}"></i>
+                    </div>
+                    <div>
+                        <div class="e-subject">{{data.Subject}}</div>
+                        <div class="e-time">{{data.TimeFrameStr}}</div>
+                    </div>
+                </div>
+            </ng-template>
 
-                    <ng-template #eventSettingsTemplate let-data>
-                        <div (contextmenu)="openContextMenu(schEvCM, $event, data)" style="width: 100%;">
-                            <div *ngIf="data.MissingResources" style="float:right; padding-right: 5px;">
-                                <i class="pi pi-times" title="{{data.ResourceConflictDescription}}"></i>
-                            </div>
-                            <div *ngIf="data.TooManyResources" style="float:right; padding-right: 5px;"><i
-                                    class="pi pi-times" title="{{data.ResourceConflictDescription}}"></i>
-                            </div>
-                            <div>
-                                <div class="e-subject">{{data.Subject}}</div>
-                                <div class="e-time">{{data.TimeFrameStr}}</div>
-                            </div>
+            <e-views>
+                <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
+                <e-view option='TimelineDay' startHour='06:00' endHour='18:00'
+                    [timeScale]='{ enable: true, slotCount: 2 }'>
+                </e-view>
+                <e-view option='TimelineWorkWeek' startHour='06:00' endHour='18:00'
+                    [timeScale]='{ enable: true, interval: 120, slotCount: 2 }' allowVirtualScrolling="true">
+                </e-view>
+                <e-view option='WorkWeek' startHour='06:00' endHour='18:00'
+                    [timeScale]='{ enable: true, interval: 120, slotCount: 2 }' allowVirtualScrolling="true">
+                </e-view>
+            </e-views>
+
+        </ejs-schedule>
+        <div class="resize-handle" mwlResizeHandle [resizeEdges]="{ bottom: true }"><i class="pi pi-ellipsis-h"></i></div>
+    </div>
+
+
+    <div
+    class="resizableBox resourceScheduler"
+    id=1
+    mwlResizable
+    *ngIf="showResourceScheduler"
+    [style.height.px]="boxHeights[1]"
+    [validateResize]="validate"
+    [enableGhostResize]="false"
+    [resizeSnapGrid]="{ left: 1, right: 1 }"
+    (resizeEnd)="onResizeEnd($event, 1)"
+    (resizing)="onResizing($event, 1)">
+        <p-multiSelect [options]="resourceFilter" [(ngModel)]="currentResourceFilter"
+            [panelStyle]="{minWidth:'20em'}" [displaySelectedLabel]="false" [filter]="false"
+            [defaultLabel]="'Ressourcen filtern'" (onChange)="filterAndDisplayResources($event.value)">
+        </p-multiSelect>
+
+        <ejs-schedule [height]=resourceSchedulerHeight allowMultiple="true" [showQuickInfo]="false"
+            [eventSettings]="resourceSchedulerObject" [currentView]="resourceSchedulerView" [group]="groupData"
+            [rowAutoHeight]="true" [selectedDate]="selectedDateResourceScheduler"
+            [workHours]="schedulerEventTime" [allowDragAndDrop]="false" [allowResizing]="false" locale='de'
+            (eventRendered)="onEventRendered($event)">
+
+            <e-resources>
+                <e-resource [dataSource]="resourceDataSource" allowMultiple="true" field="ResourceID"
+                    title="Mitarbeiter und Ressourcen" name="Resources" textField="Name" idField="Id"
+                    stateField='State'>
+                </e-resource>
+            </e-resources>
+
+            <ng-template #resourceHeaderTemplate let-data>
+                <div class='template-wrap'>
+                    <div class="resource-details">
+                        <div class="resource-name">
+                            <i title="{{data.resourceData.AssignedAltText}}"
+                            class="{{data.resourceData.AssignedIcon}}"
+                            (click)="modifyAssignment(data.resourceData)"></i>
+                            &nbsp;{{data.resourceData.Name}}&nbsp;
+                            <i title="{{data.resourceData.HasConflictAltText}}"
+                            class="{{data.resourceData.HasConflictIcon}}"></i>
                         </div>
-                    </ng-template>
+                    </div>
+                </div>
+            </ng-template>
 
-                    <e-views>
-                        <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
-                        <e-view option='TimelineDay' startHour='06:00' endHour='18:00'
-                            [timeScale]='{ enable: true, slotCount: 2 }'>
-                        </e-view>
-                        <e-view option='TimelineWorkWeek' startHour='06:00' endHour='18:00'
-                            [timeScale]='{ enable: true, interval: 120, slotCount: 2 }' allowVirtualScrolling="true">
-                        </e-view>
-                        <e-view option='WorkWeek' startHour='06:00' endHour='18:00'
-                            [timeScale]='{ enable: true, interval: 120, slotCount: 2 }' allowVirtualScrolling="true">
-                        </e-view>
-                    </e-views>
+            <e-views>
+                <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
+                <e-view option='TimelineDay' startHour='06:00' endHour='18:00'
+                    [timeScale]='{ enable: true, slotCount: 2 }' allowVirtualScrolling="true">
+                </e-view>
+                <e-view option='TimelineWorkWeek' startHour='06:00' endHour='18:00'
+                    [timeScale]='{ enable: true, interval: 120, slotCount: 2 }' allowVirtualScrolling="true">
+                </e-view>
+            </e-views>
+        </ejs-schedule>
+        <div class="resize-handle" mwlResizeHandle [resizeEdges]="{ bottom: true }"><i class="pi pi-ellipsis-h"></i></div>
+    </div>
 
-                </ejs-schedule>
-
-            </div>
-        </as-split-area>
-
-        <as-split-area [size]="'*'">
-            <div class="resourceScheduler" *ngIf="showResourceScheduler">
-                <p-multiSelect [options]="resourceFilter" [(ngModel)]="currentResourceFilter"
-                    [panelStyle]="{minWidth:'20em'}" [displaySelectedLabel]="false" [filter]="false"
-                    [defaultLabel]="'Ressourcen filtern'" (onChange)="filterAndDisplayResources($event.value)">
-                </p-multiSelect>
-
-                <ejs-schedule [height]=resourceSchedulerHeight allowMultiple="true" [showQuickInfo]="false"
-                    [eventSettings]="resourceSchedulerObject" [currentView]="resourceSchedulerView" [group]="groupData"
-                    [rowAutoHeight]="true" [selectedDate]="selectedDateResourceScheduler"
-                    [workHours]="schedulerEventTime" [allowDragAndDrop]="false" [allowResizing]="false" locale='de'
-                    (eventRendered)="onEventRendered($event)">
-
-                    <e-resources>
-                        <e-resource [dataSource]="resourceDataSource" allowMultiple="true" field="ResourceID"
-                            title="Mitarbeiter und Ressourcen" name="Resources" textField="Name" idField="Id"
-                            stateField='State'>
-                        </e-resource>
-                    </e-resources>
-
-                    <ng-template #resourceHeaderTemplate let-data>
-                        <div class='template-wrap'>
-                            <div class="resource-details">
-                                <div class="resource-name">
-                                    <i title="{{data.resourceData.AssignedAltText}}"
-                                        class="{{data.resourceData.AssignedIcon}}"
-                                        (click)="modifyAssignment(data.resourceData)"></i>
-                                    &nbsp;{{data.resourceData.Name}}&nbsp;
-                                    <i title="{{data.resourceData.HasConflictAltText}}"
-                                        class="{{data.resourceData.HasConflictIcon}}"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </ng-template>
-
-                    <e-views>
-                        <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
-                        <e-view option='TimelineDay' startHour='06:00' endHour='18:00'
-                            [timeScale]='{ enable: true, slotCount: 2 }' allowVirtualScrolling="true">
-                        </e-view>
-                        <e-view option='TimelineWorkWeek' startHour='06:00' endHour='18:00'
-                            [timeScale]='{ enable: true, interval: 120, slotCount: 2 }' allowVirtualScrolling="true">
-                        </e-view>
-                    </e-views>
-
-                </ejs-schedule>
-            </div>
-        </as-split-area>
-
-    </as-split>
+    <div style="width: 100%; height: 100%;" *ngIf="showAttachments">
+        <app-dynamic-table-attachments configName="Order" [entryId]="schedulerStatus?.currentSchedulerEvent?.RefId"></app-dynamic-table-attachments>
+    </div>
 
 </div>

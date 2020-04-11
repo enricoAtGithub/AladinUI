@@ -24,6 +24,8 @@ import {
 import { SchedulerComponent } from './components/scheduler/scheduler.component';
 import { FormsModule } from '@angular/forms';
 import { AvailabilityComponent } from './components/availability/availability.component';
+import { ResizableModule } from 'angular-resizable-element';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 @NgModule({
@@ -36,7 +38,9 @@ import { AvailabilityComponent } from './components/availability/availability.co
     FormsModule,
     SplitButtonModule,
     ConfirmDialogModule,
-    ContextMenuModule
+    ContextMenuModule,
+    SharedModule,
+    ResizableModule
   ],
   providers: [
     DayService,

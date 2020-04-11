@@ -28,7 +28,7 @@ import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/e
 import { EntityService } from 'src/app/shared/services/entity.service';
 import { EntityConfiguration } from 'src/app/shared/models/entity-configuration';
 import { ContextMenu } from 'primeng/contextmenu';
-
+import { ResizeEvent } from 'angular-resizable-element';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -40,6 +40,9 @@ L10n.load(de);
   providers: [ConfirmationService]
 })
 export class SchedulerComponent implements OnInit, OnDestroy {
+
+  lastResize = Date.now();
+  boxHeights = [260, 530, 320];
   windowHeight: number;
   eventSchedulerHeight: number;
   resourceSchedulerHeight: number;
@@ -47,6 +50,9 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   resourceSchedulerView: View;
   schedulerEventTime: WorkHoursModel;
   selectedDateResourceScheduler: Date;
+  showResourceScheduler = false;
+  showAttachments = false;
+
   eventSchedulerObject: EventSettingsModel;
   resourceSchedulerObject: EventSettingsModel;
   resourceDataSource: Object[];
@@ -59,7 +65,6 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     currentResources: SchedulerResource[],
   };
 
-  showResourceScheduler = false;
   groupData: GroupModel = { resources: ['Resources'] };
 
   constructor(
@@ -135,6 +140,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     // show resource scheduler initialized with the date of the current event
     this.selectedDateResourceScheduler = schedulerEvent.StartTime;
     this.showResourceScheduler = true;
+    this.showAttachments = true;
   }
 
   // get resources and events for the Resourcescheduler (at the bottom)
@@ -257,14 +263,6 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     this.schedulerEventTime = { start: start, end: end };
   }
 
-  resizeSchedulers(args: any) {
-    if (<number>(args.sizes[0])) {
-      this.eventSchedulerHeight = <number>(args.sizes[0]);
-      this.resourceSchedulerHeight = this.windowHeight - this.eventSchedulerHeight - 70;
-
-    }
-  }
-
   getSchedulerHeights() {
     this.windowHeight = this.getAvailableHeight();
     // calculate space for the two schedulers.
@@ -350,4 +348,48 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     });
   }
 
+  /* loadConfig(): void {
+    let config: Config = require('../../config/scheduler.config.json');
+  } */
+
+
+  validate(event: ResizeEvent): boolean {
+    const resizeBounds = [{min: 15, max: 1000}, {min: 15, max: 1000}, {min: 15, max: 320}];
+    if (
+      event.rectangle.width &&
+      event.rectangle.height &&
+      ( event.rectangle.height < resizeBounds[this['elm']['nativeElement']['id']].min ||
+        event.rectangle.height > resizeBounds[this['elm']['nativeElement']['id']].max)
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  // Resizes the divs and schedulers during dragging action
+  // Has quite a big performance impact, not sure why..
+  // Can be substituted by built-in "ghostResize" which doesn't affect the position of other site elements though
+  onResizing(event: ResizeEvent, id: number): void {
+    // Only resize if last resize has happended more than 20ms ago
+    if (Date.now() - this.lastResize > 20) {
+      this.boxHeights[id] = event.rectangle.height;
+      this.lastResize = Date.now();
+
+      // resizes resource and event schedulers aswell. Currently runs fine on my end but might cause peformance problems
+      if (id === 1) {
+        this.resourceSchedulerHeight = event.rectangle.height - 30;
+      } else if (id === 0) {
+        this.eventSchedulerHeight = event.rectangle.height - 30;
+      }
+    }
+  }
+
+  onResizeEnd(event: ResizeEvent, id: number): void {
+    this.boxHeights[id] = event.rectangle.height;
+    if (id === 1) {
+      this.resourceSchedulerHeight = event.rectangle.height - 60;
+    } else if (id === 0) {
+      this.eventSchedulerHeight = event.rectangle.height - 30;
+    }
+  }
 }
