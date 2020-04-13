@@ -1,7 +1,7 @@
 <p-confirmDialog header="Bestätigung" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
 
 <div class="card">
-    <p-treeTable [value]="allCatalogues" [autoLayout]="true">
+    <p-treeTable [value]="allCatalogues" [autoLayout]="true" selectionMode="single" (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)">
         <ng-template pTemplate="caption">
             Katalogverwaltung
             <button pButton (click)="createCatalogue()" icon="pi pi-plus" style="float: right; margin-top: -5px; margin-left: 3px; margin-right: 13px"></button>
@@ -15,7 +15,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-            <tr>
+            <tr [ttSelectableRow]="rowNode">
                 <td>
                     <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                     {{rowData.name}}
@@ -34,4 +34,9 @@
             </tr>
         </ng-template>
     </p-treeTable>
+</div>
+
+<div class="card" *ngIf="catalogueSelected || catalogueEntrySelected">
+    <app-dynamic-table-attachments *ngIf="catalogueSelected" configName="Catalogue" [entryId]="selectedEntryId"></app-dynamic-table-attachments>
+    <app-dynamic-table-attachments *ngIf="catalogueEntrySelected" configName="CatalogueEntry" [entryId]="selectedEntryId"></app-dynamic-table-attachments>
 </div>

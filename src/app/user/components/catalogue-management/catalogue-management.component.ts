@@ -22,6 +22,10 @@ export class CatalogueManagementComponent implements OnInit {
   catalogueConfig: EntityConfiguration;
   catalogueEntryConfig: EntityConfiguration;
 
+  selectedEntryId: number;
+  catalogueSelected = false;
+  catalogueEntrySelected = false;
+
   constructor(
     private breadcrumbService: BreadcrumbService,
     private catalogueService: CatalogueService,
@@ -138,5 +142,23 @@ export class CatalogueManagementComponent implements OnInit {
         result.subscribe(() => this.loadCatalogues());
       }
     });
+  }
+
+  nodeSelect(event: any) {
+    if (event.node.children) {
+      // If node has children it is a catalogue
+      this.catalogueEntrySelected = false;
+      this.catalogueSelected = true;
+    } else {
+      this.catalogueSelected = false;
+      this.catalogueEntrySelected = true;
+    }
+    this.selectedEntryId = event.node.data.id;
+  }
+
+  nodeUnselect(event: any) {
+    this.catalogueEntrySelected = false;
+    this.catalogueSelected = false;
+    this.selectedEntryId = undefined;
   }
 }
