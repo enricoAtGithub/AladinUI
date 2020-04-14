@@ -96,7 +96,15 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     args.excludeSelectors = 'e-all-day-cells';
   }
 
-  updateAvailabilityInterval(availabilityEvent: Availability): void {
+  updateAvailabilityInterval(args: any): void {
+    // allow drag & drop only within the same resource
+    if (args.name === 'dragStop') {
+      const rootElement = <HTMLElement>args.event.element;
+      const targetElement = <HTMLElement>args.event.target;
+      if (rootElement.dataset.groupIndex !== targetElement.dataset.groupIndex) { args.cancel = true; }
+    }
+
+    const availabilityEvent = <Availability>(args.data as any);
     // convert start and end time from Date to String
     const startDateTime: string = DateTimeUtils.convertDateToApiConformTimeString(availabilityEvent.StartTime);
     const endDateTime: string = DateTimeUtils.convertDateToApiConformTimeString(availabilityEvent.EndTime);

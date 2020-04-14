@@ -1,7 +1,7 @@
 <ejs-schedule [rowAutoHeight]="true" [showQuickInfo]="true" [eventSettings]="availabilitySchedulerObject"
     [currentView]="initialView" [group]="groupData" [allowDragAndDrop]="true" [allowResizing]="true" locale='de'
-    (eventRendered)="onEventRendered($event)" (resizeStop)="updateAvailabilityInterval($event.data)"
-    (dragStop)="updateAvailabilityInterval($event.data)">
+    (eventRendered)="onEventRendered($event)" (resizeStop)="updateAvailabilityInterval($event)"
+    (dragStop)="updateAvailabilityInterval($event)">
     <e-views>
         <e-view option='TimelineDay' startHour='06:00' endHour='18:00' [timeScale]='{ enable: true, slotCount: 1 }'>
         </e-view>
