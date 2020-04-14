@@ -62,6 +62,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   private schedulerStatus: {
     currentSchedulerEvent: SchedulerEvent,
     currentResources: SchedulerResource[],
+    contextMenuOpen: Boolean
   };
 
   groupData: GroupModel = { resources: ['Resources'] };
@@ -86,7 +87,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       { label: resourceSchedulerSettings.filterText.available, value: 'available' },
       { label: resourceSchedulerSettings.filterText.hasConflict, value: 'hasConflict' }
     ];
-    this.schedulerStatus = { currentSchedulerEvent: null, currentResources: null };
+    this.schedulerStatus = { currentSchedulerEvent: null, currentResources: null, contextMenuOpen: false };
     this.getSchedulerHeights();
     this.getSchedulerEvents();
   }
@@ -121,7 +122,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);
 
     // set global scheduler status
-    this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResources: null };
+    this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResources: null, contextMenuOpen: false };
 
     // set resource file: If no resources are assigned show also available resources
     if (<number>schedulerEvent.AssignedResources > 0) {
@@ -277,6 +278,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
 
   // https://stackoverflow.com/questions/43590487/open-the-context-menu-by-primeng-from-code-angular-2?rq=1
   openContextMenu(schEvCM: ContextMenu, event: MouseEvent, data: SchedulerEvent): void {
+    this.schedulerStatus.contextMenuOpen = true;
     const model: MenuItem[] = [];
     model.push(
       {
@@ -293,6 +295,10 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     );
     schEvCM.model = model;
     schEvCM.show(event);
+  }
+
+  closeContextMenu() {
+    this.schedulerStatus.contextMenuOpen = false;
   }
 
   updateSchedulerEvent(data: SchedulerEvent) {
@@ -321,6 +327,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   }
 
   addSchedulerEvent(data: any) {
+    if (this.schedulerStatus.contextMenuOpen) { return; }
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,

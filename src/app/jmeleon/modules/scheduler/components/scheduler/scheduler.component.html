@@ -1,5 +1,5 @@
 <p-confirmDialog header="Bestätigung" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
-<p-contextMenu #schEvCM></p-contextMenu>
+<p-contextMenu #schEvCM (onHide)="closeContextMenu()"></p-contextMenu>
 
 <div>
     <div class="resizableBox eventScheduler" id=0 mwlResizable [style.height.px]="boxHeights[0]"
