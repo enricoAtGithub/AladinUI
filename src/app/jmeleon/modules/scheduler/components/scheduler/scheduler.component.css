@@ -20,6 +20,11 @@ i.pi-times {
     font-size: 2em;
 }
 
+i.pi-lock {
+    color: darkslategray;
+    font-size: 2em;
+}
+
 div.resource-name {
     display:flex;
     align-items:center;
