@@ -51,7 +51,6 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   schedulerEventTime: WorkHoursModel;
   selectedDateResourceScheduler: Date;
   showResourceScheduler = false;
-  showAttachments = false;
 
   eventSchedulerObject: EventSettingsModel;
   resourceSchedulerObject: EventSettingsModel;
@@ -140,7 +139,6 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     // show resource scheduler initialized with the date of the current event
     this.selectedDateResourceScheduler = schedulerEvent.StartTime;
     this.showResourceScheduler = true;
-    this.showAttachments = true;
   }
 
   // get resources and events for the Resourcescheduler (at the bottom)
@@ -278,7 +276,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   }
 
   // https://stackoverflow.com/questions/43590487/open-the-context-menu-by-primeng-from-code-angular-2?rq=1
-  openContextMenu(schEvCM: ContextMenu, event: MouseEvent, data: any): void {
+  openContextMenu(schEvCM: ContextMenu, event: MouseEvent, data: SchedulerEvent): void {
     const model: MenuItem[] = [];
     model.push(
       {
@@ -311,7 +309,12 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     dialogRef.onClose.subscribe((result: Observable<Object>) => {
       if (result !== undefined) {
         this.subscriptions.push(
-          result.subscribe(() => this.getSchedulerEvents())
+          result.subscribe(() => {
+            this.getSchedulerEvents();
+            if (this.showResourceScheduler) {
+              this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter });
+            }
+          })
         );
       }
     });
@@ -337,12 +340,21 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteSchedulerEvent(data: any) {
+  deleteSchedulerEvent(data: SchedulerEvent) {
     this.confirmationService.confirm({
       message: 'Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?',
       accept: () => {
         this.subscriptions.push(
-          this.entityService.deleteEntity('Order', data['RefId']).subscribe(() => this.getSchedulerEvents())
+          this.entityService.deleteEntity('Order', data['RefId']).subscribe(() => {
+            this.getSchedulerEvents();
+            if (this.showResourceScheduler) {
+              if (this.schedulerStatus.currentSchedulerEvent.Id !== data.Id) {
+                this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter });
+              } else {
+                this.showResourceScheduler = false;
+              }
+            }
+          })
         );
       }
     });

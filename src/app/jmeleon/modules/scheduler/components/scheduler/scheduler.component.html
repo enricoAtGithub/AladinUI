@@ -1,5 +1,5 @@
 <p-confirmDialog header="Bestätigung" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
-<p-contextMenu #schEvCM [model]="items"></p-contextMenu>
+<p-contextMenu #schEvCM></p-contextMenu>
 
 <div>    
     <div
@@ -52,12 +52,11 @@
         <div class="resize-handle" mwlResizeHandle [resizeEdges]="{ bottom: true }"><i class="pi pi-ellipsis-h"></i></div>
     </div>
 
-
+    <div *ngIf="showResourceScheduler">
     <div
     class="resizableBox resourceScheduler"
     id=1
     mwlResizable
-    *ngIf="showResourceScheduler"
     [style.height.px]="boxHeights[1]"
     [validateResize]="validate"
     [enableGhostResize]="false"
@@ -110,8 +109,8 @@
         <div class="resize-handle" mwlResizeHandle [resizeEdges]="{ bottom: true }"><i class="pi pi-ellipsis-h"></i></div>
     </div>
 
-    <div style="width: 100%; height: 100%;" *ngIf="showAttachments">
+    <div style="width: 100%; height: 100%;">
         <app-dynamic-table-attachments configName="Order" [entryId]="schedulerStatus?.currentSchedulerEvent?.RefId"></app-dynamic-table-attachments>
+        </div>
     </div>
-
 </div>
