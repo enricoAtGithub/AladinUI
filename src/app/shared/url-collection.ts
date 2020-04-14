@@ -43,7 +43,13 @@ export class UrlCollection {
         static UPDATE_ORDER_INTERVAL = (schedulerEventId: number) => UrlCollection.Scheduler.SCHEDULER_ORDER() + '/' + schedulerEventId + '/updateOrderInterval';
         static ASSIGN_RESOURCE = (schedulerEventId: number, resourceId: number) => UrlCollection.Scheduler.SCHEDULER_ORDER() + '/' + schedulerEventId + '/resource/' + resourceId + '/assign';
         static REMOVE_RESOURCE = (schedulerEventId: number, resourceId: number) => UrlCollection.Scheduler.SCHEDULER_ORDER() + '/' + schedulerEventId + '/resource/' + resourceId + '/remove';
-    }
+    };
+
+    static Availability = class {
+        static RESOURCEAVAILABILITIES = () => UrlCollection.SCHEDULER_API_BASE_PATH() + '/resourceAvailabilities';
+        private static RESOURCEAVAILABILITY = () => UrlCollection.SCHEDULER_API_BASE_PATH() + '/resourceAvailability';
+        static UPDATE_AVAILABILITY_INTERVAL = (availabilityId: number) => UrlCollection.Availability.RESOURCEAVAILABILITY()  + '/' + availabilityId + '/updateInterval';
+    };
 
     static Entities = class {
         static CREATE(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/create'; }

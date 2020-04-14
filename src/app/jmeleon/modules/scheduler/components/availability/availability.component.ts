@@ -8,7 +8,7 @@ import {
   EventRenderedArgs
 } from '@syncfusion/ej2-angular-schedule';
 
-import { SchedulerService } from '../../services/scheduler.service';
+import { AvailabilityService } from '../../services/availability.service';
 import { BreadcrumbService } from '../../../../../breadcrumb.service';
 import DateTimeUtils from 'src/app/shared/utils/date-time.utils';
 
@@ -19,7 +19,7 @@ import * as numbers from 'cldr-data/main/de/numbers.json';
 import * as timeZoneNames from 'cldr-data/main/de/timeZoneNames.json';
 import de from '../../config/translations.json';
 import { Subscription } from 'rxjs';
-import { SchedulerEvent, Absence } from '../../models/scheduler.model';
+import { Availability } from '../../models/availability.model';
 import { availabiltySchedulerSettings } from '../../config/scheduler.config';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
@@ -43,7 +43,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
 
   constructor(
     private breadcrumbService: BreadcrumbService,
-    private schedulerService: SchedulerService
+    private availabilityService: AvailabilityService
 
   ) {
     this.breadcrumbService.setItems([
@@ -54,7 +54,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initialView = <View>availabiltySchedulerSettings.initialView;
     this.getAvailableHeight();
-    this.getSchedulerResourcesAndSchedulerEvents(23);
+    this.getResourceAvailabilities();
   }
 
   ngOnDestroy(): void {
@@ -68,27 +68,23 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     schedulerEventHTML.style.backgroundColor = color;
   }
 
-  // get resources and events (array isUnavailable)
-  private getSchedulerResourcesAndSchedulerEvents(schedulerEventRefId: number): void {
-    this.subscriptions.push(
-      this.schedulerService.getSchedulerResources(schedulerEventRefId)
-        .subscribe(schedulerResources => {
-          this.resourceDataSource = schedulerResources;
+  getResourceAvailabilities() {
+    this.availabilityService.getResourceAvailabilities()
+      .subscribe(resources => {
+        this.resourceDataSource = resources;
+        const availabilityEvents: Availability[] = [];
 
-          const absenceEvents: Absence[] = [];
-          schedulerResources.forEach(schResource => {
-
-            // Add ResourceID to each schedulerEvent (type: abscence)
-            schResource.IsUnavailable.forEach(absence => {
-              absence.ResourceID = schResource.Id;
-              absence.IsReadonly = false;
-              absenceEvents.push(absence);
-            });
+        resources.forEach(resource => {
+          // Add ResourceID to each availability
+          resource.Availabilities.forEach(availability => {
+            availability.ResourceID = resource.Id;
+            availabilityEvents.push(availability);
           });
+        });
 
-          // provide all schedulerEvents shown in ResourceScheduler (bottom component)
-          this.availabilitySchedulerObject = { dataSource: absenceEvents };
-        }));
+        // provide all availabilities
+        this.availabilitySchedulerObject = { dataSource: availabilityEvents };
+      });
   }
 
   setResizeParams(args: ResizeEventArgs): void {
@@ -100,16 +96,13 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     args.excludeSelectors = 'e-all-day-cells';
   }
 
-  updateSchedulerEventInterval(schedulerEvent: SchedulerEvent): void {
+  updateAvailabilityInterval(availabilityEvent: Availability): void {
     // convert start and end time from Date to String
-    const startDateTime: string = DateTimeUtils.convertDateToApiConformTimeString(schedulerEvent.StartTime);
-    const endDateTime: string = DateTimeUtils.convertDateToApiConformTimeString(schedulerEvent.EndTime);
-
-    // update time frame (shown in scheduler event)
-    schedulerEvent.TimeFrameStr = this.schedulerService.getTimeframeAsString(schedulerEvent.StartTime, schedulerEvent.EndTime);
+    const startDateTime: string = DateTimeUtils.convertDateToApiConformTimeString(availabilityEvent.StartTime);
+    const endDateTime: string = DateTimeUtils.convertDateToApiConformTimeString(availabilityEvent.EndTime);
 
     this.subscriptions.push(
-      this.schedulerService.updateSchedulerEventInterval(schedulerEvent.RefId, startDateTime, endDateTime)
+      this.availabilityService.updateAvailabilityInterval(availabilityEvent.RefId, startDateTime, endDateTime)
         .subscribe(() => {
         })
     );
