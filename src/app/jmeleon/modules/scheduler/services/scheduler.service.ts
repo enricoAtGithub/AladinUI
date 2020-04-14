@@ -49,7 +49,8 @@ export class SchedulerService {
             Color: schEv.color,
             MissingResources: schEv.missingResources,
             TooManyResources: schEv.tooManyResources,
-            ResourceConflictDescription: schEv.resourceConflictDescription
+            ResourceConflictDescription: schEv.resourceConflictDescription,
+            IsAllDay: false
           };
         }))
       );
@@ -103,7 +104,8 @@ export class SchedulerService {
                 EndTime: endDateTime,
                 TimeFrameStr: timeframeStr,
                 IsReadonly: absence.isReadonly,
-                Color: absence.color
+                Color: absence.color,
+                IsAllDay: absence.isAllDay
               };
             })
           };

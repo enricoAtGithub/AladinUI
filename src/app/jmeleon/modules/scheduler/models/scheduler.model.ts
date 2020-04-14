@@ -15,12 +15,12 @@ export interface Absence {
     IsReadonly: boolean;                    // from Backend
     Color: string;                          // from Backend
     Type: string;
-    IsAllDay?: boolean;                     // from Backend
+    IsAllDay: boolean;                     // from Backend
     ResourceID?: number;
 }
 
 export interface SchedulerEvent extends Absence {
-    AssignedResources: number;              // from Backend    
+    AssignedResources: number;              // from Backend
     StartTimezone?: string;                 // from Backend
     EndTimezone?: string;                   // from Backend
     Location?: string;                      // from Backend
@@ -40,5 +40,5 @@ export interface SchedulerResource {
     HasConflictIcon?: string;
     HasConflictAltText?: string;
     IsAssignedTo: SchedulerEvent[];         // from Backend
-    IsUnavailable: SchedulerEvent[];               // from Backend
+    IsUnavailable: SchedulerEvent[];        // from Backend
 }
