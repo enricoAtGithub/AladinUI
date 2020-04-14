@@ -282,13 +282,13 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     const model: MenuItem[] = [];
     model.push(
       {
-        label: 'bearbeiten',
-        icon: 'pi pi-pencil',
+        label: eventSchedulerSettings.iconText.edit,
+        icon: eventSchedulerSettings.icons.edit,
         command: () => { this.updateSchedulerEvent(data); },
       },
       {
-        label: 'löschen',
-        icon: 'pi pi-trash',
+        label: eventSchedulerSettings.iconText.delete,
+        icon: eventSchedulerSettings.icons.delete,
         command: () => { this.deleteSchedulerEvent(data); },
       }
 
@@ -348,17 +348,12 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* loadConfig(): void {
-    let config: Config = require('../../config/scheduler.config.json');
-  } */
-
-
   validate(event: ResizeEvent): boolean {
-    const resizeBounds = [{min: 15, max: 1000}, {min: 15, max: 1000}, {min: 15, max: 320}];
+    const resizeBounds = [{ min: 15, max: 1000 }, { min: 15, max: 1000 }, { min: 15, max: 320 }];
     if (
       event.rectangle.width &&
       event.rectangle.height &&
-      ( event.rectangle.height < resizeBounds[this['elm']['nativeElement']['id']].min ||
+      (event.rectangle.height < resizeBounds[this['elm']['nativeElement']['id']].min ||
         event.rectangle.height > resizeBounds[this['elm']['nativeElement']['id']].max)
     ) {
       return false;

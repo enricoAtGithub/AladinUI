@@ -1,5 +1,13 @@
 export const eventSchedulerSettings = {
-    initialView: 'TimelineWorkWeek'
+    initialView: 'TimelineWorkWeek',
+    icons: {
+        edit: 'pi pi-pencil',
+        delete: 'pi pi-trash'
+    },
+    iconText: {
+        edit: 'bearbeiten',
+        delete: 'löschen'
+    }
 };
 
 export const resourceSchedulerSettings = {
