@@ -16,4 +16,5 @@ export interface Availability {
     isAllDay: boolean;
     isAvailable: boolean;
     ResourceID?: number;
+    TimeFrameStr: string;
 }

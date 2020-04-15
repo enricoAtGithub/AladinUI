@@ -24,7 +24,7 @@ import * as timeZoneNames from 'cldr-data/main/de/timeZoneNames.json';
 import de from '../../config/translations.json';
 import { Subscription, Observable } from 'rxjs';
 import { SchedulerEvent, SchedulerResource } from '../../models/scheduler.model';
-import { eventSchedulerSettings, resourceSchedulerSettings } from '../../config/scheduler.config';
+import { EventSchedulerSettings, ResourceSchedulerSettings, ContextMenuSettings } from '../../config/scheduler.config';
 import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/entity-dialog.component';
 import { EntityService } from 'src/app/shared/services/entity.service';
 import { EntityConfiguration } from 'src/app/shared/models/entity-configuration';
@@ -81,12 +81,12 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.eventSchedulerView = <View>eventSchedulerSettings.initialView;
-    this.resourceSchedulerView = <View>resourceSchedulerSettings.initialView;
+    this.eventSchedulerView = <View>EventSchedulerSettings.initialView;
+    this.resourceSchedulerView = <View>ResourceSchedulerSettings.initialView;
     this.resourceFilter = [
-      { label: resourceSchedulerSettings.filterText.assigned, value: 'assigned' },
-      { label: resourceSchedulerSettings.filterText.available, value: 'available' },
-      { label: resourceSchedulerSettings.filterText.hasConflict, value: 'hasConflict' }
+      { label: ResourceSchedulerSettings.filterText.assigned, value: 'assigned' },
+      { label: ResourceSchedulerSettings.filterText.available, value: 'available' },
+      { label: ResourceSchedulerSettings.filterText.hasConflict, value: 'hasConflict' }
     ];
     this.schedulerStatus = { currentSchedulerEvent: null, currentResources: null, contextMenuOpen: false };
     this.getSchedulerHeights();
@@ -159,10 +159,10 @@ export class SchedulerComponent implements OnInit, OnDestroy {
           schedulerResources.forEach(schResource => {
 
             // add custom properties (icons and alternative text)
-            schResource.AssignedIcon = schResource.Assigned ? resourceSchedulerSettings.icons.unassign : resourceSchedulerSettings.icons.assign;
-            schResource.AssignedAltText = schResource.Assigned ? resourceSchedulerSettings.iconText.unassign : resourceSchedulerSettings.iconText.assign;
-            schResource.HasConflictIcon = schResource.HasConflict ? resourceSchedulerSettings.icons.hasConflict : '';
-            schResource.HasConflictAltText = schResource.HasConflict ? resourceSchedulerSettings.iconText.hasConflict : '';
+            schResource.AssignedIcon = schResource.Assigned ? ResourceSchedulerSettings.icons.unassign : ResourceSchedulerSettings.icons.assign;
+            schResource.AssignedAltText = schResource.Assigned ? ResourceSchedulerSettings.iconText.unassign : ResourceSchedulerSettings.iconText.assign;
+            schResource.HasConflictIcon = schResource.HasConflict ? ResourceSchedulerSettings.icons.hasConflict : '';
+            schResource.HasConflictAltText = schResource.HasConflict ? ResourceSchedulerSettings.iconText.hasConflict : '';
 
             // Add ResourceID to each schedulerEvent (type: order) and aggregate ALL schedulerEvents
             schResource.IsAssignedTo.forEach(schEvent => {
@@ -283,13 +283,13 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     const model: MenuItem[] = [];
     model.push(
       {
-        label: eventSchedulerSettings.iconText.edit,
-        icon: eventSchedulerSettings.icons.edit,
+        label: ContextMenuSettings.iconText.edit,
+        icon: ContextMenuSettings.icons.edit,
         command: () => { this.updateSchedulerEvent(data); },
       },
       {
-        label: eventSchedulerSettings.iconText.delete,
-        icon: eventSchedulerSettings.icons.delete,
+        label: ContextMenuSettings.iconText.delete,
+        icon: ContextMenuSettings.icons.delete,
         command: () => { this.deleteSchedulerEvent(data); },
       }
 

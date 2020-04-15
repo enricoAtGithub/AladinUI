@@ -19,9 +19,14 @@ import * as gregorian from 'cldr-data/main/de/ca-gregorian.json';
 import * as numbers from 'cldr-data/main/de/numbers.json';
 import * as timeZoneNames from 'cldr-data/main/de/timeZoneNames.json';
 import de from '../../config/translations.json';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { Availability } from '../../models/availability.model';
-import { availabiltySchedulerSettings } from '../../config/scheduler.config';
+import { ContextMenuSettings, AvailabiltySchedulerSettings } from '../../config/scheduler.config';
+import { SchedulerEvent } from '../../models/scheduler.model';
+import { DialogService, ConfirmationService, MenuItem } from 'primeng/api';
+import { EntityService } from 'src/app/shared/services/entity.service';
+import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/entity-dialog.component';
+import { ContextMenu } from 'primeng/contextmenu';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -29,7 +34,8 @@ L10n.load(de);
 @Component({
   selector: 'app-availability',
   templateUrl: './availability.component.html',
-  styleUrls: ['./availability.component.css']
+  styleUrls: ['./availability.component.css'],
+  providers: [ConfirmationService]
 })
 export class AvailabilityComponent implements OnInit, OnDestroy {
 
@@ -37,6 +43,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   resourceDataSource: Object[];
   windowHeight: number;
   initialView: View;
+  contextMenuOpen: boolean;
 
   groupData: GroupModel = { resources: ['Resources'] };
 
@@ -44,7 +51,10 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
 
   constructor(
     private breadcrumbService: BreadcrumbService,
-    private availabilityService: AvailabilityService
+    private availabilityService: AvailabilityService,
+    private dialogService: DialogService,
+    private confirmationService: ConfirmationService,
+    private entityService: EntityService
 
   ) {
     this.breadcrumbService.setItems([
@@ -53,7 +63,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.initialView = <View>availabiltySchedulerSettings.initialView;
+    this.initialView = <View>AvailabiltySchedulerSettings.initialView;
     this.getAvailableHeight();
     this.getResourceAvailabilities();
   }
@@ -120,6 +130,87 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   public getAvailableHeight(heightTopBar: number = 60, heightRouteBar: number = 32, paddingTop: number = 15, paddingBottom: number = 15, heightFooter: number = 60): void {
     const usedSpace = heightTopBar + heightRouteBar + paddingTop + heightFooter + paddingBottom;
     this.windowHeight = window.innerHeight - usedSpace;
+  }
+
+  // https://stackoverflow.com/questions/43590487/open-the-context-menu-by-primeng-from-code-angular-2?rq=1
+  openContextMenu(availCM: ContextMenu, event: MouseEvent, data: SchedulerEvent): void {
+    this.contextMenuOpen = true;
+    const model: MenuItem[] = [];
+    model.push(
+      {
+        label: ContextMenuSettings.iconText.edit,
+        icon: ContextMenuSettings.icons.edit,
+        command: () => { this.updateAvailability(data); },
+      },
+      {
+        label: ContextMenuSettings.iconText.delete,
+        icon: ContextMenuSettings.icons.delete,
+        command: () => { this.deleteAvailability(data); },
+      }
+
+    );
+    availCM.model = model;
+    availCM.show(event);
+  }
+
+  closeContextMenu() {
+    this.contextMenuOpen = false;
+  }
+
+  updateAvailability(data: SchedulerEvent) {
+    const dialogRef = this.dialogService.open(EntityDialogComponent, {
+      data: {
+        update: true,
+        entityId: data.RefId,
+        configName: 'ResourceAvailability'
+      },
+      header: data['Subject'] + ' bearbeiten',
+      width: '500px'
+    });
+
+    dialogRef.onClose.subscribe((result: Observable<Object>) => {
+      if (result !== undefined) {
+        this.subscriptions.push(
+          result.subscribe(() => {
+            this.getResourceAvailabilities();
+          })
+        );
+      }
+    });
+  }
+
+  addAvailability(data: any) {
+    if (this.contextMenuOpen) { return; }
+    const dialogRef = this.dialogService.open(EntityDialogComponent, {
+      data: {
+        update: false,
+        entity: { startDate: data.startTime, endDate: data.endTime, resourceId: data.ResourceID },
+        configName: 'ResourceAvailability'
+      },
+      header: 'Eintrag erstellen',
+      width: '500px'
+    });
+
+    dialogRef.onClose.subscribe((result: Observable<Object>) => {
+      if (result !== undefined) {
+        this.subscriptions.push(
+          result.subscribe(() => this.getResourceAvailabilities())
+        );
+      }
+    });
+  }
+
+  deleteAvailability(data: SchedulerEvent) {
+    this.confirmationService.confirm({
+      message: 'Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?',
+      accept: () => {
+        this.subscriptions.push(
+          this.entityService.deleteEntity('ResourceAvailability', data['RefId']).subscribe(() => {
+            this.getResourceAvailabilities();
+          })
+        );
+      }
+    });
   }
 
   onPopupOpen(args: PopupOpenEventArgs): void {

@@ -1,7 +1,21 @@
+<p-confirmDialog header="Bestätigung" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
+<p-contextMenu #availCM (onHide)="closeContextMenu()"></p-contextMenu>
+
 <ejs-schedule [rowAutoHeight]="true" [showQuickInfo]="true" [eventSettings]="availabilitySchedulerObject"
     [currentView]="initialView" [group]="groupData" [allowDragAndDrop]="true" [allowResizing]="true" locale='de'
     (eventRendered)="onEventRendered($event)" (resizeStop)="updateAvailabilityInterval($event)"
-    (dragStop)="updateAvailabilityInterval($event)" (popupOpen)="onPopupOpen($event)">
+    (dragStop)="updateAvailabilityInterval($event)" (popupOpen)="onPopupOpen($event)"
+    (cellClick)="addAvailability($event)">
+
+    <ng-template #eventSettingsTemplate let-data>
+        <div (contextmenu)="openContextMenu(availCM, $event, data)" style="width: 100%;">
+            <div>
+                <div class="e-subject">{{data.Subject}}</div>
+                <div class="e-time">{{data.TimeFrameStr}}</div>
+            </div>
+        </div>
+    </ng-template>
+
     <e-views>
         <e-view option='TimelineDay' startHour='06:00' endHour='18:00' [timeScale]='{ enable: true, slotCount: 1 }'>
         </e-view>

@@ -32,17 +32,27 @@ export class AvailabilityService {
             Id: resource.id,
             Name: resource.name,
             Availabilities: resource.availabilities.map(availability => {
+              const startDateTime = DateTimeService.convertApiDateTimeStringToDate(availability.startTime);
+              const endDateTime = DateTimeService.convertApiDateTimeStringToDate(availability.endTime);
+              let timeframeStr = '';
+              if (availability.isAllDay) {
+                timeframeStr = 'Ganzer Tag';
+              } else {
+                timeframeStr = this.getTimeframeAsString(startDateTime, endDateTime);
+              }
+
               return {
                 Id: 'availability#' + availability.id,
                 RefId: availability.id,
                 Subject: availability.subject,
                 Description: availability.description,
-                StartTime: availability.startTime,
-                EndTime: availability.endTime,
+                StartTime: startDateTime,
+                EndTime: endDateTime,
                 IsReadOnly: availability.isReadonly,
                 Color: availability.color,
                 IsAllDay: availability.isAllDay,
-                IsAvailable: availability.IsAvailable
+                IsAvailable: availability.IsAvailable,
+                TimeFrameStr: timeframeStr
               };
             })
           };
@@ -54,6 +64,13 @@ export class AvailabilityService {
   updateAvailabilityInterval(availabilityId: number, startTime: string, endTime: string): Observable<any> {
     // const url = AppConfig.uiInfo.baseUrl + '/scheduler/resourceAvailability' + '/' + availabilityId + '/updateInterval';
     return this.http.post(UrlCollection.Availability.UPDATE_AVAILABILITY_INTERVAL(availabilityId), { start: startTime, end: endTime });
+  }
+
+  getTimeframeAsString(startDateTime: Date, endDateTime: Date): string {
+    const startTimeStr = startDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const endTimeStr = endDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const timeFrameStr = startTimeStr + ' - ' + endTimeStr;
+    return timeFrameStr;
   }
 
 }

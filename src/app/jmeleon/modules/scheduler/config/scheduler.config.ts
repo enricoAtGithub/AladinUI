@@ -1,5 +1,4 @@
-export const eventSchedulerSettings = {
-    initialView: 'TimelineWorkWeek',
+export const ContextMenuSettings = {
     icons: {
         edit: 'pi pi-pencil',
         delete: 'pi pi-trash'
@@ -10,7 +9,11 @@ export const eventSchedulerSettings = {
     }
 };
 
-export const resourceSchedulerSettings = {
+export const EventSchedulerSettings = {
+    initialView: 'TimelineWorkWeek',
+};
+
+export const ResourceSchedulerSettings = {
     initialView: 'TimelineDay',
     filterText: {
         assigned: 'eingeteilt',
@@ -29,6 +32,6 @@ export const resourceSchedulerSettings = {
     }
 };
 
-export const availabiltySchedulerSettings = {
+export const AvailabiltySchedulerSettings = {
     initialView: 'TimelineMonth',
 };
