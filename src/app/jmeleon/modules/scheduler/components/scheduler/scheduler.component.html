@@ -10,7 +10,8 @@
             (resizeStart)="setResizeParams($event)" (resizeStop)="updateSchedulerEventInterval($event.data)"
             (dragStop)="updateSchedulerEventInterval($event.data)" [showQuickInfo]="false"
             (eventClick)="onSchedulerEventClick($event)" [allowResizing]="true" locale='de' [rowAutoHeight]="true"
-            (eventRendered)="onEventRendered($event)" (cellClick)="addSchedulerEvent($event)">
+            (eventRendered)="onEventRendered($event)" (cellClick)="addSchedulerEvent($event)"
+            (popupOpen)="onPopupOpen($event)">
 
             <ng-template #eventSettingsTemplate let-data>
                 <div (contextmenu)="openContextMenu(schEvCM, $event, data)" style="width: 100%;">
@@ -59,8 +60,8 @@
             <ejs-schedule [height]=resourceSchedulerHeight allowMultiple="true" [showQuickInfo]="false"
                 [eventSettings]="resourceSchedulerObject" [currentView]="resourceSchedulerView" [group]="groupData"
                 [rowAutoHeight]="true" [selectedDate]="selectedDateResourceScheduler" [workHours]="schedulerEventTime"
-                [allowDragAndDrop]="false" [allowResizing]="false" locale='de'
-                (eventRendered)="onEventRendered($event)">
+                [allowDragAndDrop]="false" [allowResizing]="false" locale='de' (eventRendered)="onEventRendered($event)"
+                (popupOpen)="onPopupOpen($event)">
 
                 <e-resources>
                     <e-resource [dataSource]="resourceDataSource" allowMultiple="true" field="ResourceID"

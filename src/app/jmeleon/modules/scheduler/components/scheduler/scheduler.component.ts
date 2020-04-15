@@ -7,7 +7,8 @@ import {
   GroupModel,
   EventClickArgs,
   WorkHoursModel,
-  EventRenderedArgs
+  EventRenderedArgs,
+  PopupOpenEventArgs
 } from '@syncfusion/ej2-angular-schedule';
 
 import { SchedulerService } from '../../services/scheduler.service';
@@ -406,4 +407,11 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       this.eventSchedulerHeight = event.rectangle.height - 30;
     }
   }
+
+  onPopupOpen(args: PopupOpenEventArgs): void {
+    if (args.type === 'Editor' || args.type === 'QuickInfo') {
+      args.cancel = true;
+    }
+  }
+
 }

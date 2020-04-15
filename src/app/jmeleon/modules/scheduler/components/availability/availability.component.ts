@@ -5,7 +5,8 @@ import {
   DragEventArgs,
   ResizeEventArgs,
   GroupModel,
-  EventRenderedArgs
+  EventRenderedArgs,
+  PopupOpenEventArgs
 } from '@syncfusion/ej2-angular-schedule';
 
 import { AvailabilityService } from '../../services/availability.service';
@@ -119,6 +120,12 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   public getAvailableHeight(heightTopBar: number = 60, heightRouteBar: number = 32, paddingTop: number = 15, paddingBottom: number = 15, heightFooter: number = 60): void {
     const usedSpace = heightTopBar + heightRouteBar + paddingTop + heightFooter + paddingBottom;
     this.windowHeight = window.innerHeight - usedSpace;
+  }
+
+  onPopupOpen(args: PopupOpenEventArgs): void {
+    if (args.type === 'Editor' || args.type === 'QuickInfo') {
+      args.cancel = true;
+    }
   }
 
 }
