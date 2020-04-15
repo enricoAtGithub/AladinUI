@@ -22,7 +22,6 @@ import de from '../../config/translations.json';
 import { Subscription, Observable } from 'rxjs';
 import { Availability } from '../../models/availability.model';
 import { ContextMenuSettings, AvailabiltySchedulerSettings } from '../../config/scheduler.config';
-import { SchedulerEvent } from '../../models/scheduler.model';
 import { DialogService, ConfirmationService, MenuItem } from 'primeng/api';
 import { EntityService } from 'src/app/shared/services/entity.service';
 import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/entity-dialog.component';
@@ -75,8 +74,8 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   // colorize scheduler events
   onEventRendered(args: EventRenderedArgs): void {
     const color: string = args.data.Color as string;
-    const schedulerEventHTML = args.element;
-    schedulerEventHTML.style.backgroundColor = color;
+    const availabilityHTML = args.element;
+    availabilityHTML.style.backgroundColor = color;
   }
 
   getResourceAvailabilities() {
@@ -133,7 +132,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   }
 
   // https://stackoverflow.com/questions/43590487/open-the-context-menu-by-primeng-from-code-angular-2?rq=1
-  openContextMenu(availCM: ContextMenu, event: MouseEvent, data: SchedulerEvent): void {
+  openContextMenu(availCM: ContextMenu, event: MouseEvent, data: Availability): void {
     this.contextMenuOpen = true;
     const model: MenuItem[] = [];
     model.push(
@@ -157,7 +156,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     this.contextMenuOpen = false;
   }
 
-  updateAvailability(data: SchedulerEvent) {
+  updateAvailability(data: Availability) {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
@@ -200,7 +199,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteAvailability(data: SchedulerEvent) {
+  deleteAvailability(data: Availability) {
     this.confirmationService.confirm({
       message: 'Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?',
       accept: () => {
