@@ -39,38 +39,41 @@ export class EntityDialogComponent implements OnInit {
     }
 
     $config.subscribe(config => {
-      console.log(config);
       this.configuration = config;
       this.update = this.config.data['update'];
 
-      let $entity: Observable<any>;
-      if (data['entity']) {
-        $entity = new BehaviorSubject(data['entity']).asObservable();
-      } else if (data['entityId']) {
-        $entity = this.entityService.filter(this.configuration.type, 1, 1, 'EQ(\'id\', ' + data['entityId'] + ')', null).pipe(map(res => res.data[0]));
-      } else if (this.update) {
-        console.log('[entity-dialog] no entity supplied');
-        return;
-      }
-
-      $entity.subscribe(entity => {
-        console.log(entity);
-        this.entity = entity;
-        this.configuration.fields.forEach(field => {
-          if (field.type === 'Date' && this.update) {
-            if (this.entity[field.field] != null) {
-              this.entity[field.field] = new Date(this.entity[field.field]);
-            }
-          }
-          if (field.type === 'CatalogueEntry') {
-            this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
-              const values = catalogue.values.map(e => ({label: e['name'], value: e['id']}));
-              this.catalogueOptions.set(catalogue.name, values);
-            });
-          }
-        });
-        this.displayScrollPanel = this.shouldDisplayScrollPanel();
+      this.configuration.fields.forEach(field => {
+        if (field.type === 'CatalogueEntry') {
+          this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
+            const values = catalogue.values.map(e => ({label: e['name'], value: e['id']}));
+            this.catalogueOptions.set(catalogue.name, values);
+          });
+        }
       });
+
+      if (this.update) {
+        let $entity: Observable<any>;
+        if (data['entity']) {
+          $entity = new BehaviorSubject(data['entity']).asObservable();
+        } else if (data['entityId']) {
+          $entity = this.entityService.filter(this.configuration.type, 1, 1, 'EQ(\'id\', ' + data['entityId'] + ')', null).pipe(map(res => res.data[0]));
+        } else if (this.update) {
+          console.log('[entity-dialog] no entity supplied');
+          return;
+        }
+
+        $entity.subscribe(entity => {
+          this.entity = entity;
+          this.configuration.fields.forEach(field => {
+            if (field.type === 'Date') {
+              if (this.entity[field.field] != null) {
+                this.entity[field.field] = new Date(this.entity[field.field]);
+              }
+            }
+          });
+          this.displayScrollPanel = this.shouldDisplayScrollPanel();
+        });
+      }
     });
   }
 
