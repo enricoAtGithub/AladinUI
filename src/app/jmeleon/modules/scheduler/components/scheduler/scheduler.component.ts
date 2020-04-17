@@ -43,7 +43,7 @@ L10n.load(de);
 export class SchedulerComponent implements OnInit, OnDestroy {
 
   lastResize = Date.now();
-  boxHeights = [260, 530, 320];
+  boxHeights: number[];
   windowHeight: number;
   eventSchedulerHeight: number;
   resourceSchedulerHeight: number;
@@ -267,8 +267,9 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     this.windowHeight = this.getAvailableHeight();
     // calculate space for the two schedulers.
     // subtract occupied space between the 2 schedulers (split gutter, margin and multiselect = 62px)
-    this.eventSchedulerHeight = ((this.windowHeight - 62) * 1 / 3);
-    this.resourceSchedulerHeight = ((this.windowHeight - 62) * 2 / 3);
+    this.eventSchedulerHeight = this.windowHeight * 1 / 3 - 30;
+    this.resourceSchedulerHeight = this.windowHeight * 2 / 3 - 60;
+    this.boxHeights = [this.windowHeight / 3, this.windowHeight * 2 / 3, 320];
   }
 
   private getAvailableHeight(heightTopBar: number = 60, heightRouteBar: number = 32, paddingTop: number = 15, paddingBottom: number = 15, heightFooter: number = 60): number {
@@ -391,20 +392,20 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       this.lastResize = Date.now();
 
       // resizes resource and event schedulers aswell. Currently runs fine on my end but might cause peformance problems
-      if (id === 1) {
-        this.resourceSchedulerHeight = event.rectangle.height - 30;
-      } else if (id === 0) {
+      if (id === 0) {
         this.eventSchedulerHeight = event.rectangle.height - 30;
+      } else if (id === 1) {
+        this.resourceSchedulerHeight = event.rectangle.height - 60;
       }
     }
   }
 
   onResizeEnd(event: ResizeEvent, id: number): void {
     this.boxHeights[id] = event.rectangle.height;
-    if (id === 1) {
-      this.resourceSchedulerHeight = event.rectangle.height - 60;
-    } else if (id === 0) {
+    if (id === 0) {
       this.eventSchedulerHeight = event.rectangle.height - 30;
+    } else if (id === 1) {
+      this.resourceSchedulerHeight = event.rectangle.height - 60;
     }
   }
 
