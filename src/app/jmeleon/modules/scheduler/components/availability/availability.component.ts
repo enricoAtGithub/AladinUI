@@ -183,7 +183,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
-        entity: { startDate: data.startTime, endDate: data.endTime, resourceId: data.ResourceID },
+        entity: { startDate: data.startTime, endDate: data.endTime },
         configName: 'ResourceAvailability'
       },
       header: 'Eintrag erstellen',
@@ -212,6 +212,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     });
   }
 
+  // hide syncfusion scheduler native popups
   onPopupOpen(args: PopupOpenEventArgs): void {
     if (args.type === 'Editor' || args.type === 'QuickInfo') {
       args.cancel = true;
