@@ -5,7 +5,7 @@
     [currentView]="initialView" [group]="groupData" [allowDragAndDrop]="true" [allowResizing]="true" locale='de'
     (eventRendered)="onEventRendered($event)" (resizeStop)="updateAvailabilityInterval($event)"
     (dragStop)="updateAvailabilityInterval($event)" (popupOpen)="onPopupOpen($event)"
-    (cellClick)="addAvailability($event)">
+    (cellClick)="addAvailability($event)" (navigating)="onNavigate($event)">
 
     <ng-template #eventSettingsTemplate let-data>
         <div (contextmenu)="openContextMenu(availCM, $event, data)" style="width: 100%;">
@@ -32,7 +32,6 @@
         <e-view option='TimelineWorkWeek' startHour='06:00' endHour='18:00'
             [timeScale]='{ enable: true, slotCount: 1 }'> </e-view>
         <e-view option='TimelineMonth'></e-view>
-        <e-view option='MonthAgenda'></e-view>
     </e-views>
     <e-resources>
         <e-resource [dataSource]="resourceDataSource" field="ResourceID" title="Mitarbeiter und Ressourcen"

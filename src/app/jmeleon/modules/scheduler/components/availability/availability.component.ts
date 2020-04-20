@@ -6,7 +6,8 @@ import {
   ResizeEventArgs,
   GroupModel,
   EventRenderedArgs,
-  PopupOpenEventArgs
+  PopupOpenEventArgs,
+  NavigatingEventArgs
 } from '@syncfusion/ej2-angular-schedule';
 
 import { AvailabilityService } from '../../services/availability.service';
@@ -26,6 +27,7 @@ import { DialogService, ConfirmationService, MenuItem } from 'primeng/api';
 import { EntityService } from 'src/app/shared/services/entity.service';
 import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/entity-dialog.component';
 import { ContextMenu } from 'primeng/contextmenu';
+import { TimeRange, SchedulerTimeRange } from '../../config/scheduler.timerange';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -46,6 +48,11 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
 
   groupData: GroupModel = { resources: ['Resources'] };
 
+  private currInterval: {
+    currDate: Date,
+    currView: View
+  };
+
   subscriptions: Subscription[] = [];
 
   constructor(
@@ -63,8 +70,9 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initialView = <View>AvailabiltySchedulerSettings.initialView;
+    this.currInterval = { currView: this.initialView, currDate: new Date() };
     this.getAvailableHeight();
-    this.getResourceAvailabilities();
+    this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
   }
 
   ngOnDestroy(): void {
@@ -78,8 +86,21 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     availabilityHTML.style.backgroundColor = color;
   }
 
-  getResourceAvailabilities() {
-    this.availabilityService.getResourceAvailabilities()
+  onNavigate(args: NavigatingEventArgs) {
+    if (args.action === 'date') {
+      this.currInterval.currDate = args.currentDate;
+    } else if (args.action === 'view') {
+      this.currInterval.currView = <View>args.currentView;
+    }
+
+    this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
+  }
+
+  getResourceAvailabilities(timeRange: TimeRange) {
+    const start: string = DateTimeUtils.convertDateToApiConformTimeString(timeRange.start);
+    const end: string = DateTimeUtils.convertDateToApiConformTimeString(timeRange.end);
+
+    this.availabilityService.getResourceAvailabilities({ start, end })
       .subscribe(resources => {
         this.resourceDataSource = resources;
         const availabilityEvents: Availability[] = [];
@@ -171,7 +192,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
       if (result !== undefined) {
         this.subscriptions.push(
           result.subscribe(() => {
-            this.getResourceAvailabilities();
+            this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
           })
         );
       }
@@ -193,7 +214,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     dialogRef.onClose.subscribe((result: Observable<Object>) => {
       if (result !== undefined) {
         this.subscriptions.push(
-          result.subscribe(() => this.getResourceAvailabilities())
+          result.subscribe(() => this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate)))
         );
       }
     });
@@ -205,7 +226,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
       accept: () => {
         this.subscriptions.push(
           this.entityService.deleteEntity('ResourceAvailability', data['RefId']).subscribe(() => {
-            this.getResourceAvailabilities();
+            this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
           })
         );
       }

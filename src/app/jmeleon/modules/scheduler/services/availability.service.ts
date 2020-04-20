@@ -23,8 +23,9 @@ export class AvailabilityService {
   constructor(
     private http: HttpClient) { }
 
-  getResourceAvailabilities(): Observable<AvailabilityResource[]> {
+  getResourceAvailabilities({ start, end }: { start: string, end: string }): Observable<AvailabilityResource[]> {
     // const url = AppConfig.uiInfo.baseUrl + '/scheduler/resourceAvailabilities';
+    console.log({ start, end });
     return this.http.get<AvailabilityInterface>(UrlCollection.Availability.RESOURCEAVAILABILITIES())
       .pipe(
         map(temp => temp.resourceAvailabilities.map(resource => {

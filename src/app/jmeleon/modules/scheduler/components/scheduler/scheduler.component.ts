@@ -8,7 +8,8 @@ import {
   EventClickArgs,
   WorkHoursModel,
   EventRenderedArgs,
-  PopupOpenEventArgs
+  PopupOpenEventArgs,
+  NavigatingEventArgs
 } from '@syncfusion/ej2-angular-schedule';
 
 import { SchedulerService } from '../../services/scheduler.service';
@@ -30,6 +31,7 @@ import { EntityService } from 'src/app/shared/services/entity.service';
 import { EntityConfiguration } from 'src/app/shared/models/entity-configuration';
 import { ContextMenu } from 'primeng/contextmenu';
 import { ResizeEvent } from 'angular-resizable-element';
+import { SchedulerTimeRange, TimeRange } from '../../config/scheduler.timerange';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -66,6 +68,9 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     contextMenuOpen: Boolean
   };
 
+  private currEvSchInterval: { currDate: Date, currView: View };
+  private currResSchInterval: { currDate: Date, currView: View };
+
   groupData: GroupModel = { resources: ['Resources'] };
 
   constructor(
@@ -89,8 +94,9 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       { label: ResourceSchedulerSettings.filterText.hasConflict, value: 'hasConflict' }
     ];
     this.schedulerStatus = { currentSchedulerEvent: null, currentResources: null, contextMenuOpen: false };
+    this.currEvSchInterval = { currView: this.eventSchedulerView, currDate: new Date() };
     this.getSchedulerHeights();
-    this.getSchedulerEvents();
+    this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
   }
 
   ngOnDestroy(): void {
@@ -109,9 +115,11 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getSchedulerEvents(): void {
+  private getSchedulerEvents(timeRange: TimeRange): void {
+    const start: string = DateTimeUtils.convertDateToApiConformTimeString(timeRange.start);
+    const end: string = DateTimeUtils.convertDateToApiConformTimeString(timeRange.end);
     this.subscriptions.push(
-      this.schedulerService.getSchedulerEvents()
+      this.schedulerService.getSchedulerEvents({ start, end })
         .subscribe(schedulerEvents => {
           // provide all schedulerEvents shown in EventScheduler (upper component)
           this.eventSchedulerObject = { dataSource: schedulerEvents };
@@ -124,6 +132,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
 
     // set global scheduler status
     this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResources: null, contextMenuOpen: false };
+    this.currResSchInterval = { currView: this.resourceSchedulerView, currDate: schedulerEvent.StartTime };
 
     // set resource file: If no resources are assigned show also available resources
     if (<number>schedulerEvent.AssignedResources > 0) {
@@ -133,7 +142,10 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     }
 
     // get all resources with State (assigned, available, blocked) depending on clicked event
-    this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: schedulerEvent, filter: this.currentResourceFilter });
+    this.getSchedulerResourcesAndSchedulerEvents(
+      { schedulerEvent: schedulerEvent, filter: this.currentResourceFilter },
+      SchedulerTimeRange.get(this.currResSchInterval.currView).getRange(this.currResSchInterval.currDate)
+    );
 
     // show times outside of event time in grey
     this.setTimeFrameForCurrentSchedulerEvent(schedulerEvent);
@@ -144,9 +156,12 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   }
 
   // get resources and events for the Resourcescheduler (at the bottom)
-  private getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter }: { schedulerEvent: SchedulerEvent; filter: string[]; }): void {
+  private getSchedulerResourcesAndSchedulerEvents({ schedulerEvent, filter }: { schedulerEvent: SchedulerEvent; filter: string[]; }, timeRange: TimeRange): void {
+    const start: string = DateTimeUtils.convertDateToApiConformTimeString(timeRange.start);
+    const end: string = DateTimeUtils.convertDateToApiConformTimeString(timeRange.end);
+
     this.subscriptions.push(
-      this.schedulerService.getSchedulerResources(schedulerEvent.RefId)
+      this.schedulerService.getSchedulerResources(schedulerEvent.RefId, { start, end })
         .subscribe(schedulerResources => {
           // set global scheduler status
           this.schedulerStatus.currentResources = schedulerResources;
@@ -186,6 +201,33 @@ export class SchedulerComponent implements OnInit, OnDestroy {
         }));
   }
 
+  onNavigate(args: NavigatingEventArgs, schedulerType: string) {
+    if (args.action === 'date') {
+      if (schedulerType === 'evSch') {
+        this.currEvSchInterval.currDate = args.currentDate;
+        this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
+      } else {
+        this.currResSchInterval.currDate = args.currentDate;
+        this.getSchedulerResourcesAndSchedulerEvents(
+          { schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter },
+          SchedulerTimeRange.get(this.currResSchInterval.currView).getRange(this.currResSchInterval.currDate)
+        );
+      }
+    }
+    if (args.action === 'view') {
+      if (schedulerType === 'evSch') {
+        this.currEvSchInterval.currView = <View>args.currentView;
+        this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
+      } else {
+        this.currResSchInterval.currView = <View>args.currentView;
+        this.getSchedulerResourcesAndSchedulerEvents(
+          { schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter },
+          SchedulerTimeRange.get(this.currResSchInterval.currView).getRange(this.currResSchInterval.currDate)
+        );
+      }
+    }
+  }
+
   filterAndDisplayResources(filter: string[]): void {
     this.resourceDataSource = [];
     if (this.schedulerStatus.currentResources) {
@@ -215,12 +257,18 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     if (schedulerResource.Assigned) {
       this.subscriptions.push(
         this.schedulerService.removeResourceFromSchedulerEvent(this.schedulerStatus.currentSchedulerEvent.RefId, schedulerResource.Id)
-          .subscribe(() => this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter }))
+          .subscribe(() => this.getSchedulerResourcesAndSchedulerEvents(
+            { schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter },
+            SchedulerTimeRange.get(this.currResSchInterval.currView).getRange(this.currResSchInterval.currDate)
+          ))
       );
     } else if (!schedulerResource.Assigned) {
       this.subscriptions.push(
         this.schedulerService.assignResourceToSchedulerEvent(this.schedulerStatus.currentSchedulerEvent.RefId, schedulerResource.Id)
-          .subscribe(() => this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter }))
+          .subscribe(() => this.getSchedulerResourcesAndSchedulerEvents(
+            { schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter },
+            SchedulerTimeRange.get(this.currResSchInterval.currView).getRange(this.currResSchInterval.currDate)
+          ))
       );
     }
   }
@@ -247,7 +295,10 @@ export class SchedulerComponent implements OnInit, OnDestroy {
         .subscribe(() => {
           // If resourceScheduler is visible update shown resources
           if (this.showResourceScheduler) {
-            this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter });
+            this.getSchedulerResourcesAndSchedulerEvents(
+              { schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter },
+              SchedulerTimeRange.get(this.currResSchInterval.currView).getRange(this.currResSchInterval.currDate)
+            );
             if (schedulerEvent.RefId === this.schedulerStatus.currentSchedulerEvent.RefId) { this.setTimeFrameForCurrentSchedulerEvent(schedulerEvent); }
           }
         })
@@ -318,9 +369,12 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       if (result !== undefined) {
         this.subscriptions.push(
           result.subscribe(() => {
-            this.getSchedulerEvents();
+            this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
             if (this.showResourceScheduler) {
-              this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter });
+              this.getSchedulerResourcesAndSchedulerEvents(
+                { schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter },
+                SchedulerTimeRange.get(this.currResSchInterval.currView).getRange(this.currResSchInterval.currDate)
+              );
             }
           })
         );
@@ -343,7 +397,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     dialogRef.onClose.subscribe((result: Observable<Object>) => {
       if (result !== undefined) {
         this.subscriptions.push(
-          result.subscribe(() => this.getSchedulerEvents())
+          result.subscribe(() => this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate)))
         );
       }
     });
@@ -355,10 +409,13 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       accept: () => {
         this.subscriptions.push(
           this.entityService.deleteEntity('Order', data['RefId']).subscribe(() => {
-            this.getSchedulerEvents();
+            this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
             if (this.showResourceScheduler) {
               if (this.schedulerStatus.currentSchedulerEvent.Id !== data.Id) {
-                this.getSchedulerResourcesAndSchedulerEvents({ schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter });
+                this.getSchedulerResourcesAndSchedulerEvents(
+                  { schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter },
+                  SchedulerTimeRange.get(this.currResSchInterval.currView).getRange(this.currResSchInterval.currDate)
+                );
               } else {
                 this.showResourceScheduler = false;
               }
@@ -409,6 +466,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     }
   }
 
+  // hide syncfusion scheduler native popups
   onPopupOpen(args: PopupOpenEventArgs): void {
     if (args.type === 'Editor' || args.type === 'QuickInfo') {
       args.cancel = true;
