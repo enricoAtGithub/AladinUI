@@ -3,6 +3,12 @@ import { EntityService } from '../../services/entity.service';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { DialogService } from 'primeng/api';
 
+import { Store, select } from '@ngrx/store';
+import { RootStoreState } from 'src/app/root-store/root-index';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 @Component({
   selector: 'app-dynamic-table-attachments',
   templateUrl: './dynamic-table-attachments.component.html',
@@ -18,14 +24,17 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
 
   configuration: EntityConfiguration;
 
-  constructor(private entityService: EntityService, public dialogService: DialogService) { }
+  constructor(private entityService: EntityService, public dialogService: DialogService, private store$: Store<RootStoreState.State>) { }
 
   init() {
-    this.entityService.getEntityConfigurations().subscribe(configs => {
-      this.configuration = configs[this.configName];
-      // this.isEmpty = !this.configuration.components && this.configuration.groups === null;
-      this.hasContent = !!this.configuration.components || this.configuration.groups !== null;
-      
+    const configuration$: Observable<EntityConfiguration> = this.store$.pipe(
+      select(fromConfigSelectors.selectConfigs),
+      map(configs => configs[this.configName])
+    );
+    configuration$.subscribe(config => {
+      this.configuration = config;
+      this.hasContent = !!config.components || config.groups !== null;
+
       if (this.configName === 'SecurityRight') {
         this.showActionTab = true;
       }

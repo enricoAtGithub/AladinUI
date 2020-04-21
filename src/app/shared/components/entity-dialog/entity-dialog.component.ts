@@ -8,6 +8,10 @@ import { TableData } from '../../models/table-data';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { Store, select } from '@ngrx/store';
+import { RootStoreState } from 'src/app/root-store/root-index';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
+
 @Component({
   selector: 'app-entity-dialog',
   templateUrl: './entity-dialog.component.html',
@@ -24,7 +28,7 @@ export class EntityDialogComponent implements OnInit {
   displayScrollPanel = false;
 
   constructor(public ref: DynamicDialogRef, public config: DynamicDialogConfig, private entityService: EntityService,
-    private catalogueService: CatalogueService) { }
+    private catalogueService: CatalogueService, private store$: Store<RootStoreState.State>) { }
 
   ngOnInit() {
     const data = this.config.data;
@@ -32,7 +36,10 @@ export class EntityDialogComponent implements OnInit {
     if (data['config']) {
       $config = new BehaviorSubject<EntityConfiguration>(data['config']).asObservable();
     } else if (data['configName']) {
-      $config = this.entityService.getEntityConfigurations().pipe(map(configs => configs[data['configName']]));
+      $config = this.store$.pipe(
+        select(fromConfigSelectors.selectConfigs),
+        map(configs => configs[data['configName']])
+      );
     } else {
       console.log('[entity-dialog] no config supplied');
       return;

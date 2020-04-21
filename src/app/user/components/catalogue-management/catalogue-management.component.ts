@@ -2,13 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { BreadcrumbService } from 'src/app/breadcrumb.service';
 import { CatalogueService } from '../../services/catalogue.service';
 import { TreeNode } from 'primeng/primeng';
-import { NgForm } from '@angular/forms';
-import { Catalogue } from 'src/app/shared/models/catalogue';
 import { DialogService, ConfirmationService } from 'primeng/api';
 import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/entity-dialog.component';
 import { Observable } from 'rxjs';
 import { EntityService } from 'src/app/shared/services/entity.service';
 import { EntityConfiguration } from 'src/app/shared/models/entity-configuration';
+
+import { Store, select } from '@ngrx/store';
+import { RootStoreState } from 'src/app/root-store/root-index';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
 
 @Component({
   selector: 'app-catalogue-management',
@@ -31,7 +33,8 @@ export class CatalogueManagementComponent implements OnInit {
     private catalogueService: CatalogueService,
     private dialogService: DialogService,
     private entityService: EntityService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private store$: Store<RootStoreState.State>
     ) {
     this.breadcrumbService.setItems([
       { label: 'Katalogverwaltung' }
@@ -40,7 +43,8 @@ export class CatalogueManagementComponent implements OnInit {
 
   ngOnInit() {
     this.loadCatalogues();
-    this.entityService.getEntityConfigurations().subscribe(configs => {this.catalogueConfig = configs['Catalogue']; this.catalogueEntryConfig = configs['CatalogueEntry']; });
+    const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
+    configurations$.subscribe(configs => {this.catalogueConfig = configs['Catalogue']; this.catalogueEntryConfig = configs['CatalogueEntry']; });
   }
 
   loadCatalogues() {

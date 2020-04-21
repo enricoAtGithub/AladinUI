@@ -11,6 +11,10 @@ import { ErrorNotificationService } from '../../services/error-notification.serv
 import { ErrorMessage } from '../../models/error-message';
 import { delay } from 'q';
 import { UrlCollection } from '../../url-collection';
+import * as fromConfigSelectors from '../../../root-store/config-store/selectors';
+import { Store, select } from '@ngrx/store';
+import { map } from 'rxjs/operators';
+import { RootStoreState } from 'src/app/root-store/root-index';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -24,9 +28,8 @@ export class DynamicTableComponent implements OnInit {
   @Output() onEntitySelection = new EventEmitter();
 
   configuration: EntityConfiguration;
-  $configuration: Subject<EntityConfiguration> = new Subject();
   fields: Field[];
-  loading = false;
+  loading = true; // Needs to be true to prevent ExpressionHasChangedError
   entityData: EntityData;
   selectedEntry: any;
   selectedEntryId: number;
@@ -36,16 +39,21 @@ export class DynamicTableComponent implements OnInit {
 
   constructor(private entityService: EntityService, private cd: ChangeDetectorRef,
     private dialogService: DialogService, private confirmationService: ConfirmationService,
-    private errorNotificationService: ErrorNotificationService) {}
+    private errorNotificationService: ErrorNotificationService, private store$: Store<RootStoreState.State>) {}
 
   ngOnInit() {
+    const configuration$: Observable<EntityConfiguration> = this.store$.pipe(
+      select(fromConfigSelectors.selectConfigs),
+      map(configs => configs[this.tableData.configName])
+    );
+
     this.configuration = new EntityConfiguration();
     this.entityData = new EntityData();
-    this.entityService.getEntityConfigurations().subscribe(async configs => {
+    configuration$.subscribe(async config => {
       // Get the config according to the given name
-      this.configuration = configs[this.tableData.configName];
-      this.$configuration.next(this.configuration);
+      this.configuration = config;
       if (this.configuration === undefined) {
+        console.log('[Dynamic-Table] config with name ' + this.tableData.configName + ' not found!');
         return;
       }
 

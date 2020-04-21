@@ -1,12 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { EntityService } from 'src/app/shared/services/entity.service';
 import { SelectItem } from 'primeng/api';
-import { AceComponent, AceDirective, AceConfigInterface } from 'ngx-ace-wrapper';
+import { AceComponent, AceConfigInterface } from 'ngx-ace-wrapper';
 import 'brace';
 import 'brace/mode/json';
 import 'brace/theme/github';
 import { ErrorNotificationService } from 'src/app/shared/services/error-notification.service';
 import { ErrorMessage } from 'src/app/shared/models/error-message';
+
+import { Store, select } from '@ngrx/store';
+import { RootStoreState } from 'src/app/root-store/root-index';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
 
 
 
@@ -29,14 +33,15 @@ export class DTOConfigEditorComponent implements OnInit {
     readOnly : false
   };
 
-  constructor(private entityService: EntityService, private notificationService: ErrorNotificationService) { }
+  constructor(private entityService: EntityService, private notificationService: ErrorNotificationService, private store$: Store<RootStoreState.State>) { }
 
   configToSelectItem(name: string, type: string): SelectItem {
     return {label: name, value: type};
   }
 
   ngOnInit() {
-    this.entityService.getEntityConfigurations().subscribe(configs => {
+    const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
+    configurations$.subscribe(configs => {
       this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
     });
   }

@@ -25,20 +25,15 @@ export class EntityGroupRelationComponent implements OnChanges {
   constructor(private entityService: EntityService) { }
 
   init() {
-    if (this.type) {
-      this.entityService.getEntityConfigurations().subscribe(configs => {
-        const configuration = configs[this.type];
-        if (configuration.groups !== null) {
-          this.entityService.getGroupConfigurations().subscribe(groupConfigs => {
-            this.groupConfig = groupConfigs[this.relation];
-            this.entityService.filter(this.groupConfig.member, 1, 2147483647, '', '').subscribe(allMembers => {
-              this.allGroupMembers = allMembers;
-              if (this.entryId) {
-                this.getGroupMembers();
-              }
-            });
-          });
-        }
+    if (this.type && this.relation) {
+      this.entityService.getGroupConfigurations().subscribe(groupConfigs => {
+        this.groupConfig = groupConfigs[this.relation];
+        this.entityService.filter(this.groupConfig.member, 1, 2147483647, '', '').subscribe(allMembers => {
+          this.allGroupMembers = allMembers;
+          if (this.entryId) {
+            this.getGroupMembers();
+          }
+        });
       });
     }
   }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Action } from '@ngrx/store';
+import { Actions, Effect, ofType, createEffect } from '@ngrx/effects';
+import { Action, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, startWith, switchMap, tap } from 'rxjs/operators';
 import * as userProfileActions from './actions';
@@ -8,9 +8,13 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { Router } from '@angular/router';
 import { User } from 'src/app/shared/models/user';
 
+import { RootStoreState } from '../root-index';
+import * as fromConfigSelectors from '../config-store/selectors';
+import { ConfigActions } from '../config-store/config-index';
+
 @Injectable()
 export class UserProfileEffects {
-  constructor(private authService: AuthService, private actions$: Actions, public router: Router) {}
+  constructor(private authService: AuthService, private actions$: Actions, public router: Router, private store$: Store<RootStoreState.State>) {}
 
   @Effect()
   loginRequestEffect$: Observable<Action> = this.actions$.pipe(
@@ -60,4 +64,10 @@ export class UserProfileEffects {
           )
       )
     );
+
+    @Effect()
+    loginSuccessEffect$ = this.actions$.pipe(
+      ofType<userProfileActions.LoginSuccessAction>(userProfileActions.ActionTypes.LOGIN_SUCCESS),
+      switchMap(_ => [new ConfigActions.ConfigsLoadRequestAction()])
+      );
 }
