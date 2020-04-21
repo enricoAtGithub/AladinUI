@@ -58,17 +58,17 @@ export class EntityDialogComponent implements OnInit {
         }
       });
 
-      if (this.update) {
-        let $entity: Observable<any>;
-        if (data['entity']) {
-          $entity = new BehaviorSubject(data['entity']).asObservable();
-        } else if (data['entityId']) {
-          $entity = this.entityService.filter(this.configuration.type, 1, 1, 'EQ(\'id\', ' + data['entityId'] + ')', null).pipe(map(res => res.data[0]));
-        } else if (this.update) {
-          console.log('[entity-dialog] no entity supplied');
-          return;
-        }
+      let $entity: Observable<any>;
+      if (data['entity']) {
+        $entity = new BehaviorSubject(data['entity']).asObservable();
+      } else if (data['entityId']) {
+        $entity = this.entityService.filter(this.configuration.type, 1, 1, 'EQ(\'id\', ' + data['entityId'] + ')', null).pipe(map(res => res.data[0]));
+      } else if (this.update) {
+        console.log('[entity-dialog] no entity supplied');
+        return;
+      }
 
+      if ($entity) {
         $entity.subscribe(entity => {
           this.entity = entity;
           this.configuration.fields.forEach(field => {
