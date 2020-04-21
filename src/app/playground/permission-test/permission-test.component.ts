@@ -32,7 +32,8 @@ export class PermissionTestComponent implements OnInit, OnDestroy {
     ['User', ['loginName', 'firstName', 'lastName']],
   ];
   root = root;
-  actionPath = root.foo.bar.one;
+  // actionPath = root.foo.bar.one;
+  actionPath = root.dto.Order.read;
   vars: string[] = [];
 
   actionsLiveList$: Observable<string[]>;
