@@ -1,7 +1,7 @@
 <p-confirmDialog header="Bestätigung" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
 <p-contextMenu #availCM (onHide)="closeContextMenu()"></p-contextMenu>
 
-<ejs-schedule [rowAutoHeight]="true" [showQuickInfo]="true" [eventSettings]="availabilitySchedulerObject"
+<ejs-schedule #scheduleObj [rowAutoHeight]="true" [showQuickInfo]="true" [eventSettings]="availabilitySchedulerObject"
     [currentView]="initialView" [group]="groupData" [allowDragAndDrop]="true" [allowResizing]="true" locale='de'
     (eventRendered)="onEventRendered($event)" (resizeStop)="updateAvailabilityInterval($event)"
     (dragStop)="updateAvailabilityInterval($event)" (popupOpen)="onPopupOpen($event)"

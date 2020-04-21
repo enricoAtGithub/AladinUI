@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import {
   View,
   EventSettingsModel,
@@ -7,7 +7,9 @@ import {
   GroupModel,
   EventRenderedArgs,
   PopupOpenEventArgs,
-  NavigatingEventArgs
+  NavigatingEventArgs,
+  ResourceDetails,
+  ScheduleComponent
 } from '@syncfusion/ej2-angular-schedule';
 
 import { AvailabilityService } from '../../services/availability.service';
@@ -39,6 +41,7 @@ L10n.load(de);
   providers: [ConfirmationService]
 })
 export class AvailabilityComponent implements OnInit, OnDestroy {
+  @ViewChild('scheduleObj', { static: true }) scheduleObj: ScheduleComponent;
 
   availabilitySchedulerObject: EventSettingsModel;
   resourceDataSource: Object[];
@@ -201,10 +204,14 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
 
   addAvailability(data: any) {
     if (this.contextMenuOpen) { return; }
+
+    const resource: ResourceDetails = this.scheduleObj.getResourcesByIndex(this.scheduleObj.getCellDetails(data.element).groupIndex);
+    if (!resource) { console.error('Ressource not found'); }
+
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
-        entity: { startDate: data.startTime, endDate: data.endTime },
+        entity: { startDate: data.startTime, endDate: data.endTime, resourceId: { id: resource.groupData.ResourceID,  _repr_: resource.resourceData.Name } },
         configName: 'ResourceAvailability'
       },
       header: 'Eintrag erstellen',
