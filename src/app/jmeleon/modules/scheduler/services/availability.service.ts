@@ -25,8 +25,7 @@ export class AvailabilityService {
 
   getResourceAvailabilities({ start, end }: { start: string, end: string }): Observable<AvailabilityResource[]> {
     // const url = AppConfig.uiInfo.baseUrl + '/scheduler/resourceAvailabilities';
-    console.log({ start, end });
-    return this.http.get<AvailabilityInterface>(UrlCollection.Availability.RESOURCEAVAILABILITIES())
+    return this.http.post<AvailabilityInterface>(UrlCollection.Availability.RESOURCEAVAILABILITIES(), { start, end })
       .pipe(
         map(temp => temp.resourceAvailabilities.map(resource => {
           return {

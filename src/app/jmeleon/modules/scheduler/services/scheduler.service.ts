@@ -26,7 +26,7 @@ export class SchedulerService {
 
   getSchedulerEvents({ start, end }: { start: string, end: string }): Observable<SchedulerEvent[]> {
     // const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrders';
-    return this.http.get<SchedulerEventInterface>(UrlCollection.Scheduler.SCHEDULER_ORDERS())
+    return this.http.post<SchedulerEventInterface>(UrlCollection.Scheduler.SCHEDULER_ORDERS(), { start, end })
       .pipe(
         // map properties from JSON response, first letter of properties needs to be capitalized
         map(temp => temp.schedulerOrders.map(schEv => {
@@ -57,8 +57,7 @@ export class SchedulerService {
 
   getSchedulerResources(schedulerEventId: number, { start, end }: { start: string, end: string }): Observable<SchedulerResource[]> {
     // const url = AppConfig.uiInfo.baseUrl + '/scheduler/schedulerOrder' + '/' + schedulerEventId + '/resources';
-    console.log({ start, end });
-    return this.http.get<SchedulerResourceInterface>(UrlCollection.Scheduler.SCHEDULER_RESOURCES(schedulerEventId))
+    return this.http.post<SchedulerResourceInterface>(UrlCollection.Scheduler.SCHEDULER_RESOURCES(schedulerEventId), { start, end })
       .pipe(
         // map properties from JSON response, first letter of properties needs to be capitalized
         map(temp => temp.schedulerResources.map(schRes => {
