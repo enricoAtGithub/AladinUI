@@ -1,27 +1,22 @@
-- foo:
-  - hossa
 
 - dto:
   - $dtoType:      # $dtoType is a placeholder for any DTO Type like Order, User, ...
+    - create
+    - read
+    - write
+    - delete
     - $dtoField:   # $dtoField represents a certain field available on the particular DTO Type
       - create
       - read
       - write
   - FileAttachment: # 
     - upload
-    - download
-- foo:
-  - bar:
-    - one
-    - two
-    - foo:
-      - three
-  - leaf
-  # - ignore
-  - baz:
-    - three
-    - four
-  - scheduler:
-    - event:
-      - leaf
+    - download  
+  - Order:
+    - read
+
+- scheduler:
+  - open
+  - event:
+    - leaf
 
