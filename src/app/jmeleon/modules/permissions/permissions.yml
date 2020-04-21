@@ -13,10 +13,15 @@
     - upload
     - download  
   - Order:
+    - create
     - read
-
+    - write
+    - delete
 - scheduler:
-  - open
-  - event:
-    - leaf
+  - openEvSch     # open event scheduler
+  - openResSch    # open resource scheduler
+  - order:
+    - assign
+    - unassign
+    - updateInterval
 
