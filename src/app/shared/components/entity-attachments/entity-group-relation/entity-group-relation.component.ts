@@ -3,6 +3,11 @@ import { EntityService } from 'src/app/shared/services/entity.service';
 import { GroupConfiguration } from 'src/app/shared/models/group-configuration';
 import { EntityData } from 'src/app/shared/models/entity-data';
 
+import { Store, select } from '@ngrx/store';
+import { RootStoreState } from 'src/app/root-store/root-index';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
+import { map } from 'rxjs/operators';
+
 @Component({
   selector: 'app-entity-group-relation',
   templateUrl: './entity-group-relation.component.html',
@@ -22,13 +27,17 @@ export class EntityGroupRelationComponent implements OnChanges {
 
   groupConfig: GroupConfiguration;
 
-  constructor(private entityService: EntityService) { }
+  constructor(private entityService: EntityService, private store$: Store<RootStoreState.State>) { }
 
   init() {
     if (this.type && this.relation) {
-      this.entityService.getGroupConfigurations().subscribe(groupConfigs => {
-        this.groupConfig = groupConfigs[this.relation];
-        this.entityService.filter(this.groupConfig.member, 1, 2147483647, undefined, '', '').subscribe(allMembers => {
+      const groupConfigurations$ = this.store$.pipe(
+        select(fromConfigSelectors.selectGroupConfigs),
+        map(configs => configs[this.relation])
+      );
+      groupConfigurations$.subscribe(groupConfig => {
+        this.groupConfig = groupConfig;
+        this.entityService.filter(groupConfig.member, 1, 2147483647, undefined, '', '').subscribe(allMembers => {
           this.allGroupMembers = allMembers;
           if (this.entryId) {
             this.getGroupMembers();

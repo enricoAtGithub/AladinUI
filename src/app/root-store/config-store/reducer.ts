@@ -8,6 +8,11 @@ export function configReducer(state = initialState, action: Actions): ConfigStat
                 ...state,
                 configs: action.payload.configs
             };
+        case ActionTypes.GROUP_CONFIG_LOAD:
+            return {
+                ...state,
+                groupConfigs: action.payload.configs
+            };
         default: {
             return state;
         }

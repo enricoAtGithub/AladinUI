@@ -5,7 +5,6 @@ import { TreeNode } from 'primeng/primeng';
 import { DialogService, ConfirmationService } from 'primeng/api';
 import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/entity-dialog.component';
 import { Observable } from 'rxjs';
-import { EntityService } from 'src/app/shared/services/entity.service';
 import { EntityConfiguration } from 'src/app/shared/models/entity-configuration';
 
 import { Store, select } from '@ngrx/store';
@@ -32,7 +31,6 @@ export class CatalogueManagementComponent implements OnInit {
     private breadcrumbService: BreadcrumbService,
     private catalogueService: CatalogueService,
     private dialogService: DialogService,
-    private entityService: EntityService,
     private confirmationService: ConfirmationService,
     private store$: Store<RootStoreState.State>
     ) {

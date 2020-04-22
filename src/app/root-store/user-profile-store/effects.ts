@@ -68,6 +68,6 @@ export class UserProfileEffects {
     @Effect()
     loginSuccessEffect$ = this.actions$.pipe(
       ofType<userProfileActions.LoginSuccessAction>(userProfileActions.ActionTypes.LOGIN_SUCCESS),
-      switchMap(_ => [new ConfigActions.ConfigsLoadRequestAction()])
+      switchMap(_ => [new ConfigActions.ConfigsLoadRequestAction(), new ConfigActions.GroupConfigsLoadRequestAction()])
       );
 }

@@ -15,9 +15,21 @@ export class ConfigEffects {
         ofType<configActions.ConfigsLoadRequestAction>(
             configActions.ActionTypes.CONFIG_LOAD_REQUEST
         ),
-        switchMap(action => this.entityService.getEntityConfigurations().pipe(
+        switchMap(_ => this.entityService.getEntityConfigurations().pipe(
             map(configs =>  {
                 return new configActions.ConfigsLoadAction({configs});
+            })
+        ))
+    );
+
+    @Effect()
+    groupConfigsLoadRequestEffect$: Observable<Action> = this.actions$.pipe(
+        ofType<configActions.GroupConfigsLoadRequestAction>(
+            configActions.ActionTypes.GROUP_CONFIG_LOAD_REQUEST
+        ),
+        switchMap(_ => this.entityService.getGroupConfigurations().pipe(
+            map(configs =>  {
+                return new configActions.GroupConfigsLoadAction({configs});
             })
         ))
     );
