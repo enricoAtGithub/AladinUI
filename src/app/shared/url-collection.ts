@@ -56,6 +56,7 @@ export class UrlCollection {
         static UPDATE(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/update'; }
         static DELETE(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/delete'; }
         static CONFIGS(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/configurations'; }
+        static GET = (type: string, id: number) => UrlCollection.ENTITY_API_BASE_PATH() + '/get/' + type + '/' + id;
         static FILTER(): string { return UrlCollection.ENTITY_API_BASE_PATH() + '/filter'; }
         static CONFIG_FILE = (configName: string) => UrlCollection.ENTITY_API_BASE_PATH() + '/configuration/file/' + configName;
 

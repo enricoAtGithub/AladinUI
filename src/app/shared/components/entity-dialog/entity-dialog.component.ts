@@ -11,6 +11,7 @@ import { map } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
+import { Field } from '../../models/field';
 
 @Component({
   selector: 'app-entity-dialog',
@@ -22,6 +23,7 @@ export class EntityDialogComponent implements OnInit {
   catalogueOptions: Map<string, any[]> = new Map();
   update: Boolean;
   entity: any;
+  mainId: number;
   displayEntitySelectionDialog = false;
   entitySelectionTableData: TableData;
   entitySelectionContext: {field: string, textModule: any};
@@ -45,6 +47,8 @@ export class EntityDialogComponent implements OnInit {
       return;
     }
 
+    this.mainId = data['mainId']
+
     $config.subscribe(config => {
       this.configuration = config;
       this.update = this.config.data['update'];
@@ -62,7 +66,7 @@ export class EntityDialogComponent implements OnInit {
       if (data['entity']) {
         $entity = new BehaviorSubject(data['entity']).asObservable();
       } else if (data['entityId']) {
-        $entity = this.entityService.filter(this.configuration.type, 1, 1, undefined, 'EQ(\'id\', ' + data['entityId'] + ')', null).pipe(map(res => res.data[0]));
+        $entity = this.entityService.getEntity(this.configuration.type, data['entityId']).pipe(map(res => res.fields));
       } else if (this.update) {
         console.log('[entity-dialog] no entity supplied');
         return;
@@ -114,6 +118,10 @@ export class EntityDialogComponent implements OnInit {
         }
       }
     });
+
+    if (this.mainId) {
+      entityForm.value['mainId'] = this.mainId;
+    }
 
     if (this.update) {
       this.ref.close(this.entityService.updateEntity(this.configuration.type, this.entity['id'], entityForm.value));

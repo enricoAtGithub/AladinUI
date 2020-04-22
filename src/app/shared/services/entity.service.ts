@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { UrlCollection } from '../url-collection';
 import { EntityConfiguration } from '../models/entity-configuration';
 import { Observable } from 'rxjs';
-import { EntityData } from '../models/entity-data';
+import { EntityData, Entity } from '../models/entity-data';
 import { GroupConfiguration } from '../models/group-configuration';
 import { GroupMembers } from '../models/group-members';
 import { HttpOptionsFactory } from '../models/http/http-options-factory';
@@ -44,8 +44,15 @@ export class EntityService {
         .build());
   }
 
+  getEntity(type: string, id: number): Observable<Entity> {
+    return this.http.get<Entity>(UrlCollection.Entities.GET(type, id),
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
+  }
+
   filter(type: String, page: Number, pageSize: Number, mainId: number, qualifier: String, sorting: String): Observable<EntityData> {
-    console.log("MainId "+mainId)
     return this.http.post<EntityData>(UrlCollection.Entities.FILTER(),
       {type: type, page: page, pageSize: pageSize, mainId: mainId, qualifier: qualifier, sorting: sorting},
       new HttpOptionsFactory()

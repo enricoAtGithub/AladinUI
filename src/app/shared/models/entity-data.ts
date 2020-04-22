@@ -4,3 +4,8 @@ export class EntityData {
     pageSize: Number;
     data: any[];
 }
+
+export class Entity {
+    type: string;
+    fields: any[];
+}
