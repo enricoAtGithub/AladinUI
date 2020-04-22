@@ -48,7 +48,6 @@ export class PermissionTestComponent implements OnInit, OnDestroy {
     private japs: JmeleonActionsPermissionService,
     private jmlFacade: JmeleonActionsFacadeService,
     private entityService: EntityService,
-    //debug:
     private authService: AuthService
     ) { }
 
@@ -57,27 +56,6 @@ export class PermissionTestComponent implements OnInit, OnDestroy {
       $check: 'permCheck'
     };
 
-    
-    // this.japs.initActionsPermittedForCurrentUser([
-    //   'default.permCheck.seeFirstParagraph',
-    //   'a',
-    //   'default.foo.read',
-    //   'default.obj1.prop2.read',
-    //   'default.obj2.prop1.read',
-    //   // 'root.dto.User.firstName.read'
-    //   'dto.Order.name.read',
-    //   'dto.Order.invoiceAddress.read',
-    //   // 'dto.User.loginName.read',
-    //   'dto.User.firstName.read',
-    //   'dto.User.lastName.read',
-    //   'foo.bar.one'
-
-    // ]);
-
-    // JMeleonActionsUtils.resolveVars();
-    // console.log('ngxP has permission for \'a\'', );
-    // this.ngrxPermissionService.hasPermission('a').then(has => console.log('ngxP has permission for \'a\' (promise)', has));
-    // this.japs.userHasPermissionForAction('a').subscribe(has => console.log('ngxP has permission for \'a\' (subscribe)', has));
     this.actionsLiveList$ = this.jmlFacade.actionsTree$.pipe(
       map(tree => !!tree ? JMeleonActionTreeUtils.generateActionsList(tree) : []),
       // tap(list => console.log('test action list: ', list))
@@ -95,28 +73,11 @@ export class PermissionTestComponent implements OnInit, OnDestroy {
     this.entityConfiguration$ = this.entityService.getEntityConfigurations()
       .pipe(
         map(configs => Object.keys(configs).map(key => configs[key])
-        //   {
-        //     const keys = Object.keys(configs);
-        //     return keys.map(key => configs[key]);
-        // }
         )
       );
     this.entityConfiguration$.subscribe(configs => {
       // console.log('configs:', configs);
     });
-
-    // this.authService.localUser$.subscribe(
-    //   user => {
-    //     if (!user){
-    //       return;
-    //     }
-    //     this.japs.initActionsPermittedForCurrentUser(user.allowedActions);
-    //   }
-    // )
-
-    // this.root.dto.$dtoType.$dtoField.create
-
-
 
   }
 
@@ -127,19 +88,14 @@ export class PermissionTestComponent implements OnInit, OnDestroy {
 
 
   genVarDict(vars: string[]) {
-    // console.log('vars: ', vars);
     let i = 0;
     const result = {};
     while (i < vars.length) {
       const key = vars[i];
       const value = vars[i + 1];
-        // result[vars[i]] = vars[i + i];
-      // console.log('key: ', key);
-      // console.log('value: ', value);
       result[key] = value;
         i += 2;
     }
-    // console.log('result: ', result);
     return result;
   }
 
@@ -148,7 +104,6 @@ export class PermissionTestComponent implements OnInit, OnDestroy {
   initActionList = (): void => {
     this.entityService.filter('SecurityRight', 1, 10, undefined, '', '')
         .subscribe(data => {
-          // console.log('entity data: ', data);
           const firstRightId = data.data[0].id;
 
           this.jmlFacade.init();

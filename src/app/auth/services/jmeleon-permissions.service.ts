@@ -29,6 +29,7 @@ export class JMeleonPermissionsService {
         if (!!user) {
           this.grandAdminPermissionsIfUserHasAdminRole(user);
         } else {
+          console.log('flushing permissions.');
           this.permissionsService.flushPermissions();
       }});
      }
@@ -42,7 +43,9 @@ export class JMeleonPermissionsService {
 
   currentUserHasPermission(permissionName: string): boolean {
     const permissions = this.permissionsService.getPermissions();
-    return Object.keys(permissions).some(key => key === permissionName);
+    const userHasPermission = Object.keys(permissions).some(key => key === permissionName);
+    console.log(`user has permission for '${permissionName}': ${userHasPermission} `);
+    return userHasPermission;
   }
 
   currentUserHasRole(roleName: string): boolean {

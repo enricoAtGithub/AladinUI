@@ -4,6 +4,8 @@ import { MenuItem } from 'primeng/primeng';
 import { AppLayoutComponent } from '../app-layout/app-layout.component';
 import { JMeleonPermissionsService } from 'src/app/auth/services/jmeleon-permissions.service';
 import { environment } from 'src/environments/environment';
+import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
+import { root } from 'src/app/jmeleon/modules/permissions/permissions';
 
 
 @Component({
@@ -20,7 +22,8 @@ export class AppMenuComponent implements OnInit {
     model: any[];
 
     constructor(public app: AppLayoutComponent,
-        private jmeleonPermissionsService: JMeleonPermissionsService) { }
+        private jmeleonPermissionsService: JMeleonPermissionsService,
+        private jmlActionPermissionsService: JmeleonActionsPermissionService) { }
 
     ngOnInit() {
         this.model = [
@@ -59,6 +62,7 @@ export class AppMenuComponent implements OnInit {
                 ]
             }
         ];
+        // this.jmlActionPermissionsService.userHasPermissionForAction(root.)
     }
 
     changeTheme(theme: string, scheme: string) {
