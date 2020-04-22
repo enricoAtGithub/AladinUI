@@ -211,7 +211,8 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
-        entity: { startDate: data.startTime, endDate: data.endTime, resourceId: { id: resource.groupData.ResourceID,  _repr_: resource.resourceData.Name } },
+        mainId: resource.groupData.ResourceID,
+        entity: { startDate: data.startTime, endDate: data.endTime },
         configName: 'ResourceAvailability'
       },
       header: 'Eintrag erstellen',
