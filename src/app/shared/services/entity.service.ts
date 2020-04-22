@@ -44,9 +44,10 @@ export class EntityService {
         .build());
   }
 
-  filter(type: String, page: Number, pageSize: Number, qualifier: String, sorting: String): Observable<EntityData> {
+  filter(type: String, page: Number, pageSize: Number, mainId: number, qualifier: String, sorting: String): Observable<EntityData> {
+    console.log("MainId "+mainId)
     return this.http.post<EntityData>(UrlCollection.Entities.FILTER(),
-      {type: type, page: page, pageSize: pageSize, qualifier: qualifier, sorting: sorting},
+      {type: type, page: page, pageSize: pageSize, mainId: mainId, qualifier: qualifier, sorting: sorting},
       new HttpOptionsFactory()
         .addAcceptJson()
         .addContentTypeJson()

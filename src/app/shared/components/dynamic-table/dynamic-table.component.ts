@@ -24,6 +24,7 @@ import { RootStoreState } from 'src/app/root-store/root-index';
 })
 export class DynamicTableComponent implements OnInit {
   @Input() tableData: TableData;
+  @Input() mainId: number;
   @Input() dblClickCallback: (data) => any;
   @Output() onEntitySelection = new EventEmitter();
 
@@ -125,7 +126,7 @@ export class DynamicTableComponent implements OnInit {
     }
 
     if (this.tableData.dataSource === undefined) {
-      this.entityService.filter(this.tableData.configName, page, 10, qualifier, sorting)
+      this.entityService.filter(this.tableData.configName, page, 10, this.mainId, qualifier, sorting)
         .subscribe(data => { this.entityData = data; this.loading = false; });
     } else {
       this.tableData.dataSource.subscribe(data => { this.entityData = data; this.loading = false; });

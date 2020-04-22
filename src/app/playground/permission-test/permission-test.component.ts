@@ -146,7 +146,7 @@ export class PermissionTestComponent implements OnInit, OnDestroy {
   checkPermission = (path: string, dict: object): string => this.japs.resolveVars(path, dict);
 
   initActionList = (): void => {
-    this.entityService.filter('SecurityRight', 1, 10, '', '')
+    this.entityService.filter('SecurityRight', 1, 10, undefined, '', '')
         .subscribe(data => {
           // console.log('entity data: ', data);
           const firstRightId = data.data[0].id;

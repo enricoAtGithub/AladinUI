@@ -28,7 +28,7 @@ export class EntityGroupRelationComponent implements OnChanges {
     if (this.type && this.relation) {
       this.entityService.getGroupConfigurations().subscribe(groupConfigs => {
         this.groupConfig = groupConfigs[this.relation];
-        this.entityService.filter(this.groupConfig.member, 1, 2147483647, '', '').subscribe(allMembers => {
+        this.entityService.filter(this.groupConfig.member, 1, 2147483647, undefined, '', '').subscribe(allMembers => {
           this.allGroupMembers = allMembers;
           if (this.entryId) {
             this.getGroupMembers();

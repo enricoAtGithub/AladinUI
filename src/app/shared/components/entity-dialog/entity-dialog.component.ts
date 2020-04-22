@@ -62,7 +62,7 @@ export class EntityDialogComponent implements OnInit {
       if (data['entity']) {
         $entity = new BehaviorSubject(data['entity']).asObservable();
       } else if (data['entityId']) {
-        $entity = this.entityService.filter(this.configuration.type, 1, 1, 'EQ(\'id\', ' + data['entityId'] + ')', null).pipe(map(res => res.data[0]));
+        $entity = this.entityService.filter(this.configuration.type, 1, 1, undefined, 'EQ(\'id\', ' + data['entityId'] + ')', null).pipe(map(res => res.data[0]));
       } else if (this.update) {
         console.log('[entity-dialog] no entity supplied');
         return;

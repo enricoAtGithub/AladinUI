@@ -47,7 +47,7 @@ export class EntityDropdownComponent implements OnInit {
       sortTerm = `${(this.sortAsc ? 'ASC(\'' : 'DESC(\'')}${this.sortByFieldName}')`;
     }
     this.entityService
-          .filter(this.propertyName, 1, 100, '', sortTerm)
+          .filter(this.propertyName, 1, 100, undefined, '', sortTerm)
           .subscribe(
             entityData => {
               this.data = entityData;
