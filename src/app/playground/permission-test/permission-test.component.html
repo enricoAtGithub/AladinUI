@@ -300,32 +300,32 @@
         <br/>
         <br/>
 
-        <div *appPermissionCheck="root.foo.bar.foo.three;else hasNoPermissionForFooBarFooThree" class="hasPermission">
+        <!-- <div *appPermissionCheck="root.foo.bar.foo.three;else hasNoPermissionForFooBarFooThree" class="hasPermission">
             foo.bar.foo.three
         </div>
         <ng-template #hasNoPermissionForFooBarFooThree>
             <div class="hasNoPermission">
                 foo.bar.foo.three
             </div>
-        </ng-template>
+        </ng-template> -->
 
-        <div *appPermissionCheck="root.foo.bar.foo.three.doesNotExist;else hasNoPermissionForFooBarFooThreeDoesNotExist" class="hasPermission">
+        <!-- <div *appPermissionCheck="root.foo.bar.foo.three.doesNotExist;else hasNoPermissionForFooBarFooThreeDoesNotExist" class="hasPermission">
             foo.bar.foo.three.doesNotExist
         </div>
         <ng-template #hasNoPermissionForFooBarFooThreeDoesNotExist>
             <div class="hasNoPermission">
                 foo.bar.foo.three.doesNotExist
             </div>
-        </ng-template>
+        </ng-template> -->
 
-        <div *appPermissionCheck="root.foo.bar.foo.three.doesNotExist;else hasNoPermissionForFooBarFoo" class="hasPermission">
+        <!-- <div *appPermissionCheck="root.foo.bar.foo.three.doesNotExist;else hasNoPermissionForFooBarFoo" class="hasPermission">
             foo.bar.foo
         </div>
         <ng-template #hasNoPermissionForFooBarFoo>
             <div class="hasNoPermission">
                 foo.bar.foo -- (only the use of leaves is valid)
             </div>
-        </ng-template>
+        </ng-template> -->
         
     </p-tabPanel>
 
