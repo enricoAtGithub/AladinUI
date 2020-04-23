@@ -12,6 +12,10 @@ export class Field {
     width: string;
     options: Option[];
     header: string;
+
+    public static isPrimitiveType(type: string) {
+        return type === 'String' || type === 'integer' || type === 'boolean' || type === 'Date';
+    }
 }
 
 class Option {

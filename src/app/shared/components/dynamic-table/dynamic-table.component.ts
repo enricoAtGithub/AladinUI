@@ -59,7 +59,17 @@ export class DynamicTableComponent implements OnInit {
       }
 
       this.fields = this.configuration.fields.filter(field => field.visible === true);
-      this.fields.forEach(field => this.filtersInTable = field.filterType !== 'none' || this.filtersInTable);
+      this.fields.forEach(field => {
+        this.filtersInTable = field.filterType !== 'none' || this.filtersInTable
+        if (field.filterType === 'multiSelect' && !Field.isPrimitiveType(field.type)) {
+          field.options = [];
+          // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
+          this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
+            .subscribe(data => {
+              data.data.forEach(o => field.options.push({label: o._repr_, value: o.id}));
+            });
+        }
+      });
 
       this.tableData.triggerRefresh.subscribe( () => this.refreshTableContents());
     });
@@ -101,11 +111,17 @@ export class DynamicTableComponent implements OnInit {
 
     this.fields.forEach(field => {
       if (event.filters[field.field]) {
-        const filterContent: string = event.filters[field.field].value.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
-        if (field.type === 'String') {
-          qualifier += 'LIKE(\'' + field.field + '\',\'%' + filterContent  + '%\'),';
-        } else {
-          qualifier += 'EQ(\'' + field.field + '\',' + filterContent + '),';
+
+        if (field.filterType === 'text') {
+          const filterContent: string = event.filters[field.field].value.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
+          if (field.type === 'String') {
+            qualifier += 'LIKE(\'' + field.field + '\',\'%' + filterContent  + '%\'),';
+          } else {
+            qualifier += 'EQ(\'' + field.field + '\',' + filterContent + '),';
+          }
+        } 
+        else if (field.filterType === 'multiSelect') {
+          qualifier += 'IN(\'' + field.field + '\',' + event.filters[field.field].value.toString() + '),'
         }
       }
     });
