@@ -508,5 +508,75 @@
         </p-accordion>
 
     </p-tabPanel>
+    <p-tabPanel header="Permission-Service">
+        <h3>Beispiele mit dem Jemeleon-Action-Service</h3>
+        <p>Hier wird nicht die Direktive verwendet, sondern der Service (im TypeScript-Code), um die Berechtigungen auf Aktionen zu prüfen.</p>
+
+        <h2>Einzelner Wert</h2>
+
+        <div *ngIf="userHasOrderReadPermission$ | async; else userHasNoOrderReadPermissionObs">
+            <p>User has permission for root.dto.Order.read (used observable)</p>
+        </div>
+        <ng-template #userHasNoOrderReadPermissionObs>
+            <div class="hasNoPermission">
+                <p>User has NO permission for root.dto.Order.read (used observable)</p>
+            </div>
+        </ng-template>
+
+        <div *ngIf="userHasOrderReadPermission;else userHasNoOrderReadPermission">
+            <p>User has permission for root.dto.Order.read (used without observable)</p>
+        </div>
+        <ng-template #userHasNoOrderReadPermission>
+            <div class="hasNoPermission">
+                <p>User has NO permission for root.dto.Order.read (used without observable)</p>
+            </div>
+        </ng-template>
+
+        <h2>Record</h2>
+
+        <p>als Observable</p>
+        <ul>
+            <li *ngFor="let item of recordList$ | async">
+                <div *ngIf="item[1];else userHasNoPermissionForRecordItemObs">
+                    <p>User has permission for {{item[0]}} (used observable)</p>
+                </div>
+                <ng-template #userHasNoPermissionForRecordItemObs>
+                    <div class="hasNoPermission">
+                        <p>User has NO permission for {{item[0]}} (used observable)</p>
+                    </div>
+                </ng-template>
+            </li>
+        </ul>
+
+        <p *ngIf="missingPermissions$|async as missingPerm">User lacks permission for the following actions: {{missingPerm}}</p>
+
+        <p>als Variable</p>
+        <ul>
+            <li *ngFor="let item of recordList">
+                <div *ngIf="item[1];else userHasNoPermissionForRecordItem">
+                    <p>User has permission for {{item[0]}} </p>
+                </div>
+                <ng-template #userHasNoPermissionForRecordItem>
+                    <div class="hasNoPermission">
+                        <p>User has NO permission for {{item[0]}} </p>
+                    </div>
+                </ng-template>
+            </li>
+        </ul>
+
+        <p *ngIf="missingPermissions">User lacks permission for the following actions: {{missingPermissions}}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+    </p-tabPanel>
 
 </p-tabView>

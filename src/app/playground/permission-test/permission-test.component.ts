@@ -42,7 +42,18 @@ export class PermissionTestComponent implements OnInit, OnDestroy {
   currentDtoType: string;
   currentDtoField: string;
 
+  userHasOrderReadPermission$: Observable<boolean>;
+  userHasOrderReadPermission: boolean;
+
   subscriptions: Subscription[] = [];
+
+  record$: Observable<Record<string, boolean>>;
+  record: Record<string, boolean>;
+  recordList$: Observable<[string, boolean][]>;
+  recordList: [string, boolean][];
+
+  missingPermissions$: Observable<string>;
+  missingPermissions: string;
 
   constructor(
     private japs: JmeleonActionsPermissionService,
@@ -78,7 +89,7 @@ export class PermissionTestComponent implements OnInit, OnDestroy {
     this.entityConfiguration$.subscribe(configs => {
       // console.log('configs:', configs);
     });
-
+    this.checkPermissionWithService();
   }
 
 
@@ -129,4 +140,39 @@ export class PermissionTestComponent implements OnInit, OnDestroy {
   }
 
   filterFields = (fields: Field[]) : Field[] => fields.filter(field => field.visible);
+
+  checkPermissionWithService(){
+    this.userHasOrderReadPermission$ = this.japs.userHasPermissionForAction(root.dto.Order.read);
+    this.japs.userHasPermissionForAction(root.dto.Order.read).subscribe(has => this.userHasOrderReadPermission = has);
+
+    const permissions = [root.dto.Order.read, root.dto.Order.write, 'not.existing.permission', 'not.existing.permission2'];
+
+    this.record$ = this.japs.userHasPermissionForActions(permissions)
+      .pipe(
+        tap(record => console.log('record$: ', record))
+      );
+    this.missingPermissions$ = this.japs.userHasPermissionForActions(permissions).pipe(
+      map(record => Object
+      .entries(record)
+      // select only missing entries.
+      .filter(entry => !entry[1])
+      // select action-name
+      .map(entry => entry[0])
+      .join()));
+
+    this.recordList$ = this.japs.userHasPermissionForActions(permissions)
+    .pipe(
+      map(record => Object.entries(record))
+    );
+
+    this.japs.userHasPermissionForActions(permissions).subscribe(record => {
+      this.record = record;
+      this.recordList = Object.entries(this.record);
+      this.missingPermissions = Object
+        .entries(record)
+        .filter(entry => !entry[1])
+        .map(entry => entry[0])
+        .join();
+    });
+  }
 }
