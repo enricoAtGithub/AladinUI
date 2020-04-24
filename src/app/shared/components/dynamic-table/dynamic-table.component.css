@@ -2,3 +2,9 @@
     margin-left: 2px;
     margin-right: 2px;
 }
+
+::ng-deep .ui-paginator .ui-dropdown {
+    float: left;
+    position: relative;
+    top: 2px;
+}

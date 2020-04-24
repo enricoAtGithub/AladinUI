@@ -137,12 +137,12 @@ export class DynamicTableComponent implements OnInit {
     }
 
     let page = 1;
-    if (this.configuration.rowsPerPage) {
-      page = event.first / <number>this.configuration.rowsPerPage + 1;
+    if (event.rows) {
+      page = event.first / <number>event.rows + 1;
     }
 
     if (this.tableData.dataSource === undefined) {
-      this.entityService.filter(this.tableData.configName, page, 10, this.mainId, qualifier, sorting)
+      this.entityService.filter(this.tableData.configName, page, event.rows, this.mainId, qualifier, sorting)
         .subscribe(data => { this.entityData = data; this.loading = false; });
     } else {
       this.tableData.dataSource.subscribe(data => { this.entityData = data; this.loading = false; });
