@@ -15,6 +15,7 @@ import * as fromConfigSelectors from '../../../root-store/config-store/selectors
 import { Store, select } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { RootStoreState } from 'src/app/root-store/root-index';
+import { CatalogueService } from 'src/app/user/services/catalogue.service';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -39,7 +40,7 @@ export class DynamicTableComponent implements OnInit {
   filtersInTable = false;
 
   constructor(private entityService: EntityService, private cd: ChangeDetectorRef,
-    private dialogService: DialogService, private confirmationService: ConfirmationService,
+    private dialogService: DialogService, private confirmationService: ConfirmationService, private catalogueService: CatalogueService,
     private errorNotificationService: ErrorNotificationService, private store$: Store<RootStoreState.State>) {}
 
   ngOnInit() {
@@ -63,11 +64,19 @@ export class DynamicTableComponent implements OnInit {
         this.filtersInTable = field.filterType !== 'none' || this.filtersInTable
         if (field.filterType === 'multiSelect' && !Field.isPrimitiveType(field.type)) {
           field.options = [];
-          // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
-          this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
-            .subscribe(data => {
-              data.data.forEach(o => field.options.push({label: o._repr_, value: o.id}));
+
+          if (field.type === 'CatalogueEntry' && field.defaultCatalogue) {
+            this.catalogueService.getCatalogue(field.defaultCatalogue)
+            .subscribe(catalogue => {
+              catalogue.values.forEach(o => field.options.push({label: o.name, value: ''+o.id}));
             });
+          } else {
+            // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
+            this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
+              .subscribe(data => {
+                data.data.forEach(o => field.options.push({label: o._repr_, value: o.id}));
+              });
+            }
         }
       });
 
