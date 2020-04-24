@@ -19,8 +19,13 @@ export class EntityFileAttachmentsComponent implements OnChanges {
     if (!this.fileTableData) {
       const dataSource = this.entityService
         .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.type, ownerId: this.entryId});
-      this.fileTableData = new TableData(
-        'FileAttachment', 'FileAttachment', false, false, true, true, false, dataSource, '175px', false);
+        this.fileTableData = new TableData('FileAttachment', 'FileAttachment')
+          .setScrollable()
+          .setScrollHeight('175px')
+          .setDataSource(dataSource)
+          .hideHeadline()
+          .hideHeader()
+          .disablePagination();
     } else if (this.entryId && this.type) {
       this.fileTableData.dataSource  = this.entityService
         .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.type, ownerId: this.entryId});

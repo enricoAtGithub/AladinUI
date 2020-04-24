@@ -3,32 +3,67 @@ import { EntityData } from './entity-data';
 
 export class TableData {
     tableName: string;
-    configName: string;
-    showHeadline: boolean;
-    showHeader: boolean;
-    showCrudButtons: boolean;
-    scrollable: boolean;
-    pagination: boolean;
+    entityType: string;
+    showHeadline = true;
+    showHeader = true;
+    showButtons = true;
+    pagination = true;
+    showAttachments = true;
+    scrollable = false;
     dataSource: Observable<EntityData>;
     scrollHeight: string;
-    showAttachments: boolean;
 
     triggerRefresh: Subject<unknown>;
 
-    constructor(tableName: string, configName: string, showHeadline: boolean = true, showHeader: boolean = true,
-        showCrudButtons: boolean = true, scrollable: boolean = false, pagination: boolean = true, dataSource?: Observable<EntityData>,
-        scrollHeight?: string, showAttachments: boolean = true) {
-            this.tableName = tableName;
-            this.configName = configName;
-            this.dataSource = dataSource;
-            this.showHeadline = showHeadline;
-            this.showHeader = showHeader;
-            this.showCrudButtons = showCrudButtons;
-            this.pagination = pagination;
-            this.scrollable = scrollable;
-            this.scrollHeight = scrollHeight;
-            this.showAttachments = showAttachments;
-
-            this.triggerRefresh = new Subject();
+    constructor(tableName: string, entityType: string)  {
+        this.triggerRefresh = new Subject();
+        this.entityType = entityType;
+        this.tableName = tableName;
     }
+
+    setTableName(tableName: string) {
+        this.tableName = tableName;
+        return this;
+    }
+
+    setDataSource(dataSource: Observable<EntityData>) {
+        this.dataSource = dataSource;
+        return this;
+    }
+
+    setScrollHeight(scrollHeight: string) {
+        this.scrollHeight = scrollHeight;
+        return this;
+    }
+
+    setScrollable() {
+        this.scrollable = true;
+        return this;
+    }
+
+    hideHeadline() {
+        this.showHeadline = false;
+        return this;
+    }
+
+    hideHeader() {
+        this.showHeader = false;
+        return this;
+    }
+
+    hideButtons() {
+        this.showButtons = false;
+        return this;
+    }
+
+    hideAttachments() {
+        this.showAttachments = false;
+        return this;
+    }
+
+    disablePagination() {
+        this.pagination = false;
+        return this;
+    }
+
 }

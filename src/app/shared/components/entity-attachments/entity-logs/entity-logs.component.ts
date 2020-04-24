@@ -27,7 +27,15 @@ export class EntityLogsComponent implements OnInit, OnChanges {
       this.logTableData.triggerRefresh.next();
     } else if (changes.entryId && changes.type) {
       const dataSource = this.entityService.getEntityDataFromUrl('/log/entries/' + this.type + '/' + this.entryId);
-      this.logTableData = new TableData('Logs', 'LogEntry', false, false, false, true, false, dataSource, '175px', false);
+      this.logTableData = new TableData('Logs', 'LogEntry')
+        .setScrollable()
+        .setScrollHeight('175px')
+        .hideAttachments()
+        .hideButtons()
+        .hideHeader()
+        .hideHeadline()
+        .setDataSource(dataSource)
+        .disablePagination();
     }
   }
 

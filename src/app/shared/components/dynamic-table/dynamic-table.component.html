@@ -35,7 +35,7 @@
             </div>
           </th>
           
-          <th *ngIf="tableData.showCrudButtons" style="width:90px">Bearbeiten</th>
+          <th *ngIf="tableData.showButtons" style="width:90px">Bearbeiten</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -47,7 +47,7 @@
               <ng-template #displayIcon><i class="{{(processData(rowData[col.field], col)).icon}}" [ngStyle]="{'color': (processData(rowData[col.field], col)).color}" style="font-size: 2em;"></i></ng-template>
           </td>
           <!-- Crud Buttons -->
-          <td *ngIf="tableData.showCrudButtons !== false" style="text-align: center; width: 90px;">
+          <td *ngIf="tableData.showButtons !== false" style="text-align: center; width: 90px;">
             <button *ngIf="configuration?.type !== 'FileAttachment'" pButton type="button" icon="pi pi-pencil" class="crudButton" 
               pTooltip="Bearbeiten" (click)="updateEntity(rowData)"></button>
             <button *ngIf="configuration?.type !== 'FileAttachment'" pButton type="button" icon="pi pi-trash" class="crudButton" 

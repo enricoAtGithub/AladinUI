@@ -21,8 +21,15 @@ export class EntityNotesComponent implements OnChanges {
   ngOnChanges() {
     if (!this.noteTableData) {
       const dataSource = this.entityService.getEntityDataFromUrl('/note/entries/' + this.type + '/' + this.entryId);
-      this.noteTableData = new TableData('Note', 'Note', false, false, false, true, false,
-        dataSource, '175px', false);
+      this.noteTableData = new TableData('Note', 'Note')
+        .hideHeader()
+        .hideHeadline()
+        .hideAttachments()
+        .hideButtons()
+        .setScrollable()
+        .setScrollHeight('175px')
+        .setDataSource(dataSource)
+        .disablePagination();
     } else {
       this.selectedNote = undefined;
       this.noteTableData.dataSource  = this.entityService

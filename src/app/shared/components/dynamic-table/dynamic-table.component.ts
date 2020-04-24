@@ -45,7 +45,7 @@ export class DynamicTableComponent implements OnInit {
   ngOnInit() {
     const configuration$: Observable<EntityConfiguration> = this.store$.pipe(
       select(fromConfigSelectors.selectConfigs),
-      map(configs => configs[this.tableData.configName])
+      map(configs => configs[this.tableData.entityType])
     );
 
     this.configuration = new EntityConfiguration();
@@ -54,7 +54,7 @@ export class DynamicTableComponent implements OnInit {
       // Get the config according to the given name
       this.configuration = config;
       if (this.configuration === undefined) {
-        console.log('[Dynamic-Table] config with name ' + this.tableData.configName + ' not found!');
+        console.log('[Dynamic-Table] config with name ' + this.tableData.entityType + ' not found!');
         return;
       }
 
@@ -142,7 +142,7 @@ export class DynamicTableComponent implements OnInit {
     }
 
     if (this.tableData.dataSource === undefined) {
-      this.entityService.filter(this.tableData.configName, page, event.rows, this.mainId, qualifier, sorting)
+      this.entityService.filter(this.tableData.entityType, page, event.rows, this.mainId, qualifier, sorting)
         .subscribe(data => { this.entityData = data; this.loading = false; });
     } else {
       this.tableData.dataSource.subscribe(data => { this.entityData = data; this.loading = false; });

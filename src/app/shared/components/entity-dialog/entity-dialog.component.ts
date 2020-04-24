@@ -96,7 +96,13 @@ export class EntityDialogComponent implements OnInit {
 
   openEntitySelectionDialog(field: any, input: InputText) {
     this.entitySelectionContext = {field: field['field'], textModule: input};
-    this.entitySelectionTableData = new TableData(field['type'], field['type'], false, false, false, true, true, undefined, '700px', false);
+    this.entitySelectionTableData = new TableData(field['type'], field['type'])
+      .hideHeader()
+      .hideHeadline()
+      .hideAttachments()
+      .hideButtons()
+      .setScrollable()
+      .setScrollHeight('700px');
     this.displayEntitySelectionDialog = true;
   }
 
