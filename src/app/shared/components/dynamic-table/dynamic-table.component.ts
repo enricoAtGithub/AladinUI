@@ -161,6 +161,7 @@ export class DynamicTableComponent implements OnInit {
         return input ? '✓' : '🞩';
       case 'String':
       case 'int':
+      case 'Icon':
         return input;
       default:
         return input['_repr_'];

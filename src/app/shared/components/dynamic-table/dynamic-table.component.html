@@ -43,7 +43,8 @@
         <tr [pSelectableRow]="rowData" (dblclick)="doubleClickTableRow(rowData)">
           <td *ngFor="let col of columns" [style.width]="col.width" style="word-wrap: break-word;">
             <span class="ui-column-title">{{col.header}}</span>
-              {{processData(rowData[col.field], col)}}
+              <div *ngIf="col.type !== 'Icon';else displayIcon">{{processData(rowData[col.field], col)}}</div>
+              <ng-template #displayIcon><i class="{{(processData(rowData[col.field], col)).icon}}" [ngStyle]="{'color': (processData(rowData[col.field], col)).color}" style="font-size: 2em;"></i></ng-template>
           </td>
           <!-- Crud Buttons -->
           <td *ngIf="tableData.showCrudButtons !== false" style="text-align: center; width: 90px;">
