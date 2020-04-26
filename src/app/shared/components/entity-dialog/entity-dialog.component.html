@@ -24,7 +24,7 @@
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : ''" id="float-input" type="number" style="width: 100%" pInputText> 
           <label for="float-input">{{field.header}}</label>
         </span>
-        <span *ngSwitchCase="'boolean'" style="flex-grow: 1;">
+        <span *ngSwitchCase="'boolean'" style="flex-grow: 1; align-self: center;">
           <p-checkbox [required]="field.mandatory" [name]="field.field" [binary]="true" [label]="field.header" [ngModel]="(entity) ? entity[field.field] : false"></p-checkbox>
         </span>
         <span *ngSwitchCase="'Date'" class="ui-float-label" style="flex-grow: 1;">
