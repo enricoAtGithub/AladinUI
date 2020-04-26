@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
 import { EntityData } from '../../models/entity-data';
@@ -23,7 +23,7 @@ import { CatalogueService } from 'src/app/user/services/catalogue.service';
   styleUrls: ['./dynamic-table.component.css'],
   providers: [ConfirmationService]
 })
-export class DynamicTableComponent implements OnInit {
+export class DynamicTableComponent implements OnInit, OnChanges {
   @Input() tableData: TableData;
   @Input() mainId: number;
   @Input() dblClickCallback: (data) => any;
@@ -61,14 +61,14 @@ export class DynamicTableComponent implements OnInit {
 
       this.fields = this.configuration.fields.filter(field => field.visible === true);
       this.fields.forEach(field => {
-        this.filtersInTable = field.filterType !== 'none' || this.filtersInTable
+        this.filtersInTable = field.filterType !== 'none' || this.filtersInTable;
         if (field.filterType === 'multiSelect' && !Field.isPrimitiveType(field.type)) {
           field.options = [];
 
           if (field.type === 'CatalogueEntry' && field.defaultCatalogue) {
             this.catalogueService.getCatalogue(field.defaultCatalogue)
             .subscribe(catalogue => {
-              catalogue.values.forEach(o => field.options.push({label: o.name, value: ''+o.id}));
+              catalogue.values.forEach(o => field.options.push({label: o.name, value: '' + o.id}));
             });
           } else {
             // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
@@ -82,6 +82,12 @@ export class DynamicTableComponent implements OnInit {
 
       this.tableData.triggerRefresh.subscribe( () => this.refreshTableContents());
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.mainId && !changes.mainId.firstChange) {
+      this.refreshTableContents();
+    }
   }
 
   async rowSelect() {
@@ -128,9 +134,8 @@ export class DynamicTableComponent implements OnInit {
           } else {
             qualifier += 'EQ(\'' + field.field + '\',' + filterContent + '),';
           }
-        } 
-        else if (field.filterType === 'multiSelect') {
-          qualifier += 'IN(\'' + field.field + '\',' + event.filters[field.field].value.toString() + '),'
+        } else if (field.filterType === 'multiSelect') {
+          qualifier += 'IN(\'' + field.field + '\',' + event.filters[field.field].value.toString() + '),';
         }
       }
     });

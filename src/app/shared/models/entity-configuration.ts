@@ -4,6 +4,7 @@ export class EntityConfiguration {
     type: string;
     groups: string[];
     components: string[];
+    subtypes: string[];
     displayName: string;
     rowsPerPage: number;
     onAttachPost: {

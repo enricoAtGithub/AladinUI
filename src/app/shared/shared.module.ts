@@ -39,6 +39,7 @@ import { EntityAttributesComponent } from './components/entity-attachments/entit
 import { EntityGroupRelationComponent } from './components/entity-attachments/entity-group-relation/entity-group-relation.component';
 import { EntityFileAttachmentsComponent } from './components/entity-attachments/entity-file-attachments/entity-file-attachments.component';
 import { EntityLogsComponent } from './components/entity-attachments/entity-logs/entity-logs.component';
+import { EntitySubtypesComponent } from './components/entity-attachments/entity-subtypes/entity-subtypes.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { EntityLogsComponent } from './components/entity-attachments/entity-logs
     EntityAttributesComponent,
     EntityGroupRelationComponent,
     EntityFileAttachmentsComponent,
-    EntityLogsComponent
+    EntityLogsComponent,
+    EntitySubtypesComponent
   ],
   imports: [
     CommonModule,

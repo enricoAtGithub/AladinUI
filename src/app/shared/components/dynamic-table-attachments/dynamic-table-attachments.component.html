@@ -27,9 +27,14 @@
       </div>
     </p-tabPanel>
 
-  <p-tabPanel *ngIf="showActionTab" header="Aktionen" [selected]="!hasContent && showActionTab">
-    <app-right-actions-editor [entryId]="entryId"></app-right-actions-editor>
-  </p-tabPanel>
+    <p-tabPanel *ngFor="let subtype of configuration?.subtypes; let i = index" [header]="subtype"
+    [selected]="i==0 && !this.configuration?.components && !this.configuration?.groups">
+      <app-entity-subtypes [type]="subtype" [mainId]="entryId"></app-entity-subtypes>
+    </p-tabPanel>
+
+    <p-tabPanel *ngIf="showActionTab" header="Aktionen" [selected]="!hasContent && showActionTab">
+      <app-right-actions-editor [entryId]="entryId"></app-right-actions-editor>
+    </p-tabPanel>
 
   </p-tabView>
 </div>

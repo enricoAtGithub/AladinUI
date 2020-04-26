@@ -33,7 +33,7 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
     );
     configuration$.subscribe(config => {
       this.configuration = config;
-      this.hasContent = !!config.components || config.groups !== null;
+      this.hasContent = !!config.components || config.groups !== null || config.subtypes !== null;
 
       if (this.configName === 'SecurityRight') {
         this.showActionTab = true;
