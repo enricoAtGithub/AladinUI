@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { root } from 'src/app/jmeleon/modules/permissions/permissions';
 import {
   View,
   EventSettingsModel,
@@ -32,6 +33,8 @@ import { EntityConfiguration } from 'src/app/shared/models/entity-configuration'
 import { ContextMenu } from 'primeng/contextmenu';
 import { ResizeEvent } from 'angular-resizable-element';
 import { SchedulerTimeRange, TimeRange } from '../../config/scheduler.timerange';
+import { JmeleonActionsPermissionService } from '../../../permissions/services/jmeleon-actions-permission.service';
+import { map } from 'rxjs/operators';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -55,6 +58,15 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   selectedDateResourceScheduler: Date;
   showResourceScheduler = false;
 
+  root = root;
+  userPermissions = {
+    allowTimeChange: false,
+    allowOrderCreate: false,
+    allowOrderEdit: false,
+    allowOrderDelete: false,
+    allowAssign: false
+  };
+
   eventSchedulerObject: EventSettingsModel;
   resourceSchedulerObject: EventSettingsModel;
   resourceDataSource: Object[];
@@ -65,20 +77,20 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   private schedulerStatus: {
     currentSchedulerEvent: SchedulerEvent,
     currentResources: SchedulerResource[],
-    contextMenuOpen: Boolean
+    contextMenuOpen: boolean
   };
-
   private currEvSchInterval: { currDate: Date, currView: View };
   private currResSchInterval: { currDate: Date, currView: View };
-
   groupData: GroupModel = { resources: ['Resources'] };
+
 
   constructor(
     private breadcrumbService: BreadcrumbService,
     private schedulerService: SchedulerService,
     private dialogService: DialogService,
     private confirmationService: ConfirmationService,
-    private entityService: EntityService
+    private entityService: EntityService,
+    private japs: JmeleonActionsPermissionService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Einsatzplanung' }
@@ -86,6 +98,25 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.initPermissions();
+    this.initMemberVars();
+    this.getSchedulerHeights();
+    this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  private initPermissions() {
+    this.subscriptions.push(this.japs.userHasPermissionForAction(root.dto.Order.create).subscribe(has => this.userPermissions.allowOrderCreate = has));
+    this.subscriptions.push(this.japs.userHasPermissionForAction(root.dto.Order.write).subscribe(has => this.userPermissions.allowOrderEdit = has));
+    this.subscriptions.push(this.japs.userHasPermissionForAction(root.dto.Order.delete).subscribe(has => this.userPermissions.allowOrderDelete = has));
+    this.subscriptions.push(this.japs.userHasPermissionForAction(root.scheduler.order.assign).subscribe(has => this.userPermissions.allowAssign = has));
+    this.subscriptions.push(this.japs.userHasPermissionForAction(root.scheduler.order.updateInterval).subscribe(has => this.userPermissions.allowTimeChange = has));
+  }
+
+  private initMemberVars() {
     this.eventSchedulerView = <View>EventSchedulerSettings.initialView;
     this.resourceSchedulerView = <View>ResourceSchedulerSettings.initialView;
     this.resourceFilter = [
@@ -95,12 +126,6 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     ];
     this.schedulerStatus = { currentSchedulerEvent: null, currentResources: null, contextMenuOpen: false };
     this.currEvSchInterval = { currView: this.eventSchedulerView, currDate: new Date() };
-    this.getSchedulerHeights();
-    this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   // colorize scheduler events
@@ -331,21 +356,27 @@ export class SchedulerComponent implements OnInit, OnDestroy {
 
   // https://stackoverflow.com/questions/43590487/open-the-context-menu-by-primeng-from-code-angular-2?rq=1
   openContextMenu(schEvCM: ContextMenu, event: MouseEvent, data: SchedulerEvent): void {
+    if (!((this.userPermissions.allowOrderEdit) || (this.userPermissions.allowOrderDelete))) { return; }
+
     this.schedulerStatus.contextMenuOpen = true;
     const model: MenuItem[] = [];
-    model.push(
-      {
-        label: ContextMenuSettings.iconText.edit,
-        icon: ContextMenuSettings.icons.edit,
-        command: () => { this.updateSchedulerEvent(data); },
-      },
-      {
-        label: ContextMenuSettings.iconText.delete,
-        icon: ContextMenuSettings.icons.delete,
-        command: () => { this.deleteSchedulerEvent(data); },
-      }
+    if (this.userPermissions.allowOrderEdit) {
+      model.push(
+        {
+          label: ContextMenuSettings.iconText.edit,
+          icon: ContextMenuSettings.icons.edit,
+          command: () => { this.updateSchedulerEvent(data); },
+        });
+    }
+    if (this.userPermissions.allowOrderDelete) {
+      model.push(
+        {
+          label: ContextMenuSettings.iconText.delete,
+          icon: ContextMenuSettings.icons.delete,
+          command: () => { this.deleteSchedulerEvent(data); },
+        });
+    }
 
-    );
     schEvCM.model = model;
     schEvCM.show(event);
   }
@@ -384,6 +415,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
 
   addSchedulerEvent(data: any) {
     if (this.schedulerStatus.contextMenuOpen) { return; }
+    if (!this.userPermissions.allowOrderCreate) { return; }
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,

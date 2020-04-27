@@ -1,7 +1,7 @@
 <p-confirmDialog header="Bestätigung" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
 <p-contextMenu #schEvCM (onHide)="closeContextMenu()"></p-contextMenu>
 
-<div>
+<div *appPermissionCheck="root.scheduler.openEvSch">
     <div class="resizableBox eventScheduler" id=0 mwlResizable [style.height.px]="boxHeights[0]"
         [validateResize]="validate" [enableGhostResize]="false" [resizeSnapGrid]="{ left: 1, right: 1 }"
         (resizeEnd)="onResizeEnd($event, 0)" (resizing)="onResizing($event, 0)">
@@ -9,7 +9,8 @@
             [currentView]="eventSchedulerView" (dragStart)="setDraggingParams($event)"
             (resizeStart)="setResizeParams($event)" (resizeStop)="updateSchedulerEventInterval($event.data)"
             (dragStop)="updateSchedulerEventInterval($event.data)" [showQuickInfo]="false"
-            (eventClick)="onSchedulerEventClick($event)" [allowResizing]="true" locale='de' [rowAutoHeight]="true"
+            (eventClick)="onSchedulerEventClick($event)" [allowDragAndDrop]="userPermissions.allowTimeChange"
+            [allowResizing]="userPermissions.allowTimeChange" locale='de' [rowAutoHeight]="true"
             (eventRendered)="onEventRendered($event)" (cellClick)="addSchedulerEvent($event)"
             (popupOpen)="onPopupOpen($event)" (navigating)="onNavigate($event, 'evSch')">
 
@@ -55,8 +56,10 @@
         <div class="resize-handle" mwlResizeHandle [resizeEdges]="{ bottom: true }"><i class="pi pi-ellipsis-h"></i>
         </div>
     </div>
+</div>
 
-    <div *ngIf="showResourceScheduler">
+<div *ngIf="showResourceScheduler">
+    <div *appPermissionCheck="root.scheduler.openResSch">
         <div class="resizableBox resourceScheduler" id=1 mwlResizable [style.height.px]="boxHeights[1]"
             [validateResize]="validate" [enableGhostResize]="false" [resizeSnapGrid]="{ left: 1, right: 1 }"
             (resizeEnd)="onResizeEnd($event, 1)" (resizing)="onResizing($event, 1)">
@@ -82,9 +85,11 @@
                     <div class='template-wrap'>
                         <div class="resource-details">
                             <div class="resource-name">
-                                <i title="{{data.resourceData.AssignedAltText}}"
-                                    class="{{data.resourceData.AssignedIcon}}"
-                                    (click)="modifyAssignment(data.resourceData)"></i>
+                                <div *ngIf="userPermissions.allowAssign">
+                                    <i title="{{data.resourceData.AssignedAltText}}"
+                                        class="{{data.resourceData.AssignedIcon}}"
+                                        (click)="modifyAssignment(data.resourceData)"></i>
+                                </div>
                                 &nbsp;{{data.resourceData.Name}}&nbsp;
                                 <i title="{{data.resourceData.HasConflictAltText}}"
                                     class="{{data.resourceData.HasConflictIcon}}"></i>
