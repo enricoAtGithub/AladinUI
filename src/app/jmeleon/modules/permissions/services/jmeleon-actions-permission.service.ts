@@ -4,7 +4,7 @@ import { _runtimeChecksFactory } from '@ngrx/store/src/runtime_checks';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { Observable, from, defer, of, merge, forkJoin } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 
 /**
  * This service checks if the current user is authorized to perform a ceration action.
@@ -23,7 +23,7 @@ export class JmeleonActionsPermissionService {
 
   initActionsPermittedForCurrentUser = (actions: string[]): void => {
     this._isInitialized = true;
-    this.ngxPermissionService.loadPermissions(actions);
+    this.ngxPermissionService.addPermission(actions);
 
   }
 
@@ -36,7 +36,7 @@ export class JmeleonActionsPermissionService {
       if (!user) {
         return;
       }
-      this.ngxPermissionService.loadPermissions(user.allowedActions);
+      this.ngxPermissionService.addPermission(user.allowedActions);
     });
 
   }
@@ -47,13 +47,17 @@ export class JmeleonActionsPermissionService {
     if (!!dict) {
       action = JMeleonActionsUtils.resolveVars(action, dict);
     }
-    console.log(`checking permission for: '${action}'`);
+    // console.log(`checking permission for: '${action}'`);
     // converting promise into observable
     return defer(() => {
       const result = this.ngxPermissionService.hasPermission(action);
-      console.log(`user has ${(result ? '' : 'no ')} permission for: '${action}'`);
       return result;
-    });
+    }).pipe(
+      tap(result => {
+        console.log(`user has ${(result ? '' : 'no ')} permission for: '${action}'`);
+        
+      })
+    );
   }
 
   // returns a record dict, where the key is the action-string and the value states, 

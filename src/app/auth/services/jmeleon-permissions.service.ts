@@ -38,7 +38,9 @@ export class JMeleonPermissionsService {
     if (!this.userHasAdminRole(user)) {
       return;
     }
-    this.permissionsService.loadPermissions(this.getPermissionsForAdmin());
+    // this.permissionsService.loadPermissions(this.getPermissionsForAdmin());
+    this.permissionsService.addPermission(this.getPermissionsForAdmin());
+
   }
 
   currentUserHasPermission(permissionName: string): boolean {
