@@ -1,3 +1,4 @@
-<p-dropdown [options]="dtoConfigs" placeholder="Konfiguration" [style]="{'float': 'left', 'margin-left': '5px'}" (onChange)="selectedConfigChanged($event)"></p-dropdown>
+<p-dropdown [options]="dtoConfigs" placeholder="Konfiguration" [style]="{'float': 'left', 'margin-left': '5px', 'margin-bottom': '5px'}" (onChange)="selectedConfigChanged($event)"></p-dropdown>
 
+<div *ngIf="!data"><span style="display:inline-block; height: 1cm;"></span></div>
 <app-dynamic-table *ngIf="data" [tableData]="data" > </app-dynamic-table>

@@ -30,12 +30,10 @@ export class DTOEntitiesComponent implements OnInit {
   }
 
   selectedConfigChanged(event) {
-    if (this.data != null) 
-        this.data = null
-    else {
-        this.currentConfig = event['value'];
+    this.data = null;
+    this.currentConfig = event['value'];
+    setTimeout (() => {
         this.data = new TableData('', this.currentConfig);
-    }
-
+      }, 200)
   }
 }
