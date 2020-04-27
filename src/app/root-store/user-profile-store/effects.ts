@@ -11,10 +11,11 @@ import { User } from 'src/app/shared/models/user';
 import { RootStoreState } from '../root-index';
 import * as fromConfigSelectors from '../config-store/selectors';
 import { ConfigActions } from '../config-store/config-index';
+import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 
 @Injectable()
 export class UserProfileEffects {
-  constructor(private authService: AuthService, private actions$: Actions, public router: Router, private store$: Store<RootStoreState.State>) {}
+  constructor(private authService: AuthService, private actions$: Actions, public router: Router, private store$: Store<RootStoreState.State>, private japs: JmeleonActionsPermissionService) {}
 
   @Effect()
   loginRequestEffect$: Observable<Action> = this.actions$.pipe(
@@ -29,6 +30,8 @@ export class UserProfileEffects {
             (httpResult, index) => {
               if (httpResult.success) {
                 const user: User = httpResult.result;
+                user.allowedActions = user.allowedActions.sort();
+                this.japs.initActionsPermittedForCurrentUser(user.allowedActions);
 
                 if (user.user.enforcePasswdChange) {
                   return new userProfileActions.LoginPasswordChangeAction({user: user});

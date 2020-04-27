@@ -26,6 +26,7 @@ import { FormsModule } from '@angular/forms';
 import { AvailabilityComponent } from './components/availability/availability.component';
 import { ResizableModule } from 'angular-resizable-element';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 
 @NgModule({
@@ -40,7 +41,12 @@ import { SharedModule } from 'src/app/shared/shared.module';
     ConfirmDialogModule,
     ContextMenuModule,
     SharedModule,
-    ResizableModule
+    ResizableModule,
+    NgxPermissionsModule.forChild({
+      permissionsIsolate: false,
+      rolesIsolate: false
+    }),
+    // NgxPermissionsModule.forChild()
   ],
   providers: [
     DayService,

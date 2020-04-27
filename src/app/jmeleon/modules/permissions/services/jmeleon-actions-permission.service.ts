@@ -5,6 +5,9 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import { Observable, from, defer, of, merge, forkJoin } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { map, switchMap, take, tap } from 'rxjs/operators';
+import { RootStoreState } from 'src/app/root-store/root-index';
+import { Store, select } from '@ngrx/store';
+import * as fromUserSelectors from 'src/app/root-store/user-profile-store/selectors';
 
 /**
  * This service checks if the current user is authorized to perform a ceration action.
@@ -18,11 +21,14 @@ export class JmeleonActionsPermissionService {
 
   constructor(
     private ngxPermissionService: NgxPermissionsService,
-    private authService: AuthService) {
+    // private authService: AuthService,
+    private store$: Store<RootStoreState.State>
+    ) {
   }
 
   initActionsPermittedForCurrentUser = (actions: string[]): void => {
     this._isInitialized = true;
+    // console.log('initializing permissions for actions: ', actions);
     this.ngxPermissionService.addPermission(actions);
 
   }
@@ -32,10 +38,14 @@ export class JmeleonActionsPermissionService {
       return;
     }
     this._isInitialized = true;
-    this.authService.localUser$.subscribe(user => {
+    this.store$.pipe(
+      select(fromUserSelectors.selectUserProfileUser),
+      ).subscribe(user => {
+    // this.authService.localUser$.subscribe(user => {
       if (!user) {
         return;
       }
+      // console.log('initializing permissions for actions: ', user.allowedActions);
       this.ngxPermissionService.addPermission(user.allowedActions);
     });
 
@@ -55,6 +65,11 @@ export class JmeleonActionsPermissionService {
     }).pipe(
       tap(result => {
         console.log(`user has ${(result ? '' : 'no ')} permission for: '${action}'`);
+        // if (!result){
+        //   this.ngxPermissionService.permissions$.subscribe(perm => {
+        //     console.log('current permissions: ', perm);
+        //   });
+        // }
         
       })
     );

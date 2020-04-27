@@ -10,9 +10,14 @@ export function userProfileReducer(state = initialState, action: Actions): UserP
           isInLogin: true
         };
       case ActionTypes.LOGIN_SUCCESS:
+        const user = action.payload.user;
+        // console.log('user-actions: ', user.allowedActions);
+        // user.allowedActions = user.allowedActions.sort();
+        // console.log('user-actions: ', user.allowedActions);
         return {
           ...state,
-          user: action.payload.user,
+          // user: action.payload.user,
+          user,
           error: '',
           isInLogin: false,
 

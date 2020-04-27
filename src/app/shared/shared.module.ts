@@ -81,7 +81,10 @@ import { EntitySubtypesComponent } from './components/entity-attachments/entity-
     OverlayPanelModule,
     EditorModule,
     ColorPickerModule,
-    NgxPermissionsModule,
+    NgxPermissionsModule.forChild({
+      permissionsIsolate: false,
+      rolesIsolate: false
+    }),
     PermissionsModule,
     ScrollPanelModule
   ],
