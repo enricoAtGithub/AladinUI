@@ -1,0 +1,3 @@
+<p-dropdown [options]="dtoConfigs" placeholder="Konfiguration" [style]="{'float': 'left', 'margin-left': '5px'}" (onChange)="selectedConfigChanged($event)"></p-dropdown>
+
+<app-dynamic-table *ngIf="data" [tableData]="data" > </app-dynamic-table>

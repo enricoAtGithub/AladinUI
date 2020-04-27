@@ -24,6 +24,7 @@ import { SchedulerComponent } from './jmeleon/modules/scheduler/components/sched
 import { environment } from 'src/environments/environment';
 import { PlaygroundGuard } from './playground/guards/playground.guard';
 import { AvailabilityComponent } from './jmeleon/modules/scheduler/components/availability/availability.component';
+import { DTOEntitiesComponent } from './jmeleon/components/dto-entities/dto-entities.component';
 
 
 export const routes: Routes = [
@@ -50,6 +51,7 @@ export const routes: Routes = [
           { path: 'availability', pathMatch: 'full', component: AvailabilityComponent },
         ]
       },
+      { path: 'dto-entities', component: DTOEntitiesComponent },
       {
         path: 'playground',
         loadChildren: () => import('./playground/playground.module').then(m => m.PlaygroundModule),

@@ -6,9 +6,10 @@ import { DropdownModule, PanelModule, ButtonModule, ScrollPanelModule } from 'pr
 import { AceModule } from 'ngx-ace-wrapper';
 import { ResourcesComponent } from './components/resources/resources.component';
 import { SharedModule } from '../shared/shared.module';
+import { DTOEntitiesComponent } from './components/dto-entities/dto-entities.component';
 
 @NgModule({
-  declarations: [DTOConfigEditorComponent, ResourcesComponent],
+  declarations: [DTOConfigEditorComponent, ResourcesComponent, DTOEntitiesComponent],
   imports: [
     CommonModule,
     DiagramsModule,

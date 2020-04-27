@@ -39,6 +39,7 @@ export class AppMenuComponent implements OnInit {
                     { label: 'An-/Abwesenheiten', icon: 'fa fa-plane', routerLink: ['/resource-management/availability'] },
                 ]
             },
+            { label: 'Objekte', icon: 'fa fa-fw fa-eur', routerLink: ['/dto-entities'] },
             {
                 label: 'Administration', icon: 'fa fa-fw fa-pencil',
                 visible: this.jmeleonPermissionsService.currentUserHasPermission(
