@@ -1,5 +1,5 @@
 <p-dialog header="Entity Auswahl" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog" [style]="{width: '80%'}" appendTo="body">
-  <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData" (onEntitySelection)="entitySelected($event, entityForm)"></app-dynamic-table>
+  <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData" (entitySelection)="entitySelected($event, entityForm)"></app-dynamic-table>
 </p-dialog>
 
 <form (ngSubmit)="onSubmit(entityForm)" #entityForm="ngForm" class="ui-g">

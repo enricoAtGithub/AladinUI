@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
 import { EntityData } from '../../models/entity-data';
@@ -16,6 +16,8 @@ import { Store, select } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import { CatalogueService } from 'src/app/user/services/catalogue.service';
+import { root } from 'src/app/jmeleon/modules/permissions/permissions';
+import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -27,7 +29,7 @@ export class DynamicTableComponent implements OnInit, OnChanges {
   @Input() tableData: TableData;
   @Input() mainId: number;
   @Input() dblClickCallback: (data) => any;
-  @Output() onEntitySelection = new EventEmitter();
+  @Output() entitySelection = new EventEmitter();
 
   configuration: EntityConfiguration;
   fields: Field[];
@@ -38,10 +40,18 @@ export class DynamicTableComponent implements OnInit, OnChanges {
   $entryId: Subject<number> = new Subject();
   lastLazyLoadEvent: LazyLoadEvent;
   filtersInTable = false;
+  showButtons = false;
+  root = root;
 
-  constructor(private entityService: EntityService, private cd: ChangeDetectorRef,
-    private dialogService: DialogService, private confirmationService: ConfirmationService, private catalogueService: CatalogueService,
-    private errorNotificationService: ErrorNotificationService, private store$: Store<RootStoreState.State>) {}
+  constructor(
+    private entityService: EntityService,
+    private dialogService: DialogService,
+    private confirmationService: ConfirmationService,
+    private catalogueService: CatalogueService,
+    private errorNotificationService: ErrorNotificationService,
+    private store$: Store<RootStoreState.State>,
+    private japs: JmeleonActionsPermissionService,
+    ) {}
 
   ngOnInit() {
     const configuration$: Observable<EntityConfiguration> = this.store$.pipe(
@@ -58,6 +68,8 @@ export class DynamicTableComponent implements OnInit, OnChanges {
         console.log('[Dynamic-Table] config with name ' + this.tableData.entityType + ' not found!');
         return;
       }
+
+      this.checkShowButtons();
 
       this.fields = this.configuration.fields.filter(field => field.visible === true);
       this.fields.forEach(field => {
@@ -91,12 +103,12 @@ export class DynamicTableComponent implements OnInit, OnChanges {
   }
 
   async rowSelect() {
-    this.onEntitySelection.emit(this.selectedEntry);
+    this.entitySelection.emit(this.selectedEntry);
     this.selectedEntryId = this.selectedEntry['id'];
   }
 
   async rowUnselect() {
-    this.onEntitySelection.emit(undefined);
+    this.entitySelection.emit(undefined);
     this.selectedEntryId = undefined;
   }
 
@@ -250,5 +262,19 @@ export class DynamicTableComponent implements OnInit, OnChanges {
 
   downloadUrl(id: number): string {
     return UrlCollection.Files.generateDownloadUrl(id);
+  }
+
+  checkShowButtons() {
+    if (!this.tableData.showButtons) { return; }
+
+    if (this.configuration.type !== 'FileAttachment') {
+      this.japs.userHasPermissionForActions([root.dto.$dtoType.delete, root.dto.$dtoType.write], {'$dtoType': this.configuration.type}).subscribe(record => {
+        this.showButtons = !Object.entries(record).every(entry => !entry[1]);
+      });
+    } else {
+      this.japs.userHasPermissionForActions([root.dto.FileAttachment.download]).subscribe(record => {
+        this.showButtons = !Object.entries(record).every(entry => !entry[1]);
+      });
+    }
   }
 }

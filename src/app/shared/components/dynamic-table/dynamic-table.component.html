@@ -35,7 +35,7 @@
             </div>
           </th>
           
-          <th *ngIf="tableData.showButtons" style="width:90px">Bearbeiten</th>
+          <th *ngIf="showButtons" style="width:90px">Bearbeiten</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -47,13 +47,25 @@
               <ng-template #displayIcon><i class="{{(processData(rowData[col.field], col)).icon}}" [ngStyle]="{'color': (processData(rowData[col.field], col)).color}" style="font-size: 2em;"></i></ng-template>
           </td>
           <!-- Crud Buttons -->
-          <td *ngIf="tableData.showButtons !== false" style="text-align: center; width: 90px;">
-            <button *ngIf="configuration?.type !== 'FileAttachment'" pButton type="button" icon="pi pi-pencil" class="crudButton" 
-              pTooltip="Bearbeiten" (click)="updateEntity(rowData)"></button>
-            <button *ngIf="configuration?.type !== 'FileAttachment'" pButton type="button" icon="pi pi-trash" class="crudButton" 
-              pTooltip="Löschen" (click)="deleteEntity(rowData)"></button>
-            <button *ngIf="configuration?.type === 'FileAttachment'" pButton type="button" icon="fa fa-download" class="crudButton" fileSaver
-              pTooltip="Herunterladen" [method]="'GET'" [fileName]="rowData['fileName']" [url]="downloadUrl(rowData['id'])"></button>
+          <td *ngIf="showButtons" style="text-align: center; width: 90px;">
+            <code *ngIf="configuration?.type !== 'FileAttachment'" class="html">
+              <ng-template [appPermissionCheck]="root.dto.$dtoType.write" [appPermissionCheckVarDict]="{'$dtoType':configuration.type}">
+                <button pButton type="button" icon="pi pi-pencil" class="crudButton" pTooltip="Bearbeiten" (click)="updateEntity(rowData)"></button>
+              </ng-template>
+            </code>
+
+            <code *ngIf="configuration?.type !== 'FileAttachment'" class="html">
+              <ng-template [appPermissionCheck]="root.dto.$dtoType.delete" [appPermissionCheckVarDict]="{'$dtoType':configuration.type}">
+                <button pButton type="button" icon="pi pi-trash" class="crudButton" pTooltip="Löschen" (click)="deleteEntity(rowData)"></button>
+              </ng-template>
+            </code>
+
+            <code *ngIf="configuration?.type === 'FileAttachment'" class="html">
+              <ng-template [appPermissionCheck]="root.dto.FileAttachment.download">
+                <button  pButton type="button" icon="fa fa-download" class="crudButton" fileSaver
+                pTooltip="Herunterladen" [method]="'GET'" [fileName]="rowData['fileName']" [url]="downloadUrl(rowData['id'])"></button>
+              </ng-template>
+            </code>
           </td>
         </tr>
       </ng-template>
