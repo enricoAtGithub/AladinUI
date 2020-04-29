@@ -74,7 +74,7 @@ pipeline {
 			
                 echo 'uploading artefacts'
 				sh "bash ./jenkins/upload_master.sh ${version}"
-				slackSend color: "good", message: "Artefact: ${env.JOB_NAME} with version ${version} was uploaded to owncloud"
+				slackSend teamDomain: "simply4it", channel: "#jenkins_notifications", tokenCredentialId: "simply4it_jenkins", color: "good", message: "Artefact: ${env.JOB_NAME} with version ${version} was uploaded to owncloud"
             }
         }   
 	}
