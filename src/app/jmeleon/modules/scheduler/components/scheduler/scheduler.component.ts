@@ -86,8 +86,8 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   tooltipTemplate: string = '<div style="margin: 2px;font-size:12px;">' +
     '<div class="content-area">' +
     '<div class="name"><b>${Subject}</></b></div>' +
-    '${if(Type !== null && Type !== undefined)}<div class="type">Auftragsart:&nbsp;${Type}</div>${/if}' +
-    '${if(Location !== null && Location !== undefined)}<div class="location">Einsatzort:&nbsp;${Location}</div>${/if}' +
+    '${if(Type !== "unbekannt")}<div class="type">Auftragsart:&nbsp;${Type}</div>${/if}' +
+    '${if(Location != null)}<div class="location">Einsatzort:&nbsp;${Location}</div>${/if}' +
     '<div class="time">Start:&nbsp;${StartTime.toLocaleString()}</div>' +
     '<div class="time">Ende:&nbsp;${EndTime.toLocaleString()}</div>' +
     '</div>' +
