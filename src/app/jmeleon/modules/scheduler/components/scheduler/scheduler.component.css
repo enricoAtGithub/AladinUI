@@ -106,3 +106,7 @@ mwlResizable {
     background-color: white;
     border: 1px solid lightgray;
 }
+
+:host ::ng-deep .e-appointment-details {
+    height: 100%;
+}

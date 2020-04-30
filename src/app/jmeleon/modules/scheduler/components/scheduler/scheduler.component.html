@@ -15,7 +15,7 @@
             (popupOpen)="onPopupOpen($event)" (navigating)="onNavigate($event, 'evSch')">
 
             <ng-template #eventSettingsTemplate let-data>
-                <div (contextmenu)="openContextMenu(schEvCM, $event, data)" style="width: 100%;">
+                <div (contextmenu)="openContextMenu(schEvCM, $event, data)" style="width: 100%;height: 100%;">
                     <div *ngIf="data.IsReadonly" style="float:right; padding-right: 5px;"><i class="pi pi-lock"></i>
                     </div>
                     <div *ngIf="data.MissingResources" style="float:right; padding-right: 5px;">
