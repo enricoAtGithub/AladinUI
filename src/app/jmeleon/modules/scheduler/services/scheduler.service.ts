@@ -36,7 +36,7 @@ export class SchedulerService {
 
           return {
             Id: 'order#' + schEv.id,
-            Type: 'order',
+            Type: schEv.type,
             RefId: schEv.id,
             Subject: schEv.subject,
             StartTime: startDateTime,
@@ -73,7 +73,7 @@ export class SchedulerService {
 
               return {
                 Id: 'order#' + schEv.id,
-                Type: 'order',
+                Type: schEv.Type,
                 RefId: schEv.id,
                 Subject: schEv.subject,
                 Description: schEv.description,
