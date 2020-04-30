@@ -49,7 +49,8 @@ export class SchedulerService {
             MissingResources: schEv.missingResources,
             TooManyResources: schEv.tooManyResources,
             ResourceConflictDescription: schEv.resourceConflictDescription,
-            IsAllDay: false
+            IsAllDay: false,
+            Location: schEv.location
           };
         }))
       );
@@ -85,7 +86,8 @@ export class SchedulerService {
                 Color: schEv.color,
                 MissingResources: schEv.missingResources,
                 TooManyResources: schEv.tooManyResources,
-                ResourceConflictDescription: schEv.resourceConflictDescription
+                ResourceConflictDescription: schEv.resourceConflictDescription,
+                Location: schEv.location
               };
             }),
             IsUnavailable: schRes.isUnavailable.map(absence => {

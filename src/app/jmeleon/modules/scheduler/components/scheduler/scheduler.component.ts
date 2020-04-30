@@ -83,6 +83,13 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   private currResSchInterval: { currDate: Date, currView: View };
   groupData: GroupModel = { resources: ['Resources'] };
 
+  tooltipTemplate: string = '<div class="tooltip-wrap">' +
+    '<div class="image ${EventType}"></div>' +
+    '<div class="content-area"><div class="name">${Subject}</></div>' +
+    '${if(Type !== null && Type !== undefined)}<div class="type">Auftragsart:&nbsp;${Type}</div>${/if}' +
+    '${if(Location !== null && Location !== undefined)}<div class="location">Einsatzort:&nbsp;${Location}</div>${/if}' +
+    '<div class="time">Start:&nbsp;${StartTime.toLocaleString()} </div>' +
+    '<div class="time">Ende:&nbsp;${EndTime.toLocaleString()}</div>';
 
   constructor(
     private breadcrumbService: BreadcrumbService,
@@ -147,7 +154,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       this.schedulerService.getSchedulerEvents({ start, end })
         .subscribe(schedulerEvents => {
           // provide all schedulerEvents shown in EventScheduler (upper component)
-          this.eventSchedulerObject = { dataSource: schedulerEvents };
+          this.eventSchedulerObject = { dataSource: schedulerEvents, enableTooltip: true, tooltipTemplate: this.tooltipTemplate };
         }));
   }
 
