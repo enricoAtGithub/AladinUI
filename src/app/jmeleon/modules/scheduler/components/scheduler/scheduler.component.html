@@ -114,7 +114,8 @@
         </div>
 
         <div style="width: 100%; height: 100%;">
-            <app-dynamic-table-attachments configName="Order" [entryId]="schedulerStatus?.currentSchedulerEvent?.RefId">
+            <app-dynamic-table-attachments configName="Order" [entryId]="schedulerStatus?.currentSchedulerEvent?.RefId"
+                [excludedPanels]="['OrderResourceRelation']">
             </app-dynamic-table-attachments>
         </div>
     </div>
