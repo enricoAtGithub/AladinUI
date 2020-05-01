@@ -76,6 +76,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   schEvConfig: EntityConfiguration;
   private schedulerStatus: {
     currentSchedulerEvent: SchedulerEvent,
+    currentSchedulerEventHTML: HTMLElement,
     currentResources: SchedulerResource[],
     contextMenuOpen: boolean
   };
@@ -133,14 +134,14 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       { label: ResourceSchedulerSettings.filterText.available, value: 'available' },
       { label: ResourceSchedulerSettings.filterText.hasConflict, value: 'hasConflict' }
     ];
-    this.schedulerStatus = { currentSchedulerEvent: null, currentResources: null, contextMenuOpen: false };
+    this.schedulerStatus = { currentSchedulerEvent: null, currentSchedulerEventHTML: null, currentResources: null, contextMenuOpen: false };
     this.currEvSchInterval = { currView: this.eventSchedulerView, currDate: new Date() };
   }
 
   // colorize scheduler events
   onEventRendered(args: EventRenderedArgs): void {
     const color: string = args.data.Color as string;
-    const schedulerEventHTML = args.element;
+    const schedulerEventHTML = <HTMLElement>args.element;
     schedulerEventHTML.style.backgroundColor = color;
 
     // on resource scheduler add css class "selected" to the current scheduler event
@@ -164,8 +165,14 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     // access clicked scheduler event
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);
 
+    // remove frame of previously selected event
+    if (this.schedulerStatus.currentSchedulerEventHTML) { this.schedulerStatus.currentSchedulerEventHTML.classList.remove('selected'); }
+    // add frame to clicked event
+    const schedulerEventHTML = <HTMLElement>args.element;
+    schedulerEventHTML.classList.add('selected');
+
     // set global scheduler status
-    this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentResources: null, contextMenuOpen: false };
+    this.schedulerStatus = { currentSchedulerEvent: schedulerEvent, currentSchedulerEventHTML: schedulerEventHTML, currentResources: null, contextMenuOpen: false };
     this.currResSchInterval = { currView: this.resourceSchedulerView, currDate: schedulerEvent.StartTime };
 
     // set resource file: If no resources are assigned show also available resources
@@ -231,7 +238,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
           });
 
           // provide all schedulerEvents shown in ResourceScheduler (bottom component)
-          this.resourceSchedulerObject = { dataSource: schedulerEvents };
+          this.resourceSchedulerObject = { dataSource: schedulerEvents, enableTooltip: false };
         }));
   }
 
