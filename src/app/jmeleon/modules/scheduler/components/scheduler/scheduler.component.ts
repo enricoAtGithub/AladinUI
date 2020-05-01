@@ -305,6 +305,8 @@ export class SchedulerComponent implements OnInit, OnDestroy {
           ))
       );
     }
+    // refresh event scheduler
+    this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
   }
 
   setResizeParams(args: ResizeEventArgs): void {
