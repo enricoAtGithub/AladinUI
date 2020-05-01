@@ -11,7 +11,7 @@
             (dragStop)="updateSchedulerEventInterval($event.data)" [showQuickInfo]="false"
             (eventClick)="onSchedulerEventClick($event)" [allowDragAndDrop]="userPermissions.allowTimeChange"
             [allowResizing]="userPermissions.allowTimeChange" locale='de' [rowAutoHeight]="true"
-            (eventRendered)="onEventRendered($event)" (cellClick)="addSchedulerEvent($event)"
+            (eventRendered)="onEventRendered($event, 'evSch')" (cellClick)=" addSchedulerEvent($event)"
             (popupOpen)="onPopupOpen($event)" (navigating)="onNavigate($event, 'evSch')">
 
             <ng-template #eventSettingsTemplate let-data>
@@ -71,8 +71,9 @@
             <ejs-schedule [height]=resourceSchedulerHeight allowMultiple="true" [showQuickInfo]="false"
                 [eventSettings]="resourceSchedulerObject" [currentView]="resourceSchedulerView" [group]="groupData"
                 [rowAutoHeight]="true" [selectedDate]="selectedDateResourceScheduler" [workHours]="schedulerEventTime"
-                [allowDragAndDrop]="false" [allowResizing]="false" locale='de' (eventRendered)="onEventRendered($event)"
-                (popupOpen)="onPopupOpen($event)" (navigating)="onNavigate($event, 'resSch')">
+                [allowDragAndDrop]="false" [allowResizing]="false" locale='de'
+                (eventRendered)="onEventRendered($event, 'resSch')" (popupOpen)="onPopupOpen($event)"
+                (navigating)="onNavigate($event, 'resSch')">
 
                 <e-resources>
                     <e-resource [dataSource]="resourceDataSource" allowMultiple="true" field="ResourceID"
