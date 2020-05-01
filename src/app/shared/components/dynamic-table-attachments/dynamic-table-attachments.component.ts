@@ -17,6 +17,7 @@ import { map } from 'rxjs/operators';
 export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   @Input() configName: string;
   @Input() entryId: number;
+  @Input() excludedPanels: string[];
 
   isEmpty: boolean;
   hasContent: boolean;
