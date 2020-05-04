@@ -1,15 +1,16 @@
 <p-confirmDialog header="Bestätigung" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
 <p-contextMenu #schEvCM (onHide)="closeContextMenu()"></p-contextMenu>
 
-<div class="resizableBox eventScheduler" id=0 mwlResizable [style.height.px]="boxHeights[0]" [validateResize]="validate"
-    [enableGhostResize]="false" [resizeSnapGrid]="{ left: 1, right: 1 }" (resizeEnd)="onResizeEnd($event, 0)"
-    (resizing)="onResizing($event, 0)">
+<div *ngIf="permissionsRecord$ | async as permissions" class="resizableBox eventScheduler" id=0 mwlResizable
+    [style.height.px]="boxHeights[0]" [validateResize]="validate" [enableGhostResize]="false"
+    [resizeSnapGrid]="{ left: 1, right: 1 }" (resizeEnd)="onResizeEnd($event, 0)" (resizing)="onResizing($event, 0)">
     <ejs-schedule [height]="eventSchedulerHeight" [eventSettings]="eventSchedulerObject"
         [currentView]="eventSchedulerView" (dragStart)="setDraggingParams($event)"
         (resizeStart)="setResizeParams($event)" (resizeStop)="updateSchedulerEventInterval($event.data)"
         (dragStop)="updateSchedulerEventInterval($event.data)" [showQuickInfo]="false"
-        (eventClick)="onSchedulerEventClick($event)" [allowDragAndDrop]="allowUpdateInterval$ | async"
-        [allowResizing]="allowUpdateInterval$ | async" locale='de' [rowAutoHeight]="true"
+        (eventClick)="onSchedulerEventClick($event)"
+        [allowDragAndDrop]="permissions[root.scheduler.order.updateInterval]"
+        [allowResizing]="permissions[root.scheduler.order.updateInterval]" locale='de' [rowAutoHeight]="true"
         (eventRendered)="onEventRendered($event, 'evSch')" (cellClick)=" addSchedulerEvent($event)"
         (popupOpen)="onPopupOpen($event)" (navigating)="onNavigate($event, 'evSch')">
 
