@@ -139,15 +139,20 @@ export class DynamicTableComponent implements OnInit, OnChanges {
     this.fields.forEach(field => {
       if (event.filters[field.field]) {
 
+        let value: any = event.filters[field.field].value;
+
         if (field.filterType === 'text') {
-          const filterContent: string = event.filters[field.field].value.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
+          const filterContent: string = value.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
           if (field.type === 'String') {
             qualifier += 'LIKE(\'' + field.field + '\',\'%' + filterContent  + '%\'),';
           } else {
             qualifier += 'EQ(\'' + field.field + '\',' + filterContent + '),';
           }
         } else if (field.filterType === 'multiSelect') {
-          qualifier += 'IN(\'' + field.field + '\',' + event.filters[field.field].value.toString() + '),';
+          qualifier += 'IN(\'' + field.field + '\',' + value.toString() + '),'
+        }
+        else if (field.filterType === 'integer') {
+          qualifier += 'EQ(\'' + field.field + '\',' + value.toString() + '),'
         }
       }
     });

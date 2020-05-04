@@ -27,7 +27,7 @@
               <!-- Filters -->
               <div *ngIf="col.filterType !== 'none'" style="margin: auto; margin-top: -32px; height: 32px; width: 80%;">
                 <input *ngSwitchCase="'text'" pInputText type="text" style="width:100%; max-width: 200px;" (input)="dt.filter($event.target.value, col.field, 'contains')">
-                <input *ngSwitchCase="'integer'" type="number" pInputText pKeyFilter="int" style="width:100%; max-width: 200px;" (input)="dt.filter($event.target.value, col.field, 'contains')">
+                <input *ngSwitchCase="'integer'" type="number" pInputText pKeyFilter="int" style="width:100%; max-width: 200px;" (input)="dt.filter($event.target.value, col.field, 'equals')">
                 <p-dropdown *ngSwitchCase="'dropdown'" [options]="col.options" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
                 <p-multiSelect *ngSwitchCase="'multiSelect'" [options]="col.options" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'in')" [defaultLabel]="'Auswählen..'" [selectedItemsLabel]="'{0} Element(e)'"></p-multiSelect>
               </div>
