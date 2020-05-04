@@ -58,15 +58,6 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   selectedDateResourceScheduler: Date;
   showResourceScheduler = false;
 
-  root = root;
-  userPermissions = {
-    allowTimeChange: false,
-    allowOrderCreate: false,
-    allowOrderEdit: false,
-    allowOrderDelete: false,
-    allowAssign: false
-  };
-
   eventSchedulerObject: EventSettingsModel;
   resourceSchedulerObject: EventSettingsModel;
   resourceDataSource: Object[];
@@ -95,6 +86,12 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     '</div>' +
     '</div>';
 
+  // variables required for security
+  root = root;
+  permissionsRecord$: Observable<Record<string, boolean>>;
+  allowUpdateInterval$: Observable<boolean>;
+  private permissionsRecord: Record<string, boolean>;
+
   constructor(
     private breadcrumbService: BreadcrumbService,
     private schedulerService: SchedulerService,
@@ -106,10 +103,10 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     this.breadcrumbService.setItems([
       { label: 'Einsatzplanung' }
     ]);
+    this.initPermissions();
   }
 
   ngOnInit() {
-    this.initPermissions();
     this.initMemberVars();
     this.getSchedulerHeights();
     this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
@@ -120,11 +117,9 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   }
 
   private initPermissions() {
-    this.subscriptions.push(this.japs.userHasPermissionForAction(root.dto.Order.create).subscribe(has => this.userPermissions.allowOrderCreate = has));
-    this.subscriptions.push(this.japs.userHasPermissionForAction(root.dto.Order.write).subscribe(has => this.userPermissions.allowOrderEdit = has));
-    this.subscriptions.push(this.japs.userHasPermissionForAction(root.dto.Order.delete).subscribe(has => this.userPermissions.allowOrderDelete = has));
-    this.subscriptions.push(this.japs.userHasPermissionForAction(root.scheduler.order.assign).subscribe(has => this.userPermissions.allowAssign = has));
-    this.subscriptions.push(this.japs.userHasPermissionForAction(root.scheduler.order.updateInterval).subscribe(has => this.userPermissions.allowTimeChange = has));
+    this.permissionsRecord$ = this.japs.userHasPermissionForActions([root.dto.Order.create, root.dto.Order.write, root.dto.Order.delete, root.scheduler.order.updateInterval]);
+    this.allowUpdateInterval$ = this.permissionsRecord$.pipe(map(permissions => permissions[root.scheduler.order.updateInterval]));
+    this.subscriptions.push(this.permissionsRecord$.subscribe(record => this.permissionsRecord = record));
   }
 
   private initMemberVars() {
@@ -381,11 +376,11 @@ export class SchedulerComponent implements OnInit, OnDestroy {
 
   // https://stackoverflow.com/questions/43590487/open-the-context-menu-by-primeng-from-code-angular-2?rq=1
   openContextMenu(schEvCM: ContextMenu, event: MouseEvent, data: SchedulerEvent): void {
-    if (!((this.userPermissions.allowOrderEdit) || (this.userPermissions.allowOrderDelete))) { return; }
+    if (!((this.permissionsRecord[root.dto.Order.write]) || (this.permissionsRecord[root.dto.Order.delete]))) { return; }
 
     this.schedulerStatus.contextMenuOpen = true;
     const model: MenuItem[] = [];
-    if (this.userPermissions.allowOrderEdit) {
+    if (this.permissionsRecord[root.dto.Order.write]) {
       model.push(
         {
           label: ContextMenuSettings.iconText.edit,
@@ -393,7 +388,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
           command: () => { this.updateSchedulerEvent(data); },
         });
     }
-    if (this.userPermissions.allowOrderDelete) {
+    if (this.permissionsRecord[root.dto.Order.delete]) {
       model.push(
         {
           label: ContextMenuSettings.iconText.delete,
@@ -440,7 +435,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
 
   addSchedulerEvent(data: any) {
     if (this.schedulerStatus.contextMenuOpen) { return; }
-    if (!this.userPermissions.allowOrderCreate) { return; }
+    if (!this.permissionsRecord[root.dto.Order.create]) { return; }
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,

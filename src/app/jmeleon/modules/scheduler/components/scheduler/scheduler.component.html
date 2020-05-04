@@ -1,60 +1,59 @@
 <p-confirmDialog header="Bestätigung" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
 <p-contextMenu #schEvCM (onHide)="closeContextMenu()"></p-contextMenu>
 
-<div *appPermissionCheck="root.scheduler.openEvSch">
-    <div class="resizableBox eventScheduler" id=0 mwlResizable [style.height.px]="boxHeights[0]"
-        [validateResize]="validate" [enableGhostResize]="false" [resizeSnapGrid]="{ left: 1, right: 1 }"
-        (resizeEnd)="onResizeEnd($event, 0)" (resizing)="onResizing($event, 0)">
-        <ejs-schedule [height]="eventSchedulerHeight" [eventSettings]="eventSchedulerObject"
-            [currentView]="eventSchedulerView" (dragStart)="setDraggingParams($event)"
-            (resizeStart)="setResizeParams($event)" (resizeStop)="updateSchedulerEventInterval($event.data)"
-            (dragStop)="updateSchedulerEventInterval($event.data)" [showQuickInfo]="false"
-            (eventClick)="onSchedulerEventClick($event)" [allowDragAndDrop]="userPermissions.allowTimeChange"
-            [allowResizing]="userPermissions.allowTimeChange" locale='de' [rowAutoHeight]="true"
-            (eventRendered)="onEventRendered($event, 'evSch')" (cellClick)=" addSchedulerEvent($event)"
-            (popupOpen)="onPopupOpen($event)" (navigating)="onNavigate($event, 'evSch')">
+<div class="resizableBox eventScheduler" id=0 mwlResizable [style.height.px]="boxHeights[0]" [validateResize]="validate"
+    [enableGhostResize]="false" [resizeSnapGrid]="{ left: 1, right: 1 }" (resizeEnd)="onResizeEnd($event, 0)"
+    (resizing)="onResizing($event, 0)">
+    <ejs-schedule [height]="eventSchedulerHeight" [eventSettings]="eventSchedulerObject"
+        [currentView]="eventSchedulerView" (dragStart)="setDraggingParams($event)"
+        (resizeStart)="setResizeParams($event)" (resizeStop)="updateSchedulerEventInterval($event.data)"
+        (dragStop)="updateSchedulerEventInterval($event.data)" [showQuickInfo]="false"
+        (eventClick)="onSchedulerEventClick($event)" [allowDragAndDrop]="allowUpdateInterval$ | async"
+        [allowResizing]="allowUpdateInterval$ | async" locale='de' [rowAutoHeight]="true"
+        (eventRendered)="onEventRendered($event, 'evSch')" (cellClick)=" addSchedulerEvent($event)"
+        (popupOpen)="onPopupOpen($event)" (navigating)="onNavigate($event, 'evSch')">
 
-            <ng-template #eventSettingsTemplate let-data>
-                <div (contextmenu)="openContextMenu(schEvCM, $event, data)" style="width: 100%;height: 100%;">
-                    <div *ngIf="data.IsReadonly" style="float:right; padding-right: 5px;"><i class="pi pi-lock"></i>
-                    </div>
-                    <div *ngIf="data.MissingResources" style="float:right; padding-right: 5px;">
-                        <i class="pi pi-times" title="{{data.ResourceConflictDescription}}"></i>
-                    </div>
-                    <div *ngIf="data.TooManyResources" style="float:right; padding-right: 5px;"><i class="pi pi-times"
-                            title="{{data.ResourceConflictDescription}}"></i>
-                    </div>
-                    <div>
-                        <div class="e-subject">{{data.Subject}}</div>
-                        <div class="e-time">{{data.TimeFrameStr}}</div>
-                    </div>
+        <!-- [allowDragAndDrop]="(permissionsRecord$ | async)[root.scheduler.order.updateInterval]" -->
+
+        <ng-template #eventSettingsTemplate let-data>
+            <div (contextmenu)="openContextMenu(schEvCM, $event, data)" style="width: 100%;height: 100%;">
+                <div *ngIf="data.IsReadonly" style="float:right; padding-right: 5px;"><i class="pi pi-lock"></i>
                 </div>
-            </ng-template>
-            <e-header-rows>
-                <e-header-row option='Week'>
-                    <ng-template #template let-data>
-                        <span>KW&nbsp;{{data.date | date:'ww'}}</span>
-                    </ng-template>
-                </e-header-row>
-                <e-header-row option='Date'></e-header-row>
-                <e-header-row option='Hour'></e-header-row>
-            </e-header-rows>
-            <e-views>
-                <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
-                <e-view option='TimelineDay' startHour='06:00' endHour='18:00'
-                    [timeScale]='{ enable: true, slotCount: 2 }'>
-                </e-view>
-                <e-view option='TimelineWorkWeek' startHour='06:00' endHour='18:00'
-                    [timeScale]='{ enable: true, interval: 120, slotCount: 1 }' allowVirtualScrolling="true">
-                </e-view>
-                <e-view option='WorkWeek' startHour='06:00' endHour='18:00'
-                    [timeScale]='{ enable: true, interval: 120, slotCount: 2 }' allowVirtualScrolling="true">
-                </e-view>
-            </e-views>
+                <div *ngIf="data.MissingResources" style="float:right; padding-right: 5px;">
+                    <i class="pi pi-times" title="{{data.ResourceConflictDescription}}"></i>
+                </div>
+                <div *ngIf="data.TooManyResources" style="float:right; padding-right: 5px;"><i class="pi pi-times"
+                        title="{{data.ResourceConflictDescription}}"></i>
+                </div>
+                <div>
+                    <div class="e-subject">{{data.Subject}}</div>
+                    <div class="e-time">{{data.TimeFrameStr}}</div>
+                </div>
+            </div>
+        </ng-template>
+        <e-header-rows>
+            <e-header-row option='Week'>
+                <ng-template #template let-data>
+                    <span>KW&nbsp;{{data.date | date:'ww'}}</span>
+                </ng-template>
+            </e-header-row>
+            <e-header-row option='Date'></e-header-row>
+            <e-header-row option='Hour'></e-header-row>
+        </e-header-rows>
+        <e-views>
+            <!-- TimeScaleModel API see https://ej2.syncfusion.com/angular/documentation/api/schedule/timeScaleModel/ -->
+            <e-view option='TimelineDay' startHour='06:00' endHour='18:00' [timeScale]='{ enable: true, slotCount: 2 }'>
+            </e-view>
+            <e-view option='TimelineWorkWeek' startHour='06:00' endHour='18:00'
+                [timeScale]='{ enable: true, interval: 120, slotCount: 1 }' allowVirtualScrolling="true">
+            </e-view>
+            <e-view option='WorkWeek' startHour='06:00' endHour='18:00'
+                [timeScale]='{ enable: true, interval: 120, slotCount: 2 }' allowVirtualScrolling="true">
+            </e-view>
+        </e-views>
 
-        </ejs-schedule>
-        <div class="resize-handle" mwlResizeHandle [resizeEdges]="{ bottom: true }"><i class="pi pi-ellipsis-h"></i>
-        </div>
+    </ejs-schedule>
+    <div class="resize-handle" mwlResizeHandle [resizeEdges]="{ bottom: true }"><i class="pi pi-ellipsis-h"></i>
     </div>
 </div>
 
@@ -86,7 +85,7 @@
                     <div class='template-wrap'>
                         <div class="resource-details">
                             <div class="resource-name">
-                                <div *ngIf="userPermissions.allowAssign">
+                                <div *appPermissionCheck="root.scheduler.order.assign">
                                     <i title="{{data.resourceData.AssignedAltText}}"
                                         class="{{data.resourceData.AssignedIcon}}"
                                         (click)="modifyAssignment(data.resourceData)"></i>
