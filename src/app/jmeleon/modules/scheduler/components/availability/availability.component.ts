@@ -30,6 +30,7 @@ import { EntityService } from 'src/app/shared/services/entity.service';
 import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/entity-dialog.component';
 import { ContextMenu } from 'primeng/contextmenu';
 import { TimeRange, SchedulerTimeRange } from '../../config/scheduler.timerange';
+import { ResizeEvent } from 'angular-resizable-element';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -43,9 +44,11 @@ L10n.load(de);
 export class AvailabilityComponent implements OnInit, OnDestroy {
   @ViewChild('scheduleObj', { static: true }) scheduleObj: ScheduleComponent;
 
+  lastResize = Date.now();
+  boxHeight: number;
+  schedulerHeight: number;
   availabilitySchedulerObject: EventSettingsModel;
   resourceDataSource: Object[];
-  windowHeight: number;
   initialView: View;
   contextMenuOpen: boolean;
 
@@ -74,6 +77,8 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initialView = <View>AvailabiltySchedulerSettings.initialView;
     this.currInterval = { currView: this.initialView, currDate: new Date() };
+    this.boxHeight = this.getAvailableHeight();
+    this.schedulerHeight = this.boxHeight - 30;
     this.getAvailableHeight();
     this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
   }
@@ -150,9 +155,10 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     );
   }
 
-  public getAvailableHeight(heightTopBar: number = 60, heightRouteBar: number = 32, paddingTop: number = 15, paddingBottom: number = 15, heightFooter: number = 60): void {
+  private getAvailableHeight(heightTopBar: number = 60, heightRouteBar: number = 32, paddingTop: number = 15, paddingBottom: number = 15, heightFooter: number = 60): number {
     const usedSpace = heightTopBar + heightRouteBar + paddingTop + heightFooter + paddingBottom;
-    this.windowHeight = window.innerHeight - usedSpace;
+    const usableHeight = window.innerHeight - usedSpace;
+    return (usableHeight);
   }
 
   // https://stackoverflow.com/questions/43590487/open-the-context-menu-by-primeng-from-code-angular-2?rq=1
@@ -246,6 +252,38 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     if (args.type === 'Editor' || args.type === 'QuickInfo') {
       args.cancel = true;
     }
+  }
+
+  validate(event: ResizeEvent): boolean {
+    const resizeBounds = [{ min: 15, max: 1000 }, { min: 15, max: 1000 }, { min: 15, max: 320 }];
+    if (
+      event.rectangle.width &&
+      event.rectangle.height &&
+      (event.rectangle.height < resizeBounds[this['elm']['nativeElement']['id']].min ||
+        event.rectangle.height > resizeBounds[this['elm']['nativeElement']['id']].max)
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  // Resizes the divs and schedulers during dragging action
+  // Has quite a big performance impact, not sure why..
+  // Can be substituted by built-in "ghostResize" which doesn't affect the position of other site elements though
+  onResizing(event: ResizeEvent, id: number): void {
+    // Only resize if last resize has happended more than 20ms ago
+    if (Date.now() - this.lastResize > 20) {
+      this.boxHeight = event.rectangle.height;
+      this.lastResize = Date.now();
+
+      // resizes resource and event schedulers aswell. Currently runs fine on my end but might cause peformance problems
+      this.schedulerHeight = event.rectangle.height - 30;
+    }
+  }
+
+  onResizeEnd(event: ResizeEvent, id: number): void {
+    this.boxHeight = event.rectangle.height;
+    this.schedulerHeight = event.rectangle.height - 30;
   }
 
 }

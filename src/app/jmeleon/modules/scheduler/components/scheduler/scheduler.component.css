@@ -31,13 +31,13 @@ div.resource-name {
 }
 
 /* selected scheduler event  */
-::ng-deep div.eventScheduler .e-schedule .e-timeline-view .e-appointment.e-appointment-border, 
-::ng-deep div.resourceScheduler .e-schedule .e-timeline-view .e-appointment.selected {
+::ng-deep .e-appointment.selected {
     box-shadow: 0 6px 10px 0 rgb(0, 0, 0, 0.12), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.2);
     outline: 3px outset slategray;
     border-radius: 2px;
     color:#000;
     font-style: italic;
+    height: 36px;
 }
 
 /* all scheduler Events */
@@ -105,4 +105,8 @@ mwlResizable {
     justify-content: center;
     background-color: white;
     border: 1px solid lightgray;
+}
+
+:host ::ng-deep .e-appointment-details {
+    height: 100%;
 }
