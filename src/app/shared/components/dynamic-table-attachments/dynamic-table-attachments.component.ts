@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { EntityService } from '../../services/entity.service';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { DialogService } from 'primeng/api';
 
@@ -24,8 +23,9 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   showActionTab = false;
 
   configuration: EntityConfiguration;
+  selectedPanel: string;
 
-  constructor(private entityService: EntityService, public dialogService: DialogService, private store$: Store<RootStoreState.State>) { }
+  constructor(public dialogService: DialogService, private store$: Store<RootStoreState.State>) { }
 
   init() {
     const configuration$: Observable<EntityConfiguration> = this.store$.pipe(
@@ -33,13 +33,45 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
       map(configs => configs[this.configName])
     );
     configuration$.subscribe(config => {
-      this.configuration = config;
       this.hasContent = !!config.components || config.groups !== null || config.subtypes !== null;
 
       if (this.configName === 'SecurityRight') {
         this.showActionTab = true;
       }
       this.isEmpty = !this.hasContent && !this.showActionTab;
+
+      if (config.groups) {
+        config.groups.some(group => {
+          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(group))) {
+            this.selectedPanel = group;
+            return true;
+          }
+        });
+      }
+
+      if (!this.selectedPanel && config.components) {
+        config.components.some(component => {
+          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(component))) {
+            this.selectedPanel = component;
+            return true;
+          }
+        });
+      }
+
+      if (!this.selectedPanel && config.subtypes) {
+        config.subtypes.some(subtype => {
+          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(subtype))) {
+            this.selectedPanel = subtype;
+            return true;
+          }
+        });
+      }
+
+      if (!this.selectedPanel && this.showActionTab) {
+        this.selectedPanel = 'Actions';
+      }
+
+      this.configuration = config;
     });
   }
 
