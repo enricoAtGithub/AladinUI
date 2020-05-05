@@ -20,5 +20,5 @@ export class Field {
 
 class Option {
     label: string;
-    value: any;
+    value: string;
 }

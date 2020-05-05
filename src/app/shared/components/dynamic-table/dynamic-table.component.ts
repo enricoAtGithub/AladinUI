@@ -77,20 +77,10 @@ export class DynamicTableComponent implements OnInit, OnChanges {
         if (field.filterType === 'multiSelect' && !Field.isPrimitiveType(field.type)) {
           field.options = [];
 
-          if ((field.type === 'CatalogueEntry' || field.type === 'Icon') && field.defaultCatalogue) {
+          if (field.type === 'CatalogueEntry' && field.defaultCatalogue) {
             this.catalogueService.getCatalogue(field.defaultCatalogue)
             .subscribe(catalogue => {
-                catalogue.values.forEach(o => {
-                  if (field.type === 'CatalogueEntry') {
-                    field.options.push({label: o.name, value: '' + o.id});
-                  } else {
-                    this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe(response => {
-                      const attributes = response['data'];
-                      console.log({label: '__icon__', value: {id: '' + o.id, icon: attributes[0]['stringValue'], color: attributes[1]['stringValue']}});
-                      field.options.push({label: '__icon__', value: {id: '' + o.id, icon: attributes[0]['stringValue'], color: attributes[1]['stringValue']}});
-                    });
-                  }
-                });
+              catalogue.values.forEach(o => field.options.push({label: o.name, value: '' + o.id}));
             });
           } else {
             // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
@@ -149,7 +139,7 @@ export class DynamicTableComponent implements OnInit, OnChanges {
     this.fields.forEach(field => {
       if (event.filters[field.field]) {
 
-        const value: any = event.filters[field.field].value;
+        let value: any = event.filters[field.field].value;
 
         if (field.filterType === 'text') {
           const filterContent: string = value.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
@@ -159,17 +149,10 @@ export class DynamicTableComponent implements OnInit, OnChanges {
             qualifier += 'EQ(\'' + field.field + '\',' + filterContent + '),';
           }
         } else if (field.filterType === 'multiSelect') {
-          qualifier += 'IN(\'' + field.field + '\'';
-          value.forEach(v => {
-            if (typeof v === 'string') {
-              qualifier += ',' + v;
-            } else {
-              qualifier += ',' + v['id'];
-            }
-          });
-          qualifier += '),';
-        } else if (field.filterType === 'integer') {
-          qualifier += 'EQ(\'' + field.field + '\',' + value.toString() + '),';
+          qualifier += 'IN(\'' + field.field + '\',' + value.toString() + '),'
+        }
+        else if (field.filterType === 'integer') {
+          qualifier += 'EQ(\'' + field.field + '\',' + value.toString() + '),'
         }
       }
     });
