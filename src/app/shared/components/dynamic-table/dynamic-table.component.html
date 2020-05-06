@@ -29,7 +29,14 @@
                 <input *ngSwitchCase="'text'" pInputText type="text" style="width:100%; max-width: 200px;" (input)="dt.filter($event.target.value, col.field, 'contains')">
                 <input *ngSwitchCase="'integer'" type="number" pInputText pKeyFilter="int" style="width:100%; max-width: 200px;" (input)="dt.filter($event.target.value, col.field, 'equals')">
                 <p-dropdown *ngSwitchCase="'dropdown'" [options]="col.options" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
-                <p-multiSelect *ngSwitchCase="'multiSelect'" [options]="col.options" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'in')" [defaultLabel]="'Auswählen..'" [selectedItemsLabel]="'{0} Element(e)'"></p-multiSelect>
+                <p-multiSelect *ngSwitchCase="'multiSelect'" [options]="col.options" [filter]='col.type === "CatalogueEntry"' [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'in')" [defaultLabel]="'Auswählen..'" [selectedItemsLabel]="'{0} Element(e)'">
+                  <ng-template let-item let-i="index" pTemplate="item">
+                    <span *ngIf="item.label !== '__icon__';else displayIcon2">{{item.label}}</span>
+                    <ng-template #displayIcon2>
+                      <i [class]="item.value.icon" [ngStyle]="{'color': item.value.color}" style="font-size: 2em; vertical-align: middle;"></i>
+                    </ng-template>
+                  </ng-template>
+                </p-multiSelect>
               </div>
 
             </div>
@@ -44,7 +51,7 @@
           <td *ngFor="let col of columns" [style.width]="col.width" style="word-wrap: break-word;">
             <span class="ui-column-title">{{col.header}}</span>
               <div *ngIf="col.type !== 'Icon';else displayIcon">{{processData(rowData[col.field], col)}}</div>
-              <ng-template #displayIcon><i class="{{(processData(rowData[col.field], col)).icon}}" [ngStyle]="{'color': (processData(rowData[col.field], col)).color}" style="font-size: 2em;"></i></ng-template>
+              <ng-template #displayIcon><i [class]="rowData[col.field]?.icon" [ngStyle]="{'color': rowData[col.field]?.color}" style="font-size: 2em;"></i></ng-template>
           </td>
           <!-- Crud Buttons -->
           <td *ngIf="showButtons" style="text-align: center; width: 90px;">

@@ -77,10 +77,19 @@ export class DynamicTableComponent implements OnInit, OnChanges {
         if (field.filterType === 'multiSelect' && !Field.isPrimitiveType(field.type)) {
           field.options = [];
 
-          if (field.type === 'CatalogueEntry' && field.defaultCatalogue) {
+          if ((field.type === 'CatalogueEntry' || field.type === 'Icon') && field.defaultCatalogue) {
             this.catalogueService.getCatalogue(field.defaultCatalogue)
             .subscribe(catalogue => {
-              catalogue.values.forEach(o => field.options.push({label: o.name, value: '' + o.id}));
+                catalogue.values.forEach(o => {
+                  if (field.type === 'CatalogueEntry') {
+                    field.options.push({label: o.name, value: '' + o.id});
+                  } else {
+                    this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe(response => {
+                      const attributes = response['data'];
+                      field.options.push({label: '__icon__', value: {id: '' + o.id, icon: attributes[0]['stringValue'], color: attributes[1]['stringValue']}});
+                    });
+                  }
+                });
             });
           } else {
             // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
@@ -149,10 +158,16 @@ export class DynamicTableComponent implements OnInit, OnChanges {
             qualifier += 'EQ(\'' + field.field + '\',' + filterContent + '),';
           }
         } else if (field.filterType === 'multiSelect') {
-          qualifier += 'IN(\'' + field.field + '\',' + value.toString() + '),'
-        }
-        else if (field.filterType === 'integer') {
-          qualifier += 'EQ(\'' + field.field + '\',' + value.toString() + '),'
+          if (field.type === 'Icon') {
+            const f = field.field.slice(0, -4) + 'Id';
+            qualifier += 'IN(\'' + f + '\'';
+            value.forEach(v => qualifier += ',' + v.id);
+            qualifier += '),';
+          } else {
+          qualifier += 'IN(\'' + field.field + '\',' + value.toString() + '),';
+          }
+        } else if (field.filterType === 'integer') {
+          qualifier += 'EQ(\'' + field.field + '\',' + value.toString() + '),';
         }
       }
     });
