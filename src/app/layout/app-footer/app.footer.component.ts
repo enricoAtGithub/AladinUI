@@ -8,27 +8,36 @@ import { environment } from '../../../environments/environment';
 })
 export class AppFooterComponent implements OnInit {
   uiDetails: string;
-  appDetails: string;
-  companyName: string;
+  beDetails: string;
+  company: {
+    name: string,
+    street: string,
+    city: string,
+    email: string
+  };
   appName: string;
 
 
   constructor(private appConfig: AppConfig) {
-    this.companyName = environment.companyName;
+    this.company = {
+      name: environment.companyName,
+      street: environment.companyStreet,
+      city: environment.companyCity,
+      email: environment.companyEmail
+    };
     this.appName = environment.appName;
     this.uiDetails = '...loading UI details';
-    this.appDetails = '...loading app details';
+    this.beDetails = 'loading BE details....';
   }
 
   ngOnInit() {
     // console.log('[AppFooterComponent-ngOnInit]');
     AppConfig.uiInfo$.subscribe(uiInfo => {
       this.uiDetails = 'UI version=' + uiInfo.version + '.' + uiInfo.git_branch + '.' + uiInfo.build_no + '.' + uiInfo.git_sha;
-      this.appDetails = this.uiDetails + ', loading BE details....';
     });
     AppConfig.serverInfo$.subscribe(serverInfo => {
       // happens after uiInfo subscription has fired.
-      this.appDetails = this.uiDetails + ', BE host=' + serverInfo.host + ', BE version=' + serverInfo.version;
+      this.beDetails = 'BE host=' + serverInfo.host + ', BE version=' + serverInfo.version;
     });
   }
 }
