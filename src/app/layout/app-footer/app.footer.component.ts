@@ -8,7 +8,8 @@ import { environment } from '../../../environments/environment';
 })
 export class AppFooterComponent implements OnInit {
   uiDetails: string;
-  beDetails: string;
+  beHost: string;
+  beVersion: string;
   company: {
     name: string,
     street: string,
@@ -27,17 +28,19 @@ export class AppFooterComponent implements OnInit {
     };
     this.appName = environment.appName;
     this.uiDetails = '...loading UI details';
-    this.beDetails = 'loading BE details....';
+    this.beHost = 'loading BE host....';
+    this.beVersion = 'loading BE version....';
   }
 
   ngOnInit() {
     // console.log('[AppFooterComponent-ngOnInit]');
     AppConfig.uiInfo$.subscribe(uiInfo => {
-      this.uiDetails = 'UI version=' + uiInfo.version + '.' + uiInfo.git_branch + '.' + uiInfo.build_no + '.' + uiInfo.git_sha;
+      this.uiDetails = uiInfo.version + '.' + uiInfo.git_branch + '.' + uiInfo.build_no + '.' + uiInfo.git_sha;
     });
     AppConfig.serverInfo$.subscribe(serverInfo => {
       // happens after uiInfo subscription has fired.
-      this.beDetails = 'BE host=' + serverInfo.host + ', BE version=' + serverInfo.version;
+      this.beHost = serverInfo.host;
+      this.beVersion = serverInfo.version;
     });
   }
 }

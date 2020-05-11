@@ -1,13 +1,14 @@
 <div style="padding:15px;font-family:Verdana, Geneva, Tahoma, sans-serif;font-size: 12px;">
     <div
         style="width:100%;box-sizing: border-box;float:left;padding-top: 15px; height:60px; border-top: 1px solid silver ; color:slategray;">
-        <div style="width:30%; line-height:40px; float:left; margin-left: 20px; font-size: 20px;"><img
-                src="assets/layout/images/logo_textonly_grey.png" style="height:40px;" alt="california-layout" /></div>
-        <div style="width:30%; float:left; text-align:center">{{company.name}}<br>{{company.street}},
-            {{company.city}}<br>{{company.email}}</div>
-        <div style="width:30%; float:right; text-align:right; margin-right: 20px;">
-            {{uiDetails}}<br>{{beDetails}}
+        <div style="width:30%; float:left; text-align:left; margin-left: 20px;">
+            <b>UI version=</b>{{uiDetails}}<br><b>BE host=</b>{{beHost}}<br><b>BE version=</b>{{beVersion}}
         </div>
+        <div style="width:30%; float:left; text-align: center"><b>{{company.name}}</b><br>{{company.street}},
+            {{company.city}}<br>{{company.email}}</div>
+
+        <div style="width:30%; line-height:40px; float:right; margin-right: 20px; font-size: 20px;text-align:right"><img
+                src="assets/layout/images/logo_textonly_grey.png" style="height:40px;" alt="california-layout" /></div>
     </div>
 </div>
 
