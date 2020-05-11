@@ -1,45 +1,58 @@
 <p-dialog header="Attribut hinzufügen" [(visible)]="displayAddAttribute" [resizable]="false" [draggable]="false" [style]="{'width': '400px'}">
   <form (ngSubmit)="addNewAttribute()" #attributeForm="ngForm" class="ui-g">
     <div class="ui-g-12 ui-md-12 form-group">
+      <!-- Name -->
       <span class="ui-float-label" style="margin-bottom: 25px">
         <input required name="Name" id="float-input" type="text" [(ngModel)]="newAttribute.name" style="width: 100%" pInputText> 
         <label for="float-input">Name</label>
       </span> 
+
+      <!-- Typ -->
       <span class="ui-float-label form-group">
-        <p-dropdown required [options]="types" name="Typ" [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.attributeType"
-        [autoDisplayFirst]="false"></p-dropdown>
-        <label for="float-input">Typ</label>
+          <p-dropdown required [options]="types" name="Typ" [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.attributeType"
+          [autoDisplayFirst]="false"></p-dropdown>
+          <label for="float-input">Typ</label>
       </span>
+
+      <!-- String || Icon -->
       <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
-      *ngIf="newAttribute.attributeType === 'String' || newAttribute.attributeType === undefined">
-      <input required name="Wert" id="float-input" type="text" [(ngModel)]="newAttribute.stringValue" style="width: 100%" pInputText> 
-      <label for="float-input">Wert</label>
-    </span>
-    <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" *ngIf="newAttribute.attributeType === 'Long'">
-      <input required name="Wert" id="float-input" type="number" [(ngModel)]="newAttribute.longValue" style="width: 100%" pInputText> 
-      <label for="float-input">Wert</label>
-    </span>
-    <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px; height: 26px" *ngIf="newAttribute.attributeType === 'Boolean'">
-      <p-checkbox name="Wert" binary="true" [(ngModel)]="newAttribute.booleanValue"></p-checkbox>
-      <label for="float-input" style="top: -.75em; font-size: 12px;">Wert</label>
-    </span>
-    <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" *ngIf="newAttribute.attributeType === 'Date'">
-      <p-calendar name="Wert" [(ngModel)]="newAttribute.dateValue" showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}"></p-calendar>
-      <label for="float-input">Wert</label>
-    </span>
-    <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" *ngIf="newAttribute.attributeType === 'Color'">
-      <div>
-        <p-colorPicker  name="Wert" [(ngModel)]="newAttribute.stringValue" ></p-colorPicker>
-        <input required name="Wert" id="float-input" type="text" [(ngModel)]="newAttribute.stringValue" style="width: 92%" pInputText> 
-      </div>
-      <!--label for="float-input">Color</label-->
-    </span>
+        *ngIf="newAttribute.attributeType === 'String' || newAttribute.attributeType === 'Icon' || newAttribute.attributeType === undefined">
+        <input required name="Wert" id="float-input" type="text" [(ngModel)]="newAttribute.stringValue" style="width: 100%" pInputText> 
+        <label for="float-input">Wert</label>
+      </span>
+
+      <!-- Long -->
+      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" *ngIf="newAttribute.attributeType === 'Long'">
+        <input required name="Wert" id="float-input" type="number" [(ngModel)]="newAttribute.longValue" style="width: 100%" pInputText> 
+        <label for="float-input">Wert</label>
+      </span>
+
+      <!-- Boolean -->
+      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px; height: 26px" *ngIf="newAttribute.attributeType === 'Boolean'">
+        <p-checkbox name="Wert" binary="true" [(ngModel)]="newAttribute.booleanValue"></p-checkbox>
+        <label for="float-input" style="top: -.75em; font-size: 12px;">Wert</label>
+      </span>
+
+      <!-- Date -->
+      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" *ngIf="newAttribute.attributeType === 'Date'">
+        <p-calendar name="Wert" [(ngModel)]="newAttribute.dateValue" showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}"></p-calendar>
+        <label for="float-input">Wert</label>
+      </span>
+
+      <!-- Color -->
+      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" *ngIf="newAttribute.attributeType === 'Color'">
+        <div>
+          <p-colorPicker  name="Wert" [(ngModel)]="newAttribute.stringValue" ></p-colorPicker>
+          <input required name="Wert" id="float-input" type="text" [(ngModel)]="newAttribute.stringValue" style="width: 92%" pInputText> 
+        </div>
+        <!--label for="float-input">Color</label-->
+      </span>
     
-    <div class="ui-g-12 ui-md-12" style="padding: 0px">
-      <p-button type="submit" [disabled]="!attributeForm.form.valid" icon="pi pi-user-plus" iconPos="left" label="Erstellen"></p-button>
+      <div class="ui-g-12 ui-md-12" style="padding: 0px">
+        <p-button type="submit" [disabled]="!attributeForm.form.valid" icon="pi pi-user-plus" iconPos="left" label="Erstellen"></p-button>
+      </div>
     </div>
-  </div>
-</form>
+  </form>
 </p-dialog>
 
 <p-table [value]="attributes" dataKey="id" editMode="row">
@@ -80,7 +93,7 @@
           <ng-template  pTemplate="input">
             <p-checkbox *ngIf="rowData.attributeType === 'Boolean'" binary="true" [(ngModel)]="rowData.booleanValue"></p-checkbox>
             <input *ngIf="rowData.attributeType === 'Long'" pInputText type="number" [(ngModel)]="rowData.longValue" style="width: 100%">
-            <input *ngIf="rowData.attributeType === 'String'" pInputText type="text" [(ngModel)]="rowData.stringValue" style="width: 100%">
+            <input *ngIf="rowData.attributeType === 'String' || rowData.attributeType === 'Icon'" pInputText type="text" [(ngModel)]="rowData.stringValue" style="width: 100%">
             <p-calendar *ngIf="rowData.attributeType === 'Date'" [(ngModel)]="rowData.dateValue" showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}"></p-calendar>
             <div *ngIf="rowData.attributeType === 'Color'">
               <p-colorPicker  [(ngModel)]="rowData.stringValue" ></p-colorPicker>
@@ -93,6 +106,7 @@
             {{rowData.attributeType === 'String' ? rowData.stringValue : ''}} 
             {{rowData.attributeType === 'Long' ? rowData.longValue : ''}} 
             {{rowData.attributeType === 'Date' ? rowData.dateValue : ''}}
+            {{rowData.attributeType === 'Icon' ? rowData.stringValue : ''}} 
             <div *ngIf="rowData.attributeType === 'Color'">
               <input class="ui-colorpicker-preview ui-inputtext ui-state-default ui-corner-all ng-tns-c3-3 ng-star-inserted" readonly="true" type="text" [style.background-color]="rowData.stringValue">
               {{rowData.stringValue}}

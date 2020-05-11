@@ -16,7 +16,14 @@ export class EntityAttributesComponent implements OnChanges {
   displayAddAttribute = false;
   newAttribute = new Attribute();
 
-  types = [{label: 'Long', value: 'Long'}, {label: 'String', value: 'String'}, {label: 'Boolean', value: 'Boolean'}, {label: 'Date', value: 'Date'}, {label: 'Color', value: 'Color'}];
+  types = [
+    {label: 'Long', value: 'Long'},
+    {label: 'String', value: 'String'},
+    {label: 'Boolean', value: 'Boolean'},
+    {label: 'Date', value: 'Date'},
+    {label: 'Color', value: 'Color'},
+    {label: 'Icon', value: 'Icon'},
+  ];
 
   constructor(private entityService: EntityService) { }
 
