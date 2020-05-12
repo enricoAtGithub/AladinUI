@@ -57,7 +57,7 @@ export class EntityDialogComponent implements OnInit {
         if (field.type === 'CatalogueEntry') {
           this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
             const values = catalogue.values.map(e => ({label: e['name'], value: e['id']}));
-            this.catalogueOptions.set(catalogue.name, values);
+            this.catalogueOptions.set(field.defaultCatalogue, values);
           });
         }
       });
