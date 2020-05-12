@@ -10,7 +10,8 @@
         <ng-template pTemplate="header">
             <tr>
                 <th>Name</th>
-                <th>Beschreibung</th>
+                <th>HRID</th>
+                <th style="width: 50%">Beschreibung</th>
                 <th style="width: 127px">Bearbeiten</th>
             </tr>
         </ng-template>
@@ -20,6 +21,7 @@
                     <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                     {{rowData.name}}
                 </td>
+                <td>{{rowData.hrid}}</td>
                 <td>{{rowData.description}}</td>
                 <td *ngIf="rowNode.node.children" style="text-align: center">
                     <button pButton (click)="addEntry(rowNode.node.data)" style="margin-right: 3px;" icon="pi pi-plus" class="ui-button-success"></button>
