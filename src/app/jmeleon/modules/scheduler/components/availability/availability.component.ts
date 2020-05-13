@@ -31,6 +31,8 @@ import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/e
 import { ContextMenu } from 'primeng/contextmenu';
 import { TimeRange, SchedulerTimeRange } from '../../config/scheduler.timerange';
 import { ResizeEvent } from 'angular-resizable-element';
+import { root } from 'src/app/jmeleon/modules/permissions/permissions';
+import { JmeleonActionsPermissionService } from '../../../permissions/services/jmeleon-actions-permission.service';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -42,7 +44,7 @@ L10n.load(de);
   providers: [ConfirmationService]
 })
 export class AvailabilityComponent implements OnInit, OnDestroy {
-  @ViewChild('scheduleObj', { static: true }) scheduleObj: ScheduleComponent;
+  @ViewChild('scheduleObj', { static: false }) scheduleObj: ScheduleComponent;
 
   lastResize = Date.now();
   boxHeight: number;
@@ -51,6 +53,11 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   resourceDataSource: Object[];
   initialView: View;
   contextMenuOpen: boolean;
+
+  // variables required for security
+  root = root;
+  permissionsRecord$: Observable<Record<string, boolean>>;
+  private permissionsRecord: Record<string, boolean>;
 
   groupData: GroupModel = { resources: ['Resources'] };
 
@@ -66,8 +73,8 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     private availabilityService: AvailabilityService,
     private dialogService: DialogService,
     private confirmationService: ConfirmationService,
-    private entityService: EntityService
-
+    private entityService: EntityService,
+    private japs: JmeleonActionsPermissionService
   ) {
     this.breadcrumbService.setItems([
       { label: 'An- & Abwesenheiten' }
@@ -79,12 +86,18 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     this.currInterval = { currView: this.initialView, currDate: new Date() };
     this.boxHeight = this.getAvailableHeight();
     this.schedulerHeight = this.boxHeight - 30;
+    this.initPermissions();
     this.getAvailableHeight();
     this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  private initPermissions() {
+    this.permissionsRecord$ = this.japs.userHasPermissionForActions([root.availability.create, root.availability.write, root.availability.delete, root.availability.updateInterval]);
+    this.subscriptions.push(this.permissionsRecord$.subscribe(record => this.permissionsRecord = record));
   }
 
   // colorize scheduler events
@@ -163,21 +176,28 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
 
   // https://stackoverflow.com/questions/43590487/open-the-context-menu-by-primeng-from-code-angular-2?rq=1
   openContextMenu(availCM: ContextMenu, event: MouseEvent, data: Availability): void {
+    if (!((this.permissionsRecord[root.availability.write]) || (this.permissionsRecord[root.availability.delete]))) { return; }
+
     this.contextMenuOpen = true;
     const model: MenuItem[] = [];
-    model.push(
-      {
-        label: ContextMenuSettings.iconText.edit,
-        icon: ContextMenuSettings.icons.edit,
-        command: () => { this.updateAvailability(data); },
-      },
-      {
-        label: ContextMenuSettings.iconText.delete,
-        icon: ContextMenuSettings.icons.delete,
-        command: () => { this.deleteAvailability(data); },
-      }
-
-    );
+    if (this.permissionsRecord[root.availability.write]) {
+      model.push(
+        {
+          label: ContextMenuSettings.iconText.edit,
+          icon: ContextMenuSettings.icons.edit,
+          command: () => { this.updateAvailability(data); },
+        }
+      );
+    }
+    if (this.permissionsRecord[root.availability.delete]) {
+      model.push(
+        {
+          label: ContextMenuSettings.iconText.delete,
+          icon: ContextMenuSettings.icons.delete,
+          command: () => { this.deleteAvailability(data); },
+        }
+      );
+    }
     availCM.model = model;
     availCM.show(event);
   }
@@ -210,6 +230,9 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
 
   addAvailability(data: any) {
     if (this.contextMenuOpen) { return; }
+    if (!this.permissionsRecord[root.availability.create]) { return; }
+
+    console.log(this.scheduleObj);
 
     const resource: ResourceDetails = this.scheduleObj.getResourcesByIndex(this.scheduleObj.getCellDetails(data.element).groupIndex);
     if (!resource) { console.error('Ressource not found'); }

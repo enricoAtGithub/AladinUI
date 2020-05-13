@@ -24,4 +24,10 @@
     - assign
     - unassign
     - updateInterval
+- availability:
+  - create
+  - read
+  - write
+  - delete
+  - updateInterval
 
