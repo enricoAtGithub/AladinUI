@@ -116,7 +116,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   }
 
   private initPermissions() {
-    this.permissionsRecord$ = this.japs.userHasPermissionForActions([root.dto.Order.create, root.dto.Order.write, root.dto.Order.delete, root.scheduler.order.updateInterval]);
+    this.permissionsRecord$ = this.japs.userHasPermissionForActions([root.dto.Order.create, root.dto.Order.write, root.dto.Order.delete, root.Scheduler.order.updateInterval]);
     this.subscriptions.push(this.permissionsRecord$.subscribe(record => this.permissionsRecord = record));
   }
 

@@ -1,4 +1,4 @@
-<div *appPermissionCheck="root.availability.read">
+<div *appPermissionCheck="root.ResourceManager.read">
     <p-confirmDialog header="Bestätigung" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
     <p-contextMenu #availCM (onHide)="closeContextMenu()"></p-contextMenu>
     <div *ngIf="permissionsRecord$ | async as permissions" class="resizableBox eventScheduler" id=0 mwlResizable
@@ -8,8 +8,8 @@
 
         <ejs-schedule #scheduleObj [height]="schedulerHeight" [rowAutoHeight]=" true" [showQuickInfo]="true"
             [eventSettings]="availabilitySchedulerObject" [currentView]="initialView" [group]="groupData"
-            [allowDragAndDrop]="permissions[root.availability.updateInterval]"
-            [allowResizing]="permissions[root.availability.updateInterval]" locale='de'
+            [allowDragAndDrop]="permissions[root.ResourceManager.updateInterval]"
+            [allowResizing]="permissions[root.ResourceManager.updateInterval]" locale='de'
             (eventRendered)="onEventRendered($event)" (resizeStop)="updateAvailabilityInterval($event)"
             (dragStop)="updateAvailabilityInterval($event)" (popupOpen)="onPopupOpen($event)"
             (cellClick)="addAvailability($event)" (navigating)="onNavigate($event)">

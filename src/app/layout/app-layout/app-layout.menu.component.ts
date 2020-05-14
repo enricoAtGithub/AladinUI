@@ -29,7 +29,7 @@ export class AppMenuComponent implements OnInit {
         this.model = [
             { label: 'Dashboard', icon: 'fa fa-fw fa-home', routerLink: ['/'] },
             { label: 'Aufträge', icon: 'fa fa-fw fa-tasks', routerLink: ['/orders'] },
-            { label: 'Einsatzplanung', icon: 'fa fa-fw fa-calendar', routerLink: ['/scheduler'], visible: this.jmeleonPermissionsService.currentUserHasPermission(root.scheduler.openEvSch) },
+            { label: 'Einsatzplanung', icon: 'fa fa-fw fa-calendar', routerLink: ['/scheduler'], visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Scheduler.openEvSch) },
             { label: 'Rechnungen', icon: 'fa fa-fw fa-eur', routerLink: ['/invoices'] },
             { label: 'Berichte', icon: 'fa fa-fw fa-file', routerLink: ['/reports'] },
             {

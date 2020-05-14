@@ -9,12 +9,12 @@
         (resizeStart)="setResizeParams($event)" (resizeStop)="updateSchedulerEventInterval($event.data)"
         (dragStop)="updateSchedulerEventInterval($event.data)" [showQuickInfo]="false"
         (eventClick)="onSchedulerEventClick($event)"
-        [allowDragAndDrop]="permissions[root.scheduler.order.updateInterval]"
-        [allowResizing]="permissions[root.scheduler.order.updateInterval]" locale='de' [rowAutoHeight]="true"
+        [allowDragAndDrop]="permissions[root.Scheduler.order.updateInterval]"
+        [allowResizing]="permissions[root.Scheduler.order.updateInterval]" locale='de' [rowAutoHeight]="true"
         (eventRendered)="onEventRendered($event, 'evSch')" (cellClick)=" addSchedulerEvent($event)"
         (popupOpen)="onPopupOpen($event)" (navigating)="onNavigate($event, 'evSch')">
 
-        <!-- [allowDragAndDrop]="(permissionsRecord$ | async)[root.scheduler.order.updateInterval]" -->
+        <!-- [allowDragAndDrop]="(permissionsRecord$ | async)[root.Scheduler.order.updateInterval]" -->
 
         <ng-template #eventSettingsTemplate let-data>
             <div (contextmenu)="openContextMenu(schEvCM, $event, data)" style="width: 100%;height: 100%;">
@@ -59,7 +59,7 @@
 </div>
 
 <div *ngIf="showResourceScheduler">
-    <div *appPermissionCheck="root.scheduler.openResSch">
+    <div *appPermissionCheck="root.Scheduler.openResSch">
         <div class="resizableBox resourceScheduler" id=1 mwlResizable [style.height.px]="boxHeights[1]"
             [validateResize]="validate" [enableGhostResize]="false" [resizeSnapGrid]="{ left: 1, right: 1 }"
             (resizeEnd)="onResizeEnd($event, 1)" (resizing)="onResizing($event, 1)">
@@ -86,7 +86,7 @@
                     <div class='template-wrap'>
                         <div class="resource-details">
                             <div class="resource-name">
-                                <div *appPermissionCheck="root.scheduler.order.assign">
+                                <div *appPermissionCheck="root.Scheduler.order.assign">
                                     <i title="{{data.resourceData.AssignedAltText}}"
                                         class="{{data.resourceData.AssignedIcon}}"
                                         (click)="modifyAssignment(data.resourceData)"></i>

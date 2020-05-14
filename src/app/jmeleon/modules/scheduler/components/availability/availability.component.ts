@@ -96,7 +96,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   }
 
   private initPermissions() {
-    this.permissionsRecord$ = this.japs.userHasPermissionForActions([root.availability.create, root.availability.write, root.availability.delete, root.availability.updateInterval]);
+    this.permissionsRecord$ = this.japs.userHasPermissionForActions([root.ResourceManager.create, root.ResourceManager.write, root.ResourceManager.delete, root.ResourceManager.updateInterval]);
     this.subscriptions.push(this.permissionsRecord$.subscribe(record => this.permissionsRecord = record));
   }
 
@@ -176,11 +176,11 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
 
   // https://stackoverflow.com/questions/43590487/open-the-context-menu-by-primeng-from-code-angular-2?rq=1
   openContextMenu(availCM: ContextMenu, event: MouseEvent, data: Availability): void {
-    if (!((this.permissionsRecord[root.availability.write]) || (this.permissionsRecord[root.availability.delete]))) { return; }
+    if (!((this.permissionsRecord[root.ResourceManager.write]) || (this.permissionsRecord[root.ResourceManager.delete]))) { return; }
 
     this.contextMenuOpen = true;
     const model: MenuItem[] = [];
-    if (this.permissionsRecord[root.availability.write]) {
+    if (this.permissionsRecord[root.ResourceManager.write]) {
       model.push(
         {
           label: ContextMenuSettings.iconText.edit,
@@ -189,7 +189,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
         }
       );
     }
-    if (this.permissionsRecord[root.availability.delete]) {
+    if (this.permissionsRecord[root.ResourceManager.delete]) {
       model.push(
         {
           label: ContextMenuSettings.iconText.delete,
@@ -230,7 +230,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
 
   addAvailability(data: any) {
     if (this.contextMenuOpen) { return; }
-    if (!this.permissionsRecord[root.availability.create]) { return; }
+    if (!this.permissionsRecord[root.ResourceManager.create]) { return; }
 
     console.log(this.scheduleObj);
 

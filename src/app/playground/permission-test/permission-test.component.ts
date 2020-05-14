@@ -145,7 +145,7 @@ export class PermissionTestComponent implements OnInit, OnDestroy {
     this.userHasOrderReadPermission$ = this.japs.userHasPermissionForAction(root.dto.Order.read);
     this.japs.userHasPermissionForAction(root.dto.Order.read).subscribe(has => this.userHasOrderReadPermission = has);
 
-    const permissions = [root.dto.Order.read, root.dto.Order.write, 'not.existing.permission', 'not.existing.permission2', root.scheduler.openEvSch];
+    const permissions = [root.dto.Order.read, root.dto.Order.write, 'not.existing.permission', 'not.existing.permission2', root.Scheduler.openEvSch];
 
     this.record$ = this.japs.userHasPermissionForActions(permissions)
       .pipe(
