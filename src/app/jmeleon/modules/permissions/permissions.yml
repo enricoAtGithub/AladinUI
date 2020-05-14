@@ -17,14 +17,14 @@
     - read
     - write
     - delete
-- scheduler:
+- Scheduler:
   - openEvSch     # open event scheduler
   - openResSch    # open resource scheduler
   - order:
     - assign
     - unassign
     - updateInterval
-- availability:
+- ResourceManager:
   - create
   - read
   - write
