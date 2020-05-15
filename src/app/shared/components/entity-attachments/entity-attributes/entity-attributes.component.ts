@@ -33,17 +33,17 @@ export class EntityAttributesComponent implements OnChanges {
   entitySelectionTableData: TableData;
 
   types = [
-    {label: 'Long', value: 'Long'},
-    {label: 'String', value: 'String'},
-    {label: 'Boolean', value: 'Boolean'},
-    {label: 'Date', value: 'Date'},
-    {label: 'Color', value: 'Color'},
-    {label: 'Icon', value: 'Icon'},
-    {label: 'Reference', value: 'Reference'}
+    { label: 'Long', value: 'Long' },
+    { label: 'String', value: 'String' },
+    { label: 'Boolean', value: 'Boolean' },
+    { label: 'Date', value: 'Date' },
+    { label: 'Color', value: 'Color' },
+    { label: 'Icon', value: 'Icon' },
+    { label: 'Reference', value: 'Reference' }
   ];
 
   constructor(
-    private entityService: EntityService, 
+    private entityService: EntityService,
     private store$: Store<RootStoreState.State>
   ) { }
 
@@ -72,18 +72,18 @@ export class EntityAttributesComponent implements OnChanges {
     this.attrNames = [];
     this.refDtoRepr = '';
     this.attrGroup.attributes.forEach(element => {
-      this.attrNames.push({ label: element.name, value: element.name});
-      });
+      this.attrNames.push({ label: element.name, value: element.name });
+    });
   }
 
   configToSelectItem(name: string, type: string): SelectItem {
-    return {label: name, value: type};
+    return { label: name, value: type };
   }
 
   updateAttachments() {
     this.entityService.getAttachments('attribute', this.owner, this.entryId).subscribe(response => {
       this.attributes = response['data'];
-      this.attributes.forEach(attr => {if (attr['attributeType'] === 'Date') {attr['DateValue'] = new Date(attr['Value']); }});
+      this.attributes.forEach(attr => { if (attr['attributeType'] === 'Date') { attr['DateValue'] = new Date(attr['Value']); } });
     });
   }
 
@@ -93,7 +93,7 @@ export class EntityAttributesComponent implements OnChanges {
   }
 
   onRowEditInit(attribute: any) {
-    this.attributeClone = {...attribute};
+    this.attributeClone = { ...attribute };
   }
 
   onRowDelete(attribute: any) {
@@ -103,7 +103,8 @@ export class EntityAttributesComponent implements OnChanges {
 
   onRowEditSave(attribute: any) {
     const type: string = attribute['attributeType'];
-    this.entityService.updateAttachmentEntry('attribute', {id: attribute['id'], name: attribute['name'], attributeType: type,
+    this.entityService.updateAttachmentEntry('attribute', {
+      id: attribute['id'], name: attribute['name'], attributeType: type,
       longValue: attribute['longValue'],
       stringValue: attribute['stringValue'],
       booleanValue: attribute['booleanValue'],
@@ -112,7 +113,7 @@ export class EntityAttributesComponent implements OnChanges {
   }
 
   onRowEditCancel(attribute: any, index: number) {
-      this.attributes[index] = this.attributeClone;
+    this.attributes[index] = this.attributeClone;
   }
 
   setType(attributeName: string) {
