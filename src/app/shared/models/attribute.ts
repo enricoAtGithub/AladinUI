@@ -8,4 +8,5 @@ export class Attribute {
     stringValue: string;
     booleanValue: boolean;
     dateValue: Date;
+    attributeGroup: string;
 }

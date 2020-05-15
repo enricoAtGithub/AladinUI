@@ -1,18 +1,47 @@
-<p-dialog header="Attribut hinzufügen" [(visible)]="displayAddAttribute" [resizable]="false" [draggable]="false" [style]="{'width': '400px'}">
+<div *ngIf="displayEntitySelectionDialog">
+  <p-dialog header="Auswahl" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog" [style]="{width: '80%'}" appendTo="body">
+    <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData" (entitySelection)="entitySelected($event, attributeForm)"></app-dynamic-table>
+  </p-dialog>
+</div>
+
+<p-dialog header="Attribut hinzufügen" [modal]="true" [(visible)]="displayAddAttribute" [resizable]="false" [draggable]="false" [style]="{'width': '400px'}">
   <form (ngSubmit)="addNewAttribute()" #attributeForm="ngForm" class="ui-g">
     <div class="ui-g-12 ui-md-12 form-group">
+      
       <!-- Name -->
-      <span class="ui-float-label" style="margin-bottom: 25px">
+      <!-- Attribut -->
+      <span *ngIf="!attrGroup" class="ui-float-label" style="margin-bottom: 25px">
         <input required name="Name" id="float-input" type="text" [(ngModel)]="newAttribute.name" style="width: 100%" pInputText> 
         <label for="float-input">Name</label>
       </span> 
+      <!-- Attribute Group -->
+      <span *ngIf="attrGroup" class="ui-float-label form-group" style="margin-bottom: 25px">
+        <p-dropdown required [options]="attrNames" name="Name" [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.name"
+        [autoDisplayFirst]="false" (onChange)="setType($event.value)"></p-dropdown>
+        <label for="float-input">Name</label>
+      </span>
 
       <!-- Typ -->
       <span class="ui-float-label form-group">
-          <p-dropdown required [options]="types" name="Typ" [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.attributeType"
-          [autoDisplayFirst]="false"></p-dropdown>
+        <p-dropdown required [options]="types" name="Typ" [readonly]="isTypeReadonly" [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.attributeType"
+           [autoDisplayFirst]="false"></p-dropdown>
           <label for="float-input">Typ</label>
       </span>
+
+      <!-- Reference -->
+      <div *ngIf="newAttribute.attributeType === 'Reference'">
+        <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 25px">
+          <p-dropdown required [options]="dtoConfigs" name="DTOType" [readonly]="isDtoTypeReadonly" [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.stringValue"
+          [autoDisplayFirst]="false"></p-dropdown>
+          <label for="float-input">Konfiguration</label>
+        </span>
+
+        <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 25px;">
+          <input required name="Wert" [disabled]="true" id="float-input" style="width: 50%" [(ngModel)]="refDtoRepr" pInputText>
+          <button pButton type="button" (click)="openEntitySelectionDialog(newAttribute.stringValue)" icon="pi pi-pencil"></button>
+          <label for="float-input" style="top: -.75em; font-size: 12px;">Wert</label>
+        </span>
+      </div>
 
       <!-- String || Icon -->
       <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
@@ -71,9 +100,9 @@
       <td>
         <p-cellEditor>
           <ng-template pTemplate="input">
-            <input pInputText type="text" [(ngModel)]="rowData.name" style="width: 100%">
+            <input *ngIf="rowData.attributeType !== 'Reference';else outputName" pInputText type="text" [(ngModel)]="rowData.name" style="width: 100%">
           </ng-template>
-          <ng-template pTemplate="output"> 
+          <ng-template #outputName pTemplate="output"> 
             {{rowData.name}}
           </ng-template>
         </p-cellEditor>
@@ -81,10 +110,10 @@
       <td>
         <p-cellEditor>
           <ng-template pTemplate="input">
-            <p-dropdown [options]="types" [(ngModel)]="rowData.attributeType" [style]="{'width':'100%'}"></p-dropdown>
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{rowData.attributeType}}
+            <p-dropdown *ngIf="rowData.attributeType !== 'Reference';else outputType" [options]="types" [(ngModel)]="rowData.attributeType" [style]="{'width':'100%'}"></p-dropdown>
+          </ng-template>          
+          <ng-template #outputType pTemplate="output">
+            {{rowData.attributeType !== 'Reference' ? rowData.attributeType : rowData.stringValue}} 
           </ng-template>
         </p-cellEditor>
       </td>
@@ -99,6 +128,10 @@
               <p-colorPicker  [(ngModel)]="rowData.stringValue" ></p-colorPicker>
               <input pInputText type="text" [(ngModel)]="rowData.stringValue" style="width: 92%"> 
             </div>
+            <span *ngIf="rowData.attributeType === 'Reference'">
+              <input [disabled]="true" name="Wert" style="width: calc(100% - 30px);" [(ngModel)]="rowData.value" pInputText>
+              <button pButton type="button" (click)="openEntitySelectionDialog(rowData.stringValue)" icon="pi pi-pencil"></button>
+            </span>
           </ng-template>
           
           <ng-template pTemplate="output"> 
@@ -107,6 +140,7 @@
             {{rowData.attributeType === 'Long' ? rowData.longValue : ''}} 
             {{rowData.attributeType === 'Date' ? rowData.dateValue : ''}}
             {{rowData.attributeType === 'Icon' ? rowData.stringValue : ''}} 
+            {{rowData.attributeType === 'Reference' ? rowData.value : ''}} 
             <div *ngIf="rowData.attributeType === 'Color'">
               <input class="ui-colorpicker-preview ui-inputtext ui-state-default ui-corner-all ng-tns-c3-3 ng-star-inserted" readonly="true" type="text" [style.background-color]="rowData.stringValue">
               {{rowData.stringValue}}

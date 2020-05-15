@@ -23,10 +23,17 @@
       </p-tabPanel>
     </div>
 
+    <ng-template ngFor let-attrGroup [ngForOf]="configuration?.attributeGroups">
+      <p-tabPanel *ngIf="!this.excludedPanels?.includes(attrGroup)" [header]="attrGroup.name"
+        [selected]="this.selectedPanel === attrGroup">
+        <app-entity-attributes [owner]="configName" [entryId]="entryId" [attrGroup]="attrGroup"></app-entity-attributes>
+      </p-tabPanel>
+    </ng-template>
+
     <div *ngIf="!this.excludedPanels?.includes('Attributes')">
       <p-tabPanel *ngIf="this.configuration?.components?.includes('Attributes')" header="Attribute"
         [selected]="this.selectedPanel === 'Attributes'">
-        <app-entity-attributes [type]="configName" [entryId]="entryId"></app-entity-attributes>
+        <app-entity-attributes [owner]="configName" [entryId]="entryId"></app-entity-attributes>
       </p-tabPanel>
     </div>
 

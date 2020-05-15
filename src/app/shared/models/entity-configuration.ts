@@ -1,5 +1,17 @@
 import { Field } from './field';
 
+export interface AttributeGroup {
+    attributes: AttributeGroupEntries[];
+    hrid: string;
+    name: string;
+}
+
+export interface AttributeGroupEntries {
+    name: string;
+    type: string;
+    dtoType: string;
+}
+
 export class EntityConfiguration {
     type: string;
     groups: string[];
@@ -12,4 +24,5 @@ export class EntityConfiguration {
         action: string;
     };
     fields: Field[];
+    attributeGroup: AttributeGroup;
 }
