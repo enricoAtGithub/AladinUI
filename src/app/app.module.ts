@@ -117,6 +117,7 @@ import { DigitOnlyModule } from '@uiowa/digit-only';
 import { SettingsModule } from './jmeleon/modules/settings/settings.module';
 import { SchedulerModule } from './jmeleon/modules/scheduler/scheduler.module';
 import { PermissionsModule } from './jmeleon/modules/permissions/permissions.module';
+import { AccountsComponent } from './accounts/accounts.component';
 
 export function initializeApp(appConfig: AppConfig) {
     console.log('initialize app');
@@ -231,7 +232,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         ProfileComponent,
         ReportsComponent,
         InvoicesComponent,
-        OrdersComponent
+        OrdersComponent,
+        AccountsComponent
     ],
     providers: [
         AppConfig,

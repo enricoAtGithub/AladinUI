@@ -25,6 +25,7 @@ import { environment } from 'src/environments/environment';
 import { PlaygroundGuard } from './playground/guards/playground.guard';
 import { AvailabilityComponent } from './jmeleon/modules/scheduler/components/availability/availability.component';
 import { DTOEntitiesComponent } from './jmeleon/components/dto-entities/dto-entities.component';
+import { AccountsComponent } from './accounts/accounts.component';
 
 
 export const routes: Routes = [
@@ -36,6 +37,7 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'accounts', component: AccountsComponent },
       { path: 'orders', component: OrdersComponent },
       { path: 'reports', component: ReportsComponent },
       { path: 'invoices', component: InvoicesComponent },
