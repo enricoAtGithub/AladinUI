@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, AfterViewInit} from '@angular/core';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
 import { EntityData } from '../../models/entity-data';
@@ -25,7 +25,7 @@ import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permiss
   styleUrls: ['./dynamic-table.component.css'],
   providers: [ConfirmationService]
 })
-export class DynamicTableComponent implements OnInit, OnChanges {
+export class DynamicTableComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() tableData: TableData;
   @Input() mainId: number;
   @Input() dblClickCallback: (data) => any;
@@ -42,6 +42,9 @@ export class DynamicTableComponent implements OnInit, OnChanges {
   filtersInTable = false;
   showButtons = false;
   root = root;
+  minTableWidth: number;
+  freeColumnSpace = 100;
+  zeroWidthColumns = 0;
 
   constructor(
     private entityService: EntityService,
@@ -71,8 +74,20 @@ export class DynamicTableComponent implements OnInit, OnChanges {
 
       this.checkShowButtons();
 
+      this.minTableWidth = this.showButtons ? 90 : 0;
       this.fields = this.configuration.fields.filter(field => field.visible === true);
       this.fields.forEach(field => {
+        /*this.minTableWidth += Math.max(
+          field.width && !field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0,
+          field.minWidth && !field.minWidth.endsWith('%') ? Number.parseInt(field.minWidth, 10) : 0
+        );*/
+        if (!field.width) {
+          this.zeroWidthColumns++;
+        } else {
+          this.minTableWidth    += !field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
+          this.freeColumnSpace  -=  field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
+        }
+
         this.filtersInTable = field.filterType !== 'none' || this.filtersInTable;
         if (field.filterType === 'multiSelect' && !Field.isPrimitiveType(field.type)) {
           field.options = [];
@@ -111,6 +126,10 @@ export class DynamicTableComponent implements OnInit, OnChanges {
     }
   }
 
+  ngAfterViewInit() {
+    window.dispatchEvent(new Event('resize'));
+  }
+
   async rowSelect() {
     this.entitySelection.emit(this.selectedEntry);
     this.selectedEntryId = this.selectedEntry['id'];
@@ -126,7 +145,7 @@ export class DynamicTableComponent implements OnInit, OnChanges {
   }
 
   async loadLazy(event: LazyLoadEvent) {
-    // Check if the configuration data requested in ngOnInit has already been reveived
+    // Check if the configuration data requested in ngOnInit has already been received
     let timeout = 5000;
     while ((!this.configuration || !this.fields) && timeout !== 0) {
       await delay(null, 50).then();
@@ -148,7 +167,7 @@ export class DynamicTableComponent implements OnInit, OnChanges {
     this.fields.forEach(field => {
       if (event.filters[field.field]) {
 
-        let value: any = event.filters[field.field].value;
+        const value: any = event.filters[field.field].value;
 
         if (field.filterType === 'text') {
           const filterContent: string = value.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
@@ -295,6 +314,25 @@ export class DynamicTableComponent implements OnInit, OnChanges {
       this.japs.userHasPermissionForActions([root.dto.FileAttachment.download]).subscribe(record => {
         this.showButtons = !Object.entries(record).every(entry => !entry[1]);
       });
+    }
+  }
+
+  onTableResize(event) {
+    // Without the event the column width wouldn't be recalculated after a resize
+  }
+
+  calcWidth(col: Field, width) {
+    if (this.configuration.minWidth && this.configuration.scrollable) {
+      width = Math.max(width, this.configuration.minWidth);
+    }
+
+    width -= this.minTableWidth + (this.showButtons ? 92 : 2);
+    if (!col.width) {
+      return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
+    } else if (col.width.endsWith('px')) {
+      return col.width;
+    } else {
+      return Math.floor(Number.parseInt(col.width, 10) * width / 100.0) + 'px';
     }
   }
 }

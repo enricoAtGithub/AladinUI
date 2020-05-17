@@ -4,7 +4,7 @@
     <h1 *ngIf="tableData.showHeadline">{{tableData.tableName}}</h1>
     <p-table #dt [columns]="fields" [value]="entityData.data" selectionMode="single" dataKey="id" [(selection)]="selectedEntry" (onRowSelect)="rowSelect()" (onRowUnselect)="rowUnselect()"
       [paginator]="tableData.pagination" [(rows)]="configuration.rowsPerPage" [rowsPerPageOptions]="[10,25,50]" [responsive]="true" [lazy]="true" (onLazyLoad)="loadLazy($event)" [loading]="loading"
-      [totalRecords]="entityData.count" [scrollable]="tableData.scrollable" [scrollHeight]="tableData.scrollHeight" styleClass="ui-table-customers">
+      [totalRecords]="entityData.count" [scrollable]="tableData.scrollable || configuration?.scrollable" [scrollHeight]="tableData.scrollHeight" styleClass="ui-table-customers" (window:resize)="onTableResize($event)">
       <ng-template *ngIf="tableData.showHeader" pTemplate="caption">
         {{configuration.displayName}}
         <button pButton (click)="showAddEntityDialog()" icon="pi pi-plus" style="float: right; margin-top: -5px;"></button>
@@ -13,7 +13,7 @@
       <!-- Table Headers -->
       <ng-template pTemplate="header" let-columns>
         <tr>
-          <th *ngFor="let col of columns" [style.width]="col.width" [ngSwitch]="col.filterType" style="padding: 0px;">
+          <th *ngFor="let col of columns" [style.width]="calcWidth(col, dt.el.nativeElement.offsetWidth)" [ngSwitch]="col.filterType" style="padding: 0px;">
             <div style="display:flex; flex-direction: column;">            
               <!-- Header titles and sorting icon-->
               <div [pSortableColumn]="col.sortable ? col.field : null" style="margin: 0px">
@@ -48,7 +48,7 @@
       <ng-template pTemplate="body" let-rowData let-columns="columns">
         <!-- Processing and displaying the data -->
         <tr [pSelectableRow]="rowData" (dblclick)="doubleClickTableRow(rowData)">
-          <td *ngFor="let col of columns" [style.width]="col.width" style="word-wrap: break-word;">
+          <td *ngFor="let col of columns" [style.width]="calcWidth(col, dt.el.nativeElement.offsetWidth)" style="word-wrap: break-word;">
             <span class="ui-column-title">{{col.header}}</span>
               <div *ngIf="col.type !== 'Icon';else displayIcon">{{processData(rowData[col.field], col)}}</div>
               <ng-template #displayIcon><i [class]="rowData[col.field]?.icon" [ngStyle]="{'color': rowData[col.field]?.color}" style="font-size: 2em;"></i></ng-template>
