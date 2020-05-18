@@ -29,8 +29,10 @@ export class EntityAttributesComponent implements OnChanges {
   refDtoRepr: string;
   isTypeReadonly = false; isDtoTypeReadonly = false;
   dtoConfigs: SelectItem[];
-  displayEntitySelectionDialog = false;
+  displayEntitySelectionDialog_add = false;
+  displayEntitySelectionDialog_update = false;
   entitySelectionTableData: TableData;
+  updatedRowData: any;
 
   types = [
     { label: 'Long', value: 'Long' },
@@ -124,7 +126,7 @@ export class EntityAttributesComponent implements OnChanges {
     if (this.newAttribute.stringValue) { this.isDtoTypeReadonly = true; }
   }
 
-  openEntitySelectionDialog(type: string, input: InputText) {
+  openEntitySelectionDialog_add(type: string, input: InputText) {
     this.entitySelectionTableData = new TableData(type, type)
       .hideHeader()
       .hideHeadline()
@@ -132,13 +134,33 @@ export class EntityAttributesComponent implements OnChanges {
       .hideButtons()
       .setScrollable()
       .setScrollHeight('700px');
-    this.displayEntitySelectionDialog = true;
+    this.displayEntitySelectionDialog_add = true;
   }
 
-  entitySelected(entity: any, form: NgForm) {
+  openEntitySelectionDialog_update(type: string, rowData: Attribute) {
+    this.entitySelectionTableData = new TableData(type, type)
+      .hideHeader()
+      .hideHeadline()
+      .hideAttachments()
+      .hideButtons()
+      .setScrollable()
+      .setScrollHeight('700px');
+
+    console.log(rowData);
+    this.updatedRowData = rowData;
+    this.displayEntitySelectionDialog_update = true;
+  }
+
+  entitySelected_add(entity: any, form: NgForm) {
     form.controls['Wert'].setValue(entity['_repr_'], { emitEvent: true });
     this.newAttribute.longValue = entity['id'];
-    this.displayEntitySelectionDialog = false;
+    this.displayEntitySelectionDialog_add = false;
+  }
+
+  entitySelected_update(entity: any, form: NgForm) {
+    this.updatedRowData.value = entity['_repr_'];
+    this.updatedRowData.longValue = entity['id'];
+    this.displayEntitySelectionDialog_update = false;
   }
 
 }

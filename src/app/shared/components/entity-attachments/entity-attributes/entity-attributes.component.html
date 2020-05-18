@@ -1,8 +1,16 @@
-<div *ngIf="displayEntitySelectionDialog">
-  <p-dialog header="Auswahl" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog"
+<div *ngIf="displayEntitySelectionDialog_add">
+  <p-dialog header="Auswahl" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog_add"
     [style]="{width: '80%'}" appendTo="body">
     <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData"
-      (entitySelection)="entitySelected($event, attributeForm)"></app-dynamic-table>
+      (entitySelection)="entitySelected_add($event, attributeForm)"></app-dynamic-table>
+  </p-dialog>
+</div>
+
+<div *ngIf="displayEntitySelectionDialog_update">
+  <p-dialog header="Auswahl" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog_update"
+    [style]="{width: '80%'}" appendTo="body">
+    <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData"
+      (entitySelection)="entitySelected_update($event, attributeForm)"></app-dynamic-table>
   </p-dialog>
 </div>
 
@@ -45,7 +53,7 @@
         <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 25px;">
           <input required name="Wert" [disabled]="true" id="float-input" style="width: 50%" [(ngModel)]="refDtoRepr"
             pInputText>
-          <button pButton type="button" (click)="openEntitySelectionDialog(newAttribute.stringValue)"
+          <button pButton type="button" (click)="openEntitySelectionDialog_add(newAttribute.stringValue)"
             icon="pi pi-pencil"></button>
           <label for="float-input" style="top: -.75em; font-size: 12px;">Wert</label>
         </span>
@@ -155,7 +163,7 @@
             <span *ngIf="rowData.attributeType === 'Reference'">
               <input [disabled]="true" name="Wert" style="width: calc(100% - 30px);" [(ngModel)]="rowData.value"
                 pInputText>
-              <button pButton type="button" (click)="openEntitySelectionDialog(rowData.stringValue)"
+              <button pButton type="button" (click)="openEntitySelectionDialog_update(rowData.stringValue, rowData)"
                 icon="pi pi-pencil"></button>
             </span>
           </ng-template>
