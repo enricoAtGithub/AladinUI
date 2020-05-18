@@ -27,18 +27,17 @@
                 <label for="float-input">Name</label>
             </span>
 
-            <!-- Type -->
-            <span class="ui-float-label form-group" style="display:none">
-                <p-dropdown required [options]="types" name="Typ" [readonly]="isTypeReadonly"
-                    [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.attributeType"
-                    [autoDisplayFirst]="false"></p-dropdown>
+            <!-- Type should be predefined for attribute groups -->
+            <!-- <span class="ui-float-label form-group">
+                <p-dropdown required [options]="types" name="Typ" [style]="{'width':'100%', 'height': '28px'}"
+                    [(ngModel)]="newAttribute.attributeType" [autoDisplayFirst]="false"></p-dropdown>
                 <label for="float-input">Typ</label>
-            </span>
+            </span> -->
 
             <!-- Reference -->
             <div *ngIf="newAttribute.attributeType === 'Reference'">
-                <span class="ui-float-label form-group" style="display:none">
-                    <p-dropdown required [options]="dtoConfigs" name="DTOType" [readonly]="isDtoTypeReadonly"
+                <span *ngIf="dtoTypeUnknown" class="ui-float-label form-group">
+                    <p-dropdown required [options]="dtoConfigs" name="DTOType"
                         [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.stringValue"
                         [autoDisplayFirst]="false"></p-dropdown>
                     <label for="float-input">Konfiguration</label>
@@ -47,8 +46,8 @@
                 <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 25px;">
                     <input required name="Wert" [disabled]="true" id="float-input" style="width: calc(100% - 30px)"
                         [(ngModel)]="refDtoRepr" pInputText>
-                    <button pButton type="button" (click)="openEntitySelectionDialog_add(newAttribute.stringValue)"
-                        icon="pi pi-pencil"></button>
+                    <button pButton *ngIf="newAttribute.stringValue" type="button"
+                        (click)="openEntitySelectionDialog_add(newAttribute.stringValue)" icon="pi pi-pencil"></button>
                     <label for="float-input" style="top: -.75em; font-size: 12px;">Wert</label>
                 </span>
             </div>
@@ -109,7 +108,8 @@
             <th>Name</th>
             <th>Wert</th>
             <th style="width:8em">
-                <button pButton type="button" icon="pi pi-plus" class="ui-button-success" (click)="openAddAttributeDialog()"></button>
+                <button pButton type="button" icon="pi pi-plus" class="ui-button-success"
+                    (click)="openAddAttributeDialog()"></button>
             </th>
         </tr>
     </ng-template>

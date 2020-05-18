@@ -27,7 +27,7 @@ export class EntityAttributeGroupComponent implements OnChanges {
   newAttribute = new Attribute();
   attrNames: object[] = [];
   refDtoRepr: string;
-  isTypeReadonly = false; isDtoTypeReadonly = false;
+  dtoTypeUnknown = false;
   dtoConfigs: SelectItem[];
   displayEntitySelectionDialog_add = false;
   displayEntitySelectionDialog_update = false;
@@ -90,7 +90,6 @@ export class EntityAttributeGroupComponent implements OnChanges {
   }
 
   addNewAttribute() {
-    console.log(this.newAttribute);
     this.displayAddAttribute = false;
     this.entityService.addAttachmentEntry('attribute', this.newAttribute).subscribe(() => this.updateAttachments());
   }
@@ -105,7 +104,6 @@ export class EntityAttributeGroupComponent implements OnChanges {
   }
 
   onRowEditSave(attribute: any) {
-    console.log(attribute);
     const type: string = attribute['attributeType'];
     this.entityService.updateAttachmentEntry('attribute', {
       id: attribute['id'], name: attribute['name'], attributeType: type,
@@ -123,10 +121,9 @@ export class EntityAttributeGroupComponent implements OnChanges {
 
   setType(attributeName: string) {
     const selectedAttribute: AttributeGroupEntries = this.attrGroup.attributes.find(obj => obj.name === attributeName);
+    selectedAttribute.dtoType ? this.dtoTypeUnknown = false : this.dtoTypeUnknown = true;
     this.newAttribute.attributeType = selectedAttribute.type;
     this.newAttribute.stringValue = selectedAttribute.dtoType;
-    if (this.newAttribute.attributeType) { this.isTypeReadonly = true; }
-    if (this.newAttribute.stringValue) { this.isDtoTypeReadonly = true; }
   }
 
   openEntitySelectionDialog_add(type: string, input: InputText) {
@@ -148,7 +145,6 @@ export class EntityAttributeGroupComponent implements OnChanges {
       .hideButtons()
       .setScrollable()
       .setScrollHeight('700px');
-    console.log(rowData);
     this.updatedRowData = rowData;
     this.displayEntitySelectionDialog_update = true;
   }
