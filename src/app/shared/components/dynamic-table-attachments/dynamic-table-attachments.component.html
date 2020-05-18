@@ -27,7 +27,8 @@
     <ng-template ngFor let-attrGroup [ngForOf]="configuration?.attributeGroups">
       <p-tabPanel *ngIf="!this.excludedPanels?.includes(attrGroup)" [header]="attrGroup.name"
         [selected]="this.selectedPanel === attrGroup">
-        <app-entity-attributes [owner]="configName" [entryId]="entryId" [attrGroup]="attrGroup"></app-entity-attributes>
+        <app-entity-attributegroup [owner]="configName" [entryId]="entryId" [attrGroup]="attrGroup">
+        </app-entity-attributegroup>
       </p-tabPanel>
     </ng-template>
 

@@ -15,9 +15,9 @@ import { TabViewModule } from 'primeng/tabview';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { EditorModule } from 'primeng/editor';
 import { TableModule } from 'primeng/table';
-import { FileUploadModule} from 'primeng/fileupload';
-import { DialogModule} from 'primeng/dialog';
-import { ListboxModule} from 'primeng/listbox';
+import { FileUploadModule } from 'primeng/fileupload';
+import { DialogModule } from 'primeng/dialog';
+import { ListboxModule } from 'primeng/listbox';
 import { FileUploadDialogComponent } from './components/file-upload-dialog/file-upload-dialog.component';
 import { CatalogueChooserDialogComponent } from './components/catalogue-chooser-dialog/catalogue-chooser-dialog.component';
 import { MessagesModule } from 'primeng/messages';
@@ -30,7 +30,7 @@ import { DynamicTableAttachmentsComponent } from './components/dynamic-table-att
 import { PictureDialogComponent } from './components/picture-dialog/picture-dialog.component';
 import { EntityDropdownComponent } from './components/entity-dropdown/entity-dropdown.component';
 import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
-import {ColorPickerModule} from 'primeng/colorpicker';
+import { ColorPickerModule } from 'primeng/colorpicker';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { JmeleonModule } from '../jmeleon/jmeleon.module';
 import { PermissionsModule } from '../jmeleon/modules/permissions/permissions.module';
@@ -40,6 +40,7 @@ import { EntityGroupRelationComponent } from './components/entity-attachments/en
 import { EntityFileAttachmentsComponent } from './components/entity-attachments/entity-file-attachments/entity-file-attachments.component';
 import { EntityLogsComponent } from './components/entity-attachments/entity-logs/entity-logs.component';
 import { EntitySubtypesComponent } from './components/entity-attachments/entity-subtypes/entity-subtypes.component';
+import { EntityAttributeGroupComponent } from './components/entity-attachments/entity-attributegroup/entity-attributegroup.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { EntitySubtypesComponent } from './components/entity-attachments/entity-
     EntityGroupRelationComponent,
     EntityFileAttachmentsComponent,
     EntityLogsComponent,
-    EntitySubtypesComponent
+    EntitySubtypesComponent,
+    EntityAttributeGroupComponent
   ],
   imports: [
     CommonModule,

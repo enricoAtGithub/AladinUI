@@ -11,14 +11,15 @@ import { TableData } from 'src/app/shared/models/table-data';
 import { NgForm } from '@angular/forms';
 
 @Component({
-  selector: 'app-entity-attributes',
-  templateUrl: './entity-attributes.component.html',
-  styleUrls: ['./entity-attributes.component.css']
+  selector: 'app-entity-attributegroup',
+  templateUrl: './entity-attributegroup.component.html',
+  styleUrls: ['./entity-attributegroup.component.css']
 })
 
-export class EntityAttributesComponent implements OnChanges {
+export class EntityAttributeGroupComponent implements OnChanges {
   @Input() owner: string;
   @Input() entryId: number;
+  @Input() attrGroup: AttributeGroup;
 
   attributes: any[];
   private attributeClone: any;
@@ -56,12 +57,24 @@ export class EntityAttributesComponent implements OnChanges {
     this.newAttribute = new Attribute();
     this.newAttribute.ownerType = this.owner;
     this.newAttribute.ownerId = this.entryId;
+    if (this.attrGroup) {
+      this.newAttribute.attributeGroup = this.attrGroup.hrid;
+      this.initAttributGroupData();
+    }
     this.displayAddAttribute = true;
 
     // get all dtos for type "Reference"
     const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
     configurations$.subscribe(configs => {
       this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
+    });
+  }
+
+  initAttributGroupData() {
+    this.attrNames = [];
+    this.refDtoRepr = '';
+    this.attrGroup.attributes.forEach(element => {
+      this.attrNames.push({ label: element.name, value: element.name });
     });
   }
 
@@ -77,6 +90,7 @@ export class EntityAttributesComponent implements OnChanges {
   }
 
   addNewAttribute() {
+    console.log(this.newAttribute);
     this.displayAddAttribute = false;
     this.entityService.addAttachmentEntry('attribute', this.newAttribute).subscribe(() => this.updateAttachments());
   }
@@ -91,18 +105,28 @@ export class EntityAttributesComponent implements OnChanges {
   }
 
   onRowEditSave(attribute: any) {
+    console.log(attribute);
     const type: string = attribute['attributeType'];
     this.entityService.updateAttachmentEntry('attribute', {
       id: attribute['id'], name: attribute['name'], attributeType: type,
       longValue: attribute['longValue'],
       stringValue: attribute['stringValue'],
       booleanValue: attribute['booleanValue'],
-      dateValue: attribute['dateValue']
+      dateValue: attribute['dateValue'],
+      attributeGroup: attribute['attributeGroup']
     }).subscribe();
   }
 
   onRowEditCancel(attribute: any, index: number) {
     this.attributes[index] = this.attributeClone;
+  }
+
+  setType(attributeName: string) {
+    const selectedAttribute: AttributeGroupEntries = this.attrGroup.attributes.find(obj => obj.name === attributeName);
+    this.newAttribute.attributeType = selectedAttribute.type;
+    this.newAttribute.stringValue = selectedAttribute.dtoType;
+    if (this.newAttribute.attributeType) { this.isTypeReadonly = true; }
+    if (this.newAttribute.stringValue) { this.isDtoTypeReadonly = true; }
   }
 
   openEntitySelectionDialog_add(type: string, input: InputText) {
