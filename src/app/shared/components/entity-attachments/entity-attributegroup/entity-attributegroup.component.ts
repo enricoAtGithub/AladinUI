@@ -32,7 +32,8 @@ export class EntityAttributeGroupComponent implements OnChanges {
   displayEntitySelectionDialog_add = false;
   displayEntitySelectionDialog_update = false;
   entitySelectionTableData: TableData;
-  updatedRowData: any;
+  updatedRowData: Attribute;
+  header: string;
 
   types = [
     { label: 'Long', value: 'Long' },
@@ -134,6 +135,7 @@ export class EntityAttributeGroupComponent implements OnChanges {
       .hideButtons()
       .setScrollable()
       .setScrollHeight('700px');
+    this.header = type + ' auswählen';
     this.displayEntitySelectionDialog_add = true;
   }
 
@@ -146,6 +148,7 @@ export class EntityAttributeGroupComponent implements OnChanges {
       .setScrollable()
       .setScrollHeight('700px');
     this.updatedRowData = rowData;
+    this.header = type + ' auswählen';
     this.displayEntitySelectionDialog_update = true;
   }
 

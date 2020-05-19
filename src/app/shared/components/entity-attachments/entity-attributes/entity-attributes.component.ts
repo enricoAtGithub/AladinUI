@@ -31,6 +31,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
   displayEntitySelectionDialog_update = false;
   entitySelectionTableData: TableData;
   updatedRowData: Attribute;
+  header: string;
 
   types = [
     { label: 'Long', value: 'Long' },
@@ -124,6 +125,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
       .hideButtons()
       .setScrollable()
       .setScrollHeight('700px');
+    this.header = type + ' auswählen';
     this.displayEntitySelectionDialog_add = true;
   }
 
@@ -135,7 +137,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
       .hideButtons()
       .setScrollable()
       .setScrollHeight('700px');
-    console.log(rowData);
+    this.header = type + ' auswählen';
     this.updatedRowData = rowData;
     this.displayEntitySelectionDialog_update = true;
   }

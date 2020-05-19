@@ -1,5 +1,5 @@
 <div *ngIf="displayEntitySelectionDialog_add">
-    <p-dialog header="Auswahl" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog_add"
+    <p-dialog [header]="header" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog_add"
         [style]="{width: '80%'}" appendTo="body">
         <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData"
             (entitySelection)="entitySelected_add($event, attributeForm)"></app-dynamic-table>
@@ -7,7 +7,7 @@
 </div>
 
 <div *ngIf="displayEntitySelectionDialog_update">
-    <p-dialog header="Auswahl" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog_update"
+    <p-dialog [header]="header" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog_update"
         [style]="{width: '80%'}" appendTo="body">
         <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData"
             (entitySelection)="entitySelected_update($event, attributeForm)"></app-dynamic-table>
@@ -40,7 +40,7 @@
                     <p-dropdown required [options]="dtoConfigs" name="DTOType"
                         [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.stringValue"
                         [autoDisplayFirst]="false"></p-dropdown>
-                    <label for="float-input">Konfiguration</label>
+                    <label for="float-input">Objekttyp</label>
                 </span>
 
                 <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 25px;">
@@ -48,7 +48,7 @@
                         [(ngModel)]="refDtoRepr" pInputText>
                     <button pButton *ngIf="newAttribute.stringValue" type="button"
                         (click)="openEntitySelectionDialog_add(newAttribute.stringValue)" icon="pi pi-pencil"></button>
-                    <label for="float-input" style="top: -.75em; font-size: 12px;">Wert</label>
+                    <label for="float-input" style="top: -.75em; font-size: 12px;">{{newAttribute.stringValue}}</label>
                 </span>
             </div>
 
@@ -80,7 +80,7 @@
                 *ngIf="newAttribute.attributeType === 'Date'">
                 <p-calendar name="Wert" [(ngModel)]="newAttribute.dateValue" showTime="true" dateFormat="dd.mm.yy"
                     [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}"></p-calendar>
-                <label for="float-input">Wert</label>
+                <label for="float-input">Datum</label>
             </span>
 
             <!-- Color -->
