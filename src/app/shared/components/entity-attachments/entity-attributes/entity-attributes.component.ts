@@ -16,7 +16,7 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./entity-attributes.component.css']
 })
 
-export class EntityAttributesComponent implements OnChanges {
+export class EntityAttributesComponent implements OnInit, OnChanges {
   @Input() owner: string;
   @Input() entryId: number;
 
@@ -24,9 +24,7 @@ export class EntityAttributesComponent implements OnChanges {
   private attributeClone: any;
   displayAddAttribute = false;
   newAttribute = new Attribute();
-  attrNames: object[] = [];
   refDtoRepr: string;
-  isTypeReadonly = false; isDtoTypeReadonly = false;
   dtoConfigs: SelectItem[];
   displayEntitySelectionDialog_add = false;
   displayEntitySelectionDialog_update = false;
@@ -48,6 +46,14 @@ export class EntityAttributesComponent implements OnChanges {
     private store$: Store<RootStoreState.State>
   ) { }
 
+  ngOnInit() {
+    // get all dtos for type "Reference"
+    const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
+    configurations$.subscribe(configs => {
+      this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
+    });
+  }
+
   ngOnChanges() {
     this.updateAttachments();
   }
@@ -57,12 +63,6 @@ export class EntityAttributesComponent implements OnChanges {
     this.newAttribute.ownerType = this.owner;
     this.newAttribute.ownerId = this.entryId;
     this.displayAddAttribute = true;
-
-    // get all dtos for type "Reference"
-    const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
-    configurations$.subscribe(configs => {
-      this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
-    });
   }
 
   configToSelectItem(name: string, type: string): SelectItem {

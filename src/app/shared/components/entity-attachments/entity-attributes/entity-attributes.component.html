@@ -20,7 +20,6 @@
     <div class="ui-g-12 ui-md-12 form-group">
 
       <!-- Name -->
-      <!-- Attribut -->
       <span class="ui-float-label" style="margin-bottom: 25px">
         <input required name="Name" id="float-input" type="text" [(ngModel)]="newAttribute.name" style="width: 100%"
           pInputText>
@@ -38,16 +37,15 @@
       <!-- Reference -->
       <div *ngIf="newAttribute.attributeType === 'Reference'">
         <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 25px">
-          <p-dropdown required [options]="dtoConfigs" name="DTOType" [readonly]="isDtoTypeReadonly"
-            [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.stringValue"
-            [autoDisplayFirst]="false"></p-dropdown>
+          <p-dropdown required [options]="dtoConfigs" name="DTOType" [style]="{'width':'100%', 'height': '28px'}"
+            [(ngModel)]="newAttribute.stringValue" [autoDisplayFirst]="false"></p-dropdown>
           <label for="float-input">Konfiguration</label>
         </span>
 
         <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 25px;">
-          <input required name="Wert" [disabled]="true" id="float-input" style="width: 50%" [(ngModel)]="refDtoRepr"
+          <input required name="Wert" [disabled]="true" id="float-input" style="width: calc(100% - 30px)" [(ngModel)]="refDtoRepr"
             pInputText>
-          <button pButton type="button" (click)="openEntitySelectionDialog_add(newAttribute.stringValue)"
+          <button pButton *ngIf="newAttribute.stringValue" type="button" (click)="openEntitySelectionDialog_add(newAttribute.stringValue)"
             icon="pi pi-pencil"></button>
           <label for="float-input" style="top: -.75em; font-size: 12px;">Wert</label>
         </span>
@@ -121,10 +119,9 @@
       <td>
         <p-cellEditor>
           <ng-template pTemplate="input">
-            <input *ngIf="rowData.attributeType !== 'Reference';else outputName" pInputText type="text"
-              [(ngModel)]="rowData.name" style="width: 100%">
+            <input pInputText type="text" [(ngModel)]="rowData.name" style="width: 100%">
           </ng-template>
-          <ng-template #outputName pTemplate="output">
+          <ng-template pTemplate="output">
             {{rowData.name}}
           </ng-template>
         </p-cellEditor>
@@ -132,10 +129,10 @@
       <td>
         <p-cellEditor>
           <ng-template pTemplate="input">
-            <p-dropdown *ngIf="rowData.attributeType !== 'Reference';else outputType" [options]="types"
-              [(ngModel)]="rowData.attributeType" [style]="{'width':'100%'}"></p-dropdown>
+            <p-dropdown *ngIf="rowData.attributeType !== 'Reference'" [options]="types" [(ngModel)]="rowData.attributeType" [style]="{'width':'100%'}"></p-dropdown>
+            <p-dropdown *ngIf="rowData.attributeType === 'Reference'" [options]="dtoConfigs" [(ngModel)]="rowData.stringValue" [style]="{'width':'100%'}" (onChange)="rowData.value=''"></p-dropdown>
           </ng-template>
-          <ng-template #outputType pTemplate="output">
+          <ng-template pTemplate="output">
             {{rowData.attributeType !== 'Reference' ? rowData.attributeType : rowData.stringValue}}
           </ng-template>
         </p-cellEditor>
