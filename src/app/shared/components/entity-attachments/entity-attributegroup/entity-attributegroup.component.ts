@@ -95,7 +95,7 @@ export class EntityAttributeGroupComponent implements OnChanges {
     this.entityService.addAttachmentEntry('attribute', this.newAttribute).subscribe(() => this.updateAttachments());
   }
 
-  onRowEditInit(attribute: any) {
+  onRowEditInit(attribute: Attribute) {
     this.attributeClone = { ...attribute };
   }
 

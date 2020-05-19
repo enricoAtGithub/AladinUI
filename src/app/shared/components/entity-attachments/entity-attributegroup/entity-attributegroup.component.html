@@ -124,7 +124,7 @@
                         <p-checkbox *ngIf="rowData.attributeType === 'Boolean'" binary="true" [(ngModel)]="rowData.booleanValue"></p-checkbox>
                         <input *ngIf="rowData.attributeType === 'Long'" pInputText type="number" [(ngModel)]="rowData.longValue" style="width: 100%">
                         <input *ngIf="rowData.attributeType === 'String' || rowData.attributeType === 'Icon'" pInputTexttype="text" [(ngModel)]="rowData.stringValue" style="width: 100%">
-                        <p-calendar *ngIf="rowData.attributeType === 'Date'" [(ngModel)]="rowData.dateValue"showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'100%'}"                            [style]="{'width': '100%'}"></p-calendar>
+                        <p-calendar *ngIf="rowData.attributeType === 'Date'" [showIcon]="true" [(ngModel)]="rowData.dateValue"showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'calc(100% - 30px)'}" [style]="{'width': '100%'}"></p-calendar>
                         <div *ngIf="rowData.attributeType === 'Color'">
                             <p-colorPicker [(ngModel)]="rowData.stringValue"></p-colorPicker>
                             <input pInputText type="text" [(ngModel)]="rowData.stringValue" style="width: 92%">
@@ -136,12 +136,16 @@
                     </ng-template>
 
                     <ng-template pTemplate="output">
-                        {{rowData.attributeType === 'Boolean' ? rowData.booleanValue : ''}}
                         {{rowData.attributeType === 'String' ? rowData.stringValue : ''}}
                         {{rowData.attributeType === 'Long' ? rowData.longValue : ''}}
-                        {{rowData.attributeType === 'Date' ? rowData.dateValue : ''}}
-                        {{rowData.attributeType === 'Icon' ? rowData.stringValue : ''}}
+                        {{rowData.attributeType === 'Date' ? rowData.dateValue : ''}}                        
                         {{rowData.attributeType === 'Reference' ? rowData.value : ''}}
+                        <div *ngIf="rowData.attributeType === 'Icon'">
+                            <i class="{{rowData.stringValue}}"  style="font-size: 1.75em"></i>
+                        </div>                        
+                        <div *ngIf="rowData.attributeType === 'Boolean'">
+                            <p-checkbox *ngIf="rowData.attributeType === 'Boolean'" binary="true" readonly="true" [(ngModel)]="rowData.booleanValue"></p-checkbox>
+                        </div>
                         <div *ngIf="rowData.attributeType === 'Color'">
                             <input
                                 class="ui-colorpicker-preview ui-inputtext ui-state-default ui-corner-all ng-tns-c3-3 ng-star-inserted"
