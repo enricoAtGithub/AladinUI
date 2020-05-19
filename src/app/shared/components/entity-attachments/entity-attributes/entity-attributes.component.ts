@@ -9,6 +9,7 @@ import { SelectItem } from 'primeng/api';
 import { InputText } from 'primeng/primeng';
 import { TableData } from 'src/app/shared/models/table-data';
 import { NgForm } from '@angular/forms';
+import { Entity } from 'src/app/shared/models/entity-data';
 
 @Component({
   selector: 'app-entity-attributes',
@@ -29,7 +30,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
   displayEntitySelectionDialog_add = false;
   displayEntitySelectionDialog_update = false;
   entitySelectionTableData: TableData;
-  updatedRowData: any;
+  updatedRowData: Attribute;
 
   types = [
     { label: 'Long', value: 'Long' },
@@ -56,6 +57,16 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     this.updateAttachments();
+  }
+
+  resetRowData(rowData: Attribute) {
+    this.updatedRowData = rowData;
+    this.updatedRowData.booleanValue = false;
+    this.updatedRowData.stringValue = null;
+    this.updatedRowData.longValue = null;
+    this.updatedRowData.dateValue = null;
+    this.updatedRowData.stringValue = '';
+    this.updatedRowData.value = '';
   }
 
   openAddAttributeDialog() {
@@ -116,7 +127,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
     this.displayEntitySelectionDialog_add = true;
   }
 
-  openEntitySelectionDialog_update(type: string, rowData: any) {
+  openEntitySelectionDialog_update(type: string, rowData: Attribute) {
     this.entitySelectionTableData = new TableData(type, type)
       .hideHeader()
       .hideHeadline()
@@ -129,13 +140,13 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
     this.displayEntitySelectionDialog_update = true;
   }
 
-  entitySelected_add(entity: any, form: NgForm) {
+  entitySelected_add(entity: Entity, form: NgForm) {
     form.controls['Wert'].setValue(entity['_repr_'], { emitEvent: true });
     this.newAttribute.longValue = entity['id'];
     this.displayEntitySelectionDialog_add = false;
   }
 
-  entitySelected_update(entity: any, form: NgForm) {
+  entitySelected_update(entity: Entity, form: NgForm) {
     this.updatedRowData.value = entity['_repr_'];
     this.updatedRowData.longValue = entity['id'];
     this.displayEntitySelectionDialog_update = false;
