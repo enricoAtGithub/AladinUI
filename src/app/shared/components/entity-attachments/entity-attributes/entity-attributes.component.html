@@ -128,7 +128,7 @@
       <td>
         <p-cellEditor>
           <ng-template pTemplate="input">
-            <p-dropdown *ngIf="rowData.attributeType !== 'Reference'" [options]="types" [(ngModel)]="rowData.attributeType" [style]="{'width':'100%'}" (onChange)="resetRowData(rowData)"></p-dropdown>
+            <p-dropdown *ngIf="rowData.attributeType !== 'Reference'" [options]="types" [(ngModel)]="rowData.attributeType" [style]="{'width':'100%'}"></p-dropdown>
             <p-dropdown *ngIf="rowData.attributeType === 'Reference'" [options]="dtoConfigs" [(ngModel)]="rowData.referenceType" [style]="{'width':'100%'}" (onChange)="rowData.value=''"></p-dropdown>
           </ng-template>
           <ng-template pTemplate="output">

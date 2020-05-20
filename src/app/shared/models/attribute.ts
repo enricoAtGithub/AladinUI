@@ -12,4 +12,14 @@ export class Attribute {
     value: string;
     referenceId: number;
     referenceType: string;
+    public static copyFrom(source: Attribute, target: Attribute): void {
+        target.id = source.id;
+        target.booleanValue = source.booleanValue;
+        target.stringValue = source.stringValue;
+        target.longValue = source.longValue;
+        target.dateValue = source.dateValue;
+        target.value = source.value;
+        target.referenceId = source.referenceId;
+        target.referenceType = source.referenceType;
+    }
 }

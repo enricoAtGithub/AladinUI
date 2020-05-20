@@ -86,7 +86,7 @@ export class EntityAttributeGroupComponent implements OnChanges {
   updateAttachments() {
     this.entityService.getAttachments('attribute', this.owner, this.entryId).subscribe(response => {
       this.attributes = response['data'];
-      this.attributes.forEach(attr => { if (attr['attributeType'] === 'Date') { attr['DateValue'] = new Date(attr['Value']); } });
+      this.attributes.forEach(attr => { if (attr.attributeType === 'Date') { attr.dateValue = new Date(attr.value); } });
     });
   }
 
@@ -99,23 +99,14 @@ export class EntityAttributeGroupComponent implements OnChanges {
     this.attributeClone = { ...attribute };
   }
 
-  onRowDelete(attribute: any) {
+  onRowDelete(attribute: Attribute) {
     this.entityService.removeAttachmentEntry('attribute', attribute['id']).subscribe(() =>
       this.attributes = this.attributes.filter(element => element['id'] !== attribute['id']));
   }
 
   onRowEditSave(attribute: Attribute) {
-    const type: string = attribute['attributeType'];
-    this.entityService.updateAttachmentEntry('attribute', {
-      id: attribute['id'], name: attribute['name'], attributeType: type,
-      longValue: attribute['longValue'],
-      stringValue: attribute['stringValue'],
-      booleanValue: attribute['booleanValue'],
-      dateValue: attribute['dateValue'],
-      attributeGroup: attribute['attributeGroup'],
-      referenceId: attribute['referenceId'],
-      referenceType: attribute['referenceType']
-    }).subscribe();
+    this.updatedRowData = attribute;
+    this.entityService.updateAttachmentEntry('attribute', attribute).subscribe(attr => Attribute.copyFrom(<Attribute>attr, this.updatedRowData));
   }
 
   onRowEditCancel(attribute: any, index: number) {
@@ -141,7 +132,7 @@ export class EntityAttributeGroupComponent implements OnChanges {
     this.displayEntitySelectionDialog_add = true;
   }
 
-  openEntitySelectionDialog_update(type: string, rowData: any) {
+  openEntitySelectionDialog_update(type: string, attribute: Attribute) {
     this.entitySelectionTableData = new TableData(type, type)
       .hideHeader()
       .hideHeadline()
@@ -149,7 +140,7 @@ export class EntityAttributeGroupComponent implements OnChanges {
       .hideButtons()
       .setScrollable()
       .setScrollHeight('700px');
-    this.updatedRowData = rowData;
+    this.updatedRowData = attribute;
     this.header = type + ' auswählen';
     this.displayEntitySelectionDialog_update = true;
   }
