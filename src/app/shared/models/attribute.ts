@@ -10,4 +10,6 @@ export class Attribute {
     dateValue: Date;
     attributeGroup: string;
     value: string;
+    referenceId: number;
+    referenceType: string;
 }

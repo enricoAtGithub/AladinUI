@@ -102,14 +102,17 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
       this.attributes = this.attributes.filter(element => element['id'] !== attribute['id']));
   }
 
-  onRowEditSave(attribute: any) {
+  onRowEditSave(attribute: Attribute) {
     const type: string = attribute['attributeType'];
     this.entityService.updateAttachmentEntry('attribute', {
       id: attribute['id'], name: attribute['name'], attributeType: type,
       longValue: attribute['longValue'],
       stringValue: attribute['stringValue'],
       booleanValue: attribute['booleanValue'],
-      dateValue: attribute['dateValue']
+      dateValue: attribute['dateValue'],
+      attributeGroup: attribute['attributeGroup'],
+      referenceId: attribute['referenceId'],
+      referenceType: attribute['referenceType']
     }).subscribe();
   }
 
@@ -144,13 +147,13 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
 
   entitySelected_add(entity: Entity, form: NgForm) {
     form.controls['Wert'].setValue(entity['_repr_'], { emitEvent: true });
-    this.newAttribute.longValue = entity['id'];
+    this.newAttribute.referenceId = entity['id'];
     this.displayEntitySelectionDialog_add = false;
   }
 
   entitySelected_update(entity: Entity, form: NgForm) {
     this.updatedRowData.value = entity['_repr_'];
-    this.updatedRowData.longValue = entity['id'];
+    this.updatedRowData.referenceId = entity['id'];
     this.displayEntitySelectionDialog_update = false;
   }
 
