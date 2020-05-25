@@ -117,7 +117,7 @@ export class EntityAttributeGroupComponent implements OnChanges {
     const selectedAttribute: AttributeGroupEntries = this.attrGroup.attributes.find(obj => obj.name === attributeName);
     selectedAttribute.dtoType ? this.dtoTypeUnknown = false : this.dtoTypeUnknown = true;
     this.newAttribute.attributeType = selectedAttribute.type;
-    this.newAttribute.stringValue = selectedAttribute.dtoType;
+    this.newAttribute.referenceType = selectedAttribute.dtoType;
   }
 
   openEntitySelectionDialog_add(type: string, input: InputText) {
