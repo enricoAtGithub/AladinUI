@@ -61,6 +61,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
   }
 
   openAddAttributeDialog() {
+    this.refDtoRepr = '';
     this.newAttribute = new Attribute();
     this.newAttribute.ownerType = this.owner;
     this.newAttribute.ownerId = this.entryId;

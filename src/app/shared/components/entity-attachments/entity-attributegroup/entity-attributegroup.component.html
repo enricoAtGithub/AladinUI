@@ -44,7 +44,7 @@
                 </span>
 
                 <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 25px;">
-                    <input required name="Wert" [disabled]="true" id="float-input" style="width: calc(100% - 30px)" [(ngModel)]="refDtoRepr" pInputText>
+                    <input required name="Wert" [readonly]="true" id="float-input" style="width: calc(100% - 30px)" [(ngModel)]="refDtoRepr" pInputText>
                     <button pButton *ngIf="newAttribute.referenceType" type="button"
                         (click)="openEntitySelectionDialog_add(newAttribute.referenceType)" icon="pi pi-pencil"></button>
                     <label for="float-input" style="top: -.75em; font-size: 12px;">{{newAttribute.referenceType}}</label>
