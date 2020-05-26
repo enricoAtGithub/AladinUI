@@ -21,7 +21,7 @@ export class EntityAttributeGroupComponent implements OnChanges {
   @Input() entryId: number;
   @Input() attrGroup: AttributeGroup;
 
-  attributes: any[];
+  attributes: Attribute[];
   private attributeClone: any;
   displayAddAttribute = false;
   newAttribute = new Attribute();
@@ -85,7 +85,7 @@ export class EntityAttributeGroupComponent implements OnChanges {
 
   updateAttachments() {
     this.entityService.getAttachments('attribute', this.owner, this.entryId).subscribe(response => {
-      this.attributes = response['data'];
+      this.attributes = <Attribute[]> response;
       this.attributes.forEach(attr => { if (attr.attributeType === 'Date') { attr.dateValue = new Date(attr.value); } });
     });
   }
