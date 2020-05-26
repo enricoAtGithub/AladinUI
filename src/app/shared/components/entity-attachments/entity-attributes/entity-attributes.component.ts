@@ -21,7 +21,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
   @Input() owner: string;
   @Input() entryId: number;
 
-  attributes: any[];
+  attributes: any;
   private attributeClone: any;
   displayAddAttribute = false;
   newAttribute = new Attribute();
@@ -74,7 +74,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
 
   updateAttachments() {
     this.entityService.getAttachments('attribute', this.owner, this.entryId).subscribe(response => {
-      this.attributes = response['data'];
+      this.attributes = response;
       this.attributes.forEach(attr => { if (attr.attributeType === 'Date') { attr.dateValue = new Date(attr.value); } });
     });
   }

@@ -99,8 +99,7 @@ export class DynamicTableComponent implements OnInit, OnChanges, AfterViewInit {
                   if (field.type === 'CatalogueEntry') {
                     field.options.push({label: o.name, value: '' + o.id});
                   } else {
-                    this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe(response => {
-                      const attributes = response['data'];
+                    this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe((attributes: any) => {
                       const icon = attributes.find(attr => attr['name'] === 'icon');
                       const color = attributes.find(attr => attr['name'] === 'color');
                       field.options.push({label: '__icon__', value:
