@@ -32,6 +32,7 @@ import { EntityDropdownComponent } from './components/entity-dropdown/entity-dro
 import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { JmeleonModule } from '../jmeleon/jmeleon.module';
 import { PermissionsModule } from '../jmeleon/modules/permissions/permissions.module';
 import { EntityNotesComponent } from './components/entity-attachments/entity-notes/entity-notes.component';
 import { EntityAttributesComponent } from './components/entity-attachments/entity-attributes/entity-attributes.component';
@@ -40,7 +41,7 @@ import { EntityFileAttachmentsComponent } from './components/entity-attachments/
 import { EntityLogsComponent } from './components/entity-attachments/entity-logs/entity-logs.component';
 import { EntitySubtypesComponent } from './components/entity-attachments/entity-subtypes/entity-subtypes.component';
 import { EntityAttributeGroupComponent } from './components/entity-attachments/entity-attributegroup/entity-attributegroup.component';
-import { IconPickerModule } from 'ngx-icon-picker';
+import { NewEntityAttributeGroupComponent, AbstractStructureComponent } from './components/entity-attachments/entity-attributes-new/entity-attributes-new.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,9 @@ import { IconPickerModule } from 'ngx-icon-picker';
     EntityFileAttachmentsComponent,
     EntityLogsComponent,
     EntitySubtypesComponent,
-    EntityAttributeGroupComponent
+    EntityAttributeGroupComponent,
+    NewEntityAttributeGroupComponent,
+    AbstractStructureComponent
   ],
   imports: [
     CommonModule,

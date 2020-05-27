@@ -1,0 +1,77 @@
+<ng-container [ngTemplateOutlet]="entitySelection"></ng-container>
+<ng-container [ngTemplateOutlet]="addAttribute"></ng-container>
+
+<!-- Attribute Group -->
+<p-table *ngIf="attrGroup" [value]="attributes" dataKey="id" editMode="row">
+    <ng-template pTemplate="header">
+        <tr>
+            <ng-container [ngTemplateOutlet]="attrGroups_dataTable_header" pTemplate="header"></ng-container>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+        <tr *ngIf="rowData.attributeGroup === attrGroup.hrid" [pEditableRow]="rowData">
+            <td>
+                {{rowData.name}}
+            </td>
+            <td>
+                <p-cellEditor>
+                    <ng-container [ngTemplateOutlet]="dataTable_body_input"></ng-container>
+                    <ng-container [ngTemplateOutlet]="dataTable_body_output"></ng-container>
+                </p-cellEditor>
+            </td>
+            <td style="text-align:center">
+                <ng-container [ngTemplateOutlet]="dataTable_crud"></ng-container>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<!-- Attributes -->
+<p-table *ngIf="!attrGroup" [value]="attributes" dataKey="id" editMode="row">
+    <ng-template pTemplate="header">
+        <tr>
+            <ng-container [ngTemplateOutlet]="attributes_dataTable_header"></ng-container>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+        <!-- show only attributes that do not have an attributeGroup -->
+        <tr *ngIf="!rowData.attributeGroup" [pEditableRow]="rowData">
+            <td>
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input pInputText type="text" [(ngModel)]="rowData.name" style="width: 100%">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{rowData.name}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td>
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <p-dropdown *ngIf="rowData.attributeType !== 'Reference'" [options]="types"
+                            [(ngModel)]="rowData.attributeType" [style]="{'width':'100%'}"></p-dropdown>
+                        <p-dropdown *ngIf="rowData.attributeType === 'Reference'" [options]="dtoConfigs"
+                            [(ngModel)]="rowData.referenceType" [style]="{'width':'100%'}"
+                            (onChange)="rowData.value=''"></p-dropdown>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{rowData.attributeType !== 'Reference' ? rowData.attributeType : rowData.referenceType}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td>
+                <p-cellEditor>
+                    <ng-container [ngTemplateOutlet]="dataTable_body_input"></ng-container>
+                    <ng-container [ngTemplateOutlet]="dataTable_body_output"></ng-container>
+                </p-cellEditor>
+            </td>
+            <td style="text-align:center">
+                <ng-container [ngTemplateOutlet]="dataTable_crud"></ng-container>
+            </td>
+
+        </tr>
+    </ng-template>
+</p-table>

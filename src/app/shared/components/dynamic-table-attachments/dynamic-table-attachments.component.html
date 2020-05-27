@@ -27,15 +27,18 @@
     <ng-template ngFor let-attrGroup [ngForOf]="configuration?.attributeGroups">
       <p-tabPanel *ngIf="!this.excludedPanels?.includes(attrGroup)" [header]="attrGroup.name"
         [selected]="this.selectedPanel === attrGroup">
-        <app-entity-attributegroup [owner]="configName" [entryId]="entryId" [attrGroup]="attrGroup">
-        </app-entity-attributegroup>
+        <!-- <app-entity-attributegroup [owner]="configName" [entryId]="entryId" [attrGroup]="attrGroup">
+        </app-entity-attributegroup> -->
+        <app-new-entity-attributegroup [owner]="configName" [entryId]="entryId" [attrGroup]="attrGroup">
+        </app-new-entity-attributegroup>
       </p-tabPanel>
     </ng-template>
 
     <div *ngIf="!this.excludedPanels?.includes('Attributes')">
       <p-tabPanel *ngIf="this.configuration?.components?.includes('Attributes')" header="Attribute"
         [selected]="this.selectedPanel === 'Attributes'">
-        <app-entity-attributes [owner]="configName" [entryId]="entryId"></app-entity-attributes>
+        <!-- <app-entity-attributes [owner]="configName" [entryId]="entryId"></app-entity-attributes> -->
+        <app-new-entity-attributegroup [owner]="configName" [entryId]="entryId"></app-new-entity-attributegroup>
       </p-tabPanel>
     </div>
 
