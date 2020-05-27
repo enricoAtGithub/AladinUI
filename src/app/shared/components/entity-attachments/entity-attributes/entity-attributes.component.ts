@@ -139,4 +139,12 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
     this.displayEntitySelectionDialog_update = false;
   }
 
+  onIconPickedAdd(icon) {
+    if (icon !== 'fas fa-user') { this.newAttribute.stringValue = icon; }
+  }
+
+  onIconPickedEdit(icon, rowData) {
+    if (icon !== 'fas fa-user') { rowData.stringValue = icon; }
+  }
+
 }

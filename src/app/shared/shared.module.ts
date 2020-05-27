@@ -4,7 +4,7 @@ import { EntityDialogComponent } from './components/entity-dialog/entity-dialog.
 import { EntityService } from './services/entity.service';
 import { DynamicTableComponent } from './components/dynamic-table/dynamic-table.component';
 import { ButtonModule } from 'primeng/button';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -32,7 +32,6 @@ import { EntityDropdownComponent } from './components/entity-dropdown/entity-dro
 import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { NgxPermissionsModule } from 'ngx-permissions';
-import { JmeleonModule } from '../jmeleon/jmeleon.module';
 import { PermissionsModule } from '../jmeleon/modules/permissions/permissions.module';
 import { EntityNotesComponent } from './components/entity-attachments/entity-notes/entity-notes.component';
 import { EntityAttributesComponent } from './components/entity-attachments/entity-attributes/entity-attributes.component';
@@ -41,6 +40,7 @@ import { EntityFileAttachmentsComponent } from './components/entity-attachments/
 import { EntityLogsComponent } from './components/entity-attachments/entity-logs/entity-logs.component';
 import { EntitySubtypesComponent } from './components/entity-attachments/entity-subtypes/entity-subtypes.component';
 import { EntityAttributeGroupComponent } from './components/entity-attachments/entity-attributegroup/entity-attributegroup.component';
+import { IconPickerModule } from 'ngx-icon-picker';
 
 @NgModule({
   declarations: [
@@ -88,7 +88,9 @@ import { EntityAttributeGroupComponent } from './components/entity-attachments/e
       rolesIsolate: false
     }),
     PermissionsModule,
-    ScrollPanelModule
+    ScrollPanelModule,
+    IconPickerModule,
+    ReactiveFormsModule
   ],
   entryComponents: [
     EntityDialogComponent,

@@ -50,9 +50,9 @@
         </span>
       </div>
 
-      <!-- String || Icon -->
+      <!-- String -->
       <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
-        *ngIf="newAttribute.attributeType === 'String' || newAttribute.attributeType === 'Icon' || newAttribute.attributeType === undefined">
+        *ngIf="newAttribute.attributeType === 'String' || newAttribute.attributeType === undefined">
         <input required name="Wert" id="float-input" type="text" [(ngModel)]="newAttribute.stringValue"
           style="width: 100%" pInputText>
         <label for="float-input">Wert</label>
@@ -91,7 +91,14 @@
         </div>
         <!--label for="float-input">Color</label-->
       </span>
-
+      
+      <!-- Icon -->
+      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" *ngIf="newAttribute.attributeType === 'Icon'">
+        <input name="Wert"  [(ngModel)]="newAttribute.stringValue" type="text" style="width: 91%" pInputText>
+        <button pButton type="button" [iconPicker]="icon" [ipIconPack]="['fa']" (iconPickerSelect)="onIconPickedAdd($event)" icon="pi pi-pencil"></button>
+        <label for="float-input">Icon</label>
+      </span>
+    
       <div class="ui-g-12 ui-md-12" style="padding: 0px">
         <p-button type="submit" [disabled]="!attributeForm.form.valid" icon="pi pi-user-plus" iconPos="left"
           label="Erstellen"></p-button>
@@ -143,7 +150,7 @@
             </p-checkbox>
             <input *ngIf="rowData.attributeType === 'Long'" pInputText type="number" [(ngModel)]="rowData.longValue"
               style="width: 100%">
-            <input *ngIf="rowData.attributeType === 'String' || rowData.attributeType === 'Icon'" pInputText type="text"
+            <input *ngIf="rowData.attributeType === 'String'" pInputText type="text"
               [(ngModel)]="rowData.stringValue" style="width: 100%">
             
             <p-calendar *ngIf="rowData.attributeType === 'Date'" [showIcon]="true" [(ngModel)]="rowData.dateValue" showTime="true"
@@ -159,15 +166,20 @@
               <button pButton type="button" (click)="openEntitySelectionDialog_update(rowData.referenceType, rowData)"
                 icon="pi pi-pencil"></button>
             </span>
+            <div *ngIf="rowData.attributeType === 'Icon'" style="position: relative;">
+              <button pButton class="fixPickerPosition" [iconPicker]="icon" [ipIconPack]="['fa']" (iconPickerSelect)="onIconPickedEdit($event, rowData)" icon="pi pi-pencil"></button>
+              <input name="Wert" style="width: calc(100% - 30px);" [(ngModel)]="rowData.stringValue" pInputText>
+            </div>
           </ng-template>
-
-          <ng-template pTemplate="output">            
-            {{rowData.attributeType === 'String' ? rowData.stringValue : ''}}
-            {{rowData.attributeType === 'Long' ? rowData.longValue : ''}}
+          
+          <ng-template pTemplate="output">
+            {{rowData.attributeType === 'String' ? rowData.stringValue : ''}} 
+            {{rowData.attributeType === 'Long' ? rowData.longValue : ''}} 
             {{rowData.attributeType === 'Date' ? rowData.dateValue : ''}}
             {{rowData.attributeType === 'Reference' ? rowData.value : ''}}
             <div *ngIf="rowData.attributeType === 'Icon'">
-              <i class="{{rowData.stringValue}}" style="font-size: 1.75em"></i>
+              <i class="{{rowData.stringValue}}" style="font-size: 1.25em; padding: 5px; vertical-align: middle;"></i>
+              <span style="vertical-align: middle;">{{rowData.stringValue}}</span>
             </div>  
             <div *ngIf="rowData.attributeType === 'Boolean'">
               <p-checkbox *ngIf="rowData.attributeType === 'Boolean'" binary="true" readonly="true" [(ngModel)]="rowData.booleanValue"></p-checkbox>
