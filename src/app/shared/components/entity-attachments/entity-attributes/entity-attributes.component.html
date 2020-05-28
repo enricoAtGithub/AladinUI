@@ -249,7 +249,7 @@
     </p-calendar>
     <div *ngIf="rowData.attributeType === 'Color'">
         <p-colorPicker [(ngModel)]="rowData.stringValue"></p-colorPicker>
-        <input pInputText type="text" [(ngModel)]="rowData.stringValue" style="width: 92%">
+        <input pInputText type="text" [(ngModel)]="rowData.stringValue" style="width: calc(100% - 30px);">
     </div>
     <span *ngIf="rowData.attributeType === 'Reference'">
         <input [disabled]="true" name="Wert" style="width: calc(100% - 30px);" [(ngModel)]="rowData.value" pInputText>
@@ -257,9 +257,9 @@
             icon="pi pi-pencil"></button>
     </span>
     <div *ngIf="rowData.attributeType === 'Icon'" style="position: relative;">
+        <input name="Wert" style="width: calc(100% - 30px);" [(ngModel)]="rowData.stringValue" pInputText>
         <button pButton class="fixPickerPosition" [iconPicker]="icon" [ipIconPack]="['fa']"
             (iconPickerSelect)="onIconPickedEdit($event, rowData)" icon="pi pi-pencil"></button>
-        <input name="Wert" style="width: calc(100% - 30px);" [(ngModel)]="rowData.stringValue" pInputText>
     </div>
 </ng-template>
 
