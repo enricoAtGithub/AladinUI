@@ -2,15 +2,15 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EntityAttributesComponent } from './entity-attributes.component';
 
-describe('EntityAttributesComponent', () => {
+describe('EntityAttributesNewComponent', () => {
   let component: EntityAttributesComponent;
   let fixture: ComponentFixture<EntityAttributesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EntityAttributesComponent ]
+      declarations: [EntityAttributesComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

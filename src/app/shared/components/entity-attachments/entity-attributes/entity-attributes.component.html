@@ -1,209 +1,299 @@
+<!-- Entity Selection Dialog -->
 <div *ngIf="displayEntitySelectionDialog_add">
-  <p-dialog [header]="header" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog_add"
-    [style]="{width: '80%'}" appendTo="body">
-    <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData"
-      (entitySelection)="entitySelected_add($event, attributeForm)"></app-dynamic-table>
-  </p-dialog>
+    <p-dialog [header]="header" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog_add"
+        [style]="{width: '80%'}" appendTo="body">
+        <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData"
+            (entitySelection)="entitySelected_add($event, attributeForm)"></app-dynamic-table>
+    </p-dialog>
 </div>
 
 <div *ngIf="displayEntitySelectionDialog_update">
-  <p-dialog [header]="header" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog_update"
-    [style]="{width: '80%'}" appendTo="body">
-    <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData"
-      (entitySelection)="entitySelected_update($event, attributeForm)"></app-dynamic-table>
-  </p-dialog>
+    <p-dialog [header]="header" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog_update"
+        [style]="{width: '80%'}" appendTo="body">
+        <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData"
+            (entitySelection)="entitySelected_update($event, attributeForm)"></app-dynamic-table>
+    </p-dialog>
 </div>
 
+<!-- Add Attribute dialog -->
 <p-dialog header="Attribut hinzufügen" [modal]="true" [(visible)]="displayAddAttribute" [resizable]="false"
-  [draggable]="false" [style]="{'width': '400px'}">
-  <form (ngSubmit)="addNewAttribute()" #attributeForm="ngForm" class="ui-g">
-    <div class="ui-g-12 ui-md-12 form-group">
+    [draggable]="false" [style]="{'width': '400px'}">
+    <form (ngSubmit)="addNewAttribute()" #attributeForm="ngForm" class="ui-g">
+        <div class="ui-g-12 ui-md-12 form-group">
 
-      <!-- Name -->
-      <span class="ui-float-label" style="margin-bottom: 25px">
-        <input required name="Name" id="float-input" type="text" [(ngModel)]="newAttribute.name" style="width: 100%"
-          pInputText>
-        <label for="float-input">Name</label>
-      </span>
+            <!-- Attribute Name  -->
+            <span *ngIf="attrGroup" class="ui-float-label form-group" style="margin-bottom: 25px">
+                <p-dropdown required [options]="attrNames" name="Name" [style]="{'width':'100%', 'height': '28px'}"
+                    [(ngModel)]="newAttribute.name" [autoDisplayFirst]="false" (onChange)="setType($event.value)">
+                </p-dropdown>
+                <label for="float-input">Name</label>
+            </span>
 
-      <!-- Typ -->
-      <span class="ui-float-label form-group">
-        <p-dropdown required [options]="types" name="Typ" [readonly]="isTypeReadonly"
-          [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.attributeType"
-          [autoDisplayFirst]="false"></p-dropdown>
-        <label for="float-input">Typ</label>
-      </span>
+            <span *ngIf="!attrGroup" class="ui-float-label" style="margin-bottom: 25px">
+                <input required name="Name" id="float-input" type="text" [(ngModel)]="newAttribute.name"
+                    style="width: 100%" pInputText>
+                <label for="float-input">Name</label>
+            </span>
 
-      <!-- Reference -->
-      <div *ngIf="newAttribute.attributeType === 'Reference'">
-        <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 25px">
-          <p-dropdown required [options]="dtoConfigs" name="DTOType" [style]="{'width':'100%', 'height': '28px'}"
-            [(ngModel)]="newAttribute.referenceType" [autoDisplayFirst]="false"></p-dropdown>
-          <label for="float-input">Objekttyp</label>
-        </span>
+            <!-- Type -->
+            <!-- not relevant for attribute groups since predefined in DTO config -->
+            <span *ngIf="!attrGroup" class="ui-float-label form-group" style="margin-bottom: 25px">
+                <p-dropdown required [options]="types" name="Typ" [style]="{'width':'100%', 'height': '28px'}"
+                    [(ngModel)]="newAttribute.attributeType" [autoDisplayFirst]="false"></p-dropdown>
+                <label for="float-input">Typ</label>
+            </span>
 
-        <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 25px;">
-          <input required name="Wert" [readonly]="true" id="float-input" style="width: calc(100% - 30px)" [(ngModel)]="refDtoRepr" pInputText>
-          <button pButton *ngIf="newAttribute.referenceType" type="button"
-            (click)="openEntitySelectionDialog_add(newAttribute.referenceType)" icon="pi pi-pencil"></button>
-          <label for="float-input" style="top: -.75em; font-size: 12px;">{{newAttribute.referenceType}}</label>
-        </span>
-      </div>
+            <!-- Reference -->
+            <div *ngIf="newAttribute.attributeType === 'Reference'">
+                <span *ngIf="dtoTypeUnknown" class="ui-float-label form-group">
+                    <p-dropdown required [options]="dtoConfigs" name="DTOType"
+                        [style]="{'width':'100%', 'height': '28px'}" [(ngModel)]="newAttribute.referenceType"
+                        [autoDisplayFirst]="false"></p-dropdown>
+                    <label for="float-input">Objekttyp</label>
+                </span>
 
-      <!-- String -->
-      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
-        *ngIf="newAttribute.attributeType === 'String' || newAttribute.attributeType === undefined">
-        <input required name="Wert" id="float-input" type="text" [(ngModel)]="newAttribute.stringValue"
-          style="width: 100%" pInputText>
-        <label for="float-input">Wert</label>
-      </span>
+                <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 25px;">
+                    <input required name="Wert" [readonly]="true" id="float-input" style="width: calc(100% - 30px)"
+                        [(ngModel)]="refDtoRepr" pInputText>
+                    <button pButton *ngIf="newAttribute.referenceType" type="button"
+                        (click)="openEntitySelectionDialog_add(newAttribute.referenceType)"
+                        icon="pi pi-pencil"></button>
+                    <label for="float-input"
+                        style="top: -.75em; font-size: 12px;">{{newAttribute.referenceType}}</label>
+                </span>
+            </div>
 
-      <!-- Long -->
-      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
-        *ngIf="newAttribute.attributeType === 'Long'">
-        <input required name="Wert" id="float-input" type="number" [(ngModel)]="newAttribute.longValue"
-          style="width: 100%" pInputText>
-        <label for="float-input">Wert</label>
-      </span>
+            <!-- String -->
+            <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
+                *ngIf="newAttribute.attributeType === 'String' || newAttribute.attributeType === undefined">
+                <input required name="Wert" id="float-input" type="text" [(ngModel)]="newAttribute.stringValue"
+                    style="width: 100%" pInputText>
+                <label for="float-input">Wert</label>
+            </span>
 
-      <!-- Boolean -->
-      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px; height: 26px"
-        *ngIf="newAttribute.attributeType === 'Boolean'">
-        <p-checkbox name="Wert" binary="true" [(ngModel)]="newAttribute.booleanValue"></p-checkbox>
-        <label for="float-input" style="top: -.75em; font-size: 12px;">Wert</label>
-      </span>
+            <!-- Long -->
+            <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
+                *ngIf="newAttribute.attributeType === 'Long'">
+                <input required name="Wert" id="float-input" type="number" [(ngModel)]="newAttribute.longValue"
+                    style="width: 100%" pInputText>
+                <label for="float-input">Wert</label>
+            </span>
 
-      <!-- Date -->
-      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
-        *ngIf="newAttribute.attributeType === 'Date'">
-        <p-calendar name="Wert" [(ngModel)]="newAttribute.dateValue" showTime="true" dateFormat="dd.mm.yy"
-          [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}"></p-calendar>
-        <label for="float-input">Datum</label>
-      </span>
+            <!-- Boolean -->
+            <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px; height: 26px"
+                *ngIf="newAttribute.attributeType === 'Boolean'">
+                <p-checkbox name="Wert" binary="true" [(ngModel)]="newAttribute.booleanValue"></p-checkbox>
+                <label for="float-input" style="top: -.75em; font-size: 12px;">Wert</label>
+            </span>
 
-      <!-- Color -->
-      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
-        *ngIf="newAttribute.attributeType === 'Color'">
-        <div>
-          <p-colorPicker name="Wert" [(ngModel)]="newAttribute.stringValue"></p-colorPicker>
-          <input required name="Wert" id="float-input" type="text" [(ngModel)]="newAttribute.stringValue"
-            style="width: 92%" pInputText>
+            <!-- Date -->
+            <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
+                *ngIf="newAttribute.attributeType === 'Date'">
+                <p-calendar name="Wert" [(ngModel)]="newAttribute.dateValue" showTime="true" dateFormat="dd.mm.yy"
+                    [inputStyle]="{'width':'100%'}" [style]="{'width': '100%'}">
+                </p-calendar>
+                <label for="float-input">Datum</label>
+            </span>
+
+            <!-- Color -->
+            <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
+                *ngIf="newAttribute.attributeType === 'Color'">
+                <div>
+                    <p-colorPicker name="Wert" [(ngModel)]="newAttribute.stringValue"></p-colorPicker>
+                    <input required name="Wert" id="float-input" type="text" [(ngModel)]="newAttribute.stringValue"
+                        style="width: 92%" pInputText>
+                </div>
+                <!--label for="float-input">Color</label-->
+            </span>
+
+            <!-- Icon -->
+            <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
+                *ngIf="newAttribute.attributeType === 'Icon'">
+                <input name="Wert" [(ngModel)]="newAttribute.stringValue" type="text" style="width: 91%" pInputText>
+                <button pButton type="button" [iconPicker]="icon" [ipIconPack]="['fa']"
+                    (iconPickerSelect)="onIconPickedAdd($event)" icon="pi pi-pencil"></button>
+                <label for="float-input">Icon</label>
+            </span>
+
+            <div class="ui-g-12 ui-md-12" style="padding: 0px">
+                <p-button type="submit" [disabled]="!attributeForm.form.valid" icon="pi pi-user-plus" iconPos="left"
+                    label="Erstellen"></p-button>
+            </div>
         </div>
-        <!--label for="float-input">Color</label-->
-      </span>
-      
-      <!-- Icon -->
-      <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px" *ngIf="newAttribute.attributeType === 'Icon'">
-        <input name="Wert"  [(ngModel)]="newAttribute.stringValue" type="text" style="width: 91%" pInputText>
-        <button pButton type="button" [iconPicker]="icon" [ipIconPack]="['fa']" (iconPickerSelect)="onIconPickedAdd($event)" icon="pi pi-pencil"></button>
-        <label for="float-input">Icon</label>
-      </span>
-    
-      <div class="ui-g-12 ui-md-12" style="padding: 0px">
-        <p-button type="submit" [disabled]="!attributeForm.form.valid" icon="pi pi-user-plus" iconPos="left"
-          label="Erstellen"></p-button>
-      </div>
-    </div>
-  </form>
+    </form>
 </p-dialog>
 
-<p-table [value]="attributes" dataKey="id" editMode="row">
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Name</th>
-      <th>Typ</th>
-      <th>Wert</th>
-      <th style="width:8em">
-        <button pButton type="button" icon="pi pi-plus" class="ui-button-success"
-          (click)="openAddAttributeDialog()"></button>
-      </th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
-    <!-- show only attributes that do not have an attributeGroup -->
-    <tr *ngIf="!rowData.attributeGroup" [pEditableRow]="rowData">
-      <td>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <input pInputText type="text" [(ngModel)]="rowData.name" style="width: 100%">
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{rowData.name}}
-          </ng-template>
-        </p-cellEditor>
-      </td>
-      <td>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <p-dropdown *ngIf="rowData.attributeType !== 'Reference'" [options]="types" [(ngModel)]="rowData.attributeType" [style]="{'width':'100%'}"></p-dropdown>
-            <p-dropdown *ngIf="rowData.attributeType === 'Reference'" [options]="dtoConfigs" [(ngModel)]="rowData.referenceType" [style]="{'width':'100%'}" (onChange)="rowData.value=''"></p-dropdown>
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{rowData.attributeType !== 'Reference' ? rowData.attributeType : rowData.referenceType}}
-          </ng-template>
-        </p-cellEditor>
-      </td>
-      <td>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <p-checkbox *ngIf="rowData.attributeType === 'Boolean'" binary="true" [(ngModel)]="rowData.booleanValue">
-            </p-checkbox>
-            <input *ngIf="rowData.attributeType === 'Long'" pInputText type="number" [(ngModel)]="rowData.longValue"
-              style="width: 100%">
-            <input *ngIf="rowData.attributeType === 'String'" pInputText type="text"
-              [(ngModel)]="rowData.stringValue" style="width: 100%">
-            
-            <p-calendar *ngIf="rowData.attributeType === 'Date'" [showIcon]="true" [(ngModel)]="rowData.dateValue" showTime="true"
-              dateFormat="dd.mm.yy" [inputStyle]="{'width':'calc(100% - 30px)'}" [style]="{'width': '100%'}"></p-calendar>
-            
-              <div *ngIf="rowData.attributeType === 'Color'">
-              <p-colorPicker [(ngModel)]="rowData.stringValue"></p-colorPicker>
-              <input pInputText type="text" [(ngModel)]="rowData.stringValue" style="width: 92%">
-            </div>
-            <span *ngIf="rowData.attributeType === 'Reference'">
-              <input [disabled]="true" name="Wert" style="width: calc(100% - 30px);" [(ngModel)]="rowData.value"
-                pInputText>
-              <button pButton type="button" (click)="openEntitySelectionDialog_update(rowData.referenceType, rowData)"
-                icon="pi pi-pencil"></button>
-            </span>
-            <div *ngIf="rowData.attributeType === 'Icon'" style="position: relative;">
-              <button pButton class="fixPickerPosition" [iconPicker]="icon" [ipIconPack]="['fa']" (iconPickerSelect)="onIconPickedEdit($event, rowData)" icon="pi pi-pencil"></button>
-              <input name="Wert" style="width: calc(100% - 30px);" [(ngModel)]="rowData.stringValue" pInputText>
-            </div>
-          </ng-template>
-          
-          <ng-template pTemplate="output">
-            {{rowData.attributeType === 'String' ? rowData.stringValue : ''}} 
-            {{rowData.attributeType === 'Long' ? rowData.longValue : ''}} 
-            {{rowData.attributeType === 'Date' ? rowData.dateValue : ''}}
-            {{rowData.attributeType === 'Reference' ? rowData.value : ''}}
-            <div *ngIf="rowData.attributeType === 'Icon'">
-              <i class="{{rowData.stringValue}}" style="font-size: 1.25em; padding: 5px; vertical-align: middle;"></i>
-              <span style="vertical-align: middle;">{{rowData.stringValue}}</span>
-            </div>  
-            <div *ngIf="rowData.attributeType === 'Boolean'">
-              <p-checkbox *ngIf="rowData.attributeType === 'Boolean'" binary="true" readonly="true" [(ngModel)]="rowData.booleanValue"></p-checkbox>
-            </div>
-            <div *ngIf="rowData.attributeType === 'Color'">
-              <input
-                class="ui-colorpicker-preview ui-inputtext ui-state-default ui-corner-all ng-tns-c3-3 ng-star-inserted"
-                readonly="true" type="text" [style.background-color]="rowData.stringValue">
-              {{rowData.stringValue}}
-            </div>
-          </ng-template>
-        </p-cellEditor>
-      </td>
-      <td style="text-align:center">
-        <button *ngIf="!editing" id="editButton{{rowData.id}}" pButton type="button" pInitEditableRow
-          icon="pi pi-pencil" style="margin-right: .5em" class="ui-button-info"
-          (click)="onRowEditInit(rowData)"></button>
-        <button *ngIf="!editing" pButton type="button" icon="pi pi-trash" class="ui-button-info"
-          (click)="onRowDelete(rowData)"></button>
-        <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check" class="ui-button-success"
-          style="margin-right: .5em" (click)="onRowEditSave(rowData)"></button>
-        <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger"
-          (click)="onRowEditCancel(rowData, ri)"></button>
-      </td>
-    </tr>
-  </ng-template>
+<!-- Attribute Group -->
+<p-table *ngIf="attrGroup" [value]="attributes" dataKey="id" editMode="row">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Name</th>
+            <th>Wert</th>
+            <th style="width:8em">
+                <button pButton type="button" icon="pi pi-plus" class="ui-button-success"
+                    (click)="openAddAttributeDialog()"></button>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+        <tr *ngIf="rowData.attributeGroup === attrGroup.hrid" [pEditableRow]="rowData">
+            <td>
+                {{rowData.name}}
+            </td>
+            <td>
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <ng-container *ngTemplateOutlet="dataTable_body_input; context:{rowData: rowData}">
+                        </ng-container>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        <ng-container *ngTemplateOutlet="dataTable_body_output; context:{rowData: rowData}">
+                        </ng-container>
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td style="text-align:center">
+                <!-- <ng-container *ngTemplateOutlet="dataTable_crud; context:{rowData: rowData, editing: editing, ri: ri}"></ng-container> -->
+                <button *ngIf="!editing" id="editButton{{rowData.id}}" pButton type="button" pInitEditableRow
+                    icon="pi pi-pencil" style="margin-right: .5em" class="ui-button-info"
+                    (click)="onRowEditInit(rowData)"></button>
+                <button *ngIf="!editing" pButton type="button" icon="pi pi-trash" class="ui-button-info"
+                    (click)="onRowDelete(rowData)"></button>
+                <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"
+                    class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData)"></button>
+                <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times"
+                    class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
+            </td>
+        </tr>
+    </ng-template>
 </p-table>
+
+<!-- Attributes -->
+<p-table *ngIf="!attrGroup" [value]="attributes" dataKey="id" editMode="row">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Name</th>
+            <th>Typ</th>
+            <th>Wert</th>
+            <th style="width:8em">
+                <button pButton type="button" icon="pi pi-plus" class="ui-button-success"
+                    (click)="openAddAttributeDialog()"></button>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+        <tr *ngIf="!rowData.attributeGroup" [pEditableRow]="rowData">
+            <td>
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input pInputText type="text" [(ngModel)]="rowData.name" style="width: 100%">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{rowData.name}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td>
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <p-dropdown *ngIf="rowData.attributeType !== 'Reference'" [options]="types"
+                            [(ngModel)]="rowData.attributeType" [style]="{'width':'100%'}"></p-dropdown>
+                        <p-dropdown *ngIf="rowData.attributeType === 'Reference'" [options]="dtoConfigs"
+                            [(ngModel)]="rowData.referenceType" [style]="{'width':'100%'}"
+                            (onChange)="rowData.value=''">
+                        </p-dropdown>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{rowData.attributeType !== 'Reference' ? rowData.attributeType : rowData.referenceType}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td>
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <ng-container *ngTemplateOutlet="dataTable_body_input; context:{rowData: rowData}">
+                        </ng-container>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        <ng-container *ngTemplateOutlet="dataTable_body_output; context:{rowData: rowData}">
+                        </ng-container>
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td style="text-align:center">
+                <!-- <ng-container *ngTemplateOutlet="dataTable_crud; context:{rowData: rowData, editing: editing, ri: ri}"></ng-container> -->
+                <button *ngIf="!editing" id="editButton{{rowData.id}}" pButton type="button" pInitEditableRow
+                    icon="pi pi-pencil" style="margin-right: .5em" class="ui-button-info"
+                    (click)="onRowEditInit(rowData)"></button>
+                <button *ngIf="!editing" pButton type="button" icon="pi pi-trash" class="ui-button-info"
+                    (click)="onRowDelete(rowData)"></button>
+                <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"
+                    class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData)"></button>
+                <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times"
+                    class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
+            </td>
+
+        </tr>
+    </ng-template>
+</p-table>
+
+<ng-template #dataTable_body_input let-rowData="rowData">
+    <p-checkbox *ngIf="rowData.attributeType === 'Boolean'" binary="true" [(ngModel)]="rowData.booleanValue">
+    </p-checkbox>
+    <input *ngIf="rowData.attributeType === 'Long'" pInputText type="number" [(ngModel)]="rowData.longValue"
+        style="width: 100%">
+    <input *ngIf="rowData.attributeType === 'String'" pInputTexttype="text" [(ngModel)]="rowData.stringValue"
+        style="width: 100%">
+    <p-calendar *ngIf="rowData.attributeType === 'Date'" [showIcon]="true" [(ngModel)]="rowData.dateValue"
+        showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'calc(100% - 30px)'}" [style]="{'width': '100%'}">
+    </p-calendar>
+    <div *ngIf="rowData.attributeType === 'Color'">
+        <p-colorPicker [(ngModel)]="rowData.stringValue"></p-colorPicker>
+        <input pInputText type="text" [(ngModel)]="rowData.stringValue" style="width: 92%">
+    </div>
+    <span *ngIf="rowData.attributeType === 'Reference'">
+        <input [disabled]="true" name="Wert" style="width: calc(100% - 30px);" [(ngModel)]="rowData.value" pInputText>
+        <button pButton type="button" (click)="openEntitySelectionDialog_update(rowData.referenceType, rowData)"
+            icon="pi pi-pencil"></button>
+    </span>
+    <div *ngIf="rowData.attributeType === 'Icon'" style="position: relative;">
+        <button pButton class="fixPickerPosition" [iconPicker]="icon" [ipIconPack]="['fa']"
+            (iconPickerSelect)="onIconPickedEdit($event, rowData)" icon="pi pi-pencil"></button>
+        <input name="Wert" style="width: calc(100% - 30px);" [(ngModel)]="rowData.stringValue" pInputText>
+    </div>
+</ng-template>
+
+<ng-template #dataTable_body_output let-rowData="rowData">
+    {{rowData.attributeType === 'String' ? rowData.stringValue : ''}}
+    {{rowData.attributeType === 'Long' ? rowData.longValue : ''}}
+    {{rowData.attributeType === 'Date' ? rowData.dateValue : ''}}
+    {{rowData.attributeType === 'Reference' ? rowData.value : ''}}
+    <div *ngIf="rowData.attributeType === 'Icon'">
+        <i class="{{rowData.stringValue}}" style="font-size: 1.25em; padding: 5px; vertical-align: middle;"></i>
+        <span style="vertical-align: middle;">{{rowData.stringValue}}</span>
+    </div>
+    <div *ngIf="rowData.attributeType === 'Boolean'">
+        <p-checkbox *ngIf="rowData.attributeType === 'Boolean'" binary="true" readonly="true"
+            [(ngModel)]="rowData.booleanValue"></p-checkbox>
+    </div>
+    <div *ngIf="rowData.attributeType === 'Color'">
+        <input class="ui-colorpicker-preview ui-inputtext ui-state-default ui-corner-all ng-tns-c3-3 ng-star-inserted"
+            readonly="true" type="text" [style.background-color]="rowData.stringValue">
+        {{rowData.stringValue}}
+    </div>
+</ng-template>
+
+<!-- For some reason CRUD cannot be extracted as template -->
+<!--
+<ng-template #dataTable_crud let-rowData="rowData" let-editing="editing" let-ri="ri" let-editButton="editButton"
+    let-pInitEditableRow="pInitEditableRow">
+    <button *ngIf="!editing" id="editButton{{rowData.id}}" pButton type="button" pInitEditableRow icon="pi pi-pencil"
+        style="margin-right: .5em" class="ui-button-info" (click)="onRowEditInit(rowData)"></button>
+    <button *ngIf="!editing" pButton type="button" icon="pi pi-trash" class="ui-button-info"
+        (click)="onRowDelete(rowData)"></button>
+    <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check" class="ui-button-success"
+        style="margin-right: .5em" (click)="onRowEditSave(rowData)"></button>
+    <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger"
+        (click)="onRowEditCancel(rowData, ri)"></button>
+</ng-template> 
+-->

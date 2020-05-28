@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { Attribute } from 'src/app/shared/models/attribute';
 import { EntityService } from 'src/app/shared/services/entity.service';
 import { AttributeGroup, AttributeGroupEntries } from 'src/app/shared/models/entity-configuration';
@@ -9,7 +9,6 @@ import { SelectItem } from 'primeng/api';
 import { InputText } from 'primeng/primeng';
 import { TableData } from 'src/app/shared/models/table-data';
 import { NgForm } from '@angular/forms';
-import { Entity } from 'src/app/shared/models/entity-data';
 
 @Component({
   selector: 'app-entity-attributes',
@@ -20,12 +19,15 @@ import { Entity } from 'src/app/shared/models/entity-data';
 export class EntityAttributesComponent implements OnInit, OnChanges {
   @Input() owner: string;
   @Input() entryId: number;
+  @Input() attrGroup: AttributeGroup;
 
-  attributes: any;
+  attributes: Attribute[];
   private attributeClone: any;
   displayAddAttribute = false;
   newAttribute = new Attribute();
+  attrNames: object[] = [];
   refDtoRepr: string;
+  dtoTypeUnknown = false;
   dtoConfigs: SelectItem[];
   displayEntitySelectionDialog_add = false;
   displayEntitySelectionDialog_update = false;
@@ -54,6 +56,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
     configurations$.subscribe(configs => {
       this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
     });
+    if (!this.attrGroup) { this.dtoTypeUnknown = true; }
   }
 
   ngOnChanges() {
@@ -65,7 +68,18 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
     this.newAttribute = new Attribute();
     this.newAttribute.ownerType = this.owner;
     this.newAttribute.ownerId = this.entryId;
+    if (this.attrGroup) {
+      this.newAttribute.attributeGroup = this.attrGroup.hrid;
+      this.initAttributGroupData();
+    }
     this.displayAddAttribute = true;
+  }
+
+  initAttributGroupData() {
+    this.attrNames = [];
+    this.attrGroup.attributes.forEach(element => {
+      this.attrNames.push({ label: element.name, value: element.name });
+    });
   }
 
   configToSelectItem(name: string, type: string): SelectItem {
@@ -74,7 +88,8 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
 
   updateAttachments() {
     this.entityService.getAttachments('attribute', this.owner, this.entryId).subscribe(response => {
-      this.attributes = response;
+      this.attributes = <Attribute[]>response;
+      console.log(this.attributes);
       this.attributes.forEach(attr => { if (attr.attributeType === 'Date') { attr.dateValue = new Date(attr.value); } });
     });
   }
@@ -102,6 +117,14 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
     this.attributes[index] = this.attributeClone;
   }
 
+  setType(attributeName: string) {
+    this.refDtoRepr = '';
+    const selectedAttribute: AttributeGroupEntries = this.attrGroup.attributes.find(obj => obj.name === attributeName);
+    selectedAttribute.dtoType ? this.dtoTypeUnknown = false : this.dtoTypeUnknown = true;
+    this.newAttribute.attributeType = selectedAttribute.type;
+    this.newAttribute.referenceType = selectedAttribute.dtoType;
+  }
+
   openEntitySelectionDialog_add(type: string, input: InputText) {
     this.entitySelectionTableData = new TableData(type, type)
       .hideHeader()
@@ -122,18 +145,18 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
       .hideButtons()
       .setScrollable()
       .setScrollHeight('700px');
-    this.header = type + ' auswählen';
     this.updatedRowData = attribute;
+    this.header = type + ' auswählen';
     this.displayEntitySelectionDialog_update = true;
   }
 
-  entitySelected_add(entity: Entity, form: NgForm) {
+  entitySelected_add(entity: any, form: NgForm) {
     form.controls['Wert'].setValue(entity['_repr_'], { emitEvent: true });
     this.newAttribute.referenceId = entity['id'];
     this.displayEntitySelectionDialog_add = false;
   }
 
-  entitySelected_update(entity: Entity, form: NgForm) {
+  entitySelected_update(entity: any, form: NgForm) {
     this.updatedRowData.value = entity['_repr_'];
     this.updatedRowData.referenceId = entity['id'];
     this.displayEntitySelectionDialog_update = false;

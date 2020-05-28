@@ -40,8 +40,7 @@ import { EntityGroupRelationComponent } from './components/entity-attachments/en
 import { EntityFileAttachmentsComponent } from './components/entity-attachments/entity-file-attachments/entity-file-attachments.component';
 import { EntityLogsComponent } from './components/entity-attachments/entity-logs/entity-logs.component';
 import { EntitySubtypesComponent } from './components/entity-attachments/entity-subtypes/entity-subtypes.component';
-import { EntityAttributeGroupComponent } from './components/entity-attachments/entity-attributegroup/entity-attributegroup.component';
-import { NewEntityAttributeGroupComponent, AbstractStructureComponent } from './components/entity-attachments/entity-attributes-new/entity-attributes-new.component';
+import { IconPickerModule } from 'ngx-icon-picker';
 
 @NgModule({
   declarations: [
@@ -58,10 +57,7 @@ import { NewEntityAttributeGroupComponent, AbstractStructureComponent } from './
     EntityGroupRelationComponent,
     EntityFileAttachmentsComponent,
     EntityLogsComponent,
-    EntitySubtypesComponent,
-    EntityAttributeGroupComponent,
-    NewEntityAttributeGroupComponent,
-    AbstractStructureComponent
+    EntitySubtypesComponent
   ],
   imports: [
     CommonModule,
