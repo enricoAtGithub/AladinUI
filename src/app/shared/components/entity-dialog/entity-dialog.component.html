@@ -17,18 +17,18 @@
     <div *ngFor="let field of configuration?.fields">
       <div [ngSwitch]="field.type" *ngIf="(field.mandatory && !update) || field.editable" class="p-col form-group ui-g-12 ui-md-12" style="margin-bottom: 5px; display: flex">
         <span *ngSwitchCase="'String'" class="ui-float-label" style="flex-grow: 1;">
-          <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : ''" id="float-input" type="text" style="width: 100%" pInputText> 
+          <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : field.defaultValue" id="float-input" type="text" style="width: 100%" pInputText>
           <label for="float-input">{{field.header}}</label>
         </span>
         <span *ngSwitchCase="'int'" class="ui-float-label" style="flex-grow: 1;">
-          <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : ''" id="float-input" type="number" style="width: 100%" pInputText> 
+          <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : field.defaultValue" id="float-input" type="number" style="width: 100%" pInputText> 
           <label for="float-input">{{field.header}}</label>
         </span>
         <span *ngSwitchCase="'boolean'" style="flex-grow: 1; align-self: center;">
-          <p-checkbox [required]="field.mandatory" [name]="field.field" [binary]="true" [label]="field.header" [ngModel]="(entity) ? entity[field.field] : false"></p-checkbox>
+          <p-checkbox [required]="field.mandatory" [name]="field.field" [binary]="true" [label]="field.header" [ngModel]="(entity) ? entity[field.field] : field.defaultValue"></p-checkbox>
         </span>
         <span *ngSwitchCase="'Date'" class="ui-float-label" style="flex-grow: 1;">
-          <p-calendar [required]="field.mandatory" [name]="field.field" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [ngModel]="(entity) ? entity[field.field] : undefined"></p-calendar>
+          <p-calendar [required]="field.mandatory" [name]="field.field" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [ngModel]="(entity) ? entity[field.field] : field.defaultValue"></p-calendar>
           <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
         </span>
         <span *ngSwitchCase="'CatalogueEntry'" style="flex-grow: 1;">
