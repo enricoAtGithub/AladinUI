@@ -97,13 +97,18 @@ export class UrlCollection {
         static ADD = (attachmentType: string) => UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/add';
     };
 
-    static SCHEDULER_API_BASE_PATH(): string {return AppConfig.getBaseUrl() + '/scheduler'; }
+    static EntityAttributes = class {
+        static ENTRIES = (attachmentType: string, entityType: string, id: number, attrGroup: string ='null') =>
+        UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/entries/' + entityType + '/' + id + '/group/' + attrGroup;
+    };
+
+    static SCHEDULER_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/scheduler'; }
     static ADMIN_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/admin'; }
     static USER_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/user'; }
     static USER_ACTIONS_BASE_PATH(): string { return UrlCollection.USER_API_BASE_PATH() + '/actions'; }
     static USER_RIGHTS_BASE_PATH(): string { return UrlCollection.USER_API_BASE_PATH() + '/right'; }
     static ENTITY_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/entities'; }
-    static CATALOGUE_API_BASE_PATH(): string {return AppConfig.getBaseUrl() + '/catalogue'; }
+    static CATALOGUE_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/catalogue'; }
     static FILE_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/file'; }
     static GROUPS_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/groups'; }
     static ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType: string): string { return AppConfig.getBaseUrl() + '/' + attachmentType; }

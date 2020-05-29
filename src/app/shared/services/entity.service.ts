@@ -136,8 +136,12 @@ export class EntityService {
   }
 
   // Entity Attachments
-  getAttachments(attachmentType: string, type: string, id: number) {
-    return this.http.get(UrlCollection.EntityAttachments.ENTRIES(attachmentType, type, id));
+  getAttachments(attachmentType: string, type: string, id: number, attrGroup?: string) {
+    if (attachmentType !== 'attribute') {
+       return this.http.get(UrlCollection.EntityAttachments.ENTRIES(attachmentType, type, id));
+    } else {
+      return this.http.get(UrlCollection.EntityAttributes.ENTRIES(attachmentType, type, id, attrGroup));
+    }
   }
 
   removeAttachmentEntry(attachmentType: string, id: number) {

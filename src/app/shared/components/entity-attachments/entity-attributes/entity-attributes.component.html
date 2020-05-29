@@ -136,7 +136,7 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
-        <tr *ngIf="rowData.attributeGroup === attrGroup.hrid" [pEditableRow]="rowData">
+        <tr [pEditableRow]="rowData">
             <td>
                 {{rowData.name}}
             </td>
@@ -182,7 +182,7 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
-        <tr *ngIf="!rowData.attributeGroup" [pEditableRow]="rowData">
+        <tr [pEditableRow]="rowData">
             <td>
                 <p-cellEditor>
                     <ng-template pTemplate="input">

@@ -87,9 +87,10 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
   }
 
   updateAttachments() {
-    this.entityService.getAttachments('attribute', this.owner, this.entryId).subscribe(response => {
+    let attrGr: string;
+    if (this.attrGroup) { attrGr = this.attrGroup.hrid; } else { attrGr = 'null'; }
+    this.entityService.getAttachments('attribute', this.owner, this.entryId, attrGr).subscribe(response => {
       this.attributes = <Attribute[]>response;
-      console.log(this.attributes);
       this.attributes.forEach(attr => { if (attr.attributeType === 'Date') { attr.dateValue = new Date(attr.value); } });
     });
   }
