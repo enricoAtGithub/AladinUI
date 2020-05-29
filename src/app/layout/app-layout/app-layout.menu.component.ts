@@ -27,31 +27,76 @@ export class AppMenuComponent implements OnInit {
 
     ngOnInit() {
         this.model = [
-            { label: 'Dashboard', icon: 'pi pi-ticket', routerLink: ['/'] },
-            { label: 'Accounts', icon: 'fa fa-fw fa-home', routerLink: ['/accounts'] },
-            { label: 'Aufträge', icon: 'fa fa-fw fa-tasks', routerLink: ['/orders'] },
-            { label: 'Einsatzplanung', icon: 'fa fa-fw fa-calendar', routerLink: ['/scheduler'], visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Scheduler.openEvSch) },
-            { label: 'Rechnungen', icon: 'fa fa-fw fa-eur', routerLink: ['/invoices'] },
-            { label: 'Berichte', icon: 'fa fa-fw fa-file', routerLink: ['/reports'] },
+            {
+                label: 'Dashboard', icon: 'pi pi-ticket', routerLink: ['/'],
+                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.dashboard)
+            },
+            {
+                label: 'Accounts', icon: 'fa fa-fw fa-home', routerLink: ['/accounts'],
+                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.accounts)
+            },
+            {
+                label: 'Aufträge', icon: 'fa fa-fw fa-tasks', routerLink: ['/orders'],
+                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.auftraege)
+            },
+            {
+                label: 'Einsatzplanung', icon: 'fa fa-fw fa-calendar', routerLink: ['/scheduler'],
+                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.einsatzplanung)
+            },
+            {
+                label: 'Rechnungen', icon: 'fa fa-fw fa-eur', routerLink: ['/invoices'],
+                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.rechnungen)
+            },
+            {
+                label: 'Berichte', icon: 'fa fa-fw fa-file', routerLink: ['/reports'],
+                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.berichte)
+            },
             {
                 label: 'Ressourcenverwaltung', icon: 'fa fa-archive',
+                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.ressourcenverwaltung.show),
                 items: [
-                    { label: 'Ressourcen', icon: 'pi pi-id-card', routerLink: ['/resource-management/resources'] },
-                    { label: 'An-/Abwesenheiten', icon: 'fa fa-plane', routerLink: ['/resource-management/availability'] },
+                    {
+                        label: 'Ressourcen', icon: 'pi pi-id-card', routerLink: ['/resource-management/resources'],
+                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.ressourcenverwaltung.ressourcen)
+                    },
+                    {
+                        label: 'An-/Abwesenheiten', icon: 'fa fa-plane', routerLink: ['/resource-management/availability'],
+                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.ressourcenverwaltung.anwesenheiten)
+                    },
                 ]
             },
-            { label: 'Objekte', icon: 'fa fa-fw fa-eur', routerLink: ['/dto-entities'] },
+            {
+                label: 'Objekte', icon: 'fa fa-fw fa-eur', routerLink: ['/dto-entities'],
+                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.objekte)
+            },
             {
                 label: 'Administration', icon: 'fa fa-fw fa-pencil',
-                visible: this.jmeleonPermissionsService.currentUserHasPermission(
-                    this.jmeleonPermissionsService.PERMISSION_MANAGE_USERS),
+                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.show),
                 items: [
-                    { label: 'Benutzer', icon: 'pi pi-users', routerLink: ['/administration/useralt-management'] },
-                    { label: 'Rollenverwaltung', icon: 'pi pi-users', routerLink: ['/administration/role-management'] },
-                    { label: 'Rechteverwaltung', icon: 'pi pi-users', routerLink: ['/administration/permission-management'] },
-                    { label: 'Katalogverwaltung', icon: 'pi pi-folder-open', routerLink: ['/administration/catalogue-management'] },
-                    { label: 'DTO Konfiguration', icon: 'pi pi-pencil', routerLink: ['/administration/dto-configuration'] },
-                    { label: 'Einstellungen', icon: 'fa fa-cogs', routerLink: ['/administration/settings'] },
+                    {
+                        label: 'Benutzer', icon: 'pi pi-users', routerLink: ['/administration/useralt-management'],
+                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.benutzer)
+                    },
+                    {
+                        label: 'Rollenverwaltung', icon: 'pi pi-users', routerLink: ['/administration/role-management'],
+                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.rollenverwaltung)
+                    },
+                    {
+                        label: 'Rechteverwaltung', icon: 'pi pi-users', routerLink: ['/administration/permission-management'],
+                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.rechteverwaltung)
+                    },
+                    {
+                        label: 'Katalogverwaltung', icon: 'pi pi-folder-open', routerLink: ['/administration/catalogue-management'],
+                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.katalogverwaltung)
+                    },
+                    {
+                        label: 'DTO Konfiguration', icon: 'pi pi-pencil', routerLink: ['/administration/dto-configuration'],
+                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.dtoKonfiguration)
+                    },
+                    {
+                        label: 'Einstellungen', icon: 'fa fa-cogs', routerLink: ['/administration/settings'],
+                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.einstellungen)
+                    },
                 ]
             },
             {

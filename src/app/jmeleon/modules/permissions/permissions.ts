@@ -40,6 +40,29 @@ export const root = {
         write: 'ResourceManager.write',
         delete: 'ResourceManager.delete',
         updateInterval: 'ResourceManager.updateInterval'
+    },
+    Menuitems: {
+        dashboard: 'Menuitems.dashboard',
+        accounts: 'Menuitems.accounts',
+        auftraege: 'Menuitems.auftraege',
+        einsatzplanung: 'Menuitems.einsatzplanung',
+        rechnungen: 'Menuitems.rechnungen',
+        berichte: 'Menuitems.berichte',
+        ressourcenverwaltung: {
+            show: 'Menuitems.ressourcenverwaltung.show',
+            ressourcen: 'Menuitems.ressourcenverwaltung.ressourcen',
+            anwesenheiten: 'Menuitems.ressourcenverwaltung.anwesenheiten',
+        },
+        objekte: 'Menuitems.objekte',
+        administration: {
+            show: 'Menuitems.administration.show',
+            benutzer: 'Menuitems.administration.benutzer',
+            rollenverwaltung: 'Menuitems.administration.rollenverwaltung',
+            rechteverwaltung: 'Menuitems.administration.rechteverwaltung',
+            katalogverwaltung: 'Menuitems.administration.katalogverwaltung',
+            dtoKonfiguration: 'Menuitems.administration.dtoKonfiguration',
+            einstellungen: 'Menuitems.administration.einstellungen',
+        }
     }
 };
 
@@ -67,6 +90,23 @@ export const list = [
     'ResourceManager.read',
     'ResourceManager.write',
     'ResourceManager.delete',
-    'ResourceManager.updateInterval'
+    'ResourceManager.updateInterval',
+    'Menuitems.dashboard',
+    'Menuitems.accounts',
+    'Menuitems.auftraege',
+    'Menuitems.einsatzplanung',
+    'Menuitems.rechnungen',
+    'Menuitems.berichte',
+    'Menuitems.ressourcenverwaltung.show',
+    'Menuitems.ressourcenverwaltung.ressourcen',
+    'Menuitems.ressourcenverwaltung.anwesenheiten',
+    'Menuitems.objekte',
+    'Menuitems.administration.show',
+    'Menuitems.administration.benutzer',
+    'Menuitems.administration.rollenverwaltung',
+    'Menuitems.administration.rechteverwaltung',
+    'Menuitems.administration.katalogverwaltung',
+    'Menuitems.administration.dtoKonfiguration',
+    'Menuitems.administration.einstellungen',
 ];
 

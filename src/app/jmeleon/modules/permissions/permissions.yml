@@ -30,4 +30,24 @@
   - write
   - delete
   - updateInterval
+- Menuitems:
+  - dashboard
+  - accounts
+  - auftraege
+  - einsatzplanung
+  - rechnungen
+  - berichte
+  - ressourcenverwaltung:
+      - show
+      - ressourcen
+      - anwesenheiten
+  - objekte
+  - administration:
+      - show
+      - benutzer
+      - rollenverwaltung
+      - rechteverwaltung
+      - katalogverwaltung
+      - dtoKonfiguration
+      - einstellungen
 
