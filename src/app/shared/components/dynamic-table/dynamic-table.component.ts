@@ -268,7 +268,8 @@ export class DynamicTableComponent implements OnInit, OnChanges, AfterViewInit {
       data: {
         update: true,
         entity: data,
-        config: this.configuration
+        config: this.configuration,
+        mainId: this.mainId
       },
       header: data['_repr_'] + ' bearbeiten',
       width: '500px'
