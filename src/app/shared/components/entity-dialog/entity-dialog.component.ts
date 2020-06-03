@@ -50,65 +50,66 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     }
 
     this.mainId = data['mainId'];
+    this.subscriptions.push(
+      $config.subscribe(config => {
+        this.configuration = config;
+        this.update = this.config.data['update'];
 
-    $config.subscribe(config => {
-      this.configuration = config;
-      this.update = this.config.data['update'];
-
-      this.configuration.fields.forEach(field => {
-        if (field.type === 'CatalogueEntry') {
-          this.subscriptions.push(
-            this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
-              const values = catalogue.values.map(e => ({ label: e['name'], value: e['id'] }));
-              this.catalogueOptions.set(field.defaultCatalogue, values);
-            })
-          );
-        }
-      });
-
-      let $entity: Observable<any>;
-      if (data['entity']) {
-        $entity = new BehaviorSubject(data['entity']).asObservable();
-      } else if (data['entityId']) {
-        $entity = this.entityService.getEntity(this.configuration.type, data['entityId']).pipe(map(res => res.fields));
-      } else if (this.update) {
-        console.log('[entity-dialog] no entity supplied');
-        return;
-      }
-
-      if ($entity) {
-        this.subscriptions.push(
-          $entity.subscribe(entity => {
-            this.entity = entity;
-            this.configuration.fields.forEach(field => {
-              if (field.type === 'Date') {
-                if (this.entity[field.field] != null) {
-                  this.entity[field.field] = new Date(this.entity[field.field]);
-                }
-              }
-            });
-            this.displayScrollPanel = this.shouldDisplayScrollPanel();
-          })
-        );
-      } else {
-        // in case of create get default values
         this.configuration.fields.forEach(field => {
-          if (field.defaultValue) {
-            if (!this.defaultCache.hasOwnProperty(field.field)) {
-              if ((field.type === 'String' && field.defaultValue.startsWith('${')) || (field.type === 'int' && (<string>(field.defaultValue)).startsWith('${'))) {
-                this.subscriptions.push(
-                  this.entityService.eval(field.defaultValue).subscribe(response => this.defaultCache[field.field] = response['result'])
-                );
-              } else {
-                this.defaultCache[field.field] = field.defaultValue;
-              }
-            }
-          } else {
-            this.defaultCache[field.field] = undefined;
+          if (field.type === 'CatalogueEntry') {
+            this.subscriptions.push(
+              this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
+                const values = catalogue.values.map(e => ({ label: e['name'], value: e['id'] }));
+                this.catalogueOptions.set(field.defaultCatalogue, values);
+              })
+            );
           }
         });
-      }
-    });
+
+        let $entity: Observable<any>;
+        if (data['entity']) {
+          $entity = new BehaviorSubject(data['entity']).asObservable();
+        } else if (data['entityId']) {
+          $entity = this.entityService.getEntity(this.configuration.type, data['entityId']).pipe(map(res => res.fields));
+        } else if (this.update) {
+          console.log('[entity-dialog] no entity supplied');
+          return;
+        }
+
+        if ($entity) {
+          this.subscriptions.push(
+            $entity.subscribe(entity => {
+              this.entity = entity;
+              this.configuration.fields.forEach(field => {
+                if (field.type === 'Date') {
+                  if (this.entity[field.field] != null) {
+                    this.entity[field.field] = new Date(this.entity[field.field]);
+                  }
+                }
+              });
+              this.displayScrollPanel = this.shouldDisplayScrollPanel();
+            })
+          );
+        } else {
+          // in case of create get default values
+          this.configuration.fields.forEach(field => {
+            if (field.defaultValue) {
+              if (!this.defaultCache.hasOwnProperty(field.field)) {
+                if ((field.type === 'String' && field.defaultValue.startsWith('${')) || (field.type === 'int' && (<string>(field.defaultValue)).startsWith('${'))) {
+                  this.subscriptions.push(
+                    this.entityService.eval(field.defaultValue).subscribe(response => this.defaultCache[field.field] = response['result'])
+                  );
+                } else {
+                  this.defaultCache[field.field] = field.defaultValue;
+                }
+              }
+            } else {
+              this.defaultCache[field.field] = undefined;
+            }
+          });
+        }
+      })
+    );
   }
 
   // getDefaultValue(field: Field): string {
