@@ -98,8 +98,8 @@ export class UrlCollection {
     };
 
     static EntityAttributes = class {
-        static ENTRIES = (attachmentType: string, entityType: string, id: number, attrGroup: string ='null') =>
-        UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/entries/' + entityType + '/' + id + '/group/' + attrGroup;
+        static ENTRIES = (entityType: string, id: number, attrGroup: string ='null') =>
+        AppConfig.getBaseUrl() + '/attribute/entries/' + entityType + '/' + id + '/group/' + attrGroup;
     };
 
     static SCHEDULER_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/scheduler'; }

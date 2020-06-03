@@ -136,12 +136,20 @@ export class EntityService {
   }
 
   // Entity Attachments
-  getAttachments(attachmentType: string, type: string, id: number, attrGroup?: string) {
-    if (attachmentType !== 'attribute') {
-       return this.http.get(UrlCollection.EntityAttachments.ENTRIES(attachmentType, type, id));
-    } else {
-      return this.http.get(UrlCollection.EntityAttributes.ENTRIES(attachmentType, type, id, attrGroup));
-    }
+  getAttachments(attachmentType: string, type: string, id: number) {
+    return this.http.get(UrlCollection.EntityAttachments.ENTRIES(attachmentType, type, id),
+    new HttpOptionsFactory()
+      .addAcceptJson()
+      .addContentTypeJson()
+      .build());
+  }
+
+  getAttributes(type: string, id: number, attrGroup?: string) {
+    return this.http.get(UrlCollection.EntityAttributes.ENTRIES(type, id, attrGroup),
+    new HttpOptionsFactory()
+      .addAcceptJson()
+      .addContentTypeJson()
+      .build());
   }
 
   removeAttachmentEntry(attachmentType: string, id: number) {
