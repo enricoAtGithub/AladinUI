@@ -176,6 +176,30 @@ export class EntityService {
         .build());
   }
 
+  updateAttribute(attachmentEntry: any) {
+    return this.http.post(UrlCollection.EntityAttributes.UPDATE(), attachmentEntry,
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
+  }
+
+  addAttribute(attachmentEntry: any) {
+    return this.http.post(UrlCollection.EntityAttributes.ADD(), attachmentEntry,
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
+  }
+
+  removeAttribute(id: number) {
+    return this.http.post(UrlCollection.EntityAttributes.REMOVE(), { id: id },
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
+  }
+
   eval(expression: string) {
     return this.http.post(UrlCollection.EVAL(), { expression: expression },
       new HttpOptionsFactory()

@@ -97,7 +97,8 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
 
   addNewAttribute() {
     this.displayAddAttribute = false;
-    this.entityService.addAttachmentEntry('attribute', this.newAttribute).subscribe(() => this.updateAttachments());
+    // this.entityService.addAttachmentEntry('attribute', this.newAttribute).subscribe(() => this.updateAttachments());
+    this.entityService.addAttribute(this.newAttribute).subscribe(() => this.updateAttachments());
   }
 
   onRowEditInit(attribute: Attribute) {
@@ -105,13 +106,16 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
   }
 
   onRowDelete(attribute: Attribute) {
-    this.entityService.removeAttachmentEntry('attribute', attribute['id']).subscribe(() =>
+    // this.entityService.removeAttachmentEntry('attribute', attribute['id']).subscribe(() =>
+    //   this.attributes = this.attributes.filter(element => element['id'] !== attribute['id']));
+    this.entityService.removeAttribute(attribute['id']).subscribe(() =>
       this.attributes = this.attributes.filter(element => element['id'] !== attribute['id']));
   }
 
   onRowEditSave(attribute: Attribute) {
     this.updatedRowData = attribute;
-    this.entityService.updateAttachmentEntry('attribute', attribute).subscribe(attr => Attribute.copyFrom(<Attribute>attr, this.updatedRowData));
+    // this.entityService.updateAttachmentEntry('attribute', attribute).subscribe(attr => Attribute.copyFrom(<Attribute>attr, this.updatedRowData));
+    this.entityService.updateAttribute(attribute).subscribe(attr => Attribute.copyFrom(<Attribute>attr, this.updatedRowData));
   }
 
   onRowEditCancel(attribute: any, index: number) {

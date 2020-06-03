@@ -91,7 +91,7 @@ export class UrlCollection {
 
     static EntityAttachments = class {
         static ENTRIES = (attachmentType: string, entityType: string, id: number) =>
-            UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/entries/' + entityType + '/' + id;
+            UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/entries/' + entityType + '/' + id
         static REMOVE = (attachmentType: string) => UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/remove';
         static UPDATE = (attachmentType: string) => UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/update';
         static ADD = (attachmentType: string) => UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/add';
@@ -99,7 +99,10 @@ export class UrlCollection {
 
     static EntityAttributes = class {
         static ENTRIES = (entityType: string, id: number, attrGroup: string = 'null') =>
-            AppConfig.getBaseUrl() + '/attribute/entries/' + entityType + '/' + id + '/group/' + attrGroup;
+            UrlCollection.ENTITY_ATTRIBUTE_API_BASE_PATH() + '/entries/' + entityType + '/' + id + '/group/' + attrGroup
+        static REMOVE(): string { return UrlCollection.ENTITY_ATTRIBUTE_API_BASE_PATH() + '/remove'; }
+        static UPDATE(): string { return UrlCollection.ENTITY_ATTRIBUTE_API_BASE_PATH() + '/update'; }
+        static ADD(): string { return UrlCollection.ENTITY_ATTRIBUTE_API_BASE_PATH() + '/add'; }
     };
 
     static SCHEDULER_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/scheduler'; }
@@ -112,6 +115,7 @@ export class UrlCollection {
     static FILE_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/file'; }
     static GROUPS_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/groups'; }
     static ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType: string): string { return AppConfig.getBaseUrl() + '/' + attachmentType; }
+    static ENTITY_ATTRIBUTE_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/attribute'; }
     static API_BASE_PATH(): string { return AppConfig.getBaseUrl(); }
 
     static EVAL(): string { return AppConfig.getBaseUrl() + '/script/eval/'; }
