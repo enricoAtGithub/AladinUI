@@ -49,7 +49,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.mainId = data['mainId']
+    this.mainId = data['mainId'];
 
     $config.subscribe(config => {
       this.configuration = config;
