@@ -26,7 +26,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   mainId: number;
   displayEntitySelectionDialog = false;
   entitySelectionTableData: TableData;
-  entitySelectionContext: {field: string, textModule: any};
+  entitySelectionContext: { field: string, textModule: any };
   displayScrollPanel = false;
   defaultCache: Object = new Object();
   subscriptions: Subscription[] = [];
@@ -59,7 +59,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
         if (field.type === 'CatalogueEntry') {
           this.subscriptions.push(
             this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
-              const values = catalogue.values.map(e => ({label: e['name'], value: e['id']}));
+              const values = catalogue.values.map(e => ({ label: e['name'], value: e['id'] }));
               this.catalogueOptions.set(field.defaultCatalogue, values);
             })
           );
@@ -92,21 +92,21 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
         );
       } else {
         // in case of create get default values
-          this.configuration.fields.forEach(field => {
-            if (field.defaultValue) {
-              if (!this.defaultCache.hasOwnProperty(field.field)) {
-                if ((field.type === 'String' && field.defaultValue.startsWith('${')) || (field.type === 'int' && (<string>(field.defaultValue)).startsWith('${'))) {
-                  this.subscriptions.push(
-                    this.entityService.eval(field.defaultValue).subscribe(response => this.defaultCache[field.field] = response['result'])
-                    );
-                } else {
-                  this.defaultCache[field.field] = field.defaultValue;
-                }
+        this.configuration.fields.forEach(field => {
+          if (field.defaultValue) {
+            if (!this.defaultCache.hasOwnProperty(field.field)) {
+              if ((field.type === 'String' && field.defaultValue.startsWith('${')) || (field.type === 'int' && (<string>(field.defaultValue)).startsWith('${'))) {
+                this.subscriptions.push(
+                  this.entityService.eval(field.defaultValue).subscribe(response => this.defaultCache[field.field] = response['result'])
+                );
+              } else {
+                this.defaultCache[field.field] = field.defaultValue;
               }
-            } else {
-              this.defaultCache[field.field] = undefined;
             }
-          });
+          } else {
+            this.defaultCache[field.field] = undefined;
+          }
+        });
       }
     });
   }
@@ -128,19 +128,19 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   //     return;
   //   }
   // }
-  
+
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
-  
+
   entitySelected(entity: any, form: NgForm) {
-    form.control.patchValue({[this.entitySelectionContext.field]: entity['id']});
+    form.control.patchValue({ [this.entitySelectionContext.field]: entity['id'] });
     this.entitySelectionContext.textModule['value'] = entity['_repr_'];
     this.displayEntitySelectionDialog = false;
   }
 
   openEntitySelectionDialog(field: any, input: InputText) {
-    this.entitySelectionContext = {field: field['field'], textModule: input};
+    this.entitySelectionContext = { field: field['field'], textModule: input };
     this.entitySelectionTableData = new TableData(field['type'], field['type'])
       .hideHeader()
       .hideHeadline()
@@ -152,7 +152,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   }
 
   nullField(field: any, form: NgForm) {
-    form.control.patchValue({[field['field']]: null});
+    form.control.patchValue({ [field['field']]: null });
   }
 
   onSubmit(entityForm: FormGroup) {

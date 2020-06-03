@@ -19,7 +19,7 @@ export class UrlCollection {
             static REMOVE_ACTION = (rightId: number) => `${UrlCollection.UserManagement.RIGHT()}/${rightId}/removeAction`;
         };
 
-        static CREATE(): string {return UrlCollection.USER_API_BASE_PATH() + '/create'; }
+        static CREATE(): string { return UrlCollection.USER_API_BASE_PATH() + '/create'; }
         static ALL(): string { return UrlCollection.USER_API_BASE_PATH() + '/all'; }
         static GET(): string { return UrlCollection.USER_API_BASE_PATH() + '/get'; }
         static UPDATE(): string { return UrlCollection.USER_API_BASE_PATH() + '/update'; }
@@ -28,7 +28,7 @@ export class UrlCollection {
         static LOGOUT(): string { return UrlCollection.USER_API_BASE_PATH() + '/logout'; }
         static CHANGE_PASSWD(): string { return UrlCollection.USER_API_BASE_PATH() + '/changepwd'; }
 
-        static RIGHT(): string {return UrlCollection.USER_API_BASE_PATH() + '/right'; }
+        static RIGHT(): string { return UrlCollection.USER_API_BASE_PATH() + '/right'; }
 
         static buildGetUrl(userName: string) {
             return UrlCollection.UserManagement.GET() + '/' + userName;
@@ -48,7 +48,7 @@ export class UrlCollection {
     static Availability = class {
         static RESOURCEAVAILABILITIES = () => UrlCollection.SCHEDULER_API_BASE_PATH() + '/resourceAvailabilities';
         private static RESOURCEAVAILABILITY = () => UrlCollection.SCHEDULER_API_BASE_PATH() + '/resourceAvailability';
-        static UPDATE_AVAILABILITY_INTERVAL = (availabilityId: number) => UrlCollection.Availability.RESOURCEAVAILABILITY()  + '/' + availabilityId + '/updateInterval';
+        static UPDATE_AVAILABILITY_INTERVAL = (availabilityId: number) => UrlCollection.Availability.RESOURCEAVAILABILITY() + '/' + availabilityId + '/updateInterval';
     };
 
     static Entities = class {
@@ -90,7 +90,7 @@ export class UrlCollection {
     };
 
     static EntityAttachments = class {
-        static ENTRIES = (attachmentType: string, entityType: string, id: number) => 
+        static ENTRIES = (attachmentType: string, entityType: string, id: number) =>
             UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/entries/' + entityType + '/' + id;
         static REMOVE = (attachmentType: string) => UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/remove';
         static UPDATE = (attachmentType: string) => UrlCollection.ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType) + '/update';
@@ -98,8 +98,8 @@ export class UrlCollection {
     };
 
     static EntityAttributes = class {
-        static ENTRIES = (entityType: string, id: number, attrGroup: string ='null') =>
-        AppConfig.getBaseUrl() + '/attribute/entries/' + entityType + '/' + id + '/group/' + attrGroup;
+        static ENTRIES = (entityType: string, id: number, attrGroup: string = 'null') =>
+            AppConfig.getBaseUrl() + '/attribute/entries/' + entityType + '/' + id + '/group/' + attrGroup;
     };
 
     static SCHEDULER_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/scheduler'; }
@@ -114,7 +114,7 @@ export class UrlCollection {
     static ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType: string): string { return AppConfig.getBaseUrl() + '/' + attachmentType; }
     static API_BASE_PATH(): string { return AppConfig.getBaseUrl(); }
 
-    static EVAL(): string {return AppConfig.getBaseUrl() + '/script/eval/'; }
+    static EVAL(): string { return AppConfig.getBaseUrl() + '/script/eval/'; }
 
     static basePathAttachment = (): string => AppConfig.getBaseUrl() + '/attachment';
 }

@@ -54,7 +54,7 @@ export class EntityService {
 
   filter(type: String, page: Number, pageSize: Number, mainId: number, qualifier: String, sorting: String): Observable<EntityData> {
     return this.http.post<EntityData>(UrlCollection.Entities.FILTER(),
-      {type: type, page: page, pageSize: pageSize, mainId: mainId, qualifier: qualifier, sorting: sorting},
+      { type: type, page: page, pageSize: pageSize, mainId: mainId, qualifier: qualifier, sorting: sorting },
       new HttpOptionsFactory()
         .addAcceptJson()
         .addContentTypeJson()
@@ -80,16 +80,16 @@ export class EntityService {
   }
 
   createEntity(type: String, data) {
-    return this.http.post(UrlCollection.Entities.CREATE(), {type: type, fields: data},
-    new HttpOptionsFactory()
-      // .addAcceptJson()
-      .addContentTypeJson()
-      .build());
+    return this.http.post(UrlCollection.Entities.CREATE(), { type: type, fields: data },
+      new HttpOptionsFactory()
+        // .addAcceptJson()
+        .addContentTypeJson()
+        .build());
   }
 
   updateEntity(type: String, id: number, data) {
     return this.http.post(UrlCollection.Entities.UPDATE(),
-      {type: type, fields: {...data, ...{'id': id}}},
+      { type: type, fields: { ...data, ...{ 'id': id } } },
       new HttpOptionsFactory()
         .addAcceptJson()
         .addContentTypeJson()
@@ -97,11 +97,11 @@ export class EntityService {
   }
 
   deleteEntity(type: String, id: Number) {
-    return this.http.post(UrlCollection.Entities.DELETE(), {type: type, fields: {id: id}},
-    new HttpOptionsFactory()
-      .addAcceptJson()
-      .addContentTypeJson()
-      .build());
+    return this.http.post(UrlCollection.Entities.DELETE(), { type: type, fields: { id: id } },
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
   }
 
   // Groups
@@ -110,25 +110,25 @@ export class EntityService {
   }
 
   membersGroup(type: String, holderId: Number): Observable<GroupMembers> {
-    return this.http.post<GroupMembers>(UrlCollection.Groups.MEMBERS(), {type: type, holderId: holderId},
-    new HttpOptionsFactory()
-      .addAcceptJson()
-      .addContentTypeJson()
-      .build());
+    return this.http.post<GroupMembers>(UrlCollection.Groups.MEMBERS(), { type: type, holderId: holderId },
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
   }
 
   addMember(type: String, holderId: Number, memberId: Number): Observable<Boolean> {
-    return this.http.post<Boolean>(UrlCollection.Groups.ADDMEMBER(), {type: type, holderId: holderId, memberId: memberId},
-    new HttpOptionsFactory()
-      .addAcceptJson()
-      .addContentTypeJson()
-      .build());
+    return this.http.post<Boolean>(UrlCollection.Groups.ADDMEMBER(), { type: type, holderId: holderId, memberId: memberId },
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
   }
 
   removeMember(type: String, holderId: Number, memberId: Number): Observable<Boolean> {
     return this.http.post<Boolean>(
       UrlCollection.Groups.REMOVEMEMBER(),
-      {type: type, holderId: holderId, memberId: memberId},
+      { type: type, holderId: holderId, memberId: memberId },
       new HttpOptionsFactory()
         .addAcceptJson()
         .addContentTypeJson()
@@ -138,49 +138,49 @@ export class EntityService {
   // Entity Attachments
   getAttachments(attachmentType: string, type: string, id: number) {
     return this.http.get(UrlCollection.EntityAttachments.ENTRIES(attachmentType, type, id),
-    new HttpOptionsFactory()
-      .addAcceptJson()
-      .addContentTypeJson()
-      .build());
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
   }
 
   getAttributes(type: string, id: number, attrGroup?: string) {
     return this.http.get(UrlCollection.EntityAttributes.ENTRIES(type, id, attrGroup),
-    new HttpOptionsFactory()
-      .addAcceptJson()
-      .addContentTypeJson()
-      .build());
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
   }
 
   removeAttachmentEntry(attachmentType: string, id: number) {
-    return this.http.post(UrlCollection.EntityAttachments.REMOVE(attachmentType), {id: id},
-    new HttpOptionsFactory()
-      .addAcceptJson()
-      .addContentTypeJson()
-      .build());
+    return this.http.post(UrlCollection.EntityAttachments.REMOVE(attachmentType), { id: id },
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
   }
 
   updateAttachmentEntry(attachmentType: string, attachmentEntry: any) {
     return this.http.post(UrlCollection.EntityAttachments.UPDATE(attachmentType), attachmentEntry,
-    new HttpOptionsFactory()
-      .addAcceptJson()
-      .addContentTypeJson()
-      .build());
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
   }
 
   addAttachmentEntry(attachmentType: string, attachmentEntry: any) {
     return this.http.post(UrlCollection.EntityAttachments.ADD(attachmentType), attachmentEntry,
-    new HttpOptionsFactory()
-      .addAcceptJson()
-      .addContentTypeJson()
-      .build());
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
   }
 
   eval(expression: string) {
-    return this.http.post(UrlCollection.EVAL(), {expression: expression},
-    new HttpOptionsFactory()
-      .addAcceptJson()
-      .addContentTypeJson()
-      .build());
+    return this.http.post(UrlCollection.EVAL(), { expression: expression },
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
   }
 }
