@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DynamicDialogRef, DynamicDialogConfig, InputText } from 'primeng/primeng';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { FormGroup, NgForm } from '@angular/forms';
 import { EntityService } from '../../services/entity.service';
 import { CatalogueService } from 'src/app/user/services/catalogue.service';
 import { TableData } from '../../models/table-data';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Store, select } from '@ngrx/store';
@@ -18,7 +18,7 @@ import { Field } from '../../models/field';
   templateUrl: './entity-dialog.component.html',
   styleUrls: ['./entity-dialog.component.css']
 })
-export class EntityDialogComponent implements OnInit {
+export class EntityDialogComponent implements OnInit, OnDestroy {
   configuration: EntityConfiguration;
   catalogueOptions: Map<string, any[]> = new Map();
   update: Boolean;
@@ -28,6 +28,8 @@ export class EntityDialogComponent implements OnInit {
   entitySelectionTableData: TableData;
   entitySelectionContext: {field: string, textModule: any};
   displayScrollPanel = false;
+  defaultCache: Object = new Object();
+  subscriptions: Subscription[] = [];
 
   constructor(public ref: DynamicDialogRef, public config: DynamicDialogConfig, private entityService: EntityService,
     private catalogueService: CatalogueService, private store$: Store<RootStoreState.State>) { }
@@ -55,10 +57,12 @@ export class EntityDialogComponent implements OnInit {
 
       this.configuration.fields.forEach(field => {
         if (field.type === 'CatalogueEntry') {
-          this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
-            const values = catalogue.values.map(e => ({label: e['name'], value: e['id']}));
-            this.catalogueOptions.set(field.defaultCatalogue, values);
-          });
+          this.subscriptions.push(
+            this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
+              const values = catalogue.values.map(e => ({label: e['name'], value: e['id']}));
+              this.catalogueOptions.set(field.defaultCatalogue, values);
+            })
+          );
         }
       });
 
@@ -73,21 +77,62 @@ export class EntityDialogComponent implements OnInit {
       }
 
       if ($entity) {
-        $entity.subscribe(entity => {
-          this.entity = entity;
-          this.configuration.fields.forEach(field => {
-            if (field.type === 'Date') {
-              if (this.entity[field.field] != null) {
-                this.entity[field.field] = new Date(this.entity[field.field]);
+        this.subscriptions.push(
+          $entity.subscribe(entity => {
+            this.entity = entity;
+            this.configuration.fields.forEach(field => {
+              if (field.type === 'Date') {
+                if (this.entity[field.field] != null) {
+                  this.entity[field.field] = new Date(this.entity[field.field]);
+                }
               }
+            });
+            this.displayScrollPanel = this.shouldDisplayScrollPanel();
+          })
+        );
+      } else {
+        // in case of create get default values
+          this.configuration.fields.forEach(field => {
+            if (field.defaultValue) {
+              if (!this.defaultCache.hasOwnProperty(field.field)) {
+                if (field.type === 'String' && field.defaultValue.startsWith('${')) {
+                  this.subscriptions.push(
+                    this.entityService.eval(field.defaultValue).subscribe(response => this.defaultCache[field.field] = response['result'])
+                    );
+                } else {
+                  this.defaultCache[field.field] = field.defaultValue;
+                }
+              }
+            } else {
+              this.defaultCache[field.field] = undefined;
             }
           });
-          this.displayScrollPanel = this.shouldDisplayScrollPanel();
-        });
       }
     });
   }
 
+  // getDefaultValue(field: Field): string {
+  //   if (field.defaultValue) {
+  //     console.log(this.defaultCache['number']);
+  //     if (!this.defaultCache.hasOwnProperty(field.field)) {
+  //       this.defaultCache[field.field] = undefined;
+  //       if (field.defaultValue.startsWith('${')) {
+  //         const result = this.entityService.eval(field.defaultValue).toPromise();
+  //           result.then(r => this.defaultCache[field.field] = r['result']);
+  //       } else {
+  //         this.defaultCache[field.field] = field.defaultValue;
+  //       }
+  //     }
+  //     return this.defaultCache[field.field];
+  //   } else {
+  //     return;
+  //   }
+  // }
+  
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+  
   entitySelected(entity: any, form: NgForm) {
     form.control.patchValue({[this.entitySelectionContext.field]: entity['id']});
     this.entitySelectionContext.textModule['value'] = entity['_repr_'];

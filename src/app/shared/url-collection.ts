@@ -114,6 +114,8 @@ export class UrlCollection {
     static ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType: string): string { return AppConfig.getBaseUrl() + '/' + attachmentType; }
     static API_BASE_PATH(): string { return AppConfig.getBaseUrl(); }
 
+    static EVAL(): string {return AppConfig.getBaseUrl() + '/script/eval/'; }
+
     static basePathAttachment = (): string => AppConfig.getBaseUrl() + '/attachment';
 }
 

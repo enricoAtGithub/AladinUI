@@ -175,4 +175,12 @@ export class EntityService {
       .addContentTypeJson()
       .build());
   }
+
+  eval(expression: string) {
+    return this.http.post(UrlCollection.EVAL(), {expression: expression},
+    new HttpOptionsFactory()
+      .addAcceptJson()
+      .addContentTypeJson()
+      .build());
+  }
 }
