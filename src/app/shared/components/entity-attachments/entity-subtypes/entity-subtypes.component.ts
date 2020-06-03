@@ -22,7 +22,7 @@ export class EntitySubtypesComponent implements OnInit, OnChanges {
       this.tableData = new TableData('', changes.type.currentValue)
         .setScrollable()
         .setScrollHeight('222px')
-        .hideHeader()
+        //.hideHeader()
         .hideHeadline()
         .disablePagination();
     }

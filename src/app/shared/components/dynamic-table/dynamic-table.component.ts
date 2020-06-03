@@ -249,7 +249,8 @@ export class DynamicTableComponent implements OnInit, OnChanges, AfterViewInit {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
-        config: this.configuration
+        config: this.configuration,
+        mainId: this.mainId
       },
       header: 'Hinzufügen',
       width: '500px'
