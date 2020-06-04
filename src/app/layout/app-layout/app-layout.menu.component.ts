@@ -28,12 +28,16 @@ export class AppMenuComponent implements OnInit {
     ngOnInit() {
         this.model = [
             {
-                label: 'Dashboard', icon: 'pi pi-ticket', routerLink: ['/'],
-                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.dashboard)
+                label: 'Produkte', icon: 'pi pi-ticket', routerLink: ['/'],
+                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.produkte)
             },
             {
                 label: 'Accounts', icon: 'fa fa-fw fa-home', routerLink: ['/accounts'],
                 visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.accounts)
+            },
+            {
+                label: 'Angebote', icon: 'fa fa-file-text-o', routerLink: ['/angebote'],
+                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.angebote)
             },
             {
                 label: 'Aufträge', icon: 'fa fa-fw fa-tasks', routerLink: ['/orders'],

@@ -119,6 +119,7 @@ import { SchedulerModule } from './jmeleon/modules/scheduler/scheduler.module';
 import { PermissionsModule } from './jmeleon/modules/permissions/permissions.module';
 import { AccountsComponent } from './accounts/accounts.component';
 import { ProductsComponent } from './domain/components/products/products.component';
+import { QuotationsComponent } from './domain/components/quotations/quotations.component';
 
 export function initializeApp(appConfig: AppConfig) {
     console.log('initialize app');
@@ -235,7 +236,9 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         InvoicesComponent,
         OrdersComponent,
         AccountsComponent,
-        ProductsComponent
+        ProductsComponent,
+        QuotationsComponent
+
     ],
     providers: [
         AppConfig,

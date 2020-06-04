@@ -26,6 +26,8 @@ import { PlaygroundGuard } from './playground/guards/playground.guard';
 import { AvailabilityComponent } from './jmeleon/modules/scheduler/components/availability/availability.component';
 import { DTOEntitiesComponent } from './jmeleon/components/dto-entities/dto-entities.component';
 import { AccountsComponent } from './accounts/accounts.component';
+import { ProductsComponent } from './domain/components/products/products.component';
+import { QuotationsComponent } from './domain/components/quotations/quotations.component';
 
 
 export const routes: Routes = [
@@ -35,9 +37,10 @@ export const routes: Routes = [
     component: AppLayoutComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent },
+      { path: '', redirectTo: 'produkte', pathMatch: 'full' },
+      { path: 'produkte', component: ProductsComponent },
       { path: 'accounts', component: AccountsComponent },
+      { path: 'angebote', component: QuotationsComponent },
       { path: 'orders', component: OrdersComponent },
       { path: 'reports', component: ReportsComponent },
       { path: 'invoices', component: InvoicesComponent },

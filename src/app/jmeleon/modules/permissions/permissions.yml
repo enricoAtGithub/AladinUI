@@ -31,7 +31,8 @@
   - delete
   - updateInterval
 - Menuitems:
-  - dashboard
+  - produkte
+  - angebote
   - accounts
   - auftraege
   - einsatzplanung
