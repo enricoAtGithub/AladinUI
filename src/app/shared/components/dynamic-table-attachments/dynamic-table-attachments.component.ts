@@ -7,6 +7,7 @@ import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { GroupConfiguration } from '../../models/group-configuration';
 
 @Component({
   selector: 'app-dynamic-table-attachments',
@@ -85,6 +86,23 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
     if (changes.configName) {
       this.init();
     }
+  }
+
+  getSubTypeHeader(subtype: string): Observable<EntityConfiguration> {
+    const subTypeConfig$: Observable<EntityConfiguration> = this.store$.pipe(
+      select(fromConfigSelectors.selectConfigs),
+      map(configs => configs[subtype])
+    );
+    return subTypeConfig$;
+  }
+
+  getGroupHeader(group: string): Observable<GroupConfiguration> {
+    const groupConfig$: Observable<GroupConfiguration> = this.store$.pipe(
+      select(fromConfigSelectors.selectGroupConfigs),
+      map(configs => configs[group])
+    );
+    return groupConfig$;
+
   }
 
 }
