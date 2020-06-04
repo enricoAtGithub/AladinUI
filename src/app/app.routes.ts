@@ -39,10 +39,20 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'produkte', component: ProductsComponent },
-      { path: 'accounts', component: AccountsComponent },
-      { path: 'angebote', component: QuotationsComponent },
-      { path: 'orders', component: OrdersComponent },
+      {
+        path: 'masterdata',
+        children: [
+          { path: 'products', pathMatch: 'full', component: ProductsComponent },
+          { path: 'accounts', pathMatch: 'full', component: AccountsComponent },
+        ]
+      },
+      {
+        path: 'sales',
+        children: [
+          { path: 'quotations', pathMatch: 'full', component: QuotationsComponent },
+          { path: 'orders', pathMatch: 'full', component: OrdersComponent },
+        ]
+      },
       { path: 'reports', component: ReportsComponent },
       { path: 'invoices', component: InvoicesComponent },
       { path: 'profile', component: ProfileComponent },

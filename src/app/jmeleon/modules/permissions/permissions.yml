@@ -32,10 +32,14 @@
   - updateInterval
 - Menuitems:
   - dashboard
-  - produkte
-  - angebote
-  - accounts
-  - auftraege
+  - stammdaten:
+    - show
+    - produkte
+    - accounts
+  - vertrieb:
+    - show
+    - angebote
+    - auftraege
   - einsatzplanung
   - rechnungen
   - berichte
