@@ -53,8 +53,8 @@
     </div>
 
     <ng-template ngFor let-subtype [ngForOf]="configuration?.subtypes">
-      <p-tabPanel *ngIf="!this.excludedPanels?.includes(subtype)"
-        [header]="(getSubTypeHeader(subtype) | async).displayName" [selected]="this.selectedPanel === subtype">
+      <p-tabPanel *ngIf="!this.excludedPanels?.includes(subtype)" [header]="subtype"
+        [selected]="this.selectedPanel === subtype">
         <app-entity-subtypes [type]="subtype" [mainId]="entryId"></app-entity-subtypes>
       </p-tabPanel>
     </ng-template>

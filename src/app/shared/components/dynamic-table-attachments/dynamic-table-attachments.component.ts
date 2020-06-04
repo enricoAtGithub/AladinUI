@@ -24,7 +24,6 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
 
   configuration: EntityConfiguration;
   selectedPanel: string;
-  subtypeConfig$: Observable<EntityConfiguration>;
 
   constructor(public dialogService: DialogService, private store$: Store<RootStoreState.State>) { }
 
@@ -86,14 +85,6 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
     if (changes.configName) {
       this.init();
     }
-  }
-
-  getSubTypeHeader(subtype: string): Observable<EntityConfiguration> {
-    this.subtypeConfig$ = this.store$.pipe(
-      select(fromConfigSelectors.selectConfigs),
-      map(configs => configs[subtype])
-    );
-    return this.subtypeConfig$;
   }
 
 }
