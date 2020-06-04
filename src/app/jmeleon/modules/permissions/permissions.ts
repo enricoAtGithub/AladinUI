@@ -42,6 +42,7 @@ export const root = {
         updateInterval: 'ResourceManager.updateInterval'
     },
     Menuitems: {
+        dashboard: 'Menuitems.dashboard',
         produkte: 'Menuitems.produkte',
         accounts: 'Menuitems.accounts',
         angebote: 'Menuitems.angebote',
@@ -92,6 +93,7 @@ export const list = [
     'ResourceManager.write',
     'ResourceManager.delete',
     'ResourceManager.updateInterval',
+    'Menuitems.dashboard',
     'Menuitems.produkte',
     'Menuitems.accounts',
     'Menuitems.angebote',

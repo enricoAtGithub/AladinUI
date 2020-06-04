@@ -37,7 +37,8 @@ export const routes: Routes = [
     component: AppLayoutComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', redirectTo: 'produkte', pathMatch: 'full' },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
       { path: 'produkte', component: ProductsComponent },
       { path: 'accounts', component: AccountsComponent },
       { path: 'angebote', component: QuotationsComponent },
