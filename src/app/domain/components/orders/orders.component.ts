@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TableData } from 'src/app/shared/models/table-data';
-import { BreadcrumbService } from '../breadcrumb.service';
+import { BreadcrumbService } from '../../../breadcrumb.service';
 
 @Component({
   selector: 'app-orders',
@@ -16,5 +16,5 @@ export class OrdersComponent implements OnInit {
     ]);
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 }

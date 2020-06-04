@@ -4,7 +4,7 @@ import { DiagramsModule } from './modules/diagrams/diagrams.module';
 import { DTOConfigEditorComponent } from './components/dtoconfig-editor/dtoconfig-editor.component';
 import { DropdownModule, PanelModule, ButtonModule, ScrollPanelModule } from 'primeng/primeng';
 import { AceModule } from 'ngx-ace-wrapper';
-import { ResourcesComponent } from './components/resources/resources.component';
+import { ResourcesComponent } from '../domain/components/resources/resources.component';
 import { SharedModule } from '../shared/shared.module';
 import { DTOEntitiesComponent } from './components/dto-entities/dto-entities.component';
 
