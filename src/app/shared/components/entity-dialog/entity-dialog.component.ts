@@ -95,7 +95,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
           this.configuration.fields.forEach(field => {
             if (field.defaultValue) {
               if (!this.defaultCache.hasOwnProperty(field.field)) {
-                if ((field.type === 'String' && field.defaultValue.startsWith('${')) || (field.type === 'int' && (<string>(field.defaultValue)).startsWith('${'))) {
+                if (typeof field.defaultValue === 'string' && field.defaultValue.startsWith('${')) {
                   this.subscriptions.push(
                     this.entityService.eval(field.defaultValue).subscribe(response => this.defaultCache[field.field] = response['result'])
                   );
