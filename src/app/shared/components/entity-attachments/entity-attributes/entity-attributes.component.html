@@ -156,7 +156,7 @@
                 <!-- <ng-container *ngTemplateOutlet="dataTable_crud; context:{rowData: rowData, editing: editing, ri: ri}"></ng-container> -->
                 <button *ngIf="!editing" id="editButton{{rowData.id}}" pButton type="button" pInitEditableRow
                     icon="pi pi-pencil" style="margin-right: .5em" class="ui-button-info"
-                    (click)="onRowEditInit(rowData)"></button>
+                    (click)="onRowEditInit(rowData, ri)"></button>
                 <button *ngIf="!editing" pButton type="button" icon="pi pi-trash" class="ui-button-info"
                     (click)="onRowDelete(rowData)"></button>
                 <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"
@@ -224,7 +224,7 @@
                 <!-- <ng-container *ngTemplateOutlet="dataTable_crud; context:{rowData: rowData, editing: editing, ri: ri}"></ng-container> -->
                 <button *ngIf="!editing" id="editButton{{rowData.id}}" pButton type="button" pInitEditableRow
                     icon="pi pi-pencil" style="margin-right: .5em" class="ui-button-info"
-                    (click)="onRowEditInit(rowData)"></button>
+                    (click)="onRowEditInit(rowData, ri)"></button>
                 <button *ngIf="!editing" pButton type="button" icon="pi pi-trash" class="ui-button-info"
                     (click)="onRowDelete(rowData)"></button>
                 <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"

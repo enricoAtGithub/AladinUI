@@ -22,7 +22,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
   @Input() attrGroup: AttributeGroup;
 
   attributes: Attribute[];
-  private attributeClone: any;
+  private attributeClones = new Map<number, Attribute>();
   displayAddAttribute = false;
   newAttribute = new Attribute();
   attrNames: object[] = [];
@@ -101,8 +101,8 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
     this.entityService.addAttribute(this.newAttribute).subscribe(() => this.updateAttachments());
   }
 
-  onRowEditInit(attribute: Attribute) {
-    this.attributeClone = { ...attribute };
+  onRowEditInit(attribute: Attribute, index: number) {
+    this.attributeClones.set(index, { ...attribute });
   }
 
   onRowDelete(attribute: Attribute) {
@@ -119,7 +119,8 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
   }
 
   onRowEditCancel(attribute: any, index: number) {
-    this.attributes[index] = this.attributeClone;
+    this.attributes[index] = this.attributeClones.get(index);
+    this.attributeClones.delete(index);
   }
 
   setType(attributeName: string) {
