@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, AfterViewInit} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, AfterViewInit, OnDestroy} from '@angular/core';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
 import { EntityData } from '../../models/entity-data';
@@ -6,7 +6,7 @@ import { EntityService } from '../../services/entity.service';
 import { LazyLoadEvent, DialogService, ConfirmationService } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
 import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { ErrorNotificationService } from '../../services/error-notification.service';
 import { ErrorMessage } from '../../models/error-message';
 import { delay } from 'q';
@@ -25,13 +25,14 @@ import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permiss
   styleUrls: ['./dynamic-table.component.css'],
   providers: [ConfirmationService]
 })
-export class DynamicTableComponent implements OnInit, OnChanges, AfterViewInit {
+export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   @Input() tableData: TableData;
   @Input() mainId: number;
   @Input() dblClickCallback: (data) => any;
   @Output() entitySelection = new EventEmitter();
 
   configuration: EntityConfiguration;
+  configSubscription: Subscription;
   fields: Field[];
   loading = true; // Needs to be true to prevent ExpressionHasChangedError
   entityData: EntityData;
@@ -64,7 +65,7 @@ export class DynamicTableComponent implements OnInit, OnChanges, AfterViewInit {
 
     this.configuration = new EntityConfiguration();
     this.entityData = new EntityData();
-    configuration$.subscribe(async config => {
+    this.configSubscription = configuration$.subscribe(async config => {
       // Get the config according to the given name
       this.configuration = config;
       if (this.configuration === undefined) {
@@ -77,10 +78,6 @@ export class DynamicTableComponent implements OnInit, OnChanges, AfterViewInit {
       this.minTableWidth = this.showButtons ? 90 : 0;
       this.fields = this.configuration.fields.filter(field => field.visible === true);
       this.fields.forEach(field => {
-        /*this.minTableWidth += Math.max(
-          field.width && !field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0,
-          field.minWidth && !field.minWidth.endsWith('%') ? Number.parseInt(field.minWidth, 10) : 0
-        );*/
         if (!field.width) {
           this.zeroWidthColumns++;
         } else {
@@ -120,6 +117,10 @@ export class DynamicTableComponent implements OnInit, OnChanges, AfterViewInit {
 
       this.tableData.triggerRefresh.subscribe( () => this.refreshTableContents());
     });
+  }
+
+  ngOnDestroy() {
+    this.configSubscription.unsubscribe();
   }
 
   ngOnChanges(changes: SimpleChanges) {
