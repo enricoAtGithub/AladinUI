@@ -230,6 +230,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       case 'String':
       case 'int':
       case 'Icon':
+      case 'Currency':
         return input;
       default:
         return input['_repr_'];

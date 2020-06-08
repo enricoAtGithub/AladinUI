@@ -21,18 +21,24 @@
           <label for="float-input">{{field.header}}</label>
         </span>
         <span *ngSwitchCase="'int'" class="ui-float-label" style="flex-grow: 1;">
-          <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]" id="float-input" type="number" style="width: 100%" pInputText> 
+          <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]" id="float-input" type="number" pInputText> 
           <label for="float-input">{{field.header}}</label>
-        </span>
+        </span>        
+        <span *ngSwitchCase="'Currency'" class="ui-float-label" style="flex-grow: 1;">
+          <div class="ui-inputgroup">            
+            <input [required]="field.mandatory" [name]="field.field" [ngModel]="((entity) ? entity[field.field] : defaultCache[field.field])" pattern="^\d{1,3}((\.)?\d{3})*(,\d{1,2})?$" id="float-input" type="text" style="width: 172px; font-family: monospace;">
+            <span class="ui-inputgroup-addon">€</span>
+          </div>
+        </span>        
         <span *ngSwitchCase="'boolean'" style="flex-grow: 1; align-self: center;">
           <p-checkbox [required]="field.mandatory" [name]="field.field" [binary]="true" [label]="field.header" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]"></p-checkbox>
         </span>
         <span *ngSwitchCase="'Date'" class="ui-float-label" style="flex-grow: 1;">
-          <p-calendar [required]="field.mandatory" [name]="field.field" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]"></p-calendar>
+          <p-calendar [required]="field.mandatory" [name]="field.field" showIcon="true" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]" [inputStyle]="{'width':'170px'}"></p-calendar>
           <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
         </span>
         <span *ngSwitchCase="'CatalogueEntry'" style="flex-grow: 1;">
-          <p-dropdown [required]="field.mandatory" [placeholder]="field.header" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" [ngModel]="(entity) ? entity[field.field]?.id : defaultCache[field.field]"></p-dropdown>
+          <p-dropdown [required]="field.mandatory" [placeholder]="field.header" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" [ngModel]="(entity) ? entity[field.field]?.id : defaultCache[field.field]" [style]="{'width':'200px'}"></p-dropdown>
         </span>
         <span *ngSwitchDefault class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
           <input #textModule [disabled]="true" [placeholder]="entity !== undefined ? entity[field.field]?._repr_ : ''" id="float-input" style="width: 100%" pInputText>

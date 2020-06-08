@@ -50,8 +50,11 @@
         <tr [pSelectableRow]="rowData" (dblclick)="doubleClickTableRow(rowData)">
           <td *ngFor="let col of columns" [style.width]="calcWidth(col, dt.el.nativeElement.offsetWidth)" style="word-wrap: break-word;">
             <span class="ui-column-title">{{col.header}}</span>
-              <div *ngIf="col.type !== 'Icon';else displayIcon">{{processData(rowData[col.field], col)}}</div>
-              <ng-template #displayIcon><i [class]="rowData[col.field]?.icon" [ngStyle]="{'color': rowData[col.field]?.color}" style="font-size: 2em;"></i></ng-template>
+            <div *ngIf="col.type !== 'Icon' && col.type !== 'Currency';else displaySpecialTypes">{{processData(rowData[col.field], col)}}</div>
+              <ng-template #displaySpecialTypes>
+                <div *ngIf="col.type === 'Currency'" style="font-family: monospace; text-align: right;">{{processData(rowData[col.field], col)}}&nbsp;€</div>
+                <div *ngIf="col.type === 'Icon'"><i [class]="rowData[col.field]?.icon" [ngStyle]="{'color': rowData[col.field]?.color}" style="font-size: 2em;"></i></div>
+              </ng-template>
           </td>
           <!-- Crud Buttons -->
           <td *ngIf="showButtons" style="text-align: center; width: 90px;">
