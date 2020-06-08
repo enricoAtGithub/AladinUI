@@ -18,6 +18,7 @@ import { RootStoreState } from 'src/app/root-store/root-index';
 import { CatalogueService } from 'src/app/user/services/catalogue.service';
 import { root } from 'src/app/jmeleon/modules/permissions/permissions';
 import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
+import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -46,6 +47,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   minTableWidth: number;
   freeColumnSpace = 100;
   zeroWidthColumns = 0;
+  currency: string;  
 
   constructor(
     private entityService: EntityService,
@@ -55,6 +57,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     private errorNotificationService: ErrorNotificationService,
     private store$: Store<RootStoreState.State>,
     private japs: JmeleonActionsPermissionService,
+    private settingsService: SettingsService
     ) {}
 
   ngOnInit() {
@@ -72,6 +75,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         console.log('[Dynamic-Table] config with name ' + this.tableData.entityType + ' not found!');
         return;
       }
+
+      this.settingsService.getSetting('CURRENCY').subscribe(setting => this.currency = setting.value);
 
       this.checkShowButtons();
 

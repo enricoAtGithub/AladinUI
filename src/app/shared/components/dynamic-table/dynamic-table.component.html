@@ -52,7 +52,7 @@
             <span class="ui-column-title">{{col.header}}</span>
             <div *ngIf="col.type !== 'Icon' && col.type !== 'Currency';else displaySpecialTypes">{{processData(rowData[col.field], col)}}</div>
               <ng-template #displaySpecialTypes>
-                <div *ngIf="col.type === 'Currency'" style="font-family: monospace; text-align: right;">{{processData(rowData[col.field], col)}}&nbsp;€</div>
+                <div *ngIf="col.type === 'Currency'" style="font-family: monospace; text-align: right;">{{processData(rowData[col.field], col)}}&nbsp;{{currency}}</div>
                 <div *ngIf="col.type === 'Icon'"><i [class]="rowData[col.field]?.icon" [ngStyle]="{'color': rowData[col.field]?.color}" style="font-size: 2em;"></i></div>
               </ng-template>
           </td>

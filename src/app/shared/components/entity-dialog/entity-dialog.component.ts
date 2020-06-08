@@ -12,6 +12,7 @@ import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
 import { Field } from '../../models/field';
+import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
 
 @Component({
   selector: 'app-entity-dialog',
@@ -30,9 +31,16 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   displayScrollPanel = false;
   defaultCache: Object = new Object();
   subscriptions: Subscription[] = [];
+  currency: string;
 
-  constructor(public ref: DynamicDialogRef, public config: DynamicDialogConfig, private entityService: EntityService,
-    private catalogueService: CatalogueService, private store$: Store<RootStoreState.State>) { }
+  constructor(
+    public ref: DynamicDialogRef, 
+    public config: DynamicDialogConfig, 
+    private entityService: EntityService,
+    private catalogueService: CatalogueService, 
+    private store$: Store<RootStoreState.State>,
+    private settingsService: SettingsService
+    ) { }
 
   ngOnInit() {
     const data = this.config.data;
@@ -54,6 +62,8 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
       $config.subscribe(config => {
         this.configuration = config;
         this.update = this.config.data['update'];
+
+        this.subscriptions.push(this.settingsService.getSetting('CURRENCY').subscribe(setting => this.currency = setting.value));
 
         this.configuration.fields.forEach(field => {
           if (field.type === 'CatalogueEntry') {
@@ -200,4 +210,15 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
       return editOrMandFields >= 12;
     }
   }
+
+  // getCurrency(): void {
+  //   // this.settingsService.getSetting('CURRENCY').subscribe(setting => this.currency = setting.value);
+  //   this.settingsService.getSetting('CURRENCY').subscribe(setting => {
+  //     this.currency = setting.value;
+  //     console.log(this.currency);
+
+  //   });
+  
+  // }
+
 }
