@@ -7,6 +7,7 @@ import { AceModule } from 'ngx-ace-wrapper';
 import { ResourcesComponent } from '../domain/components/resources/resources.component';
 import { SharedModule } from '../shared/shared.module';
 import { DTOEntitiesComponent } from './components/dto-entities/dto-entities.component';
+import { ListboxModule } from 'primeng/listbox';
 
 @NgModule({
   declarations: [DTOConfigEditorComponent, ResourcesComponent, DTOEntitiesComponent],
@@ -18,7 +19,8 @@ import { DTOEntitiesComponent } from './components/dto-entities/dto-entities.com
     PanelModule,
     ButtonModule,
     SharedModule,
-    ScrollPanelModule
+    ScrollPanelModule,
+    ListboxModule
   ]
 })
 export class JmeleonModule { }
