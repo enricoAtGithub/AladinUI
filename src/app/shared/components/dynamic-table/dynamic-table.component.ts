@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, AfterViewInit, OnDestroy} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, AfterViewInit, OnDestroy } from '@angular/core';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
 import { EntityData } from '../../models/entity-data';
@@ -33,7 +33,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   @Output() entitySelection = new EventEmitter();
 
   configuration: EntityConfiguration;
-  configSubscription: Subscription;
+  subscriptions: Subscription[] = [];
   fields: Field[];
   loading = true; // Needs to be true to prevent ExpressionHasChangedError
   entityData: EntityData;
@@ -47,7 +47,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   minTableWidth: number;
   freeColumnSpace = 100;
   zeroWidthColumns = 0;
-  currency: string;  
+  currency: string;
 
   constructor(
     private entityService: EntityService,
@@ -58,7 +58,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     private store$: Store<RootStoreState.State>,
     private japs: JmeleonActionsPermissionService,
     private settingsService: SettingsService
-    ) {}
+  ) { }
 
   ngOnInit() {
     const configuration$: Observable<EntityConfiguration> = this.store$.pipe(
@@ -68,7 +68,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     this.configuration = new EntityConfiguration();
     this.entityData = new EntityData();
-    this.configSubscription = configuration$.subscribe(async config => {
+    this.subscriptions.push(configuration$.subscribe(async config => {
       // Get the config according to the given name
       this.configuration = config;
       if (this.configuration === undefined) {
@@ -76,7 +76,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         return;
       }
 
-      this.settingsService.getSetting('CURRENCY').subscribe(setting => this.currency = setting.value);
+      this.subscriptions.push(this.settingsService.getSetting('CURRENCY').subscribe(setting => this.currency = setting.value));
 
       this.checkShowButtons();
 
@@ -86,8 +86,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         if (!field.width) {
           this.zeroWidthColumns++;
         } else {
-          this.minTableWidth    += !field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
-          this.freeColumnSpace  -=  field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
+          this.minTableWidth += !field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
+          this.freeColumnSpace -= field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
         }
 
         this.filtersInTable = field.filterType !== 'none' || this.filtersInTable;
@@ -95,37 +95,41 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           field.options = [];
 
           if ((field.type === 'CatalogueEntry' || field.type === 'Icon') && field.defaultCatalogue) {
-            this.catalogueService.getCatalogue(field.defaultCatalogue)
-            .subscribe(catalogue => {
-                catalogue.values.forEach(o => {
-                  if (field.type === 'CatalogueEntry') {
-                    field.options.push({label: o.name, value: '' + o.id});
-                  } else {
-                    this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe((attributes: any) => {
-                      const icon = attributes.find(attr => attr['name'] === 'icon');
-                      const color = attributes.find(attr => attr['name'] === 'color');
-                      field.options.push({label: '__icon__', value:
-                        {id: '' + o.id, icon: icon ? icon['stringValue'] : '', color: color ? color['stringValue'] : ''}});
-                    });
-                  }
-                });
-            });
+            this.subscriptions.push(
+              this.catalogueService.getCatalogue(field.defaultCatalogue)
+                .subscribe(catalogue => {
+                  catalogue.values.forEach(o => {
+                    if (field.type === 'CatalogueEntry') {
+                      field.options.push({ label: o.name, value: '' + o.id });
+                    } else {
+                      this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe((attributes: any) => {
+                        const icon = attributes.find(attr => attr['name'] === 'icon');
+                        const color = attributes.find(attr => attr['name'] === 'color');
+                        field.options.push({
+                          label: '__icon__', value:
+                            { id: '' + o.id, icon: icon ? icon['stringValue'] : '', color: color ? color['stringValue'] : '' }
+                        });
+                      });
+                    }
+                  });
+                }));
           } else {
             // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
-            this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
-              .subscribe(data => {
-                data.data.forEach(o => field.options.push({label: o._repr_, value: o.id}));
-              });
-            }
+            this.subscriptions.push(
+              this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
+                .subscribe(data => {
+                  data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
+                }));
+          }
         }
       });
 
-      this.tableData.triggerRefresh.subscribe( () => this.refreshTableContents());
-    });
+      this.subscriptions.push(this.tableData.triggerRefresh.subscribe(() => this.refreshTableContents()));
+    }));
   }
 
   ngOnDestroy() {
-    this.configSubscription.unsubscribe();
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -180,7 +184,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         if (field.filterType === 'text') {
           const filterContent: string = value.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
           if (field.type === 'String') {
-            qualifier += 'LIKE(\'' + field.field + '\',\'%' + filterContent  + '%\'),';
+            qualifier += 'LIKE(\'' + field.field + '\',\'%' + filterContent + '%\'),';
           } else {
             qualifier += 'EQ(\'' + field.field + '\',' + filterContent + '),';
           }
@@ -191,7 +195,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             value.forEach(v => qualifier += ',' + v.id);
             qualifier += '),';
           } else {
-          qualifier += 'IN(\'' + field.field + '\',' + value.toString() + '),';
+            qualifier += 'IN(\'' + field.field + '\',' + value.toString() + '),';
           }
         } else if (field.filterType === 'integer') {
           qualifier += 'EQ(\'' + field.field + '\',' + value.toString() + '),';
@@ -199,7 +203,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       }
     });
 
-    const sort = this.fields.find(field => {if (field.field === event.sortField) {return true; }});
+    const sort = this.fields.find(field => { if (field.field === event.sortField) { return true; } });
 
     if (sort) {
       if (event.sortOrder === 1) {
@@ -298,7 +302,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     });
   }
 
-  doubleClickTableRow(data: any ) {
+  doubleClickTableRow(data: any) {
     if (typeof this.dblClickCallback === 'undefined') {
       console.log('no handler defined for DblClick events');
     } else {
@@ -318,7 +322,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     if (!this.tableData.showButtons) { return; }
 
     if (this.configuration.type !== 'FileAttachment') {
-      this.japs.userHasPermissionForActions([root.dto.$dtoType.delete, root.dto.$dtoType.write], {'$dtoType': this.configuration.type}).subscribe(record => {
+      this.japs.userHasPermissionForActions([root.dto.$dtoType.delete, root.dto.$dtoType.write], { '$dtoType': this.configuration.type }).subscribe(record => {
         this.showButtons = !Object.entries(record).every(entry => !entry[1]);
       });
     } else {
