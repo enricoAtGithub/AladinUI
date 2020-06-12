@@ -13,6 +13,7 @@ import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
 import { Field } from '../../models/field';
 import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
+import DateTimeUtils from '../../utils/date-time.utils';
 
 @Component({
   selector: 'app-entity-dialog',
@@ -34,13 +35,13 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   currency: string;
 
   constructor(
-    public ref: DynamicDialogRef, 
-    public config: DynamicDialogConfig, 
+    public ref: DynamicDialogRef,
+    public config: DynamicDialogConfig,
     private entityService: EntityService,
-    private catalogueService: CatalogueService, 
+    private catalogueService: CatalogueService,
     private store$: Store<RootStoreState.State>,
     private settingsService: SettingsService
-    ) { }
+  ) { }
 
   ngOnInit() {
     const data = this.config.data;
@@ -93,7 +94,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
               this.configuration.fields.forEach(field => {
                 if (field.type === 'Date') {
                   if (this.entity[field.field] != null) {
-                    this.entity[field.field] = new Date(this.entity[field.field]);
+                    this.entity[field.field] = DateTimeUtils.convertApiDateTimeStringToDate(this.entity[field.field]);
                   }
                 }
               });
@@ -107,10 +108,13 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
               if (!this.defaultCache.hasOwnProperty(field.field)) {
                 if (typeof field.defaultValue === 'string' && field.defaultValue.startsWith('${')) {
                   this.subscriptions.push(
-                    this.entityService.eval(field.defaultValue).subscribe(response => this.defaultCache[field.field] = response['result'])
-                  );
+                    this.entityService.eval(field.defaultValue).subscribe(response => {
+                      this.defaultCache[field.field] = response['result'];
+                      if (field.type === 'Date') { this.defaultCache[field.field] = DateTimeUtils.convertApiDateTimeStringToDate(this.defaultCache[field.field]); }
+                    }));
                 } else {
                   this.defaultCache[field.field] = field.defaultValue;
+                  if (field.type === 'Date') { this.defaultCache[field.field] = DateTimeUtils.convertApiDateTimeStringToDate(this.defaultCache[field.field]); }
                 }
               }
             } else {
@@ -121,24 +125,6 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
       })
     );
   }
-
-  // getDefaultValue(field: Field): string {
-  //   if (field.defaultValue) {
-  //     console.log(this.defaultCache['number']);
-  //     if (!this.defaultCache.hasOwnProperty(field.field)) {
-  //       this.defaultCache[field.field] = undefined;
-  //       if (field.defaultValue.startsWith('${')) {
-  //         const result = this.entityService.eval(field.defaultValue).toPromise();
-  //           result.then(r => this.defaultCache[field.field] = r['result']);
-  //       } else {
-  //         this.defaultCache[field.field] = field.defaultValue;
-  //       }
-  //     }
-  //     return this.defaultCache[field.field];
-  //   } else {
-  //     return;
-  //   }
-  // }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
@@ -210,15 +196,5 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
       return editOrMandFields >= 12;
     }
   }
-
-  // getCurrency(): void {
-  //   // this.settingsService.getSetting('CURRENCY').subscribe(setting => this.currency = setting.value);
-  //   this.settingsService.getSetting('CURRENCY').subscribe(setting => {
-  //     this.currency = setting.value;
-  //     console.log(this.currency);
-
-  //   });
-  
-  // }
 
 }
