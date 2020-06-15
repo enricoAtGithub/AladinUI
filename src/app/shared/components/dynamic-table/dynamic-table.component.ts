@@ -19,6 +19,7 @@ import { CatalogueService } from 'src/app/user/services/catalogue.service';
 import { root } from 'src/app/jmeleon/modules/permissions/permissions';
 import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
+import { ScriptActionDefinition } from '../../models/script-action';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -236,10 +237,15 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         return this.processDate(new Date(input));
       case 'boolean':
         return input ? '✓' : '🞩';
+      case 'python':
+        return input ? '<python>' : undefined;
+      case 'json':
+        return input ? '<json>' : undefined;
       case 'String':
       case 'int':
       case 'Icon':
       case 'Currency':
+      case 'dtoType':
         return input;
       default:
         return input['_repr_'];
@@ -341,7 +347,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       width = Math.max(width, this.configuration.minWidth);
     }
 
-    width -= this.minTableWidth + (this.showButtons ? 92 : 2);
+    width -= this.minTableWidth + (this.showButtons ? 147 : 2);
     if (!col.width) {
       return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
     } else if (col.width.endsWith('px')) {
@@ -350,4 +356,24 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       return Math.floor(Number.parseInt(col.width, 10) * width / 100.0) + 'px';
     }
   }
+
+  execute(actionHrid: string, dtoType: string, entityId: number) {
+    const payload: Object = { actionHrid: actionHrid, entityReference: { dtoType: dtoType, id: entityId } };
+    console.log('Payload ', payload);
+    this.entityService.getAction(payload).subscribe((actionDetails: ScriptActionDefinition) => {
+      console.log(actionDetails);
+      if (actionDetails.params.length > 0) {
+        console.log('Params nicht leer, Formular aufrufen');
+        // to be implemented
+
+      } else {
+        console.log('Params leer,Service direkt aufrufen');
+        // get correct HRID from server response and update payload
+        payload['actionHrid'] = actionDetails.actionHrid;
+        console.log(payload);
+        this.entityService.executeAction(payload, false).subscribe(result => console.log(result));
+      }
+    });
+  }
+
 }

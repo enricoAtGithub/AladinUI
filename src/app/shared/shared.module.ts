@@ -41,6 +41,9 @@ import { EntityFileAttachmentsComponent } from './components/entity-attachments/
 import { EntityLogsComponent } from './components/entity-attachments/entity-logs/entity-logs.component';
 import { EntitySubtypesComponent } from './components/entity-attachments/entity-subtypes/entity-subtypes.component';
 import { IconPickerModule } from 'ngx-icon-picker';
+import { CodeEditorComponent } from './components/code-editor/code-editor.component';
+import { PanelModule } from 'primeng/panel';
+import { AceModule } from 'ngx-ace-wrapper';
 
 @NgModule({
   declarations: [
@@ -57,7 +60,8 @@ import { IconPickerModule } from 'ngx-icon-picker';
     EntityGroupRelationComponent,
     EntityFileAttachmentsComponent,
     EntityLogsComponent,
-    EntitySubtypesComponent
+    EntitySubtypesComponent,
+    CodeEditorComponent
   ],
   imports: [
     CommonModule,
@@ -89,11 +93,14 @@ import { IconPickerModule } from 'ngx-icon-picker';
     PermissionsModule,
     ScrollPanelModule,
     IconPickerModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PanelModule,
+    AceModule
   ],
   entryComponents: [
     EntityDialogComponent,
-    PictureDialogComponent
+    PictureDialogComponent,
+    CodeEditorComponent
   ],
   exports: [
     DynamicTableComponent,

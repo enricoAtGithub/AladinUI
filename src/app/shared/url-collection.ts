@@ -105,6 +105,11 @@ export class UrlCollection {
         static ADD(): string { return UrlCollection.ENTITY_ATTRIBUTE_API_BASE_PATH() + '/add'; }
     };
 
+    static Actions = class {
+        static GETACTION(): string { return UrlCollection.SCRIPT_API_BASE_PATH() + '/getAction'; }
+        static EXECUTE(): string { return UrlCollection.SCRIPT_API_BASE_PATH() + '/executeAction'; }
+    };
+
     static SCHEDULER_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/scheduler'; }
     static ADMIN_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/admin'; }
     static USER_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/user'; }
@@ -116,6 +121,7 @@ export class UrlCollection {
     static GROUPS_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/groups'; }
     static ENTITY_ATTACHMENT_API_BASE_PATH(attachmentType: string): string { return AppConfig.getBaseUrl() + '/' + attachmentType; }
     static ENTITY_ATTRIBUTE_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/attribute'; }
+    static SCRIPT_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/script'; }
     static API_BASE_PATH(): string { return AppConfig.getBaseUrl(); }
 
     static EVAL(): string { return AppConfig.getBaseUrl() + '/script/eval/'; }

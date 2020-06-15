@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DynamicDialogRef, DynamicDialogConfig, InputText } from 'primeng/primeng';
+import { DynamicDialogRef, DynamicDialogConfig, InputText, DialogService, SelectItem } from 'primeng/primeng';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { FormGroup, NgForm } from '@angular/forms';
 import { EntityService } from '../../services/entity.service';
@@ -14,6 +14,8 @@ import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors'
 import { Field } from '../../models/field';
 import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
 import DateTimeUtils from '../../utils/date-time.utils';
+import { CodeEditorComponent } from '../code-editor/code-editor.component';
+import { Entity } from '../../models/entity-data';
 
 @Component({
   selector: 'app-entity-dialog',
@@ -33,6 +35,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   defaultCache: Object = new Object();
   subscriptions: Subscription[] = [];
   currency: string;
+  dtoConfigs: SelectItem[];
 
   constructor(
     public ref: DynamicDialogRef,
@@ -40,10 +43,20 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     private entityService: EntityService,
     private catalogueService: CatalogueService,
     private store$: Store<RootStoreState.State>,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private dialogService: DialogService,
   ) { }
 
+  configToSelectItem(name: string, type: string): SelectItem {
+    return {label: name, value: type};
+  }
+
   ngOnInit() {
+    const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
+    configurations$.subscribe(configs => {
+      this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
+    });
+    
     const data = this.config.data;
     let $config: Observable<EntityConfiguration>;
     if (data['config']) {
@@ -146,6 +159,33 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
       .setScrollable()
       .setScrollHeight('700px');
     this.displayEntitySelectionDialog = true;
+  }
+
+  openCodeEditor(field: Field, input: InputText, code: string, form: NgForm) {
+    const selectionContext = { field: field['field'], textModule: input };
+    console.log('Code Editor öffnen');
+    console.log(field);
+    console.log(code);
+    console.log('Entity', this.entity);
+
+    const dialogRef = this.dialogService.open(CodeEditorComponent, {
+      data: {
+        update: true,
+        syntax: field.type,
+        code: code,
+        scriptName: this.entity.name
+      },
+      header: 'Script bearbeiten: ' + this.entity.name,
+      width: '90%',
+      height: '90%'
+    });
+
+    dialogRef.onClose.subscribe((editedCode: string) => {
+      if (editedCode) {
+        form.control.patchValue({ [selectionContext.field]: editedCode });
+        selectionContext.textModule['value'] = '<' + field.type + '>*';
+      }
+    });
   }
 
   nullField(field: any, form: NgForm) {

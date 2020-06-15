@@ -40,6 +40,25 @@
         <span *ngSwitchCase="'CatalogueEntry'" style="flex-grow: 1;">
           <p-dropdown [required]="field.mandatory" [placeholder]="field.header" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" [ngModel]="(entity) ? entity[field.field]?.id : defaultCache[field.field]" [style]="{'width':'200px'}"></p-dropdown>
         </span>
+
+        <span *ngSwitchCase="'python'" class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
+          <input #textModule [disabled]="true" [placeholder]="'<' + field.type + '>'" id="float-input" style="width: 100%" pInputText>
+          <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : undefined" type="hidden">
+          <button pButton type="button" (click)="openCodeEditor(field, textModule, entity[field.field], entityForm)" icon="pi pi-pencil"></button>
+          <!-- <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label> -->
+        </span>
+
+        <span *ngSwitchCase="'json'" class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
+          <input #textModule [disabled]="true" [placeholder]="'<' + field.type + '>'" id="float-input" style="width: 100%" pInputText>
+          <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : undefined" type="hidden">
+          <button pButton type="button" (click)="openCodeEditor(field, textModule, entity[field.field], entityForm)" icon="pi pi-pencil"></button>
+          <!-- <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label> -->
+        </span>
+
+        <span *ngSwitchCase="'dtoType'" style="flex-grow: 1;">
+          <p-dropdown [required]="field.mandatory" [placeholder]="field.header" [name]="field.field" [options]="dtoConfigs" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]" [style]="{'width':'200px'}"></p-dropdown>          
+        </span>    
+
         <span *ngSwitchDefault class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
           <input #textModule [disabled]="true" [placeholder]="entity !== undefined ? entity[field.field]?._repr_ : ''" id="float-input" style="width: 100%" pInputText>
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : undefined" type="hidden">

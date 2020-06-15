@@ -24,7 +24,7 @@ export class EntityConfiguration {
         action: string;
     };
     fields: Field[];
-    attributeGroup: AttributeGroup;
+    attributeGroups: AttributeGroup[];
     scrollable: boolean;
     minWidth: number;
 }
