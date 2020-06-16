@@ -22,6 +22,7 @@ import { Entity } from '../../models/entity-data';
   templateUrl: './entity-dialog.component.html',
   styleUrls: ['./entity-dialog.component.css']
 })
+
 export class EntityDialogComponent implements OnInit, OnDestroy {
   configuration: EntityConfiguration;
   catalogueOptions: Map<string, any[]> = new Map();
@@ -33,6 +34,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   entitySelectionContext: { field: string, textModule: any };
   displayScrollPanel = false;
   defaultCache: Object = new Object();
+  codeCache: Object = new Object();
   subscriptions: Subscription[] = [];
   currency: string;
   dtoConfigs: SelectItem[];
@@ -161,35 +163,32 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     this.displayEntitySelectionDialog = true;
   }
 
-  openCodeEditor(field: Field, input: InputText, code: string, form: NgForm) {
-    const selectionContext = { field: field['field'], textModule: input };
-    console.log('Code Editor öffnen');
-    console.log(field);
-    console.log(code);
-    console.log('Entity', this.entity);
+  openCodeEditor(field: Field, input: InputText, form: NgForm) {
+    const selectionContext = { field: field.field, textModule: input };
+    // edited code needs to be cached
+    if ((this.update) && (!this.codeCache.hasOwnProperty(field.header))) { this.codeCache[field.header] = this.entity[field.field]; }
 
     const dialogRef = this.dialogService.open(CodeEditorComponent, {
       data: {
-        update: true,
         syntax: field.type,
-        code: code,
-        scriptName: this.entity.name
+        code: this.codeCache[field.header]
       },
-      header: 'Script bearbeiten: ' + this.entity.name,
-      width: '90%',
-      height: '90%'
+      header: 'Script bearbeiten',
+      width: '90%'
     });
 
     dialogRef.onClose.subscribe((editedCode: string) => {
       if (editedCode) {
         form.control.patchValue({ [selectionContext.field]: editedCode });
         selectionContext.textModule['value'] = '<' + field.type + '>*';
+        this.codeCache[field.header] = editedCode;
       }
     });
   }
 
-  nullField(field: any, form: NgForm) {
-    form.control.patchValue({ [field['field']]: null });
+  nullField(field: Field, form: NgForm) {
+    form.control.patchValue({ [field.field]: null });
+    this.codeCache[field.header] = '';
   }
 
   onSubmit(entityForm: FormGroup) {

@@ -44,15 +44,15 @@
         <span *ngSwitchCase="'python'" class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
           <input #textModule [disabled]="true" [placeholder]="'<' + field.type + '>'" id="float-input" style="width: 100%" pInputText>
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : undefined" type="hidden">
-          <button pButton type="button" (click)="openCodeEditor(field, textModule, entity[field.field], entityForm)" icon="pi pi-pencil"></button>
-          <!-- <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label> -->
+          <button pButton type="button" (click)="openCodeEditor(field, textModule, entityForm)" icon="pi pi-pencil"></button>
+          <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
         </span>
 
         <span *ngSwitchCase="'json'" class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
           <input #textModule [disabled]="true" [placeholder]="'<' + field.type + '>'" id="float-input" style="width: 100%" pInputText>
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : undefined" type="hidden">
-          <button pButton type="button" (click)="openCodeEditor(field, textModule, entity[field.field], entityForm)" icon="pi pi-pencil"></button>
-          <!-- <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label> -->
+          <button pButton type="button" (click)="openCodeEditor(field, textModule, entityForm)" icon="pi pi-pencil"></button>
+          <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
         </span>
 
         <span *ngSwitchCase="'dtoType'" style="flex-grow: 1;">

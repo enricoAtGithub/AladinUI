@@ -16,7 +16,6 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/primeng';
 export class CodeEditorComponent implements OnInit {
 @ViewChild(AceComponent, { static: false }) componentRef ?: AceComponent;
 
-update: boolean;
 syntax: string;
 code: string;
 
@@ -34,7 +33,6 @@ public aceconfig: AceConfigInterface;
   ) { }
 
   ngOnInit() {
-    this.update = this.config.data['update'];
     this.syntax = this.config.data['syntax'];
     this.code = this.config.data['code'];
 
