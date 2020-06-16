@@ -32,12 +32,16 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   displayEntitySelectionDialog = false;
   entitySelectionTableData: TableData;
   entitySelectionContext: { field: string, textModule: any };
+  codeSelCntxt: { field: Field, textModule: any };
   displayScrollPanel = false;
   defaultCache: Object = new Object();
-  codeCache: Object = new Object();
   subscriptions: Subscription[] = [];
   currency: string;
   dtoConfigs: SelectItem[];
+  codeCache: Object = new Object();
+  syntax: string;
+  code: string;
+  showCodeEditor = false;
 
   constructor(
     public ref: DynamicDialogRef,
@@ -164,26 +168,21 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   }
 
   openCodeEditor(field: Field, input: InputText, form: NgForm) {
-    const selectionContext = { field: field.field, textModule: input };
+    this.codeSelCntxt = { field: field, textModule: input };
     // edited code needs to be cached
-    if ((this.update) && (!this.codeCache.hasOwnProperty(field.header))) { this.codeCache[field.header] = this.entity[field.field]; }
+    if ((this.update) && (!this.codeCache.hasOwnProperty(field.header))) { this.codeCache[this.codeSelCntxt.field.header] = this.entity[field.field]; }
+    this.syntax = field.type;
+    this.code = this.codeCache[field.header];
+    this.showCodeEditor = true;
+  }
 
-    const dialogRef = this.dialogService.open(CodeEditorComponent, {
-      data: {
-        syntax: field.type,
-        code: this.codeCache[field.header]
-      },
-      header: 'Script bearbeiten',
-      width: '90%'
-    });
-
-    dialogRef.onClose.subscribe((editedCode: string) => {
-      if (editedCode) {
-        form.control.patchValue({ [selectionContext.field]: editedCode });
-        selectionContext.textModule['value'] = '<' + field.type + '>*';
-        this.codeCache[field.header] = editedCode;
-      }
-    });
+  onEdited(editedCode: string, form: NgForm) {
+    if (editedCode) {
+      form.control.patchValue({ [this.codeSelCntxt.field.field]: editedCode });
+      this.codeSelCntxt.textModule['value'] = '<' + this.codeSelCntxt.field.type + '>*';
+      this.codeCache[this.codeSelCntxt.field.header] = editedCode;
+    }
+    this.showCodeEditor = false;
   }
 
   nullField(field: Field, form: NgForm) {

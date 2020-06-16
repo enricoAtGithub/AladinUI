@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, Input, EventEmitter } from '@angular/core';
 import { AceComponent, AceConfigInterface } from 'ngx-ace-wrapper';
 import 'brace';
 import 'brace/mode/json';
@@ -15,17 +15,11 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/primeng';
 })
 export class CodeEditorComponent implements OnInit {
 @ViewChild(AceComponent, { static: false }) componentRef ?: AceComponent;
-
-syntax: string;
-code: string;
+@Input() syntax: string;
+@Input() code: string;
+@Output() editedCode = new EventEmitter<string>();
 
 public aceconfig: AceConfigInterface;
-
-  // options = {
-  //   enableBasicAutocompletion: true,
-  //   enableLiveAutocompletion: true,
-  //   enableSnippets: true
-  // };
 
   constructor(
     public config: DynamicDialogConfig,
@@ -33,19 +27,15 @@ public aceconfig: AceConfigInterface;
   ) { }
 
   ngOnInit() {
-    this.syntax = this.config.data['syntax'];
-    this.code = this.config.data['code'];
-
     this.aceconfig = {
       mode: this.syntax,
       theme: 'github',
       readOnly : false,
     };
-
   }
 
   save() {
-    this.scriptRef.close(this.code);
+    this.editedCode.emit(this.code);
   }
 
 }
