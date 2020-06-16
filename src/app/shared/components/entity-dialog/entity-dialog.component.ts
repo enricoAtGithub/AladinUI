@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DynamicDialogRef, DynamicDialogConfig, InputText } from 'primeng/primeng';
+import { DynamicDialogRef, DynamicDialogConfig, InputText, DialogService, SelectItem } from 'primeng/primeng';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { FormGroup, NgForm } from '@angular/forms';
 import { EntityService } from '../../services/entity.service';
@@ -14,12 +14,15 @@ import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors'
 import { Field } from '../../models/field';
 import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
 import DateTimeUtils from '../../utils/date-time.utils';
+import { CodeEditorComponent } from '../code-editor/code-editor.component';
+import { Entity } from '../../models/entity-data';
 
 @Component({
   selector: 'app-entity-dialog',
   templateUrl: './entity-dialog.component.html',
   styleUrls: ['./entity-dialog.component.css']
 })
+
 export class EntityDialogComponent implements OnInit, OnDestroy {
   configuration: EntityConfiguration;
   catalogueOptions: Map<string, any[]> = new Map();
@@ -29,10 +32,16 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   displayEntitySelectionDialog = false;
   entitySelectionTableData: TableData;
   entitySelectionContext: { field: string, textModule: any };
+  codeSelCntxt: { field: Field, textModule: any };
   displayScrollPanel = false;
   defaultCache: Object = new Object();
   subscriptions: Subscription[] = [];
   currency: string;
+  dtoConfigs: SelectItem[];
+  codeCache: Object = new Object();
+  syntax: string;
+  code: string;
+  showCodeEditor = false;
 
   constructor(
     public ref: DynamicDialogRef,
@@ -40,10 +49,20 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     private entityService: EntityService,
     private catalogueService: CatalogueService,
     private store$: Store<RootStoreState.State>,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private dialogService: DialogService,
   ) { }
 
+  configToSelectItem(name: string, type: string): SelectItem {
+    return {label: name, value: type};
+  }
+
   ngOnInit() {
+    const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
+    configurations$.subscribe(configs => {
+      this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
+    });
+    
     const data = this.config.data;
     let $config: Observable<EntityConfiguration>;
     if (data['config']) {
@@ -148,8 +167,27 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     this.displayEntitySelectionDialog = true;
   }
 
-  nullField(field: any, form: NgForm) {
-    form.control.patchValue({ [field['field']]: null });
+  openCodeEditor(field: Field, input: InputText, form: NgForm) {
+    this.codeSelCntxt = { field: field, textModule: input };
+    // edited code needs to be cached
+    if ((this.update) && (!this.codeCache.hasOwnProperty(field.header))) { this.codeCache[this.codeSelCntxt.field.header] = this.entity[field.field]; }
+    this.syntax = field.type;
+    this.code = this.codeCache[field.header];
+    this.showCodeEditor = true;
+  }
+
+  onEdited(editedCode: string, form: NgForm) {
+    if (editedCode) {
+      form.control.patchValue({ [this.codeSelCntxt.field.field]: editedCode });
+      this.codeSelCntxt.textModule['value'] = '<' + this.codeSelCntxt.field.type + '>*';
+      this.codeCache[this.codeSelCntxt.field.header] = editedCode;
+    }
+    this.showCodeEditor = false;
+  }
+
+  nullField(field: Field, form: NgForm) {
+    form.control.patchValue({ [field.field]: null });
+    this.codeCache[field.header] = '';
   }
 
   onSubmit(entityForm: FormGroup) {

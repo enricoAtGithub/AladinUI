@@ -42,7 +42,7 @@
             </div>
           </th>
           
-          <th *ngIf="showButtons" style="width:90px">Bearbeiten</th>
+          <th *ngIf="showButtons" style="width:135px">Bearbeiten</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -50,14 +50,16 @@
         <tr [pSelectableRow]="rowData" (dblclick)="doubleClickTableRow(rowData)">
           <td *ngFor="let col of columns" [style.width]="calcWidth(col, dt.el.nativeElement.offsetWidth)" style="word-wrap: break-word;">
             <span class="ui-column-title">{{col.header}}</span>
-            <div *ngIf="col.type !== 'Icon' && col.type !== 'Currency';else displaySpecialTypes">{{processData(rowData[col.field], col)}}</div>
+            <div *ngIf="col.type !== 'Icon' && col.type !== 'Currency' && col.type !== 'json' && col.type !== 'python';else displaySpecialTypes">{{processData(rowData[col.field], col)}}</div>
               <ng-template #displaySpecialTypes>
                 <div *ngIf="col.type === 'Currency'" style="font-family: monospace; text-align: right;">{{processData(rowData[col.field], col)}}&nbsp;{{currency}}</div>
                 <div *ngIf="col.type === 'Icon'"><i [class]="rowData[col.field]?.icon" [ngStyle]="{'color': rowData[col.field]?.color}" style="font-size: 2em;"></i></div>
+                <div *ngIf="col.type === 'json'" style="font-family: monospace;">{{processData(rowData[col.field], col)}}</div>
+                <div *ngIf="col.type === 'python'" style="font-family: monospace;">{{processData(rowData[col.field], col)}}</div>
               </ng-template>
           </td>
           <!-- Crud Buttons -->
-          <td *ngIf="showButtons" style="text-align: center; width: 90px;">
+          <td *ngIf="showButtons" style="text-align: center; width: 135px;">
             <code *ngIf="configuration?.type !== 'FileAttachment'" class="html">
               <ng-template [appPermissionCheck]="root.dto.$dtoType.write" [appPermissionCheckVarDict]="{'$dtoType':configuration.type}">
                 <button pButton type="button" icon="pi pi-pencil" class="crudButton" pTooltip="Bearbeiten" (click)="updateEntity(rowData)"></button>
@@ -70,12 +72,17 @@
               </ng-template>
             </code>
 
+            <code *ngIf="configuration?.type !== 'FileAttachment'" class="html">                                                                                                                                           
+                <button *ngFor="let action of rowData._actions_" pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton" (click)="execute(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
+            </code>
+
             <code *ngIf="configuration?.type === 'FileAttachment'" class="html">
               <ng-template [appPermissionCheck]="root.dto.FileAttachment.download">
                 <button  pButton type="button" icon="fa fa-download" class="crudButton" fileSaver
                 pTooltip="Herunterladen" [method]="'GET'" [fileName]="rowData['fileName']" [url]="downloadUrl(rowData['id'])"></button>
               </ng-template>
             </code>
+
           </td>
         </tr>
       </ng-template>

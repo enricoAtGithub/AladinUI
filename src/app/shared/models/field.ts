@@ -1,17 +1,20 @@
-export class Field {
-    field: string;
-    formula: any;
+export class BasicFieldConfig {
+    field: string; // name of the field
+    header: string; // displayName
+    formula: string;
+    mandatory = false;
+    defaultValue: string; // if not editable, then it might still get a value during creation
+    type: string; // String, integer, boolean, Date, Icon, Color, Currency, <DTOType>
+    defaultCatalogue: string; // if entitiy field is of type CatalogueEntry, then this field holds the name of the default catalogue to use
+}
+
+export class Field extends BasicFieldConfig {
     visible: boolean;
     editable: boolean;
-    mandatory: boolean;
-    defaultValue: string;
-    type: string;
-    defaultCatalogue: string;
     sortable: boolean;
     filterType: string;
     width: string;
     options: Option[];
-    header: string;
 
     public static isPrimitiveType(type: string) {
         return type === 'String' || type === 'integer' || type === 'boolean' || type === 'Date';

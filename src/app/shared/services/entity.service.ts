@@ -207,4 +207,22 @@ export class EntityService {
         .addContentTypeJson()
         .build());
   }
+
+  // Action script execution
+  getAction(payload: Object) {
+    return this.http.post(UrlCollection.Actions.GETACTION(), payload,
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
+  }
+
+  executeAction(payload: Object, asnyc: boolean) {
+    return this.http.post(UrlCollection.Actions.EXECUTE(), payload,
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
+  }
+
 }
