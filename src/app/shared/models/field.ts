@@ -1,7 +1,6 @@
 export class BasicFieldConfig {
     field: string; // name of the field
     header: string; // displayName
-    formula: string;
     mandatory = false;
     defaultValue: string; // if not editable, then it might still get a value during creation
     type: string; // String, integer, boolean, Date, Icon, Color, Currency, <DTOType>
@@ -15,6 +14,7 @@ export class Field extends BasicFieldConfig {
     filterType: string;
     width: string;
     options: Option[];
+    formula: string;
 
     public static isPrimitiveType(type: string) {
         return type === 'String' || type === 'integer' || type === 'boolean' || type === 'Date';
