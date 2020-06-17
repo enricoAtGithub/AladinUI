@@ -90,7 +90,7 @@ export class AppMenuComponent implements OnInit {
                 visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.objekte)
             },
             {
-                label: 'Administration', icon: 'fa fa-cog',
+                label: 'Administration', icon: 'fa fa-users',
                 visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.show),
                 items: [
                     {
@@ -104,19 +104,29 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: 'Rechteverwaltung', icon: 'fa fa-users', routerLink: ['/administration/permission-management'],
                         visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.rechteverwaltung)
+                    }
+                ]
+            },
+            {
+                label: 'Konfiguration', icon: 'fa fa-cogs',
+                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.configuration.show),
+                items: [
+                    {
+                        label: 'Katalogverwaltung', icon: 'pi pi-folder-open', routerLink: ['/configuration/catalogue-management'],
+                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.configuration.katalogverwaltung)
                     },
                     {
-                        label: 'Katalogverwaltung', icon: 'pi pi-folder-open', routerLink: ['/administration/catalogue-management'],
-                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.katalogverwaltung)
+                        label: 'DTO Konfiguration', icon: 'fa fa-code', routerLink: ['/configuration/dto-configuration'],
+                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.configuration.dtoKonfiguration)
                     },
                     {
-                        label: 'DTO Konfiguration', icon: 'pi pi-pencil', routerLink: ['/administration/dto-configuration'],
-                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.dtoKonfiguration)
+                        label: 'Aktionen', icon: 'fa fa-terminal', routerLink: ['/configuration/actions'],
+                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.configuration.actions)
                     },
                     {
-                        label: 'Einstellungen', icon: 'fa fa-cogs', routerLink: ['/administration/settings'],
-                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.einstellungen)
-                    },
+                        label: 'Einstellungen', icon: 'fa fa-cog', routerLink: ['/configuration/settings'],
+                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.configuration.einstellungen)
+                    }
                 ]
             },
             {

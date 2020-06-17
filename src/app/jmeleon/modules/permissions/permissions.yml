@@ -56,4 +56,10 @@
       - katalogverwaltung
       - dtoKonfiguration
       - einstellungen
+  - configuration:
+      - show
+      - katalogverwaltung
+      - dtoKonfiguration
+      - actions
+      - einstellungen
 

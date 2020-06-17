@@ -28,7 +28,7 @@ import { DTOEntitiesComponent } from './jmeleon/components/dto-entities/dto-enti
 import { AccountsComponent } from './accounts/accounts.component';
 import { ProductsComponent } from './domain/components/products/products.component';
 import { QuotationsComponent } from './domain/components/quotations/quotations.component';
-
+import { ScriptActionsComponent } from './jmeleon/components/script-actions/script-actions.component';
 
 export const routes: Routes = [
   // App-Layout routes
@@ -83,6 +83,15 @@ export const routes: Routes = [
           { path: 'permission-management', pathMatch: 'full', component: PermissionManagementComponent },
           { path: 'catalogue-management', pathMatch: 'full', component: CatalogueManagementComponent },
           { path: 'dto-configuration', pathMatch: 'full', component: DTOConfigEditorComponent },
+          { path: 'settings', component: SettingsComponent }
+        ]
+      },
+      {
+        path: 'configuration',
+        children: [
+          { path: 'catalogue-management', pathMatch: 'full', component: CatalogueManagementComponent },
+          { path: 'dto-configuration', pathMatch: 'full', component: DTOConfigEditorComponent },
+          { path: 'actions', pathMatch: 'full', component: ScriptActionsComponent },
           { path: 'settings', component: SettingsComponent }
         ]
       }

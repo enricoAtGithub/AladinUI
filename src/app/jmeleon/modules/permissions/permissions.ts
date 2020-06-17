@@ -67,9 +67,13 @@ export const root = {
             benutzer: 'Menuitems.administration.benutzer',
             rollenverwaltung: 'Menuitems.administration.rollenverwaltung',
             rechteverwaltung: 'Menuitems.administration.rechteverwaltung',
-            katalogverwaltung: 'Menuitems.administration.katalogverwaltung',
-            dtoKonfiguration: 'Menuitems.administration.dtoKonfiguration',
-            einstellungen: 'Menuitems.administration.einstellungen',
+        },
+        configuration: {
+            show: 'Menuitems.configuration.show',
+            katalogverwaltung: 'Menuitems.configuration.katalogverwaltung',
+            dtoKonfiguration: 'Menuitems.configuration.dtoKonfiguration',
+            actions: 'Menuitems.configuration.actions',
+            einstellungen: 'Menuitems.configuration.einstellungen',
         }
     }
 };
@@ -117,8 +121,9 @@ export const list = [
     'Menuitems.administration.benutzer',
     'Menuitems.administration.rollenverwaltung',
     'Menuitems.administration.rechteverwaltung',
-    'Menuitems.administration.katalogverwaltung',
-    'Menuitems.administration.dtoKonfiguration',
-    'Menuitems.administration.einstellungen',
+    'Menuitems.configuration.katalogverwaltung',
+    'Menuitems.configuration.dtoKonfiguration',
+    'Menuitems.configuration.actions',
+    'Menuitems.configuration.einstellungen',
 ];
 
