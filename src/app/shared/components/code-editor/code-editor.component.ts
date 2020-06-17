@@ -28,7 +28,6 @@ public aceconfig: AceConfigInterface;
 
   ngOnInit() {
     this.aceconfig = {
-      mode: this.syntax,
       theme: 'github',
       readOnly : false,
     };
