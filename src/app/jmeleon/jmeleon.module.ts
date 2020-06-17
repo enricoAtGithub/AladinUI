@@ -8,9 +8,10 @@ import { ResourcesComponent } from '../domain/components/resources/resources.com
 import { SharedModule } from '../shared/shared.module';
 import { DTOEntitiesComponent } from './components/dto-entities/dto-entities.component';
 import { ListboxModule } from 'primeng/listbox';
+import { ScriptActionsComponent } from './components/script-actions/script-actions.component';
 
 @NgModule({
-  declarations: [DTOConfigEditorComponent, ResourcesComponent, DTOEntitiesComponent],
+  declarations: [DTOConfigEditorComponent, ResourcesComponent, DTOEntitiesComponent, ScriptActionsComponent],
   imports: [
     CommonModule,
     DiagramsModule,
