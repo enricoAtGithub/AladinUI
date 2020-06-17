@@ -6,4 +6,7 @@ export class ScriptActionDefinition {
     public description: string;
     public entityRefType: string;
     public params: BasicFieldConfig[];
+    public async: boolean;
+    public resultType: string;
+    public showResult: boolean;
 }
