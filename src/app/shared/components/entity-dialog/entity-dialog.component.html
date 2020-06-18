@@ -18,7 +18,7 @@
   </div>
 
   <ng-template #formFields>
-    <div *ngFor="let field of configuration?.fields">
+    <div *ngFor="let field of fields">
       <div [ngSwitch]="field.type" *ngIf="(field.mandatory && !update) || field.editable" class="p-col form-group ui-g-12 ui-md-12" style="margin-bottom: 5px; display: flex">
         <span *ngSwitchCase="'String'" class="ui-float-label" style="flex-grow: 1;">
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]" id="float-input" type="text" style="width: 100%" pInputText>
@@ -31,7 +31,7 @@
         <span *ngSwitchCase="'Currency'" class="ui-float-label" style="flex-grow: 1;">
           <div class="ui-inputgroup">            
             <input [required]="field.mandatory" [name]="field.field" [ngModel]="((entity) ? entity[field.field] : defaultCache[field.field])" pattern="^\d{1,3}((\.)?\d{3})*(,\d{1,2})?$" id="float-input" type="text" style="width: 172px; font-family: monospace;">
-            <span class="ui-inputgroup-addon">{{currency}}</span>
+            <span class="ui-inputgroup-addon">{{currency$ | async}}</span>
           </div>
         </span>        
         <span *ngSwitchCase="'boolean'" style="flex-grow: 1; align-self: center;">

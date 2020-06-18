@@ -24,7 +24,6 @@ import { Entity } from '../../models/entity-data';
 })
 
 export class EntityDialogComponent implements OnInit, OnDestroy {
-  configuration: EntityConfiguration;
   catalogueOptions: Map<string, any[]> = new Map();
   update: Boolean;
   entity: any;
@@ -36,12 +35,14 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   displayScrollPanel = false;
   defaultCache: Object = new Object();
   subscriptions: Subscription[] = [];
-  currency: string;
+  currency$: Observable<string>;
   dtoConfigs: SelectItem[];
   codeCache: Object = new Object();
   syntax: string;
   code: string;
   showCodeEditor = false;
+  fields: Field[];
+  configType: string;
 
   constructor(
     public ref: DynamicDialogRef,
@@ -49,100 +50,101 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     private entityService: EntityService,
     private catalogueService: CatalogueService,
     private store$: Store<RootStoreState.State>,
-    private settingsService: SettingsService,
-    private dialogService: DialogService,
+    private settingsService: SettingsService
   ) { }
 
-  configToSelectItem(name: string, type: string): SelectItem {
-    return {label: name, value: type};
-  }
-
   ngOnInit() {
-    const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
-    configurations$.subscribe(configs => {
-      this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
-    });
-    
+    // get fields to be displayed
     const data = this.config.data;
-    let $config: Observable<EntityConfiguration>;
-    if (data['config']) {
-      $config = new BehaviorSubject<EntityConfiguration>(data['config']).asObservable();
-    } else if (data['configName']) {
-      $config = this.store$.pipe(
-        select(fromConfigSelectors.selectConfigs),
-        map(configs => configs[data['configName']])
-      );
+    if (data['fields']) {
+      this.fields = data['fields'];
     } else {
-      console.log('[entity-dialog] no config supplied');
+      console.log('[entity-dialog] no fields supplied');
+      return;
+    }
+    this.configType = data['configType'];
+
+
+    // get items for fields with type 'CatalogueEntry'
+    this.fields.forEach(field => {
+      if (field.type === 'CatalogueEntry') {
+        this.subscriptions.push(
+          this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
+            const values = catalogue.values.map(e => ({ label: e['name'], value: e['id'] }));
+            this.catalogueOptions.set(field.defaultCatalogue, values);
+          })
+        );
+      }
+    });
+
+    // get Currency from settings
+    this.currency$ = this.settingsService.getSetting('CURRENCY').pipe(map(setting => setting.value));
+
+    this.update = this.config.data['update'];
+
+    // mainId required in case of subtypes (identifies its parent)
+    this.mainId = data['mainId'];
+
+    // get entity
+    let $entity: Observable<any>;
+    if (data['entity']) {
+      $entity = new BehaviorSubject(data['entity']).asObservable();
+    } else if (data['entityId']) {
+      $entity = this.entityService.getEntity(this.configType, data['entityId']).pipe(map(res => res.fields));
+    } else if (this.update) {
+      console.log('[entity-dialog] no entity supplied');
       return;
     }
 
-    this.mainId = data['mainId'];
-    this.subscriptions.push(
-      $config.subscribe(config => {
-        this.configuration = config;
-        this.update = this.config.data['update'];
-
-        this.subscriptions.push(this.settingsService.getSetting('CURRENCY').subscribe(setting => this.currency = setting.value));
-
-        this.configuration.fields.forEach(field => {
-          if (field.type === 'CatalogueEntry') {
-            this.subscriptions.push(
-              this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
-                const values = catalogue.values.map(e => ({ label: e['name'], value: e['id'] }));
-                this.catalogueOptions.set(field.defaultCatalogue, values);
-              })
-            );
-          }
-        });
-
-        let $entity: Observable<any>;
-        if (data['entity']) {
-          $entity = new BehaviorSubject(data['entity']).asObservable();
-        } else if (data['entityId']) {
-          $entity = this.entityService.getEntity(this.configuration.type, data['entityId']).pipe(map(res => res.fields));
-        } else if (this.update) {
-          console.log('[entity-dialog] no entity supplied');
-          return;
-        }
-
-        if ($entity) {
-          this.subscriptions.push(
-            $entity.subscribe(entity => {
-              this.entity = entity;
-              this.configuration.fields.forEach(field => {
-                if (field.type === 'Date') {
-                  if (this.entity[field.field] != null) {
-                    this.entity[field.field] = DateTimeUtils.convertApiDateTimeStringToDate(this.entity[field.field]);
-                  }
-                }
-              });
-              this.displayScrollPanel = this.shouldDisplayScrollPanel();
-            })
-          );
-        } else {
-          // in case of create get default values
-          this.configuration.fields.forEach(field => {
-            if (field.defaultValue) {
-              if (!this.defaultCache.hasOwnProperty(field.field)) {
-                if (typeof field.defaultValue === 'string' && field.defaultValue.startsWith('${')) {
-                  this.subscriptions.push(
-                    this.entityService.eval(field.defaultValue).subscribe(response => {
-                      this.defaultCache[field.field] = response['result'];
-                      if (field.type === 'Date') { this.defaultCache[field.field] = DateTimeUtils.convertApiDateTimeStringToDate(this.defaultCache[field.field]); }
-                    }));
-                } else {
-                  this.defaultCache[field.field] = field.defaultValue;
-                  if (field.type === 'Date') { this.defaultCache[field.field] = DateTimeUtils.convertApiDateTimeStringToDate(this.defaultCache[field.field]); }
-                }
+    // get entity details
+    if ($entity) {
+      this.subscriptions.push(
+        $entity.subscribe(entity => {
+          this.entity = entity;
+          this.fields.forEach(field => {
+            if (field.type === 'Date') {
+              if (this.entity[field.field] != null) {
+                this.entity[field.field] = DateTimeUtils.convertApiDateTimeStringToDate(this.entity[field.field]);
               }
-            } else {
-              this.defaultCache[field.field] = undefined;
             }
           });
+          this.displayScrollPanel = this.shouldDisplayScrollPanel();
+        })
+      );
+      // no entity specified => get default values
+    } else {
+      this.fields.forEach(field => {
+        if (field.defaultValue) {
+          if (!this.defaultCache.hasOwnProperty(field.field)) {
+            if (typeof field.defaultValue === 'string' && field.defaultValue.startsWith('${')) {
+              this.subscriptions.push(
+                this.entityService.eval(field.defaultValue).subscribe(response => {
+                  this.defaultCache[field.field] = response['result'];
+                  if (field.type === 'Date') { this.defaultCache[field.field] = DateTimeUtils.convertApiDateTimeStringToDate(this.defaultCache[field.field]); }
+                }));
+            } else {
+              this.defaultCache[field.field] = field.defaultValue;
+              if (field.type === 'Date') { this.defaultCache[field.field] = DateTimeUtils.convertApiDateTimeStringToDate(this.defaultCache[field.field]); }
+            }
+          }
+        } else {
+          this.defaultCache[field.field] = undefined;
         }
+      });
+    }
+
+    // get all dtoConfigs for field.type === 'dtoType' (e.g. for Script Actions)
+    const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
+    this.subscriptions.push(
+      configurations$.subscribe(configs => {
+        this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
       })
     );
+
+  }
+
+  configToSelectItem(name: string, type: string): SelectItem {
+    return { label: name, value: type };
   }
 
   ngOnDestroy(): void {
@@ -191,7 +193,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(entityForm: FormGroup) {
-    this.configuration.fields.forEach(field => {
+    this.fields.forEach(field => {
       if (this.entity && entityForm.value[field.field] === undefined) {
         entityForm.value[field.field] = this.entity[field.field];
       } else if (field.type === 'int') {
@@ -210,16 +212,16 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     }
 
     if (this.update) {
-      this.ref.close(this.entityService.updateEntity(this.configuration.type, this.entity['id'], entityForm.value));
+      this.ref.close(this.entityService.updateEntity(this.configType, this.entity['id'], entityForm.value));
     } else {
-      this.ref.close(this.entityService.createEntity(this.configuration.type, entityForm.value));
+      this.ref.close(this.entityService.createEntity(this.configType, entityForm.value));
     }
   }
 
   shouldDisplayScrollPanel() {
     let editableFields = 0;
     let editOrMandFields = 0;
-    this.configuration.fields.forEach(field => {
+    this.fields.forEach(field => {
       if (field.mandatory) {
         editOrMandFields++;
       } else if (field.editable) {

@@ -48,7 +48,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   minTableWidth: number;
   freeColumnSpace = 100;
   zeroWidthColumns = 0;
-  currency: string;
+  currency$: Observable<string>;
 
   constructor(
     private entityService: EntityService,
@@ -77,7 +77,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         return;
       }
 
-      this.subscriptions.push(this.settingsService.getSetting('CURRENCY').subscribe(setting => this.currency = setting.value));
+      // get Currency from settings
+      this.currency$ = this.settingsService.getSetting('CURRENCY').pipe(map(setting => setting.value));
 
       this.checkShowButtons();
 
@@ -266,7 +267,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
-        config: this.configuration,
+        fields: this.configuration.fields,
+        configType: this.configuration.type,
         mainId: this.mainId
       },
       header: 'Hinzufügen',
@@ -285,7 +287,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       data: {
         update: true,
         entity: data,
-        config: this.configuration,
+        fields: this.configuration.fields,
+        configType: this.configuration.type,
         mainId: this.mainId
       },
       header: data['_repr_'] + ' bearbeiten',

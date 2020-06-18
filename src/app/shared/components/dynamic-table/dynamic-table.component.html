@@ -52,7 +52,7 @@
             <span class="ui-column-title">{{col.header}}</span>
             <div *ngIf="col.type !== 'Icon' && col.type !== 'Currency' && col.type !== 'json' && col.type !== 'python';else displaySpecialTypes">{{processData(rowData[col.field], col)}}</div>
               <ng-template #displaySpecialTypes>
-                <div *ngIf="col.type === 'Currency'" style="font-family: monospace; text-align: right;">{{processData(rowData[col.field], col)}}&nbsp;{{currency}}</div>
+                <div *ngIf="col.type === 'Currency'" style="font-family: monospace; text-align: right;">{{processData(rowData[col.field], col)}}&nbsp;{{currency$ | async}}</div>
                 <div *ngIf="col.type === 'Icon'"><i [class]="rowData[col.field]?.icon" [ngStyle]="{'color': rowData[col.field]?.color}" style="font-size: 2em;"></i></div>
                 <div *ngIf="col.type === 'json'" style="font-family: monospace;">{{processData(rowData[col.field], col)}}</div>
                 <div *ngIf="col.type === 'python'" style="font-family: monospace;">{{processData(rowData[col.field], col)}}</div>
