@@ -33,6 +33,11 @@ import { TimeRange, SchedulerTimeRange } from '../../config/scheduler.timerange'
 import { ResizeEvent } from 'angular-resizable-element';
 import { root } from 'src/app/jmeleon/modules/permissions/permissions';
 import { JmeleonActionsPermissionService } from '../../../permissions/services/jmeleon-actions-permission.service';
+import { map } from 'rxjs/operators';
+import { Store, select } from '@ngrx/store';
+import { RootStoreState } from 'src/app/root-store/root-index';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
+import { EntityConfiguration } from 'src/app/shared/models/entity-configuration';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -67,6 +72,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   };
 
   subscriptions: Subscription[] = [];
+  configuration: EntityConfiguration;
 
   constructor(
     private breadcrumbService: BreadcrumbService,
@@ -74,7 +80,8 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private confirmationService: ConfirmationService,
     private entityService: EntityService,
-    private japs: JmeleonActionsPermissionService
+    private japs: JmeleonActionsPermissionService,
+    private store$: Store<RootStoreState.State>,
   ) {
     this.breadcrumbService.setItems([
       { label: 'An- & Abwesenheiten' }
@@ -89,6 +96,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     this.initPermissions();
     this.getAvailableHeight();
     this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
+    this.subscriptions.push(this.store$.pipe(select(fromConfigSelectors.selectConfigs), map(configs => configs['ResourceAvailability'])).subscribe(config => this.configuration = config));
   }
 
   ngOnDestroy(): void {
@@ -211,7 +219,8 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
       data: {
         update: true,
         entityId: data.RefId,
-        configName: 'ResourceAvailability'
+        fields: this.configuration.fields,
+        configType: 'ResourceAvailability'
       },
       header: data['Subject'] + ' bearbeiten',
       width: '500px'
@@ -232,8 +241,6 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     if (this.contextMenuOpen) { return; }
     if (!this.permissionsRecord[root.ResourceManager.create]) { return; }
 
-    console.log(this.scheduleObj);
-
     const resource: ResourceDetails = this.scheduleObj.getResourcesByIndex(this.scheduleObj.getCellDetails(data.element).groupIndex);
     if (!resource) { console.error('Ressource not found'); }
 
@@ -242,7 +249,8 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
         update: false,
         mainId: resource.groupData.ResourceID,
         entity: { startDate: data.startTime, endDate: data.endTime },
-        configName: 'ResourceAvailability'
+        fields: this.configuration.fields,
+        configType: 'ResourceAvailability'
       },
       header: 'Eintrag erstellen',
       width: '500px'

@@ -35,6 +35,9 @@ import { ResizeEvent } from 'angular-resizable-element';
 import { SchedulerTimeRange, TimeRange } from '../../config/scheduler.timerange';
 import { JmeleonActionsPermissionService } from '../../../permissions/services/jmeleon-actions-permission.service';
 import { map } from 'rxjs/operators';
+import { Store, select } from '@ngrx/store';
+import { RootStoreState } from 'src/app/root-store/root-index';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -75,6 +78,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   private currEvSchInterval: { currDate: Date, currView: View };
   private currResSchInterval: { currDate: Date, currView: View };
   groupData: GroupModel = { resources: ['Resources'] };
+  configuration: EntityConfiguration;
 
   tooltipTemplate: string = '<div style="margin: 2px;font-size:12px;">' +
     '<div class="content-area">' +
@@ -98,6 +102,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     private confirmationService: ConfirmationService,
     private entityService: EntityService,
     private japs: JmeleonActionsPermissionService,
+    private store$: Store<RootStoreState.State>,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Einsatzplanung' }
@@ -130,6 +135,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     ];
     this.schedulerStatus = { currentSchedulerEvent: null, currentEvSchedulerEventHTML: null, currentResSchedulerEventHTML: null, currentResources: null, contextMenuOpen: false };
     this.currEvSchInterval = { currView: this.eventSchedulerView, currDate: new Date() };
+    this.subscriptions.push(this.store$.pipe(select(fromConfigSelectors.selectConfigs), map(configs => configs['Order'])).subscribe(config => this.configuration = config));
   }
 
   onEventRendered(args: EventRenderedArgs, schedulerType: string): void {
@@ -158,7 +164,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   }
 
   onSchedulerEventClick(args: EventClickArgs): void {
-    // access clicked scheduler event
+    // access clicked scheduler event 
     const schedulerEvent = <SchedulerEvent>(args.event as unknown);
 
     // remove frame of previously selected event
@@ -408,7 +414,8 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       data: {
         update: true,
         entityId: data.RefId,
-        configName: 'Order'
+        fields: this.configuration.fields,
+        configType: 'Order'
       },
       header: data['Subject'] + ' bearbeiten',
       width: '500px'
@@ -434,11 +441,13 @@ export class SchedulerComponent implements OnInit, OnDestroy {
   addSchedulerEvent(data: any) {
     if (this.schedulerStatus.contextMenuOpen) { return; }
     if (!this.permissionsRecord[root.dto.Order.create]) { return; }
+
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
         entity: { startDate: data.startTime, endDate: data.endTime },
-        configName: 'Order'
+        fields: this.configuration.fields,
+        configType: 'Order'
       },
       header: 'Eintrag erstellen',
       width: '500px'
