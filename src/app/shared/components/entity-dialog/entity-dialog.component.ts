@@ -178,10 +178,8 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
 
   openCodeEditor(field: Field, input: InputText, form: NgForm) {
     this.codeSelCntxt = { field: field, textModule: input };
-    // edited code needs to be cached
-    if ((this.update) && (!this.codeCache.hasOwnProperty(field.header))) { this.codeCache[this.codeSelCntxt.field.header] = this.entity[field.field]; }
     this.syntax = field.type;
-    this.code = this.codeCache[field.header];
+    this.code = form.control.get(this.codeSelCntxt.field.field).value;
     this.showCodeEditor = true;
   }
 
@@ -189,14 +187,12 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     if (editedCode) {
       form.control.patchValue({ [this.codeSelCntxt.field.field]: editedCode });
       this.codeSelCntxt.textModule['value'] = '<' + this.codeSelCntxt.field.type + '>*';
-      this.codeCache[this.codeSelCntxt.field.header] = editedCode;
     }
     this.showCodeEditor = false;
   }
 
   nullField(field: Field, form: NgForm) {
     form.control.patchValue({ [field.field]: null });
-    this.codeCache[field.header] = '';
   }
 
   onSubmit(entityForm: FormGroup) {
