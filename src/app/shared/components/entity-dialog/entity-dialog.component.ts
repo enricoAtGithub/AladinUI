@@ -39,7 +39,6 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   currency$: Observable<string>;
   dtoConfigs: SelectItem[];
-  codeCache: Object = new Object();
   syntax: string;
   code: string;
   showCodeEditor = false;
