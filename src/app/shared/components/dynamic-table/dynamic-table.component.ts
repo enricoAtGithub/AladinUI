@@ -19,7 +19,7 @@ import { CatalogueService } from 'src/app/user/services/catalogue.service';
 import { root } from 'src/app/jmeleon/modules/permissions/permissions';
 import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
-import { ScriptActionDefinition } from '../../models/script-action';
+import { ScriptActionDefinition, ScriptActionPayload } from '../../models/script-action';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -267,6 +267,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
+        scenario: 'create',           // executeAction, create, update
         fields: this.configuration.fields,
         configType: this.configuration.type,
         mainId: this.mainId
@@ -286,6 +287,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
+        scenario: 'update',           // executeAction, create, update
         entity: data,
         fields: this.configuration.fields,
         configType: this.configuration.type,
@@ -361,20 +363,45 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   execute(actionHrid: string, dtoType: string, entityId: number) {
-    const payload: Object = { actionHrid: actionHrid, entityReference: { dtoType: dtoType, id: entityId } };
-    console.log('Payload ', payload);
-    this.entityService.getAction(payload).subscribe((actionDetails: ScriptActionDefinition) => {
-      console.log(actionDetails);
-      if (actionDetails.params.length > 0) {
-        console.log('Params nicht leer, Formular aufrufen');
-        // to be implemented
+    const payload: ScriptActionPayload = { actionHrid: actionHrid, entityReference: { dtoType: dtoType, id: entityId } };
 
+    // run getAction API to retrieve information (HRID and params) required to execute the action
+    this.entityService.getAction(payload).subscribe((actionDetails: ScriptActionDefinition) => {
+      payload['actionHrid'] = actionDetails.actionHrid; // prepare payload for executeAction (add HRID)
+
+      if (actionDetails.params.length > 0) {  // if there are params to be specified open entity dialog
+        let entityObj: Object;
+        entityObj = <Object>(actionDetails);
+
+        const dialogRef = this.dialogService.open(EntityDialogComponent, {
+          data: {
+            update: true,
+            scenario: 'executeAction',           // executeAction, create, update
+            entity: entityObj,
+            fields: actionDetails.params,
+            configType: this.configuration.type,
+            mainId: this.mainId,
+            payload: payload
+          },
+          header: 'Aktionsparameter',
+          width: '500px'
+        });
+
+        dialogRef.onClose.subscribe((response: Observable<Object>) => {
+          if (response !== undefined) {
+            response.subscribe((result) => {
+              this.loadLazy(this.lastLazyLoadEvent);
+              this.errorNotificationService.addSuccessNotification(new ErrorMessage('Success', 'Aktion ' + actionDetails.name + ' executed sucessfully', result['result']));
+            });
+          }
+        });
+
+        // if there are no params do not make any turnarounds and just go!
       } else {
-        console.log('Params leer,Service direkt aufrufen');
-        // get correct HRID from server response and update payload
-        payload['actionHrid'] = actionDetails.actionHrid;
-        console.log(payload);
-        this.entityService.executeAction(payload, false).subscribe(result => console.log(result));
+        this.entityService.executeAction(payload, false).subscribe(result => {
+          this.loadLazy(this.lastLazyLoadEvent);
+          this.errorNotificationService.addSuccessNotification(new ErrorMessage('Success', 'Aktion ' + actionDetails.name + ' executed sucessfully', result['result']));
+        });
       }
     });
   }

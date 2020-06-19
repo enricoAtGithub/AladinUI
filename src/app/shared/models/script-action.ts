@@ -10,3 +10,13 @@ export class ScriptActionDefinition {
     public resultType: string;
     public showResult: boolean;
 }
+
+export class ScriptActionPayload {
+    actionHrid: string;
+    entityReference:
+    {
+      dtoType: string;
+      id: number
+    };
+    params?: [];
+  }

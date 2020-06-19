@@ -15,7 +15,7 @@ import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors'
   selector: 'app-catalogue-management',
   templateUrl: './catalogue-management.component.html',
   styleUrls: ['./catalogue-management.component.css'],
-  providers: [ ConfirmationService]
+  providers: [ConfirmationService]
 })
 export class CatalogueManagementComponent implements OnInit {
   allCatalogues: TreeNode[];
@@ -33,7 +33,7 @@ export class CatalogueManagementComponent implements OnInit {
     private dialogService: DialogService,
     private confirmationService: ConfirmationService,
     private store$: Store<RootStoreState.State>
-    ) {
+  ) {
     this.breadcrumbService.setItems([
       { label: 'Katalogverwaltung' }
     ]);
@@ -42,7 +42,7 @@ export class CatalogueManagementComponent implements OnInit {
   ngOnInit() {
     this.loadCatalogues();
     const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
-    configurations$.subscribe(configs => {this.catalogueConfig = configs['Catalogue']; this.catalogueEntryConfig = configs['CatalogueEntry']; });
+    configurations$.subscribe(configs => { this.catalogueConfig = configs['Catalogue']; this.catalogueEntryConfig = configs['CatalogueEntry']; });
   }
 
   loadCatalogues() {
@@ -53,7 +53,9 @@ export class CatalogueManagementComponent implements OnInit {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
-        config: this.catalogueConfig
+        scenario: 'create',                     // executeAction, create, update
+        fields: this.catalogueConfig.fields,
+        configType: this.catalogueConfig.type
       },
       header: 'Katalog erstellen',
       width: '500px'
@@ -70,8 +72,10 @@ export class CatalogueManagementComponent implements OnInit {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
-        entity: {catalogueId: {_repr_: catalogue['name'], id: catalogue['id']}},
-        config: this.catalogueEntryConfig
+        scenario: 'create',                     // executeAction, create, update
+        entity: { catalogueId: { _repr_: catalogue['name'], id: catalogue['id'] } },
+        fields: this.catalogueEntryConfig.fields,
+        configType: this.catalogueEntryConfig.type
       },
       header: 'Eintrag erstellen',
       width: '500px'
@@ -112,8 +116,10 @@ export class CatalogueManagementComponent implements OnInit {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
+        scenario: 'update',                    // executeAction, create, update
         entity: data,
-        config: this.catalogueConfig
+        fields: this.catalogueConfig.fields,
+        configType: this.catalogueConfig.type
       },
       header: data['name'] + ' bearbeiten',
       width: '500px'
@@ -128,12 +134,14 @@ export class CatalogueManagementComponent implements OnInit {
 
   updateCatalogueEntry(data: any, parent: any) {
     console.log(data);
-    data['catalogueId'] = {_repr_: parent['name'], id: parent['id']};
+    data['catalogueId'] = { _repr_: parent['name'], id: parent['id'] };
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
+        scenario: 'update',                    // executeAction, create, update
         entity: data,
-        config: this.catalogueEntryConfig
+        fields: this.catalogueEntryConfig.fields,
+        configType: this.catalogueEntryConfig.type
       },
       header: data['name'] + ' bearbeiten',
       width: '500px'

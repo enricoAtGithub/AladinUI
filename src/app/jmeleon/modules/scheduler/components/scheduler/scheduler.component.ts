@@ -413,6 +413,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
+        scenario: 'update',           // executeAction, create, update
         entityId: data.RefId,
         fields: this.configuration.fields,
         configType: 'Order'
@@ -445,6 +446,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
+        scenario: 'create',           // executeAction, create, update
         entity: { startDate: data.startTime, endDate: data.endTime },
         fields: this.configuration.fields,
         configType: 'Order'

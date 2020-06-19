@@ -218,6 +218,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
+        scenario: 'update',           // executeAction, create, update
         entityId: data.RefId,
         fields: this.configuration.fields,
         configType: 'ResourceAvailability'
@@ -247,6 +248,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
+        scenario: 'create',           // executeAction, create, update
         mainId: resource.groupData.ResourceID,
         entity: { startDate: data.startTime, endDate: data.endTime },
         fields: this.configuration.fields,
