@@ -2,7 +2,7 @@
   <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData" (entitySelection)="entitySelected($event, entityForm)"></app-dynamic-table>
 </p-dialog>
 
-<p-dialog header="Script bearbeiten" [draggable]="false" [modal]="true" [(visible)]="showCodeEditor" [style]="{width: '80%'}" appendTo="body">
+<p-dialog *ngIf="showCodeEditor" header="Script bearbeiten" [draggable]="false" [modal]="true" [(visible)]="showCodeEditor" [style]="{width: '80%'}" appendTo="body">
   <app-code-editor [syntax]="syntax" [code]="code" (editedCode)="onEdited($event, entityForm)"></app-code-editor>
 </p-dialog>
 
