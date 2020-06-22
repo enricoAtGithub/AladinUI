@@ -108,6 +108,7 @@ export class UrlCollection {
     static Actions = class {
         static GETACTION(): string { return UrlCollection.SCRIPT_API_BASE_PATH() + '/getAction'; }
         static EXECUTE(): string { return UrlCollection.SCRIPT_API_BASE_PATH() + '/executeAction'; }
+        static EXECUTESNIPPET(): string { return UrlCollection.SCRIPT_API_BASE_PATH() + '/execute'; }
     };
 
     static SCHEDULER_API_BASE_PATH(): string { return AppConfig.getBaseUrl() + '/scheduler'; }

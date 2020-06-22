@@ -1,1 +1,19 @@
-<app-dynamic-table [tableData]="data"></app-dynamic-table>
+<div>
+    <app-dynamic-table [tableData]="data"></app-dynamic-table>
+</div>
+
+<div style="padding-top: 15px;">
+    <p-panel collapsed="true">
+        <p-header>
+            <span class="ui-panel-title" style="padding: 8px">Code Snippet Tester</span>
+            <button pButton (click)="execute()" icon="pi pi-play"
+                class="ui-button-success" style="float: right"></button>
+        </p-header>
+    </p-panel>
+
+    <div class="content-container" style="height:700px; border: 1px solid #CCCCCC;">
+        <div style="height:698px; width:100%">
+            <ace [config]="aceconfig" [(value)]="code" [mode]="python"></ace>
+        </div>
+    </div>
+</div>     

@@ -225,4 +225,12 @@ export class EntityService {
         .build());
   }
 
+  executeCodeSnippet(payload: Object) {
+    return this.http.post(UrlCollection.Actions.EXECUTESNIPPET(), payload,
+      new HttpOptionsFactory()
+        .addAcceptJson()
+        .addContentTypeJson()
+        .build());
+  }
+
 }
