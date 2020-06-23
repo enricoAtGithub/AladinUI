@@ -171,6 +171,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
       .hideAttachments()
       .hideButtons()
       .setScrollable()
+      .disableInlineEdit()
       .setScrollHeight('700px');
     this.displayEntitySelectionDialog = true;
   }

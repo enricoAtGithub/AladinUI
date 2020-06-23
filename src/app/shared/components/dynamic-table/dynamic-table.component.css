@@ -8,3 +8,24 @@
     position: relative;
     top: 2px;
 }
+
+::ng-deep .ui-calendar .ui-datepicker {
+    min-width: 250px;
+}
+
+.centerCheckbox {
+    align-self: center;
+    width: unset !important;
+}
+
+.cellEditIcon {
+    color: #AAAAAA;
+    cursor: pointer;
+    transition-duration: 150ms;
+}
+
+.cellEditIcon:hover {
+    color: rgb(184, 171, 0);
+    transition-duration: 250ms;
+    font-size: 1.5em;
+}

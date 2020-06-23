@@ -17,11 +17,11 @@ export class Field extends BasicFieldConfig {
     formula: string;
 
     public static isPrimitiveType(type: string) {
-        return type === 'String' || type === 'integer' || type === 'boolean' || type === 'Date';
+        return type === 'String' || type === 'int' || type === 'boolean' || type === 'Date' || type === 'Currency';
     }
 }
 
 class Option {
-    label: string;
-    value: any;
+    _repr_: string;
+    id: any;
 }

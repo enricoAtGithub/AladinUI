@@ -49,6 +49,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   freeColumnSpace = 100;
   zeroWidthColumns = 0;
   currency$: Observable<string>;
+  displayEntitySelectionDialog = false;
+  entitySelectionTableData: TableData;
+  entitySelectionContext: { field: string, id: number };
+  cellEditCache: Map<String, any>;
 
   constructor(
     private entityService: EntityService,
@@ -67,6 +71,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       map(configs => configs[this.tableData.entityType])
     );
 
+    this.cellEditCache = new Map();
     this.configuration = new EntityConfiguration();
     this.entityData = new EntityData();
     this.subscriptions.push(configuration$.subscribe(async config => {
@@ -93,7 +98,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         }
 
         this.filtersInTable = field.filterType !== 'none' || this.filtersInTable;
-        if (field.filterType === 'multiSelect' && !Field.isPrimitiveType(field.type)) {
+        if (!Field.isPrimitiveType(field.type)) {
           field.options = [];
 
           if ((field.type === 'CatalogueEntry' || field.type === 'Icon') && field.defaultCatalogue) {
@@ -102,13 +107,13 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
                 .subscribe(catalogue => {
                   catalogue.values.forEach(o => {
                     if (field.type === 'CatalogueEntry') {
-                      field.options.push({ label: o.name, value: '' + o.id });
+                      field.options.push({_repr_: o.name, id: o.id});
                     } else {
                       this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe((attributes: any) => {
                         const icon = attributes.find(attr => attr['name'] === 'icon');
                         const color = attributes.find(attr => attr['name'] === 'color');
                         field.options.push({
-                          label: '__icon__', value:
+                          _repr_: '__icon__', id:
                             { id: '' + o.id, icon: icon ? icon['stringValue'] : '', color: color ? color['stringValue'] : '' }
                         });
                       });
@@ -120,7 +125,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             this.subscriptions.push(
               this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
                 .subscribe(data => {
-                  data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
+                  data.data.forEach(o => field.options.push({ _repr_: o._repr_, id: o.id }));
                 }));
           }
         }
@@ -168,7 +173,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     if (timeout === 0) {
       this.errorNotificationService.addErrorNotification(
-        new ErrorMessage('error', 'Connection timeout', 'Unable to receive configuration data from the server'));
+        new ErrorMessage('error', 'Connection timeout', 'Unable to retreive configuration data'));
       return;
     }
 
@@ -221,8 +226,14 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
 
     if (this.tableData.dataSource === undefined) {
-      this.entityService.filter(this.tableData.entityType, page, event.rows, this.mainId, qualifier, sorting)
-        .subscribe(data => { this.entityData = data; this.loading = false; });
+      this.entityService.filter(this.tableData.entityType, page, event.rows, this.mainId, qualifier, sorting).pipe(
+        map(entities => {
+          this.configuration.fields.filter(field => field.type === 'Date').forEach(field => {
+            entities.data.forEach(data => data[field.field] = new Date(data[field.field]));
+          });
+          return entities;
+        })
+      ).subscribe(data => { this.entityData = data; this.loading = false; });
     } else {
       this.tableData.dataSource.subscribe(data => { this.entityData = data; this.loading = false; });
     }
@@ -404,6 +415,54 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         });
       }
     });
+  }
+
+  entitySelected(entity: any) {
+    const rowData = this.entityData.data.find(row => row['id'] === this.entitySelectionContext.id);
+    rowData[this.entitySelectionContext.field] = {id: entity['id'], _repr_: entity['_repr_']};
+    this.displayEntitySelectionDialog = false;
+    this.editComplete(rowData);
+  }
+
+  openEntitySelectionDialog(field: any, id: number) {
+    this.entitySelectionContext = { field: field['field'], id: id};
+    this.entitySelectionTableData = new TableData(field['type'], field['type'])
+      .hideHeader()
+      .hideHeadline()
+      .hideAttachments()
+      .hideButtons()
+      .setScrollable()
+      .disableInlineEdit()
+      .setScrollHeight('700px');
+    this.displayEntitySelectionDialog = true;
+  }
+
+  editComplete(data) {
+    const dateFields = this.configuration.fields.filter(field => field.type === 'Date');
+    dateFields.forEach(field => {
+      data[field.field] = new Date(data[field.field]).toISOString();
+    });
+
+    this.entityService.updateEntity(this.tableData.entityType, data['id'],  data).subscribe(result => {
+      const index = this.entityData.data.findIndex(data_ => data_['id'] === result['fields']['id']);
+      dateFields.forEach(field => {
+        result['fields'][field.field] = new Date(result['fields'][field.field]);
+      });
+      this.entityData.data[index] = result['fields'];
+    }, error => this.refreshTableContents());
+  }
+
+  setBlur(cell) {
+    setTimeout(() => cell.isFocused = false, 100);
+  }
+
+  storeContent(field: string, rowData) {
+    this.cellEditCache.set(field + '§' + rowData['id'], rowData[field]);
+  }
+
+  restoreContent(field: string, rowData) {
+    rowData[field] = this.cellEditCache.get(field + '§' + rowData['id']);
+    this.cellEditCache.delete(field + '§' + rowData['id']);
   }
 
 }

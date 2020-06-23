@@ -44,6 +44,7 @@ import { IconPickerModule } from 'ngx-icon-picker';
 import { CodeEditorComponent } from './components/code-editor/code-editor.component';
 import { PanelModule } from 'primeng/panel';
 import { AceModule } from 'ngx-ace-wrapper';
+import { VarDirective } from './components/dynamic-table/var.directive';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { AceModule } from 'ngx-ace-wrapper';
     EntityFileAttachmentsComponent,
     EntityLogsComponent,
     EntitySubtypesComponent,
-    CodeEditorComponent
+    CodeEditorComponent,
+    VarDirective
   ],
   imports: [
     CommonModule,
