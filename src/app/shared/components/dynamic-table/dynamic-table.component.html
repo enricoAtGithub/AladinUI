@@ -42,7 +42,8 @@
             </div>
           </th>
           
-          <th *ngIf="showButtons" style="width:135px">Bearbeiten</th>
+          <!-- <th *ngIf="showButtons" style="width:190px">Bearbeiten</th> fixed width needs to be removed, refactor later (calculate width exactly due to issues in chrome)-->
+          <th *ngIf="showButtons">Bearbeiten</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -59,7 +60,8 @@
               </ng-template>
           </td>
           <!-- Crud Buttons -->
-          <td *ngIf="showButtons" style="text-align: center; width: 135px;">
+          <!-- <td *ngIf="showButtons" style="text-align: center; width: 190px;"> fixed width needs to be removed, refactor later (calculate width exactly due to issues in chrome) -->
+          <td *ngIf="showButtons" style="text-align: center">
             <code *ngIf="configuration?.type !== 'FileAttachment'" class="html">
               <ng-template [appPermissionCheck]="root.dto.$dtoType.write" [appPermissionCheckVarDict]="{'$dtoType':configuration.type}">
                 <button pButton type="button" icon="pi pi-pencil" class="crudButton" pTooltip="Bearbeiten" (click)="updateEntity(rowData)"></button>

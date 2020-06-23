@@ -49,6 +49,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   freeColumnSpace = 100;
   zeroWidthColumns = 0;
   currency$: Observable<string>;
+  actionCount: number;
 
   constructor(
     private entityService: EntityService,
@@ -81,6 +82,9 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       this.currency$ = this.settingsService.getSetting('CURRENCY').pipe(map(setting => setting.value));
 
       this.checkShowButtons();
+
+      // get number of actions for this entity, required for calcWidth()
+      this.actionCount = (this.configuration.actions ? Object.keys(this.configuration.actions).length : 0);
 
       this.minTableWidth = this.showButtons ? 90 : 0;
       this.fields = this.configuration.fields.filter(field => field.visible === true);
@@ -347,12 +351,15 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     // Without the event the column width wouldn't be recalculated after a resize
   }
 
-  calcWidth(col: Field, width) {
+  calcWidth(col: Field, width: number) {
     if (this.configuration.minWidth && this.configuration.scrollable) {
       width = Math.max(width, this.configuration.minWidth);
     }
 
-    width -= this.minTableWidth + (this.showButtons ? 147 : 2);
+    // width required to display action icons, per Icon 32px required
+    const actionIconSpace: number = this.actionCount * 32;
+    // offset of 90px to display update and delete icons
+    width -= this.minTableWidth + (this.showButtons ? (90 + actionIconSpace) : 2);
     if (!col.width) {
       return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
     } else if (col.width.endsWith('px')) {
