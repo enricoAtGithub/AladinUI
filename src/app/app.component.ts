@@ -9,12 +9,8 @@ import { ErrorNotificationService } from './shared/services/error-notification.s
 })
 export class AppComponent  {
   constructor(private messageService: MessageService, private errorNotificationService: ErrorNotificationService) {
-    this.errorNotificationService.errorQueue$.subscribe(errorMessage => {
-      this.messageService.add({severity: errorMessage.severity, summary: errorMessage.summary, detail: errorMessage.detail, life: 5000});
-    });
-    this.errorNotificationService.successQueue$.subscribe(successMessage => {
-      this.messageService.add(
-        {severity: successMessage.severity, summary: successMessage.summary, detail: successMessage.detail, life: 5000});
+    this.errorNotificationService.notificationQueue$.subscribe(notification => {
+      this.messageService.add({severity: notification.severity, summary: notification.summary, detail: notification.detail, life: notification.life});
     });
   }
 }

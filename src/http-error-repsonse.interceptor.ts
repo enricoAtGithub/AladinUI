@@ -3,7 +3,6 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/c
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ErrorNotificationService } from './app/shared/services/error-notification.service';
-import { ErrorMessage } from './app/shared/models/error-message';
 import { AuthService } from './app/auth/services/auth.service';
 import { Store } from '@ngrx/store';
 import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-index';
@@ -32,11 +31,11 @@ export class HttpErrorRepsonseInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler):
         Observable<HttpEvent<any>> {
 
-          return next.handle(req).pipe(
+        return next.handle(req).pipe(
             catchError( (error) => {
                 console.log(error);
                 if (error['status'] === 0) {
-                    this.errorNotificationService.addErrorNotification(new ErrorMessage('error', 'Could not reach Server!', ''));
+                    this.errorNotificationService.addErrorNotification('Could not reach Server!', '');
                 } else {
                     /* this block avoids multiple 'invalid token' messages and hides message if user logs out*/
                     if (!!error && !!error.error && !!error.error.code && error.error.code === ServerErrorCode.UNKNOWN_TOKEN) {
@@ -45,8 +44,7 @@ export class HttpErrorRepsonseInterceptor implements HttpInterceptor {
                             setTimeout(() => {
                                 this.errorCodeFourBlockActive = false;
                             }, 1000);
-                            this.errorNotificationService.addErrorNotification(
-                                new ErrorMessage('error', 'Error code ' + error['error']['code'], error['error']['message']));
+                            this.errorNotificationService.addErrorNotification('Error code ' + error['error']['code'], error['error']['message']);
                         } else {
                             console.error('Error code ' + error['error']['code'], error['error']['message']);
                         }
@@ -56,16 +54,14 @@ export class HttpErrorRepsonseInterceptor implements HttpInterceptor {
                         }
                     } else if (!!error && !!error.error && !!error.error.code && error.error.code === ServerErrorCode.LOST_UPDATE_FAILED) {
                         this.errorNotificationService.addErrorNotification(
-                            new ErrorMessage('error', 'Update fehlgeschlagen',
-                                `Element wurde an anderer Stelle geändert.\n (${error['error']['message']})`));
+                            'Update fehlgeschlagen', `Element wurde an anderer Stelle geändert.\n (${error['error']['message']})`);
                     } else {
-                        this.errorNotificationService.addErrorNotification(
-                            new ErrorMessage('error', 'Error code ' + error['error']['code'], error['error']['message']));
+                        this.errorNotificationService.addErrorNotification('Error code ' + error['error']['code'], error['error']['message']);
                     }
 
                 }
                 return throwError(error);
-          })
+            })
         );
     }
 }

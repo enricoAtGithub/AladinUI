@@ -1,29 +1,32 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { ErrorMessage } from '../models/error-message';
+import { Notification } from '../models/notification';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorNotificationService {
-  public errorQueue$: Observable<ErrorMessage>;
-  private errorQueueSubject: Subject<ErrorMessage>;
-
-  public successQueue$: Observable<ErrorMessage>;
-  private successQueueSubject: Subject<ErrorMessage>;
+  public notificationQueue$: Observable<Notification>;
+  private notificationQueueSubject: Subject<Notification>;
 
   constructor() {
-    this.errorQueueSubject = new Subject();
-    this.errorQueue$ = this.errorQueueSubject.asObservable();
-    this.successQueueSubject = new Subject();
-    this.successQueue$ = this.successQueueSubject.asObservable();
+    this.notificationQueueSubject = new Subject();
+    this.notificationQueue$ = this.notificationQueueSubject.asObservable();
   }
 
-  addErrorNotification(errorMessage: ErrorMessage) {
-    this.errorQueueSubject.next(errorMessage);
+  addErrorNotification(summary: string, detail: string, lifetime: number = 5000) {
+    this.notificationQueueSubject.next(new Notification('error', summary, detail, lifetime));
   }
 
-  addSuccessNotification(successMessage: ErrorMessage) {
-    this.successQueueSubject.next(successMessage);
+  addSuccessNotification(summary: string, detail: string, lifetime: number = 5000) {
+    this.notificationQueueSubject.next(new Notification('success', summary, detail, lifetime));
+  }
+
+  addInfoNotification(summary: string, detail: string, lifetime: number = 5000) {
+    this.notificationQueueSubject.next(new Notification('info', summary, detail, lifetime));
+  }
+
+  addWarnNotification(summary: string, detail: string, lifetime: number = 5000) {
+    this.notificationQueueSubject.next(new Notification('warn', summary, detail, lifetime));
   }
 }

@@ -8,7 +8,6 @@ import { TableData } from '../../models/table-data';
 import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { ErrorNotificationService } from '../../services/error-notification.service';
-import { ErrorMessage } from '../../models/error-message';
 import { delay } from 'q';
 import { UrlCollection } from '../../url-collection';
 import * as fromConfigSelectors from '../../../root-store/config-store/selectors';
@@ -171,8 +170,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
 
     if (timeout === 0) {
-      this.errorNotificationService.addErrorNotification(
-        new ErrorMessage('error', 'Connection timeout', 'Unable to receive configuration data from the server'));
+      this.errorNotificationService.addErrorNotification('Connection timeout', 'Unable to receive configuration data from the server');
       return;
     }
 
@@ -408,7 +406,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             if (response !== undefined) {
               response.subscribe((result) => {
                 this.loadLazy(this.lastLazyLoadEvent);
-                this.errorNotificationService.addSuccessNotification(new ErrorMessage('Success', 'Aktion ' + actionDetails.name + ' executed sucessfully', result['result']));
+                this.errorNotificationService.addSuccessNotification('Aktion ' + actionDetails.name + ' executed sucessfully', result['result']);
               });
             }
           });
@@ -417,7 +415,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         } else {
           this.entityService.executeAction(payload, false).subscribe(result => {
             this.loadLazy(this.lastLazyLoadEvent);
-            this.errorNotificationService.addSuccessNotification(new ErrorMessage('Success', 'Aktion ' + actionDetails.name + ' executed sucessfully', result['result']));
+            console.log(result);
+            this.errorNotificationService.addSuccessNotification('Aktion ' + actionDetails.name + ' executed sucessfully', result['result']);
           });
         }
       })

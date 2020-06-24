@@ -6,7 +6,6 @@ import 'brace';
 import 'brace/mode/json';
 import 'brace/theme/github';
 import { ErrorNotificationService } from 'src/app/shared/services/error-notification.service';
-import { ErrorMessage } from 'src/app/shared/models/error-message';
 
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
@@ -54,7 +53,7 @@ export class DTOConfigEditorComponent implements OnInit {
 
   saveConfig() {
     this.entityService.updateEntityConfigurationFile(this.currentConfigName, this.currentConfig).subscribe(() =>
-      this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Success!', 'The configuration has been saved.' )));
+      this.notificationService.addSuccessNotification('Success!', 'The configuration has been saved.' ));
   }
 
   public onEditorBlur(event: any): void {
