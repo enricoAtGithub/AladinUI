@@ -19,6 +19,7 @@ import { root } from 'src/app/jmeleon/modules/permissions/permissions';
 import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
 import { ScriptActionDefinition, ScriptActionPayload } from '../../models/script-action';
+import { ScriptResultComponent } from 'src/app/jmeleon/components/script-result/script-result.component';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -376,13 +377,14 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
   }
 
-  execute(actionHrid: string, dtoType: string, entityId: number) {
+  executeAction(actionHrid: string, dtoType: string, entityId: number) {
     const payload: ScriptActionPayload = { actionHrid: actionHrid, entityReference: { dtoType: dtoType, id: entityId } };
 
     // run getAction API to retrieve information (HRID and params) required to execute the action
     this.subscriptions.push(
       this.entityService.getAction(payload).subscribe((actionDetails: ScriptActionDefinition) => {
         payload['actionHrid'] = actionDetails.actionHrid; // prepare payload for executeAction (add HRID)
+        console.log(actionDetails);
 
         if (actionDetails.params.length > 0) {  // if there are params to be specified open entity dialog
           let entityObj: Object;
@@ -406,7 +408,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             if (response !== undefined) {
               response.subscribe((result) => {
                 this.loadLazy(this.lastLazyLoadEvent);
-                this.errorNotificationService.addSuccessNotification('Aktion ' + actionDetails.name + ' executed sucessfully', result['result']);
+                this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
+                // this.errorNotificationService.addSuccessNotification('Aktion ' + actionDetails.name + ' executed sucessfully', result['result']);
               });
             }
           });
@@ -416,11 +419,28 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           this.entityService.executeAction(payload, false).subscribe(result => {
             this.loadLazy(this.lastLazyLoadEvent);
             console.log(result);
-            this.errorNotificationService.addSuccessNotification('Aktion ' + actionDetails.name + ' executed sucessfully', result['result']);
+            this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
+            // this.errorNotificationService.addSuccessNotification('Aktion ' + actionDetails.name + ' executed sucessfully', result['result']);
           });
         }
       })
     );
+  }
+
+  showActionResult(actionName: string, result: string, output: string, showResult: boolean) {
+    if (!showResult) {
+      this.errorNotificationService.addSuccessNotification('Aktion ' + actionName + ' executed sucessfully', result);
+    } else {
+      const dialogRef = this.dialogService.open(ScriptResultComponent, {
+        data: {
+          result: result,
+          output: output
+        },
+        header: actionName + ' ausgeführt',
+        width: '800px'
+      });
+    }
+
   }
 
 }

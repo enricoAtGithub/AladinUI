@@ -75,7 +75,7 @@
             </code>
 
             <code *ngIf="configuration?.type !== 'FileAttachment'" class="html">                                                                                                                                           
-                <button *ngFor="let action of rowData._actions_" pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton" (click)="execute(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
+                <button *ngFor="let action of rowData._actions_" pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton" (click)="executeAction(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
             </code>
 
             <code *ngIf="configuration?.type === 'FileAttachment'" class="html">

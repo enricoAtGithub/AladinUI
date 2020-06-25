@@ -9,9 +9,10 @@ import { SharedModule } from '../shared/shared.module';
 import { DTOEntitiesComponent } from './components/dto-entities/dto-entities.component';
 import { ListboxModule } from 'primeng/listbox';
 import { ScriptActionsComponent } from './components/script-actions/script-actions.component';
+import { ScriptResultComponent } from './components/script-result/script-result.component';
 
 @NgModule({
-  declarations: [DTOConfigEditorComponent, ResourcesComponent, DTOEntitiesComponent, ScriptActionsComponent],
+  declarations: [DTOConfigEditorComponent, ResourcesComponent, DTOEntitiesComponent, ScriptActionsComponent, ScriptResultComponent],
   imports: [
     CommonModule,
     DiagramsModule,
@@ -22,6 +23,9 @@ import { ScriptActionsComponent } from './components/script-actions/script-actio
     SharedModule,
     ScrollPanelModule,
     ListboxModule
+  ],
+  entryComponents: [
+    ScriptResultComponent
   ]
 })
 export class JmeleonModule { }
