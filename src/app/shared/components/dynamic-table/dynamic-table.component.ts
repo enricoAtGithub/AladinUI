@@ -111,7 +111,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
                 .subscribe(catalogue => {
                   catalogue.values.forEach(o => {
                     if (field.type === 'CatalogueEntry') {
-                      field.options.push({_repr_: o.name, id: o.id});
+                      field.options.push({ _repr_: o.name, id: o.id });
                     } else {
                       this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe((attributes: any) => {
                         const icon = attributes.find(attr => attr['name'] === 'icon');
@@ -176,7 +176,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
 
     if (timeout === 0) {
-    	this.errorNotificationService.addErrorNotification('Connection timeout', 'Unable to receive configuration data from the server');
+      this.errorNotificationService.addErrorNotification('Connection timeout', 'Unable to receive configuration data from the server');
       return;
     }
 
@@ -230,14 +230,14 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     if (this.tableData.dataSource === undefined) {
       this.subscriptions.push(
-      this.entityService.filter(this.tableData.entityType, page, event.rows, this.mainId, qualifier, sorting).pipe(
-        map(entities => {
-          this.configuration.fields.filter(field => field.type === 'Date').forEach(field => {
-            entities.data.forEach(data => data[field.field] = new Date(data[field.field]));
-          });
-          return entities;
-        })
-        .subscribe(data => { this.entityData = data; this.loading = false; });
+        this.entityService.filter(this.tableData.entityType, page, event.rows, this.mainId, qualifier, sorting).pipe(
+          map(entities => {
+            this.configuration.fields.filter(field => field.type === 'Date').forEach(field => {
+              entities.data.forEach(data => data[field.field] = new Date(data[field.field]));
+            });
+            return entities;
+          }))
+          .subscribe(data => { this.entityData = data; this.loading = false; }));
     } else {
       this.subscriptions.push(this.tableData.dataSource.subscribe(data => { this.entityData = data; this.loading = false; }));
     }
@@ -456,13 +456,13 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
   entitySelected(entity: any) {
     const rowData = this.entityData.data.find(row => row['id'] === this.entitySelectionContext.id);
-    rowData[this.entitySelectionContext.field] = {id: entity['id'], _repr_: entity['_repr_']};
+    rowData[this.entitySelectionContext.field] = { id: entity['id'], _repr_: entity['_repr_'] };
     this.displayEntitySelectionDialog = false;
     this.editComplete(rowData);
   }
 
   openEntitySelectionDialog(field: any, id: number) {
-    this.entitySelectionContext = { field: field['field'], id: id};
+    this.entitySelectionContext = { field: field['field'], id: id };
     this.entitySelectionTableData = new TableData(field['type'], field['type'])
       .hideHeader()
       .hideHeadline()
@@ -480,7 +480,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       data[field.field] = new Date(data[field.field]).toISOString();
     });
 
-    this.entityService.updateEntity(this.tableData.entityType, data['id'],  data).subscribe(result => {
+    this.entityService.updateEntity(this.tableData.entityType, data['id'], data).subscribe(result => {
       const index = this.entityData.data.findIndex(data_ => data_['id'] === result['fields']['id']);
       dateFields.forEach(field => {
         result['fields'][field.field] = new Date(result['fields'][field.field]);
