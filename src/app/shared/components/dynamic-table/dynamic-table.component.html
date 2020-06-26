@@ -47,7 +47,8 @@
             </div>
           </th>
           
-          <th *ngIf="showButtons" style="width:135px">Bearbeiten</th>
+          <!-- <th *ngIf="showButtons" style="width:190px">Bearbeiten</th> fixed width needs to be removed, refactor later (calculate width exactly due to issues in chrome)-->
+          <th *ngIf="showButtons">Bearbeiten</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-fields="columns">
@@ -115,7 +116,8 @@
 
 
           <!-- Crud Buttons -->
-          <td *ngIf="showButtons" style="text-align: center; width: 135px;">
+          <!-- <td *ngIf="showButtons" style="text-align: center; width: 190px;"> fixed width needs to be removed, refactor later (calculate width exactly due to issues in chrome) -->
+          <td *ngIf="showButtons" style="text-align: center">
             <code *ngIf="configuration?.type !== 'FileAttachment'" class="html">
               <ng-template [appPermissionCheck]="root.dto.$dtoType.write" [appPermissionCheckVarDict]="{'$dtoType':configuration.type}">
                 <button pButton type="button" icon="pi pi-pencil" class="crudButton" pTooltip="Bearbeiten" (click)="updateEntity(rowData)"></button>
@@ -129,7 +131,7 @@
             </code>
 
             <code *ngIf="configuration?.type !== 'FileAttachment'" class="html">                                                                                                                                           
-                <button *ngFor="let action of rowData._actions_" pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton" (click)="execute(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
+                <button *ngFor="let action of rowData._actions_" pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton" (click)="executeAction(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
             </code>
 
             <code *ngIf="configuration?.type === 'FileAttachment'" class="html">

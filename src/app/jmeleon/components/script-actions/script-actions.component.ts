@@ -3,7 +3,6 @@ import { BreadcrumbService } from 'src/app/breadcrumb.service';
 import { TableData } from 'src/app/shared/models/table-data';
 import { EntityService } from 'src/app/shared/services/entity.service';
 import { ErrorNotificationService } from 'src/app/shared/services/error-notification.service';
-import { ErrorMessage } from 'src/app/shared/models/error-message';
 import 'brace';
 import 'brace/mode/json';
 import 'brace/mode/python';
@@ -38,7 +37,7 @@ export class ScriptActionsComponent implements OnInit {
   execute() {
     const payload = { snippet: this.code, entityReference: null, context: null };
     this.entityService.executeCodeSnippet(payload).subscribe((result) =>
-      this.notificationService.addSuccessNotification(new ErrorMessage('Success!', 'Script executed successfully!', 'Output: ' + result['output'] )));
+      this.notificationService.addSuccessNotification('Script executed successfully!', 'Output: ' + result['output'] ));
   }
 
 }

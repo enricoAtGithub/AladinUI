@@ -6,7 +6,6 @@ import { tap, map, withLatestFrom } from 'rxjs/operators';
 import { TreeNode, SelectItem } from 'primeng/api';
 import * as permissions from '../permissions';
 import { ErrorNotificationService } from 'src/app/shared/services/error-notification.service';
-import { ErrorMessage } from 'src/app/shared/models/error-message';
 import JMeleonActionTreeUtils from '../utils/jml-action-tree.utils';
 import { Tree } from 'primeng/tree';
 import { BrowserStorageService } from 'src/app/shared/services/browser-storage.service';
@@ -143,7 +142,7 @@ export class JmeleonActionsFacadeService {
     // console.log('adding action to right: ', fullName);
     this.subscriptions.push(this.jmlActionsForRightService.addActionToRight(fullName, rightId).subscribe(
       () => {
-        this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktion wurde erfolgreich hinzugefügt.'));
+        this.notificationService.addSuccessNotification('Erfolg', 'Aktion wurde erfolgreich hinzugefügt.');
         this._sectionDict[this._currentSection] = [this._sectionDict[this._currentSection][0], sectionNodes];
         this.updateSections();
       }
@@ -157,7 +156,7 @@ export class JmeleonActionsFacadeService {
     // console.log('removing action to right: ', fullName);
     this.subscriptions.push(this.jmlActionsForRightService.removeActionFromRight(fullName, rightId).subscribe(
       () => {
-        this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktion wurde erfolgreich entfernt.'));
+        this.notificationService.addSuccessNotification('Erfolg', 'Aktion wurde erfolgreich entfernt.');
         this._sectionDict[this._currentSection] = [this._sectionDict[this._currentSection][0], sectionNodes];
         this.updateSections();
       }
@@ -169,7 +168,7 @@ export class JmeleonActionsFacadeService {
   syncGuiActionsWithServer(): void {
     this.subscriptions.push(
       this.jmlActionsForRightService.setAllActions(permissions.list).subscribe(
-        () => this.notificationService.addSuccessNotification(new ErrorMessage('success', 'Erfolg', 'Aktionen wurden erfolgreich an den Server übermittelt.'))
+        () => this.notificationService.addSuccessNotification('Erfolg', 'Aktionen wurden erfolgreich an den Server übermittelt.')
       )
     );
   }

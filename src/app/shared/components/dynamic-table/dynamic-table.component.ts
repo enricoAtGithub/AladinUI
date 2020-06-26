@@ -8,7 +8,6 @@ import { TableData } from '../../models/table-data';
 import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { ErrorNotificationService } from '../../services/error-notification.service';
-import { ErrorMessage } from '../../models/error-message';
 import { delay } from 'q';
 import { UrlCollection } from '../../url-collection';
 import * as fromConfigSelectors from '../../../root-store/config-store/selectors';
@@ -20,6 +19,7 @@ import { root } from 'src/app/jmeleon/modules/permissions/permissions';
 import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
 import { ScriptActionDefinition, ScriptActionPayload } from '../../models/script-action';
+import { ScriptResultComponent } from 'src/app/jmeleon/components/script-result/script-result.component';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -49,6 +49,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   freeColumnSpace = 100;
   zeroWidthColumns = 0;
   currency$: Observable<string>;
+  actionCount: number;
   displayEntitySelectionDialog = false;
   entitySelectionTableData: TableData;
   entitySelectionContext: { field: string, id: number };
@@ -86,6 +87,9 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       this.currency$ = this.settingsService.getSetting('CURRENCY').pipe(map(setting => setting.value));
 
       this.checkShowButtons();
+
+      // get number of actions for this entity, required for calcWidth()
+      this.actionCount = (this.configuration.actions ? Object.keys(this.configuration.actions).length : 0);
 
       this.minTableWidth = this.showButtons ? 90 : 0;
       this.fields = this.configuration.fields.filter(field => field.visible === true);
@@ -172,8 +176,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
 
     if (timeout === 0) {
-      this.errorNotificationService.addErrorNotification(
-        new ErrorMessage('error', 'Connection timeout', 'Unable to retreive configuration data'));
+    	this.errorNotificationService.addErrorNotification('Connection timeout', 'Unable to receive configuration data from the server');
       return;
     }
 
@@ -226,6 +229,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
 
     if (this.tableData.dataSource === undefined) {
+      this.subscriptions.push(
       this.entityService.filter(this.tableData.entityType, page, event.rows, this.mainId, qualifier, sorting).pipe(
         map(entities => {
           this.configuration.fields.filter(field => field.type === 'Date').forEach(field => {
@@ -233,9 +237,9 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           });
           return entities;
         })
-      ).subscribe(data => { this.entityData = data; this.loading = false; });
+        .subscribe(data => { this.entityData = data; this.loading = false; });
     } else {
-      this.tableData.dataSource.subscribe(data => { this.entityData = data; this.loading = false; });
+      this.subscriptions.push(this.tableData.dataSource.subscribe(data => { this.entityData = data; this.loading = false; }));
     }
   }
 
@@ -287,11 +291,13 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       width: '500px'
     });
 
-    dialogRef.onClose.subscribe((result: Observable<Object>) => {
-      if (result !== undefined) {
-        result.subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
-      }
-    });
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe((result: Observable<Object>) => {
+        if (result !== undefined) {
+          result.subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
+        }
+      })
+    );
   }
 
   updateEntity(data: any) {
@@ -308,18 +314,20 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       width: '500px'
     });
 
-    dialogRef.onClose.subscribe((result: Observable<Object>) => {
-      if (result !== undefined) {
-        result.subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
-      }
-    });
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe((result: Observable<Object>) => {
+        if (result !== undefined) {
+          result.subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
+        }
+      })
+    );
   }
 
   deleteEntity(data: any) {
     this.confirmationService.confirm({
       message: 'Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?',
       accept: () => {
-        this.entityService.deleteEntity(this.configuration.type, data['id']).subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
+        this.subscriptions.push(this.entityService.deleteEntity(this.configuration.type, data['id']).subscribe(() => this.loadLazy(this.lastLazyLoadEvent)));
       }
     });
   }
@@ -344,13 +352,17 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     if (!this.tableData.showButtons) { return; }
 
     if (this.configuration.type !== 'FileAttachment') {
-      this.japs.userHasPermissionForActions([root.dto.$dtoType.delete, root.dto.$dtoType.write], { '$dtoType': this.configuration.type }).subscribe(record => {
-        this.showButtons = !Object.entries(record).every(entry => !entry[1]);
-      });
+      this.subscriptions.push(
+        this.japs.userHasPermissionForActions([root.dto.$dtoType.delete, root.dto.$dtoType.write], { '$dtoType': this.configuration.type }).subscribe(record => {
+          this.showButtons = !Object.entries(record).every(entry => !entry[1]);
+        })
+      );
     } else {
-      this.japs.userHasPermissionForActions([root.dto.FileAttachment.download]).subscribe(record => {
-        this.showButtons = !Object.entries(record).every(entry => !entry[1]);
-      });
+      this.subscriptions.push(
+        this.japs.userHasPermissionForActions([root.dto.FileAttachment.download]).subscribe(record => {
+          this.showButtons = !Object.entries(record).every(entry => !entry[1]);
+        })
+      );
     }
   }
 
@@ -358,12 +370,15 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     // Without the event the column width wouldn't be recalculated after a resize
   }
 
-  calcWidth(col: Field, width) {
+  calcWidth(col: Field, width: number) {
     if (this.configuration.minWidth && this.configuration.scrollable) {
       width = Math.max(width, this.configuration.minWidth);
     }
 
-    width -= this.minTableWidth + (this.showButtons ? 147 : 2);
+    // width required to display action icons, per Icon 32px required
+    const actionIconSpace: number = this.actionCount * 32;
+    // offset of 90px to display update and delete icons
+    width -= this.minTableWidth + (this.showButtons ? (90 + actionIconSpace) : 2);
     if (!col.width) {
       return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
     } else if (col.width.endsWith('px')) {
@@ -373,48 +388,70 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
   }
 
-  execute(actionHrid: string, dtoType: string, entityId: number) {
+  executeAction(actionHrid: string, dtoType: string, entityId: number) {
     const payload: ScriptActionPayload = { actionHrid: actionHrid, entityReference: { dtoType: dtoType, id: entityId } };
 
     // run getAction API to retrieve information (HRID and params) required to execute the action
-    this.entityService.getAction(payload).subscribe((actionDetails: ScriptActionDefinition) => {
-      payload['actionHrid'] = actionDetails.actionHrid; // prepare payload for executeAction (add HRID)
+    this.subscriptions.push(
+      this.entityService.getAction(payload).subscribe((actionDetails: ScriptActionDefinition) => {
+        payload['actionHrid'] = actionDetails.actionHrid; // prepare payload for executeAction (add HRID)
+        console.log(actionDetails);
 
-      if (actionDetails.params.length > 0) {  // if there are params to be specified open entity dialog
-        let entityObj: Object;
-        entityObj = <Object>(actionDetails);
+        if (actionDetails.params.length > 0) {  // if there are params to be specified open entity dialog
+          let entityObj: Object;
+          entityObj = <Object>(actionDetails);
 
-        const dialogRef = this.dialogService.open(EntityDialogComponent, {
-          data: {
-            update: true,
-            scenario: 'executeAction',           // executeAction, create, update
-            entity: entityObj,
-            fields: actionDetails.params,
-            configType: this.configuration.type,
-            mainId: this.mainId,
-            payload: payload
-          },
-          header: 'Aktionsparameter',
-          width: '500px'
-        });
+          const dialogRef = this.dialogService.open(EntityDialogComponent, {
+            data: {
+              update: true,
+              scenario: 'executeAction',           // executeAction, create, update
+              entity: entityObj,
+              fields: actionDetails.params,
+              configType: this.configuration.type,
+              mainId: this.mainId,
+              payload: payload
+            },
+            header: 'Aktionsparameter',
+            width: '500px'
+          });
 
-        dialogRef.onClose.subscribe((response: Observable<Object>) => {
-          if (response !== undefined) {
-            response.subscribe((result) => {
-              this.loadLazy(this.lastLazyLoadEvent);
-              this.errorNotificationService.addSuccessNotification(new ErrorMessage('Success', 'Aktion ' + actionDetails.name + ' executed sucessfully', result['result']));
-            });
-          }
-        });
+          dialogRef.onClose.subscribe((response: Observable<Object>) => {
+            if (response !== undefined) {
+              response.subscribe((result) => {
+                this.loadLazy(this.lastLazyLoadEvent);
+                this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
+                // this.errorNotificationService.addSuccessNotification('Aktion ' + actionDetails.name + ' executed sucessfully', result['result']);
+              });
+            }
+          });
 
-        // if there are no params do not make any turnarounds and just go!
-      } else {
-        this.entityService.executeAction(payload, false).subscribe(result => {
-          this.loadLazy(this.lastLazyLoadEvent);
-          this.errorNotificationService.addSuccessNotification(new ErrorMessage('Success', 'Aktion ' + actionDetails.name + ' executed sucessfully', result['result']));
-        });
-      }
-    });
+          // if there are no params do not make any turnarounds and just go!
+        } else {
+          this.entityService.executeAction(payload, false).subscribe(result => {
+            this.loadLazy(this.lastLazyLoadEvent);
+            console.log(result);
+            this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
+            // this.errorNotificationService.addSuccessNotification('Aktion ' + actionDetails.name + ' executed sucessfully', result['result']);
+          });
+        }
+      })
+    );
+  }
+
+  showActionResult(actionName: string, result: string, output: string, showResult: boolean) {
+    if (!showResult) {
+      this.errorNotificationService.addSuccessNotification('Aktion ' + actionName + ' executed sucessfully', result);
+    } else {
+      const dialogRef = this.dialogService.open(ScriptResultComponent, {
+        data: {
+          result: result,
+          output: output
+        },
+        header: actionName + ' ausgeführt',
+        width: '800px'
+      });
+    }
+
   }
 
   entitySelected(entity: any) {
