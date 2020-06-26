@@ -367,7 +367,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     // width required to display action icons, per Icon 32px required
     const actionIconSpace: number = this.actionCount * 32;
     // offset of 90px to display update and delete icons
-    width -= this.minTableWidth + (this.showButtons ? (90 + actionIconSpace) : 2);
+    width -= this.minTableWidth + (this.showButtons ? (154 + actionIconSpace) : 2);
     if (!col.width) {
       return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
     } else if (col.width.endsWith('px')) {
@@ -409,7 +409,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
               response.subscribe((result) => {
                 this.loadLazy(this.lastLazyLoadEvent);
                 this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
-                // this.errorNotificationService.addSuccessNotification('Aktion ' + actionDetails.name + ' executed sucessfully', result['result']);
               });
             }
           });
@@ -420,7 +419,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             this.loadLazy(this.lastLazyLoadEvent);
             console.log(result);
             this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
-            // this.errorNotificationService.addSuccessNotification('Aktion ' + actionDetails.name + ' executed sucessfully', result['result']);
           });
         }
       })

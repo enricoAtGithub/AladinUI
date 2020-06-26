@@ -78,8 +78,8 @@
                 <button *ngFor="let action of rowData._actions_" pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton" (click)="executeAction(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
             </code>
 
-            <code *ngIf="configuration?.type === 'FileAttachment'" class="html">
-              <ng-template [appPermissionCheck]="root.dto.FileAttachment.download">
+            <code *ngIf="configuration?.type === 'FileAttachment' || configuration?.type === 'File'" class="html">
+              <ng-template [appPermissionCheck]="root.dto.FileAttachment.download || root.dto.File.download">
                 <button  pButton type="button" icon="fa fa-download" class="crudButton" fileSaver
                 pTooltip="Herunterladen" [method]="'GET'" [fileName]="rowData['fileName']" [url]="downloadUrl(rowData['id'])"></button>
               </ng-template>
