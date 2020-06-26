@@ -18,6 +18,10 @@ export const root = {
             upload: 'dto.FileAttachment.upload',
             download: 'dto.FileAttachment.download'
         },
+        File: {
+            upload: 'dto.FileAttachment.upload',
+            download: 'dto.FileAttachment.download'
+        },
         Order: {
             create: 'dto.Order.create',
             read: 'dto.Order.read',
@@ -89,6 +93,8 @@ export const list = [
     'dto.$dtoType.$dtoField.write',
     'dto.FileAttachment.upload',
     'dto.FileAttachment.download',
+    'dto.File.upload',
+    'dto.File.download',
     'dto.Order.create',
     'dto.Order.read',
     'dto.Order.write',

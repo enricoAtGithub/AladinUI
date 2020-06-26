@@ -9,9 +9,12 @@
       - create
       - read
       - write
-  - FileAttachment: # 
+  - FileAttachment:  
     - upload
     - download  
+  - File:  
+    - upload
+    - download 
   - Order:
     - create
     - read
