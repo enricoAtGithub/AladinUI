@@ -30,3 +30,7 @@
     transition-duration: 250ms;
     font-size: 1.5em;
 }
+
+.calenderInputWidthFix {
+    width: calc(100% - 2.143em)
+}
