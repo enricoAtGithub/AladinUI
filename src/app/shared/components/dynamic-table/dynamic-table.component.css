@@ -34,3 +34,11 @@
 .calenderInputWidthFix {
     width: calc(100% - 2.143em)
 }
+
+::ng-deep .ui-dropdown-item {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+    display: inline-block;
+}

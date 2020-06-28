@@ -81,7 +81,7 @@
                     <button pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; editComplete(rowData);"></button>
                   </ng-container>
                   <ng-container *ngSwitchCase="'CatalogueEntry'">
-                    <p-dropdown [placeholder]="field.header" [name]="field.field" [options]="field.options" [style]="{'min-width':'5em', 'width': '100%'}" optionLabel="_repr_" [(ngModel)]="rowData[field.field]"
+                    <p-dropdown [placeholder]="field.header" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}" [style]="{'minWidth': '0px', 'display':'grid'}" optionLabel="_repr_" [(ngModel)]="rowData[field.field]"
                       (onChange)="cell.isEdited = false; editComplete(rowData)"></p-dropdown>
                   </ng-container>
                   <ng-container *ngSwitchCase="'Currency'">
