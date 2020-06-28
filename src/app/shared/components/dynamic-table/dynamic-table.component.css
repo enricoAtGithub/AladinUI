@@ -19,13 +19,14 @@
 }
 
 .cellEditIcon {
-    color: #AAAAAA;
+    color: rgba(0,0,0,0);
     cursor: pointer;
     transition-duration: 150ms;
 }
 
-.cellEditIcon:hover {
-    color: rgb(184, 171, 0);
+#hoverEffect:hover .cellEditIcon {
+    /*color: rgb(184, 171, 0);*/
+    color: black;
     transition-duration: 250ms;
     font-size: 1.5em;
 }

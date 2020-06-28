@@ -54,8 +54,8 @@
       <ng-template pTemplate="body" let-rowData let-fields="columns">
         <!-- Processing and displaying the data -->
         <tr [pSelectableRow]="rowData" (dblclick)="doubleClickTableRow(rowData)">
-          <td *ngFor="let field of fields" [style.width]="calcWidth(field, dt.el.nativeElement.offsetWidth)" style="word-wrap: break-word;">
-            <div style="display: flex; align-items: center;" [style.justify-content]="field.type === 'boolean' ? 'center' : 'unset'">
+          <td *ngFor="let field of fields" id="hoverEffect" [style.width]="calcWidth(field, dt.el.nativeElement.offsetWidth)" style="word-wrap: break-word;">
+            <div style="display: flex; align-items: center;" [style.justify-content]="field.type === 'boolean' ? 'center' : 'space-between'">
               <ng-container [var]="{isEdited: false, isFocused: false}" #cell="var">
                 <ng-container *ngIf="cell.isEdited else displayEditable" [ngSwitch]="field.type">
                   <ng-container *ngSwitchCase="'String'">
