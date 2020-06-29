@@ -56,7 +56,7 @@ export class AttachmentListComponent implements OnInit {
 
   requestAttachmentData() {
     const attachmentRequestData = {
-      mainType: this.mainType,
+      attachmentType: this.mainType,
       ownerType: this.ownerType,
       ownerId: this.ownerId,
       attachmentCategory: this.attachmentCategory
@@ -110,8 +110,8 @@ export class AttachmentListComponent implements OnInit {
       //      "ownerId" : 9
       // }
       const attachmentRequest: AttachmentRequestData = {
-        mainType: this.mainType,
-        mainId: id,
+        attachmentType: this.mainType,
+        attachmentId: id,
         ownerType: this.ownerType,
         ownerId: this.ownerId
       };

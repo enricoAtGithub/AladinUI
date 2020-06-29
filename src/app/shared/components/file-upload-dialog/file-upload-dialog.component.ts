@@ -89,8 +89,8 @@ export class FileUploadDialogComponent implements OnInit {
   attachFileToEntity(uploadResult: FileUploadResult) {
     this.attachmentService.attachToEntity(
       <AttachmentRequestData>{
-        mainType: MAIN_TYPE,
-        mainId: uploadResult.id,
+        attachmentType: MAIN_TYPE,
+        attachmentd: uploadResult.id,
         ownerType: this.ownerType,
         ownerId: this.ownerId,
         attachmentCategory: this.attachmentCategory})

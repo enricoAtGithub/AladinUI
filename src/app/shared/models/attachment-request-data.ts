@@ -1,6 +1,6 @@
 export interface AttachmentRequestData {
-    mainType: string;
-    mainId?: number;
+    attachmentType: string;
+    attachmentId?: number;
     ownerType: string;
     ownerId: number;
     attachmentCategory?: string;
