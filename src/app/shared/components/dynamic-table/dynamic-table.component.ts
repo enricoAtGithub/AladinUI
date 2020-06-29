@@ -53,7 +53,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   displayEntitySelectionDialog = false;
   entitySelectionTableData: TableData;
   entitySelectionContext: { field: string, id: number };
-  cellEditCache: Map<String, any>;
+  cellEditCache: any;
+  lastCellRef: any;
 
   constructor(
     private entityService: EntityService,
@@ -458,7 +459,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     const rowData = this.entityData.data.find(row => row['id'] === this.entitySelectionContext.id);
     rowData[this.entitySelectionContext.field] = { id: entity['id'], _repr_: entity['_repr_'] };
     this.displayEntitySelectionDialog = false;
-    this.editComplete(rowData);
+    this.completeCellEdit(rowData);
   }
 
   openEntitySelectionDialog(field: any, id: number) {
@@ -474,7 +475,32 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.displayEntitySelectionDialog = true;
   }
 
-  editComplete(data) {
+  setBlur(cell) {
+    setTimeout(() => cell.isFocused = false, 100);
+  }
+
+  abortCellEdit(rowData) {
+    console.log(this.cellEditCache);
+    rowData[this.cellEditCache.field] = this.cellEditCache.data[this.cellEditCache.field];
+    this.lastCellRef.isEdited = false;
+    this.cellEditCache = undefined;
+    this.lastCellRef = undefined;
+  }
+
+  initCellEdit(cellRef, field: string, rowData) {
+      // If another cell is being edited abort the edit operation and initialize the new edit operation
+    if (this.lastCellRef !== undefined) {
+      this.abortCellEdit(this.entityData.data.find(row => row['id'] === this.cellEditCache.data['id']));
+    }
+    this.cellEditCache = {field: field, data: Object.assign({}, rowData)};
+    cellRef.isEdited = true;
+    this.lastCellRef = cellRef;
+  }
+
+  completeCellEdit(data) {
+    this.lastCellRef = undefined;
+    this.cellEditCache = undefined;
+
     const dateFields = this.configuration.fields.filter(field => field.type === 'Date');
     dateFields.forEach(field => {
       data[field.field] = new Date(data[field.field]).toISOString();
@@ -487,19 +513,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       });
       this.entityData.data[index] = result['fields'];
     }, error => this.refreshTableContents());
-  }
-
-  setBlur(cell) {
-    setTimeout(() => cell.isFocused = false, 100);
-  }
-
-  storeContent(field: string, rowData) {
-    this.cellEditCache.set(field + '§' + rowData['id'], rowData[field]);
-  }
-
-  restoreContent(field: string, rowData) {
-    rowData[field] = this.cellEditCache.get(field + '§' + rowData['id']);
-    this.cellEditCache.delete(field + '§' + rowData['id']);
   }
 
 }

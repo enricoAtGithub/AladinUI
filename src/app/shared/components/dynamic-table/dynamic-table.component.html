@@ -61,28 +61,28 @@
                   <ng-container *ngSwitchCase="'String'">
                     <input [name]="field.field" type="text" [(ngModel)]="rowData[field.field]" style="width: calc(100% - 30px)" pInputText
                       (click)="$event.stopPropagation()" (blur)="setBlur(cell)" (focus)="cell.isFocused = true;">
-                    <button *ngIf="cell.isFocused" pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; editComplete(rowData);"></button>
-                    <button *ngIf="!cell.isFocused" pButton type="button" icon="pi pi-times" (click)="cell.isEdited = false; restoreContent(field.field, rowData)"></button>
+                    <button *ngIf="cell.isFocused" pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; completeCellEdit(rowData);"></button>
+                    <button *ngIf="!cell.isFocused" pButton type="button" icon="pi pi-times" (click)="abortCellEdit(rowData)"></button>
                   </ng-container>
                   <ng-container *ngSwitchCase="'int'">
                     <input [name]="field.field" type="number" [(ngModel)]="rowData[field.field]" style="width: calc(100% - 30px)" pInputText
                       (click)="$event.stopPropagation()" (blur)="setBlur(cell)" (focus)="cell.isFocused = true;">
-                    <button *ngIf="cell.isFocused" pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; editComplete(rowData);"></button>
-                    <button *ngIf="!cell.isFocused" pButton type="button" icon="pi pi-times" (click)="cell.isEdited = false; restoreContent(field.field, rowData)"></button>
+                    <button *ngIf="cell.isFocused" pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; completeCellEdit(rowData);"></button>
+                    <button *ngIf="!cell.isFocused" pButton type="button" icon="pi pi-times" (click)="abortCellEdit(rowData)"></button>
                   </ng-container>
                   <ng-container *ngSwitchCase="'boolean'">
                     <p-checkbox [name]="field.field" [binary]="true" [(ngModel)]="rowData[field.field]" ngClass="centerCheckbox"
-                      (onChange)="cell.isEdited = false; editComplete(rowData);"
+                      (onChange)="cell.isEdited = false; completeCellEdit(rowData);"
                       (click)="$event.stopPropagation()"></p-checkbox>
                   </ng-container>
                   <ng-container *ngSwitchCase="'Date'">
                     <p-calendar [name]="field.field" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" class="calenderInputWidthFix" [(ngModel)]="rowData[field.field]"
-                      (click)="$event.stopPropagation()" (onClose)="cell.isEdited = false; restoreContent(field.field, rowData)"></p-calendar>
-                    <button pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; editComplete(rowData);"></button>
+                      (click)="$event.stopPropagation()" (onClose)="abortCellEdit(rowData)"></p-calendar>
+                    <button pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; completeCellEdit(rowData);"></button>
                   </ng-container>
                   <ng-container *ngSwitchCase="'CatalogueEntry'">
-                    <p-dropdown [placeholder]="field.header" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}" [style]="{'minWidth': '0px', 'display':'grid'}" optionLabel="_repr_" [(ngModel)]="rowData[field.field]"
-                      (onChange)="cell.isEdited = false; editComplete(rowData)"></p-dropdown>
+                    <p-dropdown [placeholder]="field.header" class="dropdownFullWidth" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}" [style]="{'minWidth': '0px', 'display':'grid'}" optionLabel="_repr_" [(ngModel)]="rowData[field.field]"
+                      (onChange)="cell.isEdited = false; completeCellEdit(rowData)"></p-dropdown>
                   </ng-container>
                   <ng-container *ngSwitchCase="'Currency'">
                     <div class="ui-inputgroup" style="width: calc(100% - 2.143em);">            
@@ -90,8 +90,8 @@
                         (click)="$event.stopPropagation()" (blur)="setBlur(cell)" (focus)="cell.isFocused = true;">
                       <span class="ui-inputgroup-addon">{{currency$ | async}}</span>
                     </div>
-                    <button *ngIf="cell.isFocused" pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; editComplete(rowData);"></button>
-                    <button *ngIf="!cell.isFocused" pButton type="button" icon="pi pi-times" (click)="cell.isEdited = false; restoreContent(field.field, rowData)"></button>
+                    <button *ngIf="cell.isFocused" pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; completeCellEdit(rowData);"></button>
+                    <button *ngIf="!cell.isFocused" pButton type="button" icon="pi pi-times" (click)="abortCellEdit(rowData)"></button>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
                     <input [disabled]="true" [placeholder]="rowData[field.field]?._repr_" style="width: calc(100% - 2.143em)" pInputText
@@ -108,7 +108,7 @@
                     <div *ngSwitchCase="'python'" style="font-family: monospace;">{{processData(rowData[field.field], field)}}</div>
                     <div *ngSwitchDefault>{{processData(rowData[field.field], field)}}</div>
                   </ng-container>
-                  <i *ngIf="field.editable" class="pi pi-pencil cellEditIcon" (click)="cell.isEdited = true; $event.stopPropagation(); storeContent(field.field, rowData)"></i>
+                  <i *ngIf="field.editable" class="pi pi-pencil cellEditIcon" (click)="$event.stopPropagation(); initCellEdit(cell, field.field, rowData);"></i>
                 </ng-template>
               </ng-container>
             </div>
