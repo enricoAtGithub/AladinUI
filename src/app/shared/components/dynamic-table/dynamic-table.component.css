@@ -46,3 +46,7 @@
 .dropdownFullWidth {
     width: 100%;
 }
+
+::ng-deep .ui-multiselect .ui-multiselect-label {
+    white-space: nowrap;
+}

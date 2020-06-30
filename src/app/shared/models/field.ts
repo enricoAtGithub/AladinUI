@@ -22,6 +22,6 @@ export class Field extends BasicFieldConfig {
 }
 
 class Option {
-    _repr_: string;
-    id: any;
+    label: string;
+    value: any;
 }

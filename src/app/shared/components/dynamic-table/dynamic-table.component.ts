@@ -112,13 +112,13 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
                 .subscribe(catalogue => {
                   catalogue.values.forEach(o => {
                     if (field.type === 'CatalogueEntry') {
-                      field.options.push({ _repr_: o.name, id: o.id });
+                      field.options.push({ label: o.name, value: o.id });
                     } else {
                       this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe((attributes: any) => {
                         const icon = attributes.find(attr => attr['name'] === 'icon');
                         const color = attributes.find(attr => attr['name'] === 'color');
                         field.options.push({
-                          _repr_: '__icon__', id:
+                          label: '__icon__', value:
                             { id: '' + o.id, icon: icon ? icon['stringValue'] : '', color: color ? color['stringValue'] : '' }
                         });
                       });
@@ -130,7 +130,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             this.subscriptions.push(
               this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
                 .subscribe(data => {
-                  data.data.forEach(o => field.options.push({ _repr_: o._repr_, id: o.id }));
+                  data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
                 }));
           }
         }
