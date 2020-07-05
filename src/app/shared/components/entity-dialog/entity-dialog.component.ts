@@ -190,6 +190,10 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     this.showCodeEditor = false;
   }
 
+  isKnownType(type: string) {
+    return Field.isKnownType(type);
+  }
+
   nullField(field: Field, form: NgForm) {
     form.control.patchValue({ [field.field]: null });
   }
