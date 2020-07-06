@@ -8,7 +8,7 @@ export interface AttachmentRequestData {
     /**
      *
      */
-    // constructor(ownerType: string,  ownerId: number, attachmentCategory: string, mainType: string, mainId?: number) {
+    // constructor(ownerType: string,  ownerId: number, attachmentCategory: string, attachmentType: string, mainId?: number) {
     //     this.ownerType = ownerType
     // }
 }

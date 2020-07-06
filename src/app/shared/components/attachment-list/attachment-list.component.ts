@@ -21,7 +21,7 @@ export class AttachmentListComponent implements OnInit {
   @Input() receiveDataFromParent = false;
 
   @Input() documentTypeForHeader = 'Dokumente';
-  @Input() mainType: string;
+  @Input() attachmentType: string;
   @Input() ownerType: string;
   @Input() ownerId: number;
   @Input() attachmentCategory?: string;
@@ -56,7 +56,7 @@ export class AttachmentListComponent implements OnInit {
 
   requestAttachmentData() {
     const attachmentRequestData = {
-      attachmentType: this.mainType,
+      attachmentType: this.attachmentType,
       ownerType: this.ownerType,
       ownerId: this.ownerId,
       attachmentCategory: this.attachmentCategory
@@ -104,21 +104,21 @@ export class AttachmentListComponent implements OnInit {
     console.log('[AttachmentListComponent-detachAndDeleteEntity]');
     // detach
       // 	{
-      //      "mainType" : "File",
-      //      "mainId" : 12,
+      //      "attachmentType" : "File",
+      //      "attachmentId" : 12,
       //      "ownerType" : "Glass",
       //      "ownerId" : 9
       // }
       const attachmentRequest: AttachmentRequestData = {
-        attachmentType: this.mainType,
+        attachmentType: this.attachmentType,
         attachmentId: id,
         ownerType: this.ownerType,
         ownerId: this.ownerId
       };
       this.attachmentService.detachFromEntity(attachmentRequest).subscribe(_ => {
         // delete
-        this.entityService.deleteEntity(this.mainType, id).subscribe(_ => {
-          console.log(`successfully deleted ${this.mainType}`);
+        this.entityService.deleteEntity(this.attachmentType, id).subscribe(_ => {
+          console.log(`successfully deleted ${this.attachmentType}`);
           this.updateData();
           this.attachmentRemoved.emit(attachmentRequest);
         });
