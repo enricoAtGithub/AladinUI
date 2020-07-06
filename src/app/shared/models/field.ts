@@ -21,7 +21,7 @@ export class Field extends BasicFieldConfig {
     }
 
     public static isKnownType(type: string) {
-        return this.isPrimitiveType(type) || type === 'currency' || type === 'json' || type === 'python' || type === 'dtoType' || type === 'CatalogueEntry';
+        return this.isPrimitiveType(type) || type === 'Currency' || type === 'json' || type === 'python' || type === 'dtoType' || type === 'CatalogueEntry' || type === 'Icon';
     }
 }
 
