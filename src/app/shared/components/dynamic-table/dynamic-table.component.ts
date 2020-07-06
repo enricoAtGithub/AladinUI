@@ -366,7 +366,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     // width required to display action icons, per Icon 32px required
     const actionIconSpace: number = this.actionCount * 32;
-    // offset of 90px to display update and delete icons
+    // offset of 154px to display up to 4 buttions (update, delete, download, upload; 4x32px plus 2x13px margin)
     width -= this.minTableWidth + (this.showButtons ? (154 + actionIconSpace) : 2);
     if (!col.width) {
       return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
@@ -384,7 +384,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.subscriptions.push(
       this.entityService.getAction(payload).subscribe((actionDetails: ScriptActionDefinition) => {
         payload['actionHrid'] = actionDetails.actionHrid; // prepare payload for executeAction (add HRID)
-        console.log(actionDetails);
 
         if (actionDetails.params.length > 0) {  // if there are params to be specified open entity dialog
           let entityObj: Object;
@@ -417,7 +416,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         } else {
           this.entityService.executeAction(payload, false).subscribe(result => {
             this.loadLazy(this.lastLazyLoadEvent);
-            console.log(result);
             this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
           });
         }
