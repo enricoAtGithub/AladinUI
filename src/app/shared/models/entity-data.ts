@@ -1,8 +1,11 @@
 export class EntityData {
-    count: Number;
-    pages: Number;
-    pageSize: Number;
+    count: number;
+    pages: number;
+    pageSize: number;
     data: any[];
+    maxActionNumber: number;
+    page: number;
+    type: string;
 }
 
 export class Entity {

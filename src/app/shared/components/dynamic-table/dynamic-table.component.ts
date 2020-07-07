@@ -49,7 +49,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   freeColumnSpace = 100;
   zeroWidthColumns = 0;
   currency$: Observable<string>;
-  actionCount: number;
+  crudColumnSpace: number;
 
   constructor(
     private entityService: EntityService,
@@ -82,9 +82,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       this.currency$ = this.settingsService.getSetting('CURRENCY').pipe(map(setting => setting.value));
 
       this.checkShowButtons();
-
-      // get number of actions for this entity, required for calcWidth()
-      this.actionCount = (this.configuration.actions ? Object.keys(this.configuration.actions).length : 0);
 
       this.minTableWidth = this.showButtons ? 90 : 0;
       this.fields = this.configuration.fields.filter(field => field.visible === true);
@@ -226,9 +223,17 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     if (this.tableData.dataSource === undefined) {
       this.subscriptions.push(
         this.entityService.filter(this.tableData.entityType, page, event.rows, this.mainId, qualifier, sorting)
-          .subscribe(data => { this.entityData = data; this.loading = false; }));
+          .subscribe(data => {
+            this.entityData = data; this.loading = false;
+            this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
+            }));
     } else {
-      this.subscriptions.push(this.tableData.dataSource.subscribe(data => { this.entityData = data; this.loading = false; }));
+      this.subscriptions.push(
+        this.tableData.dataSource
+          .subscribe(data => {
+            this.entityData = data; this.loading = false;
+            this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
+          }));
     }
   }
 
@@ -364,10 +369,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       width = Math.max(width, this.configuration.minWidth);
     }
 
-    // width required to display action icons, per Icon 32px required
-    const actionIconSpace: number = this.actionCount * 32;
-    // offset of 154px to display up to 4 buttions (update, delete, download, upload; 4x32px plus 2x13px margin)
-    width -= this.minTableWidth + (this.showButtons ? (154 + actionIconSpace) : 2);
+    width -= this.minTableWidth + (this.showButtons ? (this.crudColumnSpace) : 2);
     if (!col.width) {
       return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
     } else if (col.width.endsWith('px')) {
@@ -375,6 +377,11 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     } else {
       return Math.floor(Number.parseInt(col.width, 10) * width / 100.0) + 'px';
     }
+  }
+
+  calcCrudColWidth(actionCount: number): number	{
+    // width required to display action icons, per Icon 32px required, additional offset of 2x13px for margin
+    return (actionCount * 32) + 26;
   }
 
   executeAction(actionHrid: string, dtoType: string, entityId: number) {

@@ -10,6 +10,7 @@
         <button pButton (click)="showAddEntityDialog()" icon="pi pi-plus" style="float: right; margin-top: -5px;"></button>
         <button pButton (click)="refreshTableContents()" icon="pi pi-undo" style="float: right; margin-top: -5px; margin-right: 5px;"></button>
       </ng-template>
+      
       <!-- Table Headers -->
       <ng-template pTemplate="header" let-columns>
         <tr>
@@ -42,8 +43,7 @@
             </div>
           </th>
           
-          <!-- <th *ngIf="showButtons" style="width:190px">Bearbeiten</th> fixed width needs to be removed, refactor later (calculate width exactly due to issues in chrome)-->
-          <th *ngIf="showButtons">Bearbeiten</th>
+          <th *ngIf="showButtons" [style.width.px]="crudColumnSpace">Bearbeiten</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -60,8 +60,7 @@
           </td>
 
           <!-- Crud Buttons -->
-          <!-- <td *ngIf="showButtons" style="text-align: center; width: 190px;"> fixed width needs to be removed, refactor later (calculate width exactly due to issues in chrome) -->
-          <td *ngIf="showButtons"  style="text-align: center; width: 1px; white-space: nowrap;">
+          <td *ngIf="showButtons"  [style.width.px]="crudColumnSpace" style="text-align: center;">
             <code *ngFor="let action of rowData._actions_" [ngSwitch]="action" class="html"> 
               <!-- server hard coded actions -->
               <button *ngSwitchCase="'UPDATE'" pButton type="button" icon="pi pi-pencil" class="crudButton" pTooltip="Bearbeiten" (click)="updateEntity(rowData)"></button>
