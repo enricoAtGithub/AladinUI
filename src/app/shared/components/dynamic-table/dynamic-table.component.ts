@@ -55,6 +55,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   entitySelectionContext: { field: string, id: number };
   cellEditCache: any;
   lastCellRef: any;
+  crudColumnSpace: number;
 
   constructor(
     private entityService: EntityService,
@@ -88,9 +89,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       this.currency$ = this.settingsService.getSetting('CURRENCY').pipe(map(setting => setting.value));
 
       this.checkShowButtons();
-
-      // get number of actions for this entity, required for calcWidth()
-      this.actionCount = (this.configuration.actions ? Object.keys(this.configuration.actions).length : 0);
 
       this.minTableWidth = this.showButtons ? 90 : 0;
       this.fields = this.configuration.fields.filter(field => field.visible === true);
@@ -238,9 +236,17 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             });
             return entities;
           }))
-          .subscribe(data => { this.entityData = data; this.loading = false; }));
+          .subscribe(data => {
+            this.entityData = data; this.loading = false;
+            this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
+            }));
     } else {
-      this.subscriptions.push(this.tableData.dataSource.subscribe(data => { this.entityData = data; this.loading = false; }));
+      this.subscriptions.push(
+        this.tableData.dataSource
+          .subscribe(data => {
+            this.entityData = data; this.loading = false;
+            this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
+          }));
     }
   }
 
@@ -376,10 +382,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       width = Math.max(width, this.configuration.minWidth);
     }
 
-    // width required to display action icons, per Icon 32px required
-    const actionIconSpace: number = this.actionCount * 32;
-    // offset of 90px to display update and delete icons
-    width -= this.minTableWidth + (this.showButtons ? (90 + actionIconSpace) : 2);
+    width -= this.minTableWidth + (this.showButtons ? (this.crudColumnSpace) : 2);
     if (!col.width) {
       return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
     } else if (col.width.endsWith('px')) {
@@ -389,6 +392,11 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
   }
 
+  calcCrudColWidth(actionCount: number): number	{
+    // width required to display action icons, per Icon 32px required, additional offset of 2x13px for margin
+    return (actionCount * 32) + 26;
+  }
+
   executeAction(actionHrid: string, dtoType: string, entityId: number) {
     const payload: ScriptActionPayload = { actionHrid: actionHrid, entityReference: { dtoType: dtoType, id: entityId } };
 
@@ -396,7 +404,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.subscriptions.push(
       this.entityService.getAction(payload).subscribe((actionDetails: ScriptActionDefinition) => {
         payload['actionHrid'] = actionDetails.actionHrid; // prepare payload for executeAction (add HRID)
-        console.log(actionDetails);
 
         if (actionDetails.params.length > 0) {  // if there are params to be specified open entity dialog
           let entityObj: Object;
@@ -421,7 +428,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
               response.subscribe((result) => {
                 this.loadLazy(this.lastLazyLoadEvent);
                 this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
-                // this.errorNotificationService.addSuccessNotification('Aktion ' + actionDetails.name + ' executed sucessfully', result['result']);
               });
             }
           });
@@ -430,9 +436,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         } else {
           this.entityService.executeAction(payload, false).subscribe(result => {
             this.loadLazy(this.lastLazyLoadEvent);
-            console.log(result);
             this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
-            // this.errorNotificationService.addSuccessNotification('Aktion ' + actionDetails.name + ' executed sucessfully', result['result']);
           });
         }
       })

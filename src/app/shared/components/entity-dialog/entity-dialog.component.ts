@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DynamicDialogRef, DynamicDialogConfig, InputText, DialogService, SelectItem } from 'primeng/primeng';
-import { EntityConfiguration } from '../../models/entity-configuration';
+import { DynamicDialogRef, DynamicDialogConfig, InputText, SelectItem } from 'primeng/primeng';
 import { FormGroup, NgForm } from '@angular/forms';
 import { EntityService } from '../../services/entity.service';
 import { CatalogueService } from 'src/app/user/services/catalogue.service';
@@ -14,8 +13,6 @@ import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors'
 import { Field } from '../../models/field';
 import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
 import DateTimeUtils from '../../utils/date-time.utils';
-import { CodeEditorComponent } from '../code-editor/code-editor.component';
-import { Entity } from '../../models/entity-data';
 import { ScriptActionPayload } from '../../models/script-action';
 
 
@@ -189,6 +186,10 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
       this.codeSelCntxt.textModule['value'] = '<' + this.codeSelCntxt.field.type + '>*';
     }
     this.showCodeEditor = false;
+  }
+
+  _isKnownType(type: string) {
+    return Field.isKnownType(type);
   }
 
   nullField(field: Field, form: NgForm) {

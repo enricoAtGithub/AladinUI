@@ -18,7 +18,7 @@
   </div>
 
   <ng-template #formFields>
-    <div *ngFor="let field of fields">
+    <div *ngFor="let field of fields" >
       <div [ngSwitch]="field.type" *ngIf="(field.mandatory && !update) || field.editable" class="p-col form-group ui-g-12 ui-md-12" style="margin-bottom: 5px; display: flex">
         <span *ngSwitchCase="'String'" class="ui-float-label" style="flex-grow: 1;">
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]" id="float-input" type="text" style="width: 100%" pInputText>
@@ -27,19 +27,18 @@
         <span *ngSwitchCase="'int'" class="ui-float-label" style="flex-grow: 1;">
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]" id="float-input" type="number" pInputText> 
           <label for="float-input">{{field.header}}</label>
-        </span>        
-        <span *ngSwitchCase="'Currency'" class="ui-float-label" style="flex-grow: 1;">
-          <div class="ui-inputgroup">            
-            <input [required]="field.mandatory" [name]="field.field" [ngModel]="((entity) ? entity[field.field] : defaultCache[field.field])" pattern="^\d{1,3}((\.)?\d{3})*(,\d{1,2})?$" id="float-input" type="text" style="width: 172px; font-family: monospace;">
+        </span>
+        <div *ngSwitchCase="'Currency'" class="ui-inputgroup ui-float-label" style="flex-grow: 1;">            
+            <input [required]="field.mandatory" [name]="field.field" [ngModel]="((entity) ? entity[field.field] : defaultCache[field.field])" id="float-input" type="text" pattern="^\d{1,3}((\.)?\d{3})*(,\d{1,2})?$" style="width: 172px; height: 27px; font-family: monospace;" pInputText>
+            <label for="float-input">{{field.header}}</label>
             <span class="ui-inputgroup-addon">{{currency$ | async}}</span>
-          </div>
-        </span>        
+        </div>     
         <span *ngSwitchCase="'boolean'" style="flex-grow: 1; align-self: center;">
           <p-checkbox [required]="field.mandatory" [name]="field.field" [binary]="true" [label]="field.header" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]"></p-checkbox>
         </span>
         <span *ngSwitchCase="'Date'" class="ui-float-label" style="flex-grow: 1;">
           <p-calendar [required]="field.mandatory" [name]="field.field" showIcon="true" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]" [inputStyle]="{'width':'170px'}"></p-calendar>
-          <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
+          <label for="float-input">{{field.header}}</label>
         </span>
         <span *ngSwitchCase="'CatalogueEntry'" style="flex-grow: 1;">
           <p-dropdown [required]="field.mandatory" [placeholder]="field.header" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" [ngModel]="(entity) ? entity[field.field]?.id : defaultCache[field.field]" [style]="{'width':'200px'}"></p-dropdown>
@@ -64,12 +63,13 @@
         </span>    
 
         <span *ngSwitchDefault class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
-          <input #textModule [disabled]="true" [placeholder]="entity !== undefined ? entity[field.field]?._repr_ : ''" id="float-input" style="width: 100%" pInputText>
+          <input #textModule [disabled]="true" [ngModelOptions]="{standalone: true}" [ngModel]="entity && entity[field.field] ? entity[field.field]._repr_ : field.header" id="float-input" style="width: 100%" pInputText>
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : undefined" type="hidden">
           <button pButton type="button" (click)="openEntitySelectionDialog(field, textModule)" icon="pi pi-pencil"></button>
-          <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
+          <label *ngIf="textModule['value'] !== field.header" for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
+          <button *ngIf="!field.mandatory" pButton type="button" (click)="nullField(field, entityForm); textModule['value'] = field.header" icon="pi pi-times"></button>
         </span>
-        <button *ngIf="!field.mandatory" pButton type="button" (click)="nullField(field, entityForm)" icon="pi pi-times"></button>
+        <button *ngIf="!field.mandatory && _isKnownType(field.type)" pButton type="button" (click)="nullField(field, entityForm)" icon="pi pi-times"></button>
       </div>
     </div>
   </ng-template>

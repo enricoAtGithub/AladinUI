@@ -18,7 +18,7 @@ export class EntityFileAttachmentsComponent implements OnChanges {
   ngOnChanges() {
     if (!this.fileTableData) {
       const dataSource = this.entityService
-        .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.type, ownerId: this.entryId});
+        .postEntityDataFromUrl('/attachment/all', {attachmentType: 'File', ownerType: this.type, ownerId: this.entryId});
         this.fileTableData = new TableData('FileAttachment', 'FileAttachment')
           .setScrollable()
           .setScrollHeight('175px')
@@ -28,7 +28,7 @@ export class EntityFileAttachmentsComponent implements OnChanges {
           .disablePagination();
     } else if (this.entryId && this.type) {
       this.fileTableData.dataSource  = this.entityService
-        .postEntityDataFromUrl('/attachment/all', {mainType: 'File', ownerType: this.type, ownerId: this.entryId});
+        .postEntityDataFromUrl('/attachment/all', {attachmentType: 'File', ownerType: this.type, ownerId: this.entryId});
       this.fileTableData.triggerRefresh.next();
     }
   }

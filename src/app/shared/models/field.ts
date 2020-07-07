@@ -19,6 +19,10 @@ export class Field extends BasicFieldConfig {
     public static isPrimitiveType(type: string) {
         return type === 'String' || type === 'int' || type === 'boolean' || type === 'Date' || type === 'Currency';
     }
+
+    public static isKnownType(type: string) {
+        return this.isPrimitiveType(type)  || type === 'json' || type === 'python' || type === 'dtoType' || type === 'CatalogueEntry' || type === 'Icon';
+    }
 }
 
 class Option {

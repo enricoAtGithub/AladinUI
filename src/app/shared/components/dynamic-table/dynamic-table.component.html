@@ -15,6 +15,7 @@
         <button pButton (click)="showAddEntityDialog()" icon="pi pi-plus" style="float: right; margin-top: -5px;"></button>
         <button pButton (click)="refreshTableContents()" icon="pi pi-undo" style="float: right; margin-top: -5px; margin-right: 5px;"></button>
       </ng-template>
+      
       <!-- Table Headers -->
       <ng-template pTemplate="header" let-columns>
         <tr>
@@ -47,8 +48,7 @@
             </div>
           </th>
           
-          <!-- <th *ngIf="showButtons" style="width:190px">Bearbeiten</th> fixed width needs to be removed, refactor later (calculate width exactly due to issues in chrome)-->
-          <th *ngIf="showButtons">Bearbeiten</th>
+          <th *ngIf="showButtons" [style.width.px]="crudColumnSpace">Bearbeiten</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-fields="columns">
@@ -116,32 +116,19 @@
 
 
           <!-- Crud Buttons -->
-          <!-- <td *ngIf="showButtons" style="text-align: center; width: 190px;"> fixed width needs to be removed, refactor later (calculate width exactly due to issues in chrome) -->
-          <td *ngIf="showButtons" style="text-align: center">
-            <code *ngIf="configuration?.type !== 'FileAttachment'" class="html">
-              <ng-template [appPermissionCheck]="root.dto.$dtoType.write" [appPermissionCheckVarDict]="{'$dtoType':configuration.type}">
-                <button pButton type="button" icon="pi pi-pencil" class="crudButton" pTooltip="Bearbeiten" (click)="updateEntity(rowData)"></button>
-              </ng-template>
+          <td *ngIf="showButtons"  [style.width.px]="crudColumnSpace" style="text-align: center;">
+            <code *ngFor="let action of rowData._actions_" [ngSwitch]="action" class="html"> 
+              <!-- server hard coded actions -->
+              <button *ngSwitchCase="'UPDATE'" pButton type="button" icon="pi pi-pencil" class="crudButton" pTooltip="Bearbeiten" (click)="updateEntity(rowData)"></button>
+              <button *ngSwitchCase="'DELETE'" pButton type="button" icon="pi pi-trash" class="crudButton" pTooltip="Löschen" (click)="deleteEntity(rowData)"></button>
+              <!-- Upload to be implemented -->
+              <button *ngSwitchCase="'UPLOAD'" pButton type="button" icon="fa fa-upload" class="crudButton" fileSaver pTooltip="Datei aktualisieren"></button>
+              <button *ngSwitchCase="'DOWNLOAD'" pButton type="button" icon="fa fa-download" class="crudButton" fileSaver pTooltip="Herunterladen" [method]="'GET'" [fileName]="rowData['fileName']" [url]="downloadUrl(rowData['id'])"></button>
+              <!-- dynamic script actions -->
+              <button *ngSwitchDefault pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton" (click)="executeAction(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
             </code>
-
-            <code *ngIf="configuration?.type !== 'FileAttachment'" class="html">
-              <ng-template [appPermissionCheck]="root.dto.$dtoType.delete" [appPermissionCheckVarDict]="{'$dtoType':configuration.type}">
-                <button pButton type="button" icon="pi pi-trash" class="crudButton" pTooltip="Löschen" (click)="deleteEntity(rowData)"></button>
-              </ng-template>
-            </code>
-
-            <code *ngIf="configuration?.type !== 'FileAttachment'" class="html">                                                                                                                                           
-                <button *ngFor="let action of rowData._actions_" pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton" (click)="executeAction(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
-            </code>
-
-            <code *ngIf="configuration?.type === 'FileAttachment'" class="html">
-              <ng-template [appPermissionCheck]="root.dto.FileAttachment.download">
-                <button  pButton type="button" icon="fa fa-download" class="crudButton" fileSaver
-                pTooltip="Herunterladen" [method]="'GET'" [fileName]="rowData['fileName']" [url]="downloadUrl(rowData['id'])"></button>
-              </ng-template>
-            </code>
-
           </td>
+
         </tr>
       </ng-template>
     </p-table>
