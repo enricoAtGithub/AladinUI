@@ -1,102 +1,72 @@
-<p-button 
-    [label]="openDialogLabel"
-    icon="pi pi-plus"
-    (click)="onButtonClickShowFileDialog()">
-</p-button>
+<div class="p-grid">
+    <div class="p-col-4" style="text-align: right">{{catalogueDisplayName}}:</div>
+    <div class="p-col-8">
+        <app-catalogue-chooser-dialog 
+            [catalogueName]="catalogueName" 
+            [catalogueDisplayName]="catalogueDisplayName"
+            [visible]="showCatalogChooser" 
+            (itemSelected)='onCatalogueItemSelected($event)'>
+        </app-catalogue-chooser-dialog>
+    </div>
+</div>
 
-<p-dialog 
-    appendTo="body"
-    [header]="dialogHeader" 
-    [(visible)]="showFileDialog"
-    [modal]="true"
-    [resizable]="false"
-    [responsive]="true"
-    [draggable]="true"
-    [closable]="true"
-    [closeOnEscape]="true"
-    [dismissableMask]="false"
-    [style]="{'width': '800px'}"
-    (onShow)="onDlgShow()">
+<div class="p-grid">
+    <div class="p-col-4" style="text-align: right">Upload:</div>
+    <div class="p-col-8">
+        <p-fileUpload 
+            name="file" 
+            [url]="url"
+            [multiple]="false"  
+            [auto]="false"
+            mode="advanced"
+            [chooseLabel]="chooseLabel"
+            [uploadLabel]="uploadLabel"
+            [cancelLabel]="cancelLabel"
+            [maxFileSize]="maxUploadInByte"
 
-    <div class="p-grid">
-        <div class="p-col-4" style="text-align: right">{{catalogueDisplayName}}:</div>
-        <div class="p-col-8">
-            <app-catalogue-chooser-dialog 
-                [catalogueName]="catalogueName" 
-                [catalogueDisplayName]="catalogueDisplayName"
-                [visible]="showCatalogChooser" 
-                (itemSelected)='onCatalogueItemSelected($event)'>
-            </app-catalogue-chooser-dialog>
+            invalidFileSizeMessageDetail="Max. Uploadgröße ist: {0}"
+            invalidFileSizeMessageSummary="{0}: Datei zu groß,"
+            invalidFileTypeMessageSummary="Ungültiger Dateityp"
+            invalidFileTypeMessageDetail="Gültige Typen: {0}"
+
+            showCancelButton="false"
+            (onBeforeUpload)="onBeforeUpload($event)"
+            (onSend)="onSend($event)"
+            (onUpload)="onUpload($event)"
+            (onError)="onError($event)"
+            (onClear)="onClear($event)"
+            (onRemove)="onRemove($event)"
+            (onSelect)="onSelect($event)"
+            (onProgress)="onProgress($event)">
+        </p-fileUpload>
+    </div>
+</div>
+
+<div class="p-grid">
+    <div class="p-col-4" style="text-align: right">Dateiname:</div>
+    <div class="p-col-8">
+        <p-checkbox 
+            [(ngModel)]="keepOrgFileName" 
+            binary="true" 
+            label="Dateinamen beibehalten" 
+            [disabled]="disableKeepFileNameCheckbox()">
+        </p-checkbox>
+        <div class="ui-inputgroup" style="padding-top: 3px;">
+            <input 
+                type="text" 
+                pInputText 
+                placeholder="Dateiname" 
+                [readonly]="keepOrgFileName" 
+                [(ngModel)]="newFileName">   
+            <button 
+                pButton 
+                type="button" 
+                icon="fa fa-refresh" 
+                class="ui-button-warn" 
+                pTooltip="Dateinamen zurücksetzen"
+                [disabled]="disableFileNameResetButton()"
+                (click)="resetFileName()">
+            </button>      
         </div>
     </div>
-    <div class="p-grid">
-        <div class="p-col-4" style="text-align: right">Upload:</div>
-        <div class="p-col-8">
-            <p-fileUpload 
-                name="file" 
-                [url]="url"
-                [multiple]="false"  
-                [auto]="false"
-                mode="advanced"
-                [chooseLabel]="chooseLabel"
-                [uploadLabel]="uploadLabel"
-                [cancelLabel]="cancelLabel"
-                [maxFileSize]="maxUploadInByte"
-
-                invalidFileSizeMessageDetail="Max. Uploadgröße ist: {0}"
-                invalidFileSizeMessageSummary="{0}: Datei zu groß,"
-                invalidFileTypeMessageSummary="Ungültiger Dateityp"
-                invalidFileTypeMessageDetail="Gültige Typen: {0}"
-
-                showCancelButton="false"
-                (onBeforeUpload)="onBeforeUpload($event)"
-                (onSend)="onSend($event)"
-                (onUpload)="onUpload($event)"
-                (onError)="onError($event)"
-                (onClear)="onClear($event)"
-                (onRemove)="onRemove($event)"
-                (onSelect)="onSelect($event)"
-                (onProgress)="onProgress($event)">
-            </p-fileUpload>
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-4" style="text-align: right">Dateiname:</div>
-        <div class="p-col-8">
-            <p-checkbox 
-                [(ngModel)]="keepOrgFileName" 
-                binary="true" 
-                label="Dateinamen beibehalten" 
-                [disabled]="disableKeepFileNameCheckbox()">
-            </p-checkbox>
-            <div class="ui-inputgroup" style="padding-top: 3px;">
-                <input 
-                    type="text" 
-                    pInputText 
-                    placeholder="Dateiname" 
-                    [readonly]="keepOrgFileName" 
-                    [(ngModel)]="newFileName">   
-                <button 
-                    pButton 
-                    type="button" 
-                    icon="fa fa-refresh" 
-                    class="ui-button-warn" 
-                    pTooltip="Dateinamen zurücksetzen"
-                    [disabled]="disableFileNameResetButton()"
-                    (click)="resetFileName()">
-                </button>      
-            </div>
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-4" style="text-align: right"></div>
-        <div class="p-col-8">
-            <p-messages [(value)]="uploadMessages"></p-messages>
-        </div>
-    </div>
-
-    
-
-    
-
-</p-dialog>
+</div>

@@ -20,6 +20,7 @@ import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permiss
 import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
 import { ScriptActionDefinition, ScriptActionPayload } from '../../models/script-action';
 import { ScriptResultComponent } from 'src/app/jmeleon/components/script-result/script-result.component';
+import { FileUploadDialogComponent } from '../file-upload-dialog/file-upload-dialog.component';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -30,6 +31,7 @@ import { ScriptResultComponent } from 'src/app/jmeleon/components/script-result/
 export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   @Input() tableData: TableData;
   @Input() mainId: number;
+  @Input() mainType: string;
   @Input() dblClickCallback: (data) => any;
   @Output() entitySelection = new EventEmitter();
 
@@ -314,6 +316,31 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           result.subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
         }
       })
+    );
+  }
+
+  // covers multiple scenarios:
+  // 1a) File entity: create new file:                mainId: undefined   mainType: undefined   fileId: undefined
+  // 1b) File entity: update existing file:           mainId: undefined   mainType: undefined   fileId: set
+  // 2a) FileAttachment entity: create new file:      mainId: set         mainType: set         fileId: undefined
+  // 2b) FileAttachment entity: update existing file: mainId: set         mainType: set         fileId: set
+  // FileUploadDialogComponent decides depending on these parameters what to do (attach yes/no, update/create)
+  uploadFile(mainId?: number, mainType?: string, fileId?: number) {
+
+    const dialogRef = this.dialogService.open(FileUploadDialogComponent, {
+      data: {
+        catalogueName: 'FileTypes',
+        catalogueDisplayName: 'Dateityp',
+        mainId: mainId,
+        mainType: mainType,
+        fileId: fileId
+      },
+      header: 'Datei aktualisieren',
+      width: '800px'
+    });
+
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe(() => this.loadLazy(this.lastLazyLoadEvent))
     );
   }
 

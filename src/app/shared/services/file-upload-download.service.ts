@@ -24,6 +24,10 @@ export class FileUploadDownloadService {
     return UrlCollection.Files.generateUploadUrl();
   }
 
+  public getUpdateFileUrl(): string {
+    return UrlCollection.Files.UPDATE();
+  }
+
   public readUploadResult(response: HttpResponse<FileUploadResult>): HttpResult<FileUploadResult> {
     if (response.ok) {
       return {

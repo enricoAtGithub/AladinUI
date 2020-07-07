@@ -100,7 +100,8 @@ import { AceModule } from 'ngx-ace-wrapper';
   entryComponents: [
     EntityDialogComponent,
     PictureDialogComponent,
-    CodeEditorComponent
+    CodeEditorComponent, 
+    FileUploadDialogComponent
   ],
   exports: [
     DynamicTableComponent,

@@ -87,6 +87,7 @@ export class UrlCollection {
     static Files = class {
         static generateDownloadUrl = (id: number) => UrlCollection.FILE_API_BASE_PATH() + '/download/' + id;
         static generateUploadUrl = () => UrlCollection.FILE_API_BASE_PATH() + '/upload/';
+        static UPDATE(): string { return UrlCollection.FILE_API_BASE_PATH() + '/update/'; }
     };
 
     static EntityAttachments = class {

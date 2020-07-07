@@ -39,6 +39,6 @@
 </div>
 
 <div class="card" *ngIf="catalogueSelected || catalogueEntrySelected">
-    <app-dynamic-table-attachments *ngIf="catalogueSelected" configName="Catalogue" [entryId]="selectedEntryId"></app-dynamic-table-attachments>
-    <app-dynamic-table-attachments *ngIf="catalogueEntrySelected" configName="CatalogueEntry" [entryId]="selectedEntryId"></app-dynamic-table-attachments>
+    <app-dynamic-table-attachments *ngIf="catalogueSelected" configName="Catalogue" [mainId]="selectedEntryId"></app-dynamic-table-attachments>
+    <app-dynamic-table-attachments *ngIf="catalogueEntrySelected" configName="CatalogueEntry" [mainId]="selectedEntryId"></app-dynamic-table-attachments>
 </div>
