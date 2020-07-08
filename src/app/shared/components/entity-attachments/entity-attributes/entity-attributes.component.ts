@@ -17,8 +17,8 @@ import { NgForm } from '@angular/forms';
 })
 
 export class EntityAttributesComponent implements OnInit, OnChanges {
-  @Input() mainType: string;
-  @Input() mainId: number;
+  @Input() ownerType: string;
+  @Input() ownerId: number;
   @Input() attrGroup: AttributeGroup;
 
   attributes: Attribute[];
@@ -66,8 +66,8 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
   openAddAttributeDialog() {
     this.refDtoRepr = '';
     this.newAttribute = new Attribute();
-    this.newAttribute.ownerType = this.mainType;
-    this.newAttribute.ownerId = this.mainId;
+    this.newAttribute.ownerType = this.ownerType;
+    this.newAttribute.ownerId = this.ownerId;
     if (this.attrGroup) {
       this.newAttribute.attributeGroup = this.attrGroup.hrid;
       this.initAttributGroupData();
@@ -89,7 +89,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
   updateAttachments() {
     let attrGr: string;
     if (this.attrGroup) { attrGr = this.attrGroup.hrid; } else { attrGr = 'null'; }
-    this.entityService.getAttributes(this.mainType, this.mainId, attrGr).subscribe(response => {
+    this.entityService.getAttributes(this.ownerType, this.ownerId, attrGr).subscribe(response => {
       this.attributes = <Attribute[]>response;
       this.attributes.forEach(attr => { if (attr.attributeType === 'Date') { attr.dateValue = new Date(attr.value); } });
     });

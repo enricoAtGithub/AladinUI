@@ -66,7 +66,7 @@
               <!-- hard coded actions -->
               <button *ngSwitchCase="'UPDATE'" pButton type="button" icon="pi pi-pencil" class="crudButton" pTooltip="Bearbeiten" (click)="updateEntity(rowData)"></button>
               <button *ngSwitchCase="'DELETE'" pButton type="button" icon="pi pi-trash" class="crudButton" pTooltip="Löschen" (click)="deleteEntity(rowData)"></button>
-              <button *ngSwitchCase="'UPLOAD'" pButton type="button" icon="fa fa-upload" class="crudButton" fileSaver pTooltip="Dateiupload" (click)="uploadFile(mainId, mainType, rowData['id'])"></button>
+              <button *ngSwitchCase="'UPLOAD'" pButton type="button" icon="fa fa-upload" class="crudButton" fileSaver pTooltip="Dateiupload" (click)="uploadFile(ownerId, ownerType, rowData['id'])"></button>
               <button *ngSwitchCase="'DOWNLOAD'" pButton type="button" icon="fa fa-download" class="crudButton" fileSaver pTooltip="Herunterladen" [method]="'GET'" [fileName]="rowData['fileName']" [url]="downloadUrl(rowData['id'])"></button>
               <!-- dynamic script actions -->
               <button *ngSwitchDefault pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton" (click)="executeAction(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
@@ -78,6 +78,6 @@
     </p-table>
   </div>
 
-  <app-dynamic-table-attachments *ngIf="tableData.showAttachments" [configName]="configuration.type" [mainId]="selectedEntryId"></app-dynamic-table-attachments>
+  <app-dynamic-table-attachments *ngIf="tableData.showAttachments" [configName]="configuration.type" [ownerId]="selectedEntryId"></app-dynamic-table-attachments>
 
 </div>

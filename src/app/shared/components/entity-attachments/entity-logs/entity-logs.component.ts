@@ -13,8 +13,8 @@ export class EntityLogsComponent implements OnInit, OnChanges {
 
   logTableData: TableData;
 
-  @Input() mainType: string;
-  @Input() mainId: number;
+  @Input() ownerType: string;
+  @Input() ownerId: number;
 
   constructor(private entityService: EntityService) { }
 
@@ -23,10 +23,10 @@ export class EntityLogsComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.entryId && !changes.type) {
-      this.logTableData.dataSource = this.entityService.getEntityDataFromUrl('/log/entries/' + this.mainType + '/' + this.mainId);
+      this.logTableData.dataSource = this.entityService.getEntityDataFromUrl('/log/entries/' + this.ownerType + '/' + this.ownerId);
       this.logTableData.triggerRefresh.next();
     } else if (changes.entryId && changes.type) {
-      const dataSource = this.entityService.getEntityDataFromUrl('/log/entries/' + this.mainType + '/' + this.mainId);
+      const dataSource = this.entityService.getEntityDataFromUrl('/log/entries/' + this.ownerType + '/' + this.ownerId);
       this.logTableData = new TableData('Logs', 'LogEntry')
         .setScrollable()
         .setScrollHeight('175px')

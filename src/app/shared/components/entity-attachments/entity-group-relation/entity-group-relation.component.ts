@@ -14,8 +14,8 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./entity-group-relation.component.css']
 })
 export class EntityGroupRelationComponent implements OnChanges {
-  @Input() mainType: string;
-  @Input() mainId: number;
+  @Input() ownerType: string;
+  @Input() ownerId: number;
   @Input() relation: string;
 
   // Contains all entities, that the currently selected entity is member of for each group relation
@@ -30,7 +30,7 @@ export class EntityGroupRelationComponent implements OnChanges {
   constructor(private entityService: EntityService, private store$: Store<RootStoreState.State>) { }
 
   init() {
-    if (this.mainType && this.relation) {
+    if (this.ownerType && this.relation) {
       const groupConfigurations$ = this.store$.pipe(
         select(fromConfigSelectors.selectGroupConfigs),
         map(configs => configs[this.relation])
@@ -39,7 +39,7 @@ export class EntityGroupRelationComponent implements OnChanges {
         this.groupConfig = groupConfig;
         this.entityService.filter(groupConfig.member, 1, 2147483647, undefined, '', '').subscribe(allMembers => {
           this.allGroupMembers = allMembers;
-          if (this.mainId) {
+          if (this.ownerId) {
             this.getGroupMembers();
           }
         });
@@ -48,7 +48,7 @@ export class EntityGroupRelationComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.type || (!this.allGroupMembers && this.mainType)) {
+    if (changes.type || (!this.allGroupMembers && this.ownerType)) {
       this.init();
     } else if (changes.entryId) {
       this.getGroupMembers();
@@ -57,7 +57,7 @@ export class EntityGroupRelationComponent implements OnChanges {
 
   getGroupMembers() {
     this.groupMembers = [];
-    this.entityService.membersGroup(this.relation, this.mainId).subscribe(members => {
+    this.entityService.membersGroup(this.relation, this.ownerId).subscribe(members => {
       this.groupMembers = members.data;
       const memberIds: Set<number> = new Set(members.data.map( m => m.id ));
       // deep copy of entities + filtering for non-members
@@ -67,11 +67,11 @@ export class EntityGroupRelationComponent implements OnChanges {
 
   async addMembers(items: any[]) {
     items.forEach(item =>
-      this.entityService.addMember(this.relation, this.mainId, item['id']).subscribe());
+      this.entityService.addMember(this.relation, this.ownerId, item['id']).subscribe());
   }
 
   async removeMembers(items: any[]) {
     items.forEach(item =>
-      this.entityService.removeMember(this.relation, this.mainId, item['id']).subscribe());
+      this.entityService.removeMember(this.relation, this.ownerId, item['id']).subscribe());
   }
 }
