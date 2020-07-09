@@ -320,10 +320,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   // covers multiple scenarios:
-  // 1a) File entity: create new file:                mainId: undefined   mainType: undefined   fileId: undefined
-  // 1b) File entity: update existing file:           mainId: undefined   mainType: undefined   fileId: set
-  // 2a) FileAttachment entity: create new file:      mainId: set         mainType: set         fileId: undefined
-  // 2b) FileAttachment entity: update existing file: mainId: set         mainType: set         fileId: set
+  // 1a) File entity: create new file:                ownerId: undefined   ownerType: undefined   fileId: undefined
+  // 1b) File entity: update existing file:           ownerId: undefined   ownerType: undefined   fileId: set
+  // 2a) FileAttachment entity: create new file:      ownerId: set         ownerType: set         fileId: undefined
+  // 2b) FileAttachment entity: update existing file: ownerId: set         ownerType: set         fileId: set
   // FileUploadDialogComponent decides depending on these parameters what to do (attach yes/no, update/create)
   uploadFile(ownerId?: number, ownerType?: string, fileId?: number) {
 
