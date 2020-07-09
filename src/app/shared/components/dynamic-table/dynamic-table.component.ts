@@ -56,6 +56,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   cellEditCache: any;
   lastCellRef: any;
   crudColumnSpace: number;
+  saved = false;
 
   constructor(
     private entityService: EntityService,
@@ -479,22 +480,27 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.displayEntitySelectionDialog = true;
   }
 
-  setBlur(cell) {
-    setTimeout(() => cell.isFocused = false, 100);
-  }
-
-  abortCellEdit(rowData) {
-    console.log(this.cellEditCache);
-    rowData[this.cellEditCache.field] = this.cellEditCache.data[this.cellEditCache.field];
-    this.lastCellRef.isEdited = false;
-    this.cellEditCache = undefined;
-    this.lastCellRef = undefined;
+  abortCellEdit(rowData, event) {
+    if (event.relatedTarget === undefined || event.relatedTarget === null || event.relatedTarget['id'] !== this.cellEditCache.field + '§' + rowData['id']) {
+      if (this.cellEditCache !== undefined) {
+        rowData[this.cellEditCache.field] = this.cellEditCache.data[this.cellEditCache.field];
+        this.cellEditCache = undefined;
+      }
+      if (this.lastCellRef !== undefined) {
+        this.lastCellRef.isEdited = false;
+        this.lastCellRef = undefined;
+      }
+    } else {
+      this.completeCellEdit(rowData);
+    }
   }
 
   initCellEdit(cellRef, field: string, rowData) {
       // If another cell is being edited abort the edit operation and initialize the new edit operation
-    if (this.lastCellRef !== undefined) {
-      this.abortCellEdit(this.entityData.data.find(row => row['id'] === this.cellEditCache.data['id']));
+    if (this.lastCellRef !== undefined && this.cellEditCache !== undefined) {
+      const rowDataPrev = this.entityData.data.find(row => row['id'] === this.cellEditCache.data['id']);
+      rowDataPrev[this.cellEditCache.field] = this.cellEditCache.data[this.cellEditCache.field];
+      this.lastCellRef.isEdited = false;
     }
     this.cellEditCache = {field: field, data: Object.assign({}, rowData)};
     cellRef.isEdited = true;
