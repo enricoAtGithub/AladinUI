@@ -1,23 +1,27 @@
-<div class="ui-g-12" style="padding:0px">
+<div class="ui-g-12" style="padding:0px; margin-bottom:15px;">
     <app-dynamic-table [tableData]="data"></app-dynamic-table>
 
     <div class="ui-g-12" style="padding:0px">
-        <p-panel collapsed="true">
+        <p-panel collapsed="true" [toggleable]="true">
             <p-header>
                 <span class="ui-panel-title" style="padding: 8px">Code Snippet Tester</span>
-                <button pButton (click)="execute()" icon="pi pi-play"
-                    class="ui-button-success" style="float: right"></button>
+                <!-- <button pButton (click)="execute()" icon="pi pi-play"
+                    class="ui-button-success" style="float: right"></button> -->
             </p-header>
-        </p-panel>
 
-        <div class="content-container" style="height:700px; border: 1px solid #CCCCCC;margin-bottom: 15px;">
-            <div style="height:698px; width: calc(30% - 15px); float:right; margin-right: 15px;">
-                <app-script-result [result]="result" [output]="output"></app-script-result>
+            <div class="content-container" style="height:700px;">
+                <div style="height:698px; width: calc(30% - 5px); float:right;">
+                    <app-script-result [result]="result" [output]="output"></app-script-result>
+                </div>
+                <div style="height:698px; width: calc(70% - 5px); border: 1px solid #CCCCCC;">
+                    <ace [config]="aceconfig" [(value)]="code" [mode]="python"></ace>
+                </div>
             </div>
-            <div style="height:698px; width: calc(70% - 15px); border-right: 1px solid #CCCCCC;">
-                <ace [config]="aceconfig" [(value)]="code" [mode]="python"></ace>
-            </div>
-        </div>
+
+            <p-footer>
+                <button pButton (click)="execute()" label="Ausführen" icon="pi pi-play" class="ui-button-info"></button>
+            </p-footer>
+        </p-panel>
     </div>  
 
 </div>
