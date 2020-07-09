@@ -12,8 +12,12 @@
     </p-panel>
 
     <div class="content-container" style="height:700px; border: 1px solid #CCCCCC;">
-        <div style="height:698px; width:100%">
+        <div style="height:698px; width: calc(30% - 15px); float:right; margin-right: 15px;">
+            <app-script-result [result]="result" [output]="output"></app-script-result>
+        </div>
+        <div style="height:698px; width: calc(70% - 15px); border-right: 1px solid #CCCCCC;">
             <ace [config]="aceconfig" [(value)]="code" [mode]="python"></ace>
         </div>
+        
     </div>
 </div>     

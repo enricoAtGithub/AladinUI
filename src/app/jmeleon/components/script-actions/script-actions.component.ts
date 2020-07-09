@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { BreadcrumbService } from 'src/app/breadcrumb.service';
 import { TableData } from 'src/app/shared/models/table-data';
 import { EntityService } from 'src/app/shared/services/entity.service';
-import { ErrorNotificationService } from 'src/app/shared/services/error-notification.service';
 import 'brace';
 import 'brace/mode/json';
 import 'brace/mode/python';
@@ -20,8 +19,10 @@ export class ScriptActionsComponent implements OnInit {
   data = new TableData('Aktionen', 'ScriptAction');
   code: string;
   aceconfig: AceConfigInterface;
+  result: string;
+  output: string;
 
-  constructor(private breadcrumbService: BreadcrumbService, private entityService: EntityService, private notificationService: ErrorNotificationService,) {
+  constructor(private breadcrumbService: BreadcrumbService, private entityService: EntityService) {
     this.breadcrumbService.setItems([
       { label: 'Aktionen' }
     ]);
@@ -36,8 +37,10 @@ export class ScriptActionsComponent implements OnInit {
 
   execute() {
     const payload = { snippet: this.code, entityReference: null, context: null };
-    this.entityService.executeCodeSnippet(payload).subscribe((result) =>
-      this.notificationService.addSuccessNotification('Script executed successfully!', 'Output: ' + result['output'] ));
+    this.entityService.executeCodeSnippet(payload).subscribe((response) => {
+      this.result = response['result'];
+      this.output = response['output'];
+    });
   }
 
 }
