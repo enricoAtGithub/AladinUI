@@ -1,7 +1,7 @@
 <p-confirmDialog header="Neuer Eintrag" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
 <div *ngIf="configuration" class="ui-g-12" style="padding:0px">
   <div [ngClass]="{'card': tableData.showHeadline, 'card-w-title': tableData.showHeadline }">
-    <h1 *ngIf="tableData.showHeadline">{{tableData.tableName}}</h1>
+    <!-- <h1 *ngIf="tableData.showHeadline">{{tableData.tableName}}</h1> -->
     <p-table #dt [columns]="fields" [value]="entityData.data" selectionMode="single" dataKey="id" [(selection)]="selectedEntry" (onRowSelect)="rowSelect()" (onRowUnselect)="rowUnselect()"
       [paginator]="tableData.pagination" [(rows)]="configuration.rowsPerPage" [rowsPerPageOptions]="[10,25,50]" [responsive]="true" [lazy]="true" (onLazyLoad)="loadLazy($event)" [loading]="loading"
       [totalRecords]="entityData.count" [scrollable]="tableData.scrollable || configuration?.scrollable" [scrollHeight]="tableData.scrollHeight" styleClass="ui-table-customers" (window:resize)="onTableResize($event)">
