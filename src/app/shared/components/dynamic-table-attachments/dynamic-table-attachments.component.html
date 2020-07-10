@@ -58,7 +58,7 @@
 
     <div *ngIf="!this.excludedPanels?.includes('Actions')">
       <p-tabPanel *ngIf="showActionTab" header="Aktionen" [selected]="this.selectedPanel === 'Actions'">
-        <app-right-actions-editor [mainId]="entryId"></app-right-actions-editor>
+        <app-right-actions-editor [ownerId]="entryId"></app-right-actions-editor>
       </p-tabPanel>
     </div>
 
