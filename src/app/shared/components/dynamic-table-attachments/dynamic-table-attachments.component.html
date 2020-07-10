@@ -20,7 +20,7 @@
     <div *ngIf="!this.excludedPanels?.includes('Notes')">
       <p-tabPanel *ngIf="this.configuration?.components?.includes('Notes')" header="Notizen"
         [selected]="this.selectedPanel === 'Notes'">
-        <app-entity-notes [mainType]="configName" [mainId]="entryId"></app-entity-notes>
+        <app-entity-notes [ownerType]="configName" [ownerId]="entryId"></app-entity-notes>
       </p-tabPanel>
     </div>
 
