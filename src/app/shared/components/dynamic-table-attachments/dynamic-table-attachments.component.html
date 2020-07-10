@@ -13,7 +13,7 @@
     <div *ngIf="!this.excludedPanels?.includes('LogEntries')">
       <p-tabPanel *ngIf="this.configuration?.components?.includes('LogEntries')" header="Logbuch"
         [selected]="this.selectedPanel === 'LogEntries'">
-        <app-entity-logs [mainType]="configName" [mainId]="entryId"></app-entity-logs>
+        <app-entity-logs [ownerType]="configName" [ownerId]="entryId"></app-entity-logs>
       </p-tabPanel>
     </div>
 
