@@ -59,7 +59,7 @@ export class PermissionTestComponent implements OnInit, OnDestroy {
     private japs: JmeleonActionsPermissionService,
     private jmlFacade: JmeleonActionsFacadeService,
     private entityService: EntityService,
-    private authService: AuthService
+    public authService: AuthService   // needs to be publich to call it from html
     ) { }
 
   ngOnInit() {
