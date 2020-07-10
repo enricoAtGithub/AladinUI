@@ -1,10 +1,10 @@
-<div *ngIf="mainId !== undefined && mainId !== null && !isEmpty" style="padding: 0px" class="card">
+<div *ngIf="entryId !== undefined && entryId !== null && !isEmpty" style="padding: 0px" class="card">
   <p-tabView>
     <!-- Display group relations if available -->
     <ng-template ngFor let-group [ngForOf]="configuration?.groups">
       <p-tabPanel *ngIf="!this.excludedPanels?.includes(group)" [header]="(getGroupHeader(group) | async).displayName"
         [selected]="this.selectedPanel === group">
-        <app-entity-group-relation [mainType]="configName" [mainId]="mainId" [relation]="group">
+        <app-entity-group-relation [mainType]="configName" [mainId]="entryId" [relation]="group">
         </app-entity-group-relation>
       </p-tabPanel>
     </ng-template>
@@ -13,21 +13,21 @@
     <div *ngIf="!this.excludedPanels?.includes('LogEntries')">
       <p-tabPanel *ngIf="this.configuration?.components?.includes('LogEntries')" header="Logbuch"
         [selected]="this.selectedPanel === 'LogEntries'">
-        <app-entity-logs [mainType]="configName" [mainId]="mainId"></app-entity-logs>
+        <app-entity-logs [mainType]="configName" [mainId]="entryId"></app-entity-logs>
       </p-tabPanel>
     </div>
 
     <div *ngIf="!this.excludedPanels?.includes('Notes')">
       <p-tabPanel *ngIf="this.configuration?.components?.includes('Notes')" header="Notizen"
         [selected]="this.selectedPanel === 'Notes'">
-        <app-entity-notes [mainType]="configName" [mainId]="mainId"></app-entity-notes>
+        <app-entity-notes [mainType]="configName" [mainId]="entryId"></app-entity-notes>
       </p-tabPanel>
     </div>
 
     <ng-template ngFor let-attrGroup [ngForOf]="configuration?.attributeGroups">
       <p-tabPanel *ngIf="!this.excludedPanels?.includes(attrGroup)" [header]="attrGroup.name"
         [selected]="this.selectedPanel === attrGroup">
-        <app-entity-attributes [mainType]="configName" [mainId]="mainId" [attrGroup]="attrGroup">
+        <app-entity-attributes [mainType]="configName" [mainId]="entryId" [attrGroup]="attrGroup">
         </app-entity-attributes>
       </p-tabPanel>
     </ng-template>
@@ -35,7 +35,7 @@
     <div *ngIf="!this.excludedPanels?.includes('Attributes')">
       <p-tabPanel *ngIf="this.configuration?.components?.includes('Attributes')" header="Attribute"
         [selected]="this.selectedPanel === 'Attributes'">
-        <app-entity-attributes [mainType]="configName" [mainId]="mainId">
+        <app-entity-attributes [mainType]="configName" [mainId]="entryId">
         </app-entity-attributes>
       </p-tabPanel>
     </div>
@@ -44,7 +44,7 @@
       <p-tabPanel *ngIf="this.configuration?.components?.includes('FileAttachments')" header="Dateianhänge"
         [selected]="this.selectedPanel === 'FileAttachments'">
         <div style="height: 250px">
-          <app-entity-file-attachments [mainType]="configName" [mainId]="mainId"></app-entity-file-attachments>
+          <app-entity-file-attachments [mainType]="configName" [mainId]="entryId"></app-entity-file-attachments>
         </div>
       </p-tabPanel>
     </div>
@@ -52,13 +52,13 @@
     <ng-template ngFor let-subtype [ngForOf]="configuration?.subtypes">
       <p-tabPanel *ngIf="!this.excludedPanels?.includes(subtype)"
         [header]="(getSubTypeHeader(subtype) | async).displayName" [selected]="this.selectedPanel === subtype">
-        <app-entity-subtypes [subtype]="subtype" [mainId]="mainId"></app-entity-subtypes>
+        <app-entity-subtypes [subtype]="subtype" [mainId]="entryId"></app-entity-subtypes>
       </p-tabPanel>
     </ng-template>
 
     <div *ngIf="!this.excludedPanels?.includes('Actions')">
       <p-tabPanel *ngIf="showActionTab" header="Aktionen" [selected]="this.selectedPanel === 'Actions'">
-        <app-right-actions-editor [mainId]="mainId"></app-right-actions-editor>
+        <app-right-actions-editor [mainId]="entryId"></app-right-actions-editor>
       </p-tabPanel>
     </div>
 
