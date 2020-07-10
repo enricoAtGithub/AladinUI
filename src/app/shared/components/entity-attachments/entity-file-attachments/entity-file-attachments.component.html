@@ -1,7 +1,7 @@
 <p-table>
     <ng-template pTemplate="caption">Dateianhänge
-        <button pButton (click)="addFileAttachment(mainId, mainType)" icon="fa fa-plus" style="float: right; margin-top: -5px;" pTooltip="Neue Datei hochladen"></button>
+        <button pButton (click)="addFileAttachment()" icon="fa fa-plus" style="float: right; margin-top: -5px;" pTooltip="Neue Datei hochladen"></button>
         <button pButton (click)="fileTableData.triggerRefresh.next()" icon="pi pi-undo" style="float: right; margin-top: -5px; margin-right: 5px;"></button>
     </ng-template>
 </p-table>
-<app-dynamic-table #fileTable style="padding: 0px" *ngIf="fileTableData" [tableData]="fileTableData" [mainId]="mainId" [mainType]="mainType"></app-dynamic-table>
+<app-dynamic-table #fileTable style="padding: 0px" *ngIf="fileTableData" [tableData]="fileTableData" [mainId]="ownerId" [mainType]="ownerType"></app-dynamic-table>

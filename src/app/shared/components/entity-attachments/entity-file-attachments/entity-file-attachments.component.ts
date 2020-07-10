@@ -11,8 +11,8 @@ import { Observable, Subscription } from 'rxjs';
   styleUrls: ['./entity-file-attachments.component.css']
 })
 export class EntityFileAttachmentsComponent implements OnChanges, OnDestroy {
-  @Input() mainType: string;
-  @Input() mainId: number;
+  @Input() ownerType: string;
+  @Input() ownerId: number;
 
   fileTableData: TableData;
   subscriptions: Subscription[] = [];
@@ -29,7 +29,7 @@ export class EntityFileAttachmentsComponent implements OnChanges, OnDestroy {
   ngOnChanges() {
     if (!this.fileTableData) {
       const dataSource = this.entityService
-        .postEntityDataFromUrl('/attachment/all', {attachmentType: 'File', ownerType: this.mainType, ownerId: this.mainId});
+        .postEntityDataFromUrl('/attachment/all', {attachmentType: 'File', ownerType: this.ownerType, ownerId: this.ownerId});
         this.fileTableData = new TableData('FileAttachment', 'FileAttachment')
           .setScrollable()
           .setScrollHeight('175px')
@@ -37,21 +37,21 @@ export class EntityFileAttachmentsComponent implements OnChanges, OnDestroy {
           .hideHeadline()
           .hideHeader()
           .disablePagination();
-    } else if (this.mainId && this.mainType) {
+    } else if (this.ownerId && this.ownerType) {
       this.fileTableData.dataSource  = this.entityService
-        .postEntityDataFromUrl('/attachment/all', {attachmentType: 'File', ownerType: this.mainType, ownerId: this.mainId});
+        .postEntityDataFromUrl('/attachment/all', {attachmentType: 'File', ownerType: this.ownerType, ownerId: this.ownerId});
       this.fileTableData.triggerRefresh.next();
     }
   }
 
-  addFileAttachment(mainId: number, mainType: string) {
+  addFileAttachment() {
     const dialogRef = this.dialogService.open(FileUploadDialogComponent, {
       data: {
         catalogueName: 'FileTypes',
         catalogueDisplayName: 'Dateityp',
         createAttachment: true,
-        mainId: mainId,
-        mainType: mainType
+        ownerId: this.ownerId,
+        ownerType: this.ownerType
       },
       header: 'Datei hochladen',
       width: '800px'
