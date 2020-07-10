@@ -9,8 +9,8 @@ import { TableData } from 'src/app/shared/models/table-data';
 export class EntitySubtypesComponent implements OnInit, OnChanges {
   tableData: TableData;
 
-  @Input() subtype: string;
-  @Input() ownerId: number;
+  @Input() type: string;
+  @Input() mainId: number;
 
   constructor() { }
 
@@ -18,8 +18,8 @@ export class EntitySubtypesComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.subtype) {
-      this.tableData = new TableData('', changes.subtype.currentValue)
+    if (changes.type) {
+      this.tableData = new TableData('', changes.type.currentValue)
         .setScrollable()
         .setScrollHeight('222px')
         //.hideHeader()

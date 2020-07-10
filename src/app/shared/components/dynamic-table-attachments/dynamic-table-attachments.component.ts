@@ -16,7 +16,7 @@ import { GroupConfiguration } from '../../models/group-configuration';
 })
 export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   @Input() configName: string;
-  @Input() ownerId: number;
+  @Input() mainId: number;
   @Input() excludedPanels: string[];
 
   isEmpty: boolean;

@@ -30,8 +30,8 @@ import { FileUploadDialogComponent } from '../file-upload-dialog/file-upload-dia
 })
 export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   @Input() tableData: TableData;
-  @Input() ownerId: number;
-  @Input() ownerType: string;
+  @Input() mainId: number;
+  @Input() mainType: string;
   @Input() dblClickCallback: (data) => any;
   @Output() entitySelection = new EventEmitter();
 
@@ -224,7 +224,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     if (this.tableData.dataSource === undefined) {
       this.subscriptions.push(
-        this.entityService.filter(this.tableData.entityType, page, event.rows, this.ownerId, qualifier, sorting)
+        this.entityService.filter(this.tableData.entityType, page, event.rows, this.mainId, qualifier, sorting)
           .subscribe(data => {
             this.entityData = data; this.loading = false;
             this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
@@ -281,7 +281,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         scenario: 'create',           // executeAction, create, update
         fields: this.configuration.fields,
         configType: this.configuration.type,
-        mainId: this.ownerId
+        mainId: this.mainId
       },
       header: 'Hinzufügen',
       width: '500px'
@@ -304,7 +304,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         entity: data,
         fields: this.configuration.fields,
         configType: this.configuration.type,
-        mainId: this.ownerId
+        mainId: this.mainId
       },
       header: data['_repr_'] + ' bearbeiten',
       width: '500px'
@@ -325,14 +325,14 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   // 2a) FileAttachment entity: create new file:      ownerId: set         ownerType: set         fileId: undefined
   // 2b) FileAttachment entity: update existing file: ownerId: set         ownerType: set         fileId: set
   // FileUploadDialogComponent decides depending on these parameters what to do (attach yes/no, update/create)
-  uploadFile(ownerId?: number, ownerType?: string, fileId?: number) {
+  uploadFile(mainId?: number, mainType?: string, fileId?: number) {
 
     const dialogRef = this.dialogService.open(FileUploadDialogComponent, {
       data: {
         catalogueName: 'FileTypes',
         catalogueDisplayName: 'Dateityp',
-        ownerId: ownerId,
-        ownerType: ownerType,
+        mainId: mainId,
+        mainType: mainType,
         fileId: fileId
       },
       header: 'Datei aktualisieren',
@@ -430,7 +430,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
               entity: entityObj,
               fields: actionDetails.params,
               configType: this.configuration.type,
-              mainId: this.ownerId,
+              mainId: this.mainId,
               payload: payload
             },
             header: 'Aktionsparameter',

@@ -23,8 +23,8 @@ export class FileUploadDialogComponent implements OnInit {
   fileId: string;
 
   // entity to attach file to
-  ownerId: number;
-  ownerType: string;
+  mainId: number;
+  mainType: string;
 
   // attachment category for entity
   // currently not used within jmeleon frontend but supported by backend attachmentService.
@@ -54,8 +54,8 @@ export class FileUploadDialogComponent implements OnInit {
     this.fileId = data['fileId'];
     this.catalogueName = data ['catalogueName'];
     this.catalogueDisplayName = data['catalogueDisplayName'];
-    this.ownerId = data['ownerId'];
-    this.ownerType = data['ownerType'];
+    this.mainId = data['mainId'];
+    this.mainType = data['mainType'];
 
 
     this.setMaxUploadSize(1);
@@ -96,8 +96,8 @@ export class FileUploadDialogComponent implements OnInit {
       <AttachmentRequestData>{
         attachmentType: MAIN_TYPE,
         attachmentId: uploadResult.id,
-        ownerType: this.ownerType,
-        ownerId: this.ownerId,
+        ownerType: this.mainType,
+        ownerId: this.mainId,
         attachmentCategory: this.attachmentCategory})
       .subscribe(response => {
         if (response.success) {
@@ -134,7 +134,7 @@ export class FileUploadDialogComponent implements OnInit {
     const uploadResult = <FileUploadResult>event.originalEvent.body;
 
     // if mainId exists attach the uploaded file, otherwise close dialog and return success message
-    if (this.ownerId) {
+    if (this.mainId) {
       this.attachFileToEntity(uploadResult);
     } else {
       if (this.fileId) {
