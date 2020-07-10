@@ -48,9 +48,9 @@ export class EntityGroupRelationComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.type || (!this.allGroupMembers && this.ownerType)) {
+    if (changes.ownerType || (!this.allGroupMembers && this.ownerType)) {
       this.init();
-    } else if (changes.entryId) {
+    } else if (changes.ownerId) {
       this.getGroupMembers();
     }
   }
