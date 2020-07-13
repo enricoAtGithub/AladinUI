@@ -7,16 +7,16 @@
 </p-panel>
 
 <div class="content-container" style="height:700px;border: 1px solid #CCCCCC;">
-    <div style="height:699px;width:calc(100% - 180px);float:right;">
+    <div style="height:698px;width:calc(100% - 180px);float:right;">
         <ace [config]="aceconfig" [disabled]="!enableEditor" (blur)="onEditorBlur($event)"
             (focus)="onEditorFocus($event)" (valueChange)="onValueChange($event)"
             (selectionChange)="onSelectionChange($event)" [(value)]="currentConfig" theme="github" mode="json">
         </ace>
         <span style="display:block; height: 10px;"></span>
     </div>
-    <div style="height:699px;width:180px;background-color:#ffffff">
+    <div style="height:698px;width:180px;background-color:#ffffff">
         <p-listbox [options]="dtoConfigs" (onChange)="selectedConfigChanged($event)" [style]="{'border':'0 none'}"
-            [listStyle]="{'max-height':'699px', 'width':'180px'}">
+            [listStyle]="{'max-height':'698px', 'width':'180px'}">
         </p-listbox>
     </div>
 </div>

@@ -11,7 +11,7 @@ import JMeleonActionTreeUtils from '../../utils/jml-action-tree.utils';
 })
 export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy {
 
-  @Input() entryId: number;
+  @Input() ownerId: number;
 
   actionsTree$: Observable<TreeNode[]>;
   selectedActions: TreeNode[];
@@ -47,7 +47,7 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.entryId) {
-      this.facade.requestActionTreeFromBackend(this.entryId);
+      this.facade.requestActionTreeFromBackend(this.ownerId);
       this.facade.selectSection(null);
     }
 
@@ -61,13 +61,13 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
   nodeSelect(event) {
     console.log('selected node: ', event.node);
     // this.updatingSelectedAreaActive = true;
-    this.facade.addActionToRight(this.entryId, event.node, this.selectedActions);
+    this.facade.addActionToRight(this.ownerId, event.node, this.selectedActions);
 
   }
   nodeUnselect(event) {
     // console.log('unselected node: ', event.node);
     // this.updatingSelectedAreaActive = true;
-    this.facade.removeActionFromRight(this.entryId, event.node, this.selectedActions);
+    this.facade.removeActionFromRight(this.ownerId, event.node, this.selectedActions);
 
   }
 

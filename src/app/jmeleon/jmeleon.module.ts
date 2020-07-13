@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DiagramsModule } from './modules/diagrams/diagrams.module';
 import { DTOConfigEditorComponent } from './components/dtoconfig-editor/dtoconfig-editor.component';
-import { DropdownModule, PanelModule, ButtonModule, ScrollPanelModule } from 'primeng/primeng';
+import { DropdownModule, PanelModule, ButtonModule, ScrollPanelModule, DynamicDialogConfig } from 'primeng/primeng';
 import { AceModule } from 'ngx-ace-wrapper';
 import { ResourcesComponent } from '../domain/components/resources/resources.component';
 import { SharedModule } from '../shared/shared.module';
@@ -22,10 +22,13 @@ import { ScriptResultComponent } from './components/script-result/script-result.
     ButtonModule,
     SharedModule,
     ScrollPanelModule,
-    ListboxModule
+    ListboxModule,
   ],
   entryComponents: [
     ScriptResultComponent
-  ]
+  ],
+  providers: [
+    DynamicDialogConfig
+],
 })
 export class JmeleonModule { }

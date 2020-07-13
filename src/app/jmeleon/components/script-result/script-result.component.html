@@ -1,11 +1,11 @@
 <span class="ui-float-label" style="display: inline-block;margin-top: 20px;width: 100%;">
-    <input type="text" id="result" class="ui-inputtext" style="width: 100%;" pInputText
-        [value]="config.data['result']" />
+    <input type="text" id="result" class="ui-inputtext" style="width: 100%;font-family: monospace;" pInputText
+        [value]="result" />
     <label for="result" style="top: -.75em; font-size: 12px;">Ergebnis</label>
 </span>
 
-<span class="ui-float-label" style="display: inline-block;margin-top: 30px;width: 100%;">
-    <textarea rows="25" id="output" class="ui-inputtextarea" pInputTextarea style="width: 100%; resize: none"
-        [value]="config.data['output']"></textarea>
+<span class="ui-float-label" style="display: inline-block; margin-top: 30px;width: 100%;">
+    <textarea id="output" class="ui-inputtext" pInputTextarea style="width: 100%; height:622px; resize: none; font-family: monospace;"
+        [value]="output"></textarea>
     <label for="result" style="top: -.75em; font-size: 12px;">Ausführungsdetails</label>
 </span>

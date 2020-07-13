@@ -9,8 +9,8 @@ import { Note } from 'src/app/shared/models/note';
   styleUrls: ['./entity-notes.component.css']
 })
 export class EntityNotesComponent implements OnChanges {
-  @Input() type: string;
-  @Input() entryId: number;
+  @Input() ownerType: string;
+  @Input() ownerId: number;
 
   noteTableData: TableData;
   selectedNote: Note;
@@ -20,7 +20,7 @@ export class EntityNotesComponent implements OnChanges {
 
   ngOnChanges() {
     if (!this.noteTableData) {
-      const dataSource = this.entityService.getEntityDataFromUrl('/note/entries/' + this.type + '/' + this.entryId);
+      const dataSource = this.entityService.getEntityDataFromUrl('/note/entries/' + this.ownerType + '/' + this.ownerId);
       this.noteTableData = new TableData('Note', 'Note')
         .hideHeader()
         .hideHeadline()
@@ -33,11 +33,11 @@ export class EntityNotesComponent implements OnChanges {
     } else {
       this.selectedNote = undefined;
       this.noteTableData.dataSource  = this.entityService
-        .getEntityDataFromUrl('/note/entries/' + this.type + '/' + this.entryId);
+        .getEntityDataFromUrl('/note/entries/' + this.ownerType + '/' + this.ownerId);
       this.noteTableData.triggerRefresh.next();
     }
 
-    this.entityService.getAttachments('note', this.type, this.entryId).subscribe(response =>
+    this.entityService.getAttachments('note', this.ownerType, this.ownerId).subscribe(response =>
       this.allNotes = response['data']);
   }
 
@@ -61,7 +61,7 @@ export class EntityNotesComponent implements OnChanges {
   }
 
   loadNotes() {
-    this.entityService.getAttachments('note', this.type, this.entryId).subscribe(response =>
+    this.entityService.getAttachments('note', this.ownerType, this.ownerId).subscribe(response =>
       this.allNotes = response['data']);
 
     this.noteTableData.triggerRefresh.next();
@@ -69,8 +69,8 @@ export class EntityNotesComponent implements OnChanges {
 
   createEmptyNote() {
     this.selectedNote = new Note();
-    this.selectedNote.ownerType = this.type;
-    this.selectedNote.ownerId = this.entryId;
+    this.selectedNote.ownerType = this.ownerType;
+    this.selectedNote.ownerId = this.ownerId;
   }
 
   noteSelected(entity: any) {

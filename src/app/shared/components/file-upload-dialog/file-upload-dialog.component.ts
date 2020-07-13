@@ -1,11 +1,10 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FileUploadDownloadService } from '../../services/file-upload-download.service';
 import { FileUploadResult } from '../../models/http/file-upload-result';
-import { HttpErrorResponse } from '@angular/common/http';
 import { AttachmentService } from '../../services/attachment.service';
-import { Message } from 'primeng/primeng';
 import { AttachmentRequestData } from '../../models/attachment-request-data';
 import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
+import { DynamicDialogConfig, DynamicDialogRef, MessageService } from 'primeng/primeng';
 
 const MAIN_TYPE = 'File';
 
@@ -16,45 +15,53 @@ const MAIN_TYPE = 'File';
 })
 export class FileUploadDialogComponent implements OnInit {
 
-  @Input() openDialogLabel = 'Datei hochladen';
-  @Input() chooseLabel = 'Datei auswählen';
-  @Input() uploadLabel = 'Hochladen';
-  @Input() cancelLabel = 'Abbrechen';
-  @Input() dialogHeader = 'Datei hochladen';
+  chooseLabel = 'Datei auswählen';
+  uploadLabel = 'Hochladen';
+  cancelLabel = 'Abbrechen';
+  catalogueDisplayName: string;
+  catalogueName: string;
+  fileId: string;
 
-  @Input() catalogueName: string;
-  @Input() catalogueDisplayName: string;
-
-  @Input() createAttachment = false;
   // entity to attach file to
-  @Input() ownerId: number;
-  @Input() ownerType: string;
-  // attachment category for entity
-  @Input() attachmentCategory: string;
+  ownerId: number;
+  ownerType: string;
 
-  @Output() fileUploaded = new EventEmitter<FileUploadResult>();
-  @Output() error = new EventEmitter<HttpErrorResponse>();
-  @Output() fileAttached = new EventEmitter<FileUploadResult>();
+  // attachment category for entity
+  // currently not used within jmeleon frontend but supported by backend attachmentService.
+  attachmentCategory: string;
 
   url: string;
   showCatalogChooser = false;
-  showFileDialog = false;
+  showFileDialog = true;
   keepOrgFileName = true;
   uploadFileName: string;
   newFileName: string;
-  uploadMessages: Message[] = [];
   selectedCatalogueEntry: string;
   maxUploadInByte: number;
 
   constructor(
     private fileService: FileUploadDownloadService,
     private attachmentService: AttachmentService,
-    private settingService: SettingsService) {
-    }
+    private settingService: SettingsService,
+    public config: DynamicDialogConfig,
+    public ref: DynamicDialogRef,
+    public messageService: MessageService
+    ) { }
 
   ngOnInit() {
+    // collect input parameters
+    const data = this.config.data;
+    this.fileId = data['fileId'];
+    this.catalogueName = data ['catalogueName'];
+    this.catalogueDisplayName = data['catalogueDisplayName'];
+    this.ownerId = data['ownerId'];
+    this.ownerType = data['ownerType'];
+
+
     this.setMaxUploadSize(1);
-    this.url = this.fileService.getUploadUrl();
+    // this.fileId is set in case of updating an existing file => update; if not set => upload
+    (this.fileId) ? this.url = this.fileService.getUpdateFileUrl() : this.url = this.fileService.getUploadUrl();
+
     this.settingService.getMaxUpload().subscribe(maxUploadInMB => this.setMaxUploadSize(maxUploadInMB));
   }
 
@@ -64,7 +71,6 @@ export class FileUploadDialogComponent implements OnInit {
 
   setMaxUploadSize(setingInMB) {
     this.maxUploadInByte = setingInMB * 1024 * 1024;
-    // console.log('maxUploadInByte: ', this.maxUploadInByte);
   }
 
   disableFileNameResetButton(): boolean {
@@ -82,7 +88,6 @@ export class FileUploadDialogComponent implements OnInit {
   resetFileDialog(): void {
     this.uploadFileName = '';
     this.newFileName = '';
-    this.uploadMessages = [];
     this.keepOrgFileName = true;
   }
 
@@ -90,25 +95,24 @@ export class FileUploadDialogComponent implements OnInit {
     this.attachmentService.attachToEntity(
       <AttachmentRequestData>{
         attachmentType: MAIN_TYPE,
-        attachmentd: uploadResult.id,
+        attachmentId: uploadResult.id,
         ownerType: this.ownerType,
         ownerId: this.ownerId,
         attachmentCategory: this.attachmentCategory})
       .subscribe(response => {
         if (response.success) {
-          this.uploadMessages.push({severity: 'info', summary: 'Erfolg', detail: 'Datei wurde erfolgreich hochgeladen und verknüpft.'});
-          this.fileAttached.emit(uploadResult);
+          if (this.fileId) {
+            this.messageService.add({severity: 'info', summary: 'Erfolg', detail: `Datei wurde erfolgreich aktualisiert.`});
+          } else {
+            this.messageService.add({severity: 'info', summary: 'Erfolg', detail: `Datei '${uploadResult.fileName}' wurde erfolgreich hochgeladen und verknüpft.`});
+          }
+          this.ref.close();
         } else {
-          this.uploadMessages.push({severity: 'error', summary: 'Fehler', detail: response.errMsg});
+          this.messageService.add({severity: 'error', summary: 'Fehler', detail: response.errMsg});
+          this.ref.close();
         }
       });
   }
-
-
-  onButtonClickShowFileDialog() {
-    this.showFileDialog = !this.showFileDialog;
-  }
-
 
 // file upload component events
 
@@ -118,6 +122,7 @@ export class FileUploadDialogComponent implements OnInit {
     console.log('[onFileBeforeUpload] selected file', this.newFileName);
     data.append('fileName', this.newFileName);
     data.append('fileType', this.selectedCatalogueEntry);
+    if (this.fileId) { data.append('fileId', this.fileId ); }
     console.log('[onFileBeforeUpload] start upload');
   }
 
@@ -126,27 +131,29 @@ export class FileUploadDialogComponent implements OnInit {
   }
 
   onUpload(event: any) {
-    console.log('onUpload', event);
     const uploadResult = <FileUploadResult>event.originalEvent.body;
-    console.log('upload result', uploadResult);
-    // attach
-    if (this.createAttachment) {
+
+    // if ownerId exists attach the uploaded file, otherwise close dialog and return success message
+    if (this.ownerId) {
       this.attachFileToEntity(uploadResult);
+    } else {
+      if (this.fileId) {
+        this.messageService.add({severity: 'info', summary: 'Erfolg', detail: `Datei wurde erfolgreich aktualisiert.` });
+      } else {
+        this.messageService.add({severity: 'info', summary: 'Erfolg', detail: `Datei '${uploadResult.fileName}' wurde erfolgreich hochgeladen.` });
+      }
+      this.ref.close();
     }
-    this.fileUploaded.emit(uploadResult);
-
-
   }
 
   onError(event: any) {
-    console.log('onError');
-    console.log('error: ', event.error);
-    this.error.emit(event.error);
+    this.messageService.add({severity: 'error', summary: 'Fehler', detail: event.error });
+    this.ref.close();
   }
 
   onClear(event: any) {
     console.log('onClear', event);
-  this.resetFileDialog();
+    this.resetFileDialog();
   }
 
   onRemove(event: any) {
@@ -167,13 +174,7 @@ export class FileUploadDialogComponent implements OnInit {
   }
 
   onCatalogueItemSelected(event) {
-    // console.log('[onCatalogueItemSelected] catalogue item selected: ', event);
     this.selectedCatalogueEntry = event;
-
   }
-
-
-
-
 
 }

@@ -103,7 +103,8 @@ import { AutoFocusDirective } from './directives/auto-focus.directive';
   entryComponents: [
     EntityDialogComponent,
     PictureDialogComponent,
-    CodeEditorComponent
+    CodeEditorComponent, 
+    FileUploadDialogComponent
   ],
   exports: [
     DynamicTableComponent,
