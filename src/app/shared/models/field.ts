@@ -17,7 +17,7 @@ export class Field extends BasicFieldConfig {
     formula: string;
 
     public static isPrimitiveType(type: string) {
-        return type === 'String' || type === 'int' || type === 'boolean' || type === 'Date';
+        return type === 'String' || type === 'int' || type === 'boolean' || type === 'Date' || type === 'float';
     }
 
     public static isKnownType(type: string) {

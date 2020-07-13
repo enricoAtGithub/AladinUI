@@ -42,7 +42,9 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
     { label: 'Date', value: 'Date' },
     { label: 'Color', value: 'Color' },
     { label: 'Icon', value: 'Icon' },
-    { label: 'Reference', value: 'Reference' }
+    { label: 'Reference', value: 'Reference' },
+    { label: 'Float', value: 'Float' }
+
   ];
 
   constructor(

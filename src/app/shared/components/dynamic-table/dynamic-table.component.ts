@@ -258,6 +258,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       case 'Icon':
       case 'Currency':
       case 'dtoType':
+      case 'float':
         return input;
       default:
         return input['_repr_'];
