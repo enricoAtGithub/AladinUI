@@ -408,7 +408,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
   calcCrudColWidth(actionCount: number): number	{
     // width required to display action icons, per Icon 32px required, additional offset of 2x13px for margin
-    return (actionCount * 32) + 26;
+    // if there is no actionCount (empty table) just return 90px
+    return actionCount ? (actionCount * 32) + 26 : 90;
   }
 
   executeAction(actionHrid: string, dtoType: string, entityId: number) {
