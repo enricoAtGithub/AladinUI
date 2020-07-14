@@ -58,7 +58,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   cellEditCache: any;
   lastCellRef: any;
   crudColumnSpace: number;
-  saved = false;
 
   constructor(
     private entityService: EntityService,
@@ -235,7 +234,11 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         this.entityService.filter(this.tableData.entityType, page, event.rows, this.mainId, qualifier, sorting).pipe(
           map(entities => {
             this.configuration.fields.filter(field => field.type === 'Date').forEach(field => {
-              entities.data.forEach(data => data[field.field] = new Date(data[field.field]));
+              entities.data.forEach(data => {
+                if (data[field.field] !== null) {
+                  data[field.field] = new Date(data[field.field]);
+                }
+              });
             });
             return entities;
           }))
@@ -260,7 +263,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     switch (field.type) {
       case 'Date':
-        return this.processDate(new Date(input));
+        return input ? this.processDate(new Date(input)) : '';
       case 'boolean':
         return input ? '✓' : '🞩';
       case 'python':
@@ -540,13 +543,17 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     const dateFields = this.configuration.fields.filter(field => field.type === 'Date');
     dateFields.forEach(field => {
-      data[field.field] = new Date(data[field.field]).toISOString();
+      if (data[field.field] !== null) {
+        data[field.field] = new Date(data[field.field]).toISOString();
+      }
     });
 
     this.entityService.updateEntity(this.tableData.entityType, data['id'], data).subscribe(result => {
       const index = this.entityData.data.findIndex(data_ => data_['id'] === result['fields']['id']);
       dateFields.forEach(field => {
-        result['fields'][field.field] = new Date(result['fields'][field.field]);
+        if (result['fields'][field.field] !== null) {
+          result['fields'][field.field] = new Date(result['fields'][field.field]);
+        }
       });
       this.entityData.data[index] = result['fields'];
     }, error => this.refreshTableContents());
