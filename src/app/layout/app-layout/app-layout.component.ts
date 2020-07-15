@@ -5,6 +5,7 @@ import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-inde
 import { Store, select } from '@ngrx/store';
 import { selectError } from 'src/app/root-store/root.selectors';
 import { Router } from '@angular/router';
+import { AuthFacadeService } from 'src/app/auth/services/auth-facade.service';
 
 @Component({
     selector: 'app-layout',
@@ -61,7 +62,7 @@ export class AppLayoutComponent implements AfterViewInit {
         public renderer: Renderer2,
         public authService: AuthService,
         public router: Router,
-        private store$: Store<RootStoreState.State>,
+        private authFacade: AuthFacadeService
     ) {}
 
     ngAfterViewInit() {
@@ -153,8 +154,7 @@ export class AppLayoutComponent implements AfterViewInit {
 
     onLogoutButtonClick(event) {
         this.topbarItemClick = true;
-
-        this.store$.dispatch(UserProfileActions.logoutRequested({sendLogoutRequestToServer: false}));
+        this.authFacade.logout(true);
 
         this.router.navigate(['/login']);
 

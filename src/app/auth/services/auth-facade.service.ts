@@ -25,4 +25,8 @@ export class AuthFacadeService {
     login(userName: string, password: string) {
       this.store$.dispatch(UserProfileActions.loginRequested({userName, password}));
     }
+
+    logout(sendLogoutRequestToServer = false){
+      this.store$.dispatch(UserProfileActions.logoutRequested({sendLogoutRequestToServer}));
+    }
 }

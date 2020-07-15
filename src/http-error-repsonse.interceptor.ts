@@ -6,6 +6,7 @@ import { ErrorNotificationService } from './app/shared/services/error-notificati
 import { AuthService } from './app/auth/services/auth.service';
 import { Store } from '@ngrx/store';
 import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-index';
+import { AuthFacadeService } from './app/auth/services/auth-facade.service';
 
 export enum ServerErrorCode {
     GENERIC_ERROR = 1,
@@ -25,7 +26,7 @@ export class HttpErrorRepsonseInterceptor implements HttpInterceptor {
     constructor(
         private errorNotificationService: ErrorNotificationService,
         private authService: AuthService,
-        private store$: Store<RootStoreState.State>
+        private authFacade: AuthFacadeService
         ) {}
 
     intercept(req: HttpRequest<any>, next: HttpHandler):
@@ -50,7 +51,7 @@ export class HttpErrorRepsonseInterceptor implements HttpInterceptor {
                         }
                         // if user is logged in, he needs to be logged out and redirected to login
                         if (this.authService.isLoggedIn) {
-                            this.store$.dispatch(UserProfileActions.logoutRequested({sendLogoutRequestToServer: false}));
+                            this.authFacade.logout(false);
 
                         }
                     } else if (!!error && !!error.error && !!error.error.code && error.error.code === ServerErrorCode.LOST_UPDATE_FAILED) {
