@@ -1,6 +1,6 @@
 import { EntityConfiguration } from '../../shared/models/entity-configuration';
 import { GroupConfiguration } from 'src/app/shared/models/group-configuration';
-import { ConfigState } from './state';
+import { ConfigState } from './config.state';
 import { createSelector, MemoizedSelector, createFeatureSelector } from '@ngrx/store';
 
 const getConfigs = (state: ConfigState): EntityConfiguration[] => state.configs;

@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
-import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
 import { Field } from '../../models/field';
 import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
 import DateTimeUtils from '../../utils/date-time.utils';

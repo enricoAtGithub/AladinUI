@@ -1,7 +1,7 @@
-import * as ConfigActions from './actions';
-import * as ConfigSelectors from './selectors';
-import * as ConfigState from './state';
-import * as ConfigReducers from './reducer';
+import * as ConfigActions from './config.actions';
+import * as ConfigSelectors from './config.selectors';
+import * as ConfigState from './config.state';
+import * as ConfigReducers from './config.reducer';
 
 export {
     ConfigurationStoreModule

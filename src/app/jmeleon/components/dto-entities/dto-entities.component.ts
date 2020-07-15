@@ -3,7 +3,7 @@ import { TableData } from 'src/app/shared/models/table-data';
 import { SelectItem } from 'primeng/api';
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
-import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
 
 @Component({
   selector: 'app-dto-entities',

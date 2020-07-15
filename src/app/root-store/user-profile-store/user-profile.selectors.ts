@@ -1,5 +1,5 @@
 import {createFeatureSelector, createSelector, MemoizedSelector} from '@ngrx/store';
-import { UserProfileState } from './state';
+import { UserProfileState } from './user-profile.state';
 import { User } from 'src/app/shared/models/user';
 
 const getError = (state: UserProfileState): any => {

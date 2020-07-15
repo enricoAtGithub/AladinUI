@@ -4,7 +4,7 @@ import { EntityService } from 'src/app/shared/services/entity.service';
 import { AttributeGroup, AttributeGroupEntries } from 'src/app/shared/models/entity-configuration';
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
-import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
 import { SelectItem } from 'primeng/api';
 import { InputText } from 'primeng/primeng';
 import { TableData } from 'src/app/shared/models/table-data';

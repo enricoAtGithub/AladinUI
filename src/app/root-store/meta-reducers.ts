@@ -1,14 +1,17 @@
-import { ActionTypes } from './user-profile-store/actions';
-import { ActionReducer } from '@ngrx/store';
-import { State } from './root-state';
+import { ActionReducer, MetaReducer } from '@ngrx/store';
+import { State } from './root.state';
+import { UserProfileActions } from './user-profile-store/user-profile-index';
 
-export function clearState(reducer ): ActionReducer<State> {
+export function clearState(reducer: ActionReducer<State>): ActionReducer<State> {
     return function (state, action) {
 
-      if (action.type === ActionTypes.LOGOUT_SUCCESS) {
+      if (action.type === UserProfileActions.logoutSucceeded().type) {
+
         state = undefined;
       }
 
       return reducer(state, action);
     };
   }
+
+export const metaReducers: MetaReducer<State>[] = [clearState];

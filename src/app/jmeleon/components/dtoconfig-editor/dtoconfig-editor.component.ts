@@ -9,7 +9,7 @@ import { ErrorNotificationService } from 'src/app/shared/services/error-notifica
 
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
-import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
 
 
 

@@ -1,7 +1,7 @@
-import * as UserProfileActions from './actions';
-import * as UserProfileSelectors from './selectors';
-import * as UserProfileState from './state';
-import * as UserProfileReducers from './reducers';
+import * as UserProfileActions from './user-profile.actions';
+import * as UserProfileSelectors from './user-profile.selectors';
+import * as UserProfileState from './user-profile.state';
+import * as UserProfileReducers from './user-profile.reducers';
 
 export {
     UserProfileStoreModule

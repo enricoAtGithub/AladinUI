@@ -4,7 +4,7 @@ import { DialogService } from 'primeng/api';
 
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
-import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GroupConfiguration } from '../../models/group-configuration';

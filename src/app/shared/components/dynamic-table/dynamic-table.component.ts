@@ -10,7 +10,7 @@ import { Observable, Subject, Subscription } from 'rxjs';
 import { ErrorNotificationService } from '../../services/error-notification.service';
 import { delay } from 'q';
 import { UrlCollection } from '../../url-collection';
-import * as fromConfigSelectors from '../../../root-store/config-store/selectors';
+import * as fromConfigSelectors from '../../../root-store/config-store/config.selectors';
 import { Store, select } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { RootStoreState } from 'src/app/root-store/root-index';

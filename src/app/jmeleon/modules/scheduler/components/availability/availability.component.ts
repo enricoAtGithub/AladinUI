@@ -36,7 +36,7 @@ import { JmeleonActionsPermissionService } from '../../../permissions/services/j
 import { map } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
-import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
 import { EntityConfiguration } from 'src/app/shared/models/entity-configuration';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);

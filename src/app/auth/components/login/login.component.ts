@@ -101,7 +101,7 @@ export class LoginComponent implements OnInit {
   }
 
   login(userName: string, password: string) {
-    this.store$.dispatch(new UserProfileActions.LoginRequestAction({userName, password}));
+    this.store$.dispatch(UserProfileActions.loginRequested({userName, password}));
   }
 
   passwordChanged(password: string): void {

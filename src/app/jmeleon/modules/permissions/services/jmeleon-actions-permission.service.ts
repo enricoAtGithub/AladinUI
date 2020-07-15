@@ -7,7 +7,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import { Store, select } from '@ngrx/store';
-import * as fromUserSelectors from 'src/app/root-store/user-profile-store/selectors';
+import * as fromUserSelectors from 'src/app/root-store/user-profile-store/user-profile.selectors';
 
 /**
  * This service checks if the current user is authorized to perform a ceration action.

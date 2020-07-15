@@ -9,7 +9,7 @@ import { HttpResult } from 'src/app/shared/models/http/http-result';
 import { HttpOptionsFactory } from 'src/app/shared/models/http/http-options-factory';
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
-import * as fromUserSelectors from 'src/app/root-store/user-profile-store/selectors';
+import * as fromUserSelectors from 'src/app/root-store/user-profile-store/user-profile.selectors';
 import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 
 @Injectable({

@@ -10,6 +10,7 @@ import {UserProfileReducers, UserProfileState} from 'src/app/root-store/user-pro
 import {RootStoreState} from 'src/app/root-store/root-index';
 import { localStorageSync } from 'ngrx-store-localstorage';
 import { ConfigurationStoreModule, ConfigReducers } from './config-store/config-index';
+import { clearState } from './meta-reducers';
 
 
 const reducers: ActionReducerMap<RootStoreState.State> = {
@@ -22,7 +23,7 @@ export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionRedu
   const customStoreNames: string[] = [];
   return localStorageSync({keys: jmeleonStoreNames.concat(customStoreNames), rehydrate: true})(reducer);
 }
-const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
+const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer, clearState];
 
 @NgModule({
   declarations: [],

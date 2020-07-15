@@ -3,7 +3,7 @@ import {ScrollPanel} from 'primeng/primeng';
 import { AuthService } from '../../auth/services/auth.service';
 import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-index';
 import { Store, select } from '@ngrx/store';
-import { selectError } from 'src/app/root-store/root-selectors';
+import { selectError } from 'src/app/root-store/root.selectors';
 import { Router } from '@angular/router';
 
 @Component({
@@ -154,7 +154,8 @@ export class AppLayoutComponent implements AfterViewInit {
     onLogoutButtonClick(event) {
         this.topbarItemClick = true;
 
-        this.store$.dispatch(new UserProfileActions.LogoutRequestedAction());
+        this.store$.dispatch(UserProfileActions.logoutRequested({sendLogoutRequestToServer: false}));
+
         this.router.navigate(['/login']);
 
         event.preventDefault();

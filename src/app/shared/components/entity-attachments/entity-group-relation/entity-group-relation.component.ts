@@ -5,7 +5,7 @@ import { EntityData } from 'src/app/shared/models/entity-data';
 
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
-import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
 import { map } from 'rxjs/operators';
 
 @Component({

@@ -37,7 +37,7 @@ import { JmeleonActionsPermissionService } from '../../../permissions/services/j
 import { map } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
-import * as fromConfigSelectors from 'src/app/root-store/config-store/selectors';
+import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);

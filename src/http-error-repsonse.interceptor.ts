@@ -50,7 +50,8 @@ export class HttpErrorRepsonseInterceptor implements HttpInterceptor {
                         }
                         // if user is logged in, he needs to be logged out and redirected to login
                         if (this.authService.isLoggedIn) {
-                            this.store$.dispatch(new UserProfileActions.LogoutRequestedAction({sendLogoutRequestToServer: false}));
+                            this.store$.dispatch(UserProfileActions.logoutRequested({sendLogoutRequestToServer: false}));
+
                         }
                     } else if (!!error && !!error.error && !!error.error.code && error.error.code === ServerErrorCode.LOST_UPDATE_FAILED) {
                         this.errorNotificationService.addErrorNotification(
