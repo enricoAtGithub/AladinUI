@@ -8,3 +8,45 @@
     position: relative;
     top: 2px;
 }
+
+::ng-deep .ui-calendar .ui-datepicker {
+    min-width: 250px;
+}
+
+.centerCheckbox {
+    align-self: center;
+    width: unset !important;
+}
+
+.cellEditIcon {
+    color: rgba(0,0,0,0);
+    cursor: pointer;
+    transition-duration: 150ms;
+}
+
+#hoverEffect:hover .cellEditIcon {
+    /*color: rgb(184, 171, 0);*/
+    color: black;
+    transition-duration: 250ms;
+    font-size: 1.5em;
+}
+
+.calenderInputWidthFix {
+    width: calc(100% - 2.143em)
+}
+
+::ng-deep .ui-dropdown-item {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+    display: inline-block;
+}
+
+.dropdownFullWidth {
+    width: 100%;
+}
+
+::ng-deep .ui-multiselect .ui-multiselect-label {
+    white-space: nowrap;
+}
