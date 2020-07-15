@@ -19,7 +19,9 @@ const reducers: ActionReducerMap<RootStoreState.State> = {
 };
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
-  const jmeleonStoreNames: string[] = ['userProfile', 'config'];
+  const jmeleonStoreNames: string[] = [
+    'userProfile'
+  ];
   const customStoreNames: string[] = [];
   return localStorageSync({keys: jmeleonStoreNames.concat(customStoreNames), rehydrate: true})(reducer);
 }
