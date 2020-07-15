@@ -51,6 +51,12 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   freeColumnSpace = 100;
   zeroWidthColumns = 0;
   currency$: Observable<string>;
+  actionCount: number;
+  displayEntitySelectionDialog = false;
+  entitySelectionTableData: TableData;
+  entitySelectionContext: { field: string, id: number };
+  cellEditCache: any;
+  lastCellRef: any;
   crudColumnSpace: number;
 
   constructor(
@@ -70,6 +76,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       map(configs => configs[this.tableData.entityType])
     );
 
+    this.cellEditCache = new Map();
     this.configuration = new EntityConfiguration();
     this.entityData = new EntityData();
     this.subscriptions.push(configuration$.subscribe(async config => {
@@ -96,7 +103,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         }
 
         this.filtersInTable = field.filterType !== 'none' || this.filtersInTable;
-        if (field.filterType === 'multiSelect' && !Field.isPrimitiveType(field.type)) {
+        if (!Field.isPrimitiveType(field.type)) {
           field.options = [];
 
           if ((field.type === 'CatalogueEntry' || field.type === 'Icon') && field.defaultCatalogue) {
@@ -105,7 +112,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
                 .subscribe(catalogue => {
                   catalogue.values.forEach(o => {
                     if (field.type === 'CatalogueEntry') {
-                      field.options.push({ label: o.name, value: '' + o.id });
+                      field.options.push({ label: o.name, value: o.id });
                     } else {
                       this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe((attributes: any) => {
                         const icon = attributes.find(attr => attr['name'] === 'icon');
@@ -224,7 +231,17 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     if (this.tableData.dataSource === undefined) {
       this.subscriptions.push(
-        this.entityService.filter(this.tableData.entityType, page, event.rows, this.mainId, qualifier, sorting)
+        this.entityService.filter(this.tableData.entityType, page, event.rows, this.mainId, qualifier, sorting).pipe(
+          map(entities => {
+            this.configuration.fields.filter(field => field.type === 'Date').forEach(field => {
+              entities.data.forEach(data => {
+                if (data[field.field] !== null) {
+                  data[field.field] = new Date(data[field.field]);
+                }
+              });
+            });
+            return entities;
+          }))
           .subscribe(data => {
             this.entityData = data; this.loading = false;
             this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
@@ -246,7 +263,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     switch (field.type) {
       case 'Date':
-        return this.processDate(new Date(input));
+        return input ? this.processDate(new Date(input)) : '';
       case 'boolean':
         return input ? '✓' : '🞩';
       case 'python':
@@ -473,6 +490,75 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       });
     }
 
+  }
+
+  entitySelected(entity: any) {
+    const rowData = this.entityData.data.find(row => row['id'] === this.entitySelectionContext.id);
+    rowData[this.entitySelectionContext.field] = { id: entity['id'], _repr_: entity['_repr_'] };
+    this.displayEntitySelectionDialog = false;
+    this.completeCellEdit(rowData);
+  }
+
+  openEntitySelectionDialog(field: any, id: number) {
+    this.entitySelectionContext = { field: field['field'], id: id };
+    this.entitySelectionTableData = new TableData(field['type'], field['type'])
+      .hideHeader()
+      .hideHeadline()
+      .hideAttachments()
+      .hideButtons()
+      .setScrollable()
+      .disableInlineEdit()
+      .setScrollHeight('700px');
+    this.displayEntitySelectionDialog = true;
+  }
+
+  abortCellEdit(rowData, event) {
+    if (event.relatedTarget === undefined || event.relatedTarget === null || event.relatedTarget['id'] !== this.cellEditCache.field + '§' + rowData['id']) {
+      if (this.cellEditCache !== undefined) {
+        rowData[this.cellEditCache.field] = this.cellEditCache.data[this.cellEditCache.field];
+        this.cellEditCache = undefined;
+      }
+      if (this.lastCellRef !== undefined) {
+        this.lastCellRef.isEdited = false;
+        this.lastCellRef = undefined;
+      }
+    } else {
+      this.completeCellEdit(rowData);
+    }
+  }
+
+  initCellEdit(cellRef, field: string, rowData) {
+      // If another cell is being edited abort the edit operation and initialize the new edit operation
+    if (this.lastCellRef !== undefined && this.cellEditCache !== undefined) {
+      const rowDataPrev = this.entityData.data.find(row => row['id'] === this.cellEditCache.data['id']);
+      rowDataPrev[this.cellEditCache.field] = this.cellEditCache.data[this.cellEditCache.field];
+      this.lastCellRef.isEdited = false;
+    }
+    this.cellEditCache = {field: field, data: Object.assign({}, rowData)};
+    cellRef.isEdited = true;
+    this.lastCellRef = cellRef;
+  }
+
+  completeCellEdit(data) {
+    this.lastCellRef = undefined;
+    this.cellEditCache = undefined;
+
+    const dateFields = this.configuration.fields.filter(field => field.type === 'Date');
+    dateFields.forEach(field => {
+      if (data[field.field] !== null) {
+        data[field.field] = new Date(data[field.field]).toISOString();
+      }
+    });
+
+    this.entityService.updateEntity(this.tableData.entityType, data['id'], data).subscribe(result => {
+      const index = this.entityData.data.findIndex(data_ => data_['id'] === result['fields']['id']);
+      dateFields.forEach(field => {
+        if (result['fields'][field.field] !== null) {
+          result['fields'][field.field] = new Date(result['fields'][field.field]);
+        }
+      });
+      this.entityData.data[index] = result['fields'];
+    }, error => this.refreshTableContents());
   }
 
 }
