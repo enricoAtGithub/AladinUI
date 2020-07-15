@@ -10,6 +10,7 @@ export class TableData {
     pagination = true;
     showAttachments = true;
     scrollable = false;
+    inlineEdit = true;
     dataSource: Observable<EntityData>;
     scrollHeight: string;
 
@@ -66,4 +67,8 @@ export class TableData {
         return this;
     }
 
+    disableInlineEdit() {
+        this.inlineEdit = false;
+        return this;
+    }
 }

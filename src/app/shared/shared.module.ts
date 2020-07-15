@@ -32,7 +32,6 @@ import { EntityDropdownComponent } from './components/entity-dropdown/entity-dro
 import { KeyFilterModule, ScrollPanelModule } from 'primeng/primeng';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { NgxPermissionsModule } from 'ngx-permissions';
-import { JmeleonModule } from '../jmeleon/jmeleon.module';
 import { PermissionsModule } from '../jmeleon/modules/permissions/permissions.module';
 import { EntityNotesComponent } from './components/entity-attachments/entity-notes/entity-notes.component';
 import { EntityAttributesComponent } from './components/entity-attachments/entity-attributes/entity-attributes.component';
@@ -44,6 +43,8 @@ import { IconPickerModule } from 'ngx-icon-picker';
 import { CodeEditorComponent } from './components/code-editor/code-editor.component';
 import { PanelModule } from 'primeng/panel';
 import { AceModule } from 'ngx-ace-wrapper';
+import { VarDirective } from './directives/var.directive';
+import { AutoFocusDirective } from './directives/auto-focus.directive';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,9 @@ import { AceModule } from 'ngx-ace-wrapper';
     EntityFileAttachmentsComponent,
     EntityLogsComponent,
     EntitySubtypesComponent,
-    CodeEditorComponent
+    CodeEditorComponent,
+    VarDirective,
+    AutoFocusDirective
   ],
   imports: [
     CommonModule,
