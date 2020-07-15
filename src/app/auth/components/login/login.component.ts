@@ -12,6 +12,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable} from 'rxjs';
 // import { selectUserProfileError } from 'src/app/root-store/user-profile-store/selectors';
 import { environment } from '../../../../environments/environment';
+import { AuthFacadeService } from '../../services/auth-facade.service';
 
 @Component({
   selector: 'app-login',
@@ -36,8 +37,8 @@ export class LoginComponent implements OnInit {
     public authService: AuthService,
     public router: Router,
     private appConfig: AppConfig,
-    private store$: Store<RootStoreState.State>) {
-
+    private authFacade: AuthFacadeService
+    ) {
     this.companyName = environment.companyName;
     this.appName = environment.appName;
     }
@@ -56,28 +57,8 @@ export class LoginComponent implements OnInit {
       // console.log('[LoginComponent-ngOnInit-subscribe(serverInfo)]');
       this.appDetails = this.uiDetails + ', BE host=' + serverInfo.host + ', BE version=' + serverInfo.version;
     });
-    // const uiInfo: UIInfo = AppConfig.getUIInfo();
-    // console.log('[LoginComponent-ngOnInit]');
-    // this.uiDetails = 'UI version=' + uiInfo.version + '.' + uiInfo.git_branch + '.' + uiInfo.build_no + '.' + uiInfo.git_sha;
-    // this.appDetails = this.uiDetails + ', loading BE details....';
-    // this.appConfig.serverInfo( (serverInfo: ServerInfo) => {
-    //   this.appDetails = this.uiDetails + ', BE host=' + serverInfo.host + ', BE version=' + serverInfo.version;
-    // } );
-    // this.errMsg$ =
-    // this.store$
-    //   .pipe(select(UserProfileSelectors.selectUserProfileError))
-    //   .subscribe(errMsg => {
-    //     if (!errMsg) {
-    //       console.log('empty err msg.');
-    //       return;
-    //     }
-    //     this.msgs = [];
-    //     this.msgs.push({ severity: 'error', summary: '', detail: errMsg });
-    //     console.log('err msg: ', errMsg);
-    //   });
-
-    this.store$
-      .pipe(select(state => UserProfileSelectors.selectUserProfileError(state)))
+    
+    this.authFacade.userProfileError$
       .subscribe(errMsg => {
         // console.log('err msg: ', errMsg);
         if (!errMsg) {
@@ -88,8 +69,7 @@ export class LoginComponent implements OnInit {
         this.msgs.push({ severity: 'error', summary: '', detail: errMsg });
       });
 
-    this.store$
-      .pipe(select(state => UserProfileSelectors.selectUserProfileUser(state)))
+    this.authFacade.userProfileUser$
       .subscribe(user => {
           if (user && user.user.enforcePasswdChange) {
             this.msgs = [];
@@ -101,7 +81,7 @@ export class LoginComponent implements OnInit {
   }
 
   login(userName: string, password: string) {
-    this.store$.dispatch(UserProfileActions.loginRequested({userName, password}));
+    this.authFacade.login(userName, password);
   }
 
   passwordChanged(password: string): void {
