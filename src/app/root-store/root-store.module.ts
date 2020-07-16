@@ -21,15 +21,20 @@ const reducers: ActionReducerMap<RootStoreState.State> = {
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
   const jmeleonStoreNames = [
-    {'userProfile': {
-      encrypt: (state: string) => CryptUtils.encryptForLocalStorage(state),
-      decrypt: (state: string) => CryptUtils.decryptForLocalStorage(state)
-    }}
+    {
+      'userProfile': {
+        encrypt: (state: string) => CryptUtils.encryptForLocalStorage(state),
+        decrypt: (state: string) => CryptUtils.decryptForLocalStorage(state)
+      }
+    }, {
+      'config': {
+      }
+    }
   ];
   const customStoreNames = [];
   return localStorageSync(
     {
-      // keys: jmeleonStoreNames.concat(customStoreNames), 
+      // keys: jmeleonStoreNames.concat(customStoreNames),
       keys: jmeleonStoreNames.concat(customStoreNames),
 
       rehydrate: true
