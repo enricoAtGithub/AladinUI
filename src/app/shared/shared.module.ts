@@ -45,6 +45,7 @@ import { PanelModule } from 'primeng/panel';
 import { AceModule } from 'ngx-ace-wrapper';
 import { VarDirective } from './directives/var.directive';
 import { AutoFocusDirective } from './directives/auto-focus.directive';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import { AutoFocusDirective } from './directives/auto-focus.directive';
     OverlayPanelModule,
     EditorModule,
     ColorPickerModule,
+    TooltipModule,
     NgxPermissionsModule.forChild({
       permissionsIsolate: false,
       rolesIsolate: false
