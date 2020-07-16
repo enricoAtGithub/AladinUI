@@ -31,6 +31,7 @@ export class DTOEntitiesComponent implements OnInit {
 
   selectedConfigChanged(event) {
     this.data = null;
+    //how TODO it right: https://stackoverflow.com/questions/35105374/how-to-force-a-components-re-rendering-in-angular-2
     this.currentConfig = event['value'];
     setTimeout (() => {
         this.data = new TableData('', this.currentConfig);
