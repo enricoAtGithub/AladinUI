@@ -16,7 +16,7 @@ export default class CryptUtils {
         // read token
         const obj = JSON.parse(value);
         const token = obj['user']['token'];
-        console.log('token:', token);
+        // console.log('token:', token);
 
         // if token is empty, return
         if (!token){
@@ -32,7 +32,7 @@ export default class CryptUtils {
 
         const result = JSON.stringify(obj);
 
-        console.log(`encrypting state for local storage. \nunencrypted value: ${value.substr(0, CryptUtils._logLength)}. \nencrypted value: ${result.substr(0, CryptUtils._logLength)}`);
+        // console.log(`encrypting state for local storage. \nunencrypted value: ${value.substr(0, CryptUtils._logLength)}. \nencrypted value: ${result.substr(0, CryptUtils._logLength)}`);
 
         return result;
     }
@@ -46,14 +46,14 @@ export default class CryptUtils {
 
         // check if token is encrypted
         if (!encryptedToken.startsWith(CryptUtils.ENCRYPTED_TOKEN_PREFIX)){
-            console.log('token has no prefix. No decrypting will take place.');
+            // console.log('token has no prefix. No decrypting will take place.');
             return value;
         }
 
         // remove prefix from encrypted token
-        console.log('encrypted token with prefix:', encryptedToken);
+        // console.log('encrypted token with prefix:', encryptedToken);
         const tokenWithoutPrefix = encryptedToken.replace(CryptUtils.ENCRYPTED_TOKEN_PREFIX, '');
-        console.log('encrypted token:', tokenWithoutPrefix);
+        // console.log('encrypted token:', tokenWithoutPrefix);
 
         // decrypt token
         const decryptedTokenBytes = CryptoJS.AES.decrypt(tokenWithoutPrefix, CryptUtils._key);
@@ -63,7 +63,7 @@ export default class CryptUtils {
         obj['user']['token'] = decryptedToken;
         const result = JSON.stringify(obj);
 
-        console.log(`decrypting state for local storage. \nencrypted value: ${value.substr(0, CryptUtils._logLength)}. \ndecrypted value: ${result.substr(0, CryptUtils._logLength)}`);
+        // console.log(`decrypting state for local storage. \nencrypted value: ${value.substr(0, CryptUtils._logLength)}. \ndecrypted value: ${result.substr(0, CryptUtils._logLength)}`);
 
         return result;
     }
