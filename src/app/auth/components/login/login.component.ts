@@ -32,6 +32,7 @@ export class LoginComponent implements OnInit {
   enforcePasswdChange = false;
   safetyBarColor = 'red';
   safetyBarWidth = '0%';
+  loginDisabled = false;
 
   constructor(
     public authService: AuthService,
@@ -44,6 +45,9 @@ export class LoginComponent implements OnInit {
     }
 
   ngOnInit() {
+    // Story #1733: https://redmine.simply4it.de/issues/1733
+    this.productiveCheck(environment.productiveFrontendBackendCheck);
+
     AppConfig.uiInfo$.subscribe(uiInfo => {
       // console.log('[LoginComponent-ngOnInit-subscribe(uiInfo)]');
       this.uiDetails = 'UI version=' + uiInfo.version + '.' + uiInfo.git_branch + '.' + uiInfo.build_no + '.' + uiInfo.git_sha;
@@ -57,7 +61,7 @@ export class LoginComponent implements OnInit {
       // console.log('[LoginComponent-ngOnInit-subscribe(serverInfo)]');
       this.appDetails = this.uiDetails + ', BE host=' + serverInfo.host + ', BE version=' + serverInfo.version;
     });
-    
+
     this.authFacade.userProfileError$
       .subscribe(errMsg => {
         // console.log('err msg: ', errMsg);
@@ -78,6 +82,36 @@ export class LoginComponent implements OnInit {
             this.enforcePasswdChange = true;
           }
       });
+  }
+
+  // Story #1733: https://redmine.simply4it.de/issues/1733
+  productiveCheck(executeCheck: boolean) {
+    if (!executeCheck) {
+      console.log('No productive environment. Compatibility of frontend and backend URL has not been checked.');
+      return;
+    }
+
+    const frontendURL: string = window.location.href;
+    const backendURL: string = AppConfig.getBaseUrl();
+    // get the URL part until the first slash
+    const frontendCompString = frontendURL.slice(0 , frontendURL.indexOf('/', (frontendURL.search('://') + 3)));
+    const backendCompString = backendURL.slice(0 , backendURL.indexOf('/', (backendURL.search('://') + 3)));
+
+    if (frontendCompString !== backendCompString) {
+      console.error(
+        'frontend URL: ' + frontendCompString + '\n' +
+        'backend URL:  ' + backendCompString + '\n' +
+        'Frontend and backend URL mismatch!  Login disabled.');
+      this.msgs = [];
+      this.msgs.push({ closable: true, severity: 'error', summary: '', detail:
+        '<b>Frontend and backend URL mismatch! <br>Login disabled.</b><br>' +
+        'frontend URL: ' + frontendCompString + '<br>' +
+        'backend URL:  ' + backendCompString + '<br>'
+      });
+      this.loginDisabled = true;
+    } else {
+      console.log('Productive environment. Compatibility of frontend and backend URL successfully checked.');
+    }
   }
 
   login(userName: string, password: string) {

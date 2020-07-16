@@ -32,18 +32,18 @@
           <div class="ui-g-12 ui-lg-12 ui-md-12">
             <div class="input-wrapper">
               <label>Benutzername</label>
-              <input #username name="username" id="username" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="text" autocomplete="off" placeholder="Benutzername" class="ui-inputtext ui-widget">
+              <input #username [disabled]="loginDisabled" name="username" id="username" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="text" autocomplete="off" placeholder="Benutzername" class="ui-inputtext ui-widget">
             </div>
           </div>
           <div class="ui-g-12 ui-lg-12 ui-md-12">
             <div class="input-wrapper">
               <label>Passwort</label>
-              <input #password name="password" id="password" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="password" autocomplete="off" placeholder="Passwort" class="ui-inputtext ui-widget">
+              <input #password [disabled]="loginDisabled" name="password" id="password" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="password" autocomplete="off" placeholder="Passwort" class="ui-inputtext ui-widget">
             </div>
           </div>
           <div class="ui-g-12 ui-lg-12 ui-md-12 button-container">
-            <p-button type="submit" id="loginBt" name="loginBt" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" label="Anmelden"></p-button>
-            <a href="#" style="float: right">Passwort vergessen?</a>
+            <p-button [disabled]="loginDisabled" type="submit" id="loginBt" name="loginBt" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" label="Anmelden"></p-button>
+            <a *ngIf="!loginDisabled" href="#" style="float: right">Passwort vergessen?</a>
           </div>
         </form>
 
