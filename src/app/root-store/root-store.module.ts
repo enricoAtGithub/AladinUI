@@ -11,6 +11,7 @@ import {RootStoreState} from 'src/app/root-store/root-index';
 import { localStorageSync } from 'ngrx-store-localstorage';
 import { ConfigurationStoreModule, ConfigReducers } from './config-store/config-index';
 import { clearState } from './meta-reducers';
+import CryptUtils from '../auth/utils/crypt.utils';
 
 
 const reducers: ActionReducerMap<RootStoreState.State> = {
@@ -19,11 +20,26 @@ const reducers: ActionReducerMap<RootStoreState.State> = {
 };
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
-  const jmeleonStoreNames: string[] = [
-    'userProfile'
+  const jmeleonStoreNames = [
+    {
+      'userProfile': {
+        encrypt: (state: string) => CryptUtils.encryptForLocalStorage(state),
+        decrypt: (state: string) => CryptUtils.decryptForLocalStorage(state)
+      }
+    }, {
+      'config': {
+      }
+    }
   ];
-  const customStoreNames: string[] = [];
-  return localStorageSync({keys: jmeleonStoreNames.concat(customStoreNames), rehydrate: true})(reducer);
+  const customStoreNames = [];
+  return localStorageSync(
+    {
+      // keys: jmeleonStoreNames.concat(customStoreNames),
+      keys: jmeleonStoreNames.concat(customStoreNames),
+
+      rehydrate: true
+    }
+    )(reducer);
 }
 const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer, clearState];
 
