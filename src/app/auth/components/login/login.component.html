@@ -9,13 +9,15 @@
   </head>
 
   <body class="login-body">
-    <div class="login-topbar">
+    <!-- <div class="login-topbar">
       <a href="#" class="logo">
         <img src="assets/layout/images/logo.png" alt="california-layout"/>
       </a>
-    </div>
+    </div> -->
 
-    <img class="login-image" src="assets/layout/images/image-access.png" alt="california-layout" />
+<!-- Alte Variante
+      
+      <img class="login-image" src="assets/layout/images/image-access.png" alt="california-layout" />
 
     <div class="login-panel ui-fluid">
       <div class="ui-g">
@@ -74,4 +76,216 @@
       <span>{{appDetails}}</span>
     </div>
   </body>
-</html>
+</html> 
+
+-->
+
+
+<!-- Variante 1) Edles schwarz -->
+<div style="position:fixed;border-top: 2px solid white;border-left: 2px solid white; border-bottom: 2px solid white;
+            height: 800px; top: 50%; margin-top: -400px;  /*set to a negative number 1/2 of your height*/
+            width: 718px; left: 50%; margin-left: -718px; /*set to a negative number 1/2 of your width*/">
+  <div>
+    <img src="assets/layout/images/login_bg_4_neu.png" width="798" height="796" alt="california-layout"/>
+  </div>
+</div>
+
+<div style="position:fixed;  background:black;border-top: 2px solid white;border-right: 2px solid white;border-bottom: 2px solid white;
+            height: 800px; top: 50%; margin-top: -400px;  /*set to a negative number 1/2 of your height*/
+            width: 718px; left: 50%; margin-left: 82px /*set to a negative number 1/2 of your width*/">
+            <div style="margin-top: 125px; text-align:center" >
+              <img src="assets/layout/images/logo.png" width="244" height="64" alt="california-layout"/>
+            </div>
+            <div style="margin-top: 50px; text-align:center" >
+              <h2 style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; color: white">Willkommen bei Jmeleon!</h2>
+            </div>
+
+            <div style="margin-left: 75px" class="login-panel ui-fluid">
+              <div class="ui-g">
+                <div class="ui-g-12 ui-lg-12 ui-md-12">
+                  <p-messages [value]="msgs"></p-messages>
+                </div>
+                <form *ngIf="!enforcePasswdChange" #loginForm="ngForm" (ngSubmit)="login(username.value, password.value)">
+                  <div class="ui-g-12 ui-lg-12 ui-md-12">
+                    <div class="input-wrapper">
+                      <label style="color: white">Benutzername</label>
+                      <input #username [disabled]="loginDisabled" name="username" id="username" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="text" autocomplete="off" placeholder="Benutzername" class="ui-inputtext ui-widget">
+                    </div>
+                  </div>
+                  <div class="ui-g-12 ui-lg-12 ui-md-12">
+                    <div class="input-wrapper">
+                      <label style="color: white">Passwort</label>
+                      <input #password [disabled]="loginDisabled" name="password" id="password" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="password" autocomplete="off" placeholder="Passwort" class="ui-inputtext ui-widget">
+                    </div>
+                  </div>
+                  <div class="ui-g-12 ui-lg-12 ui-md-12 button-container">
+                    <p-button [disabled]="loginDisabled" type="submit" id="loginBt" name="loginBt" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" label="Anmelden"></p-button>
+                    <a *ngIf="!loginDisabled" href="#" style="float: right">Passwort vergessen?</a>
+                  </div>
+                </form>
+        
+                <form *ngIf="enforcePasswdChange" #changePasswordForm="ngForm" (ngSubmit)="changePassword(oldpass.value, newpass.value, repeatpass.value)" class="ui-g ui-fluid">
+                  <div class="ui-g-12 ui-md-12 form-group">
+                    <div class="input-wrapper" style="margin-bottom: 14px;">
+                      <label>Altes Passwort</label>
+                      <input #oldpass type="password" autocomplete="off" placeholder="Altes Passwort" class="ui-inputtext ui-widget">
+                    </div>
+                    <div class="input-wrapper" style="margin-bottom: 10px;">
+                      <label>Neues Passwort</label>
+                      <input #newpass type="password" autocomplete="off" placeholder="Neues Passwort" class="ui-inputtext ui-widget" (input)="passwordChanged(newpass.value)">
+                      <div [style.background-color]="safetyBarColor" [style.width]="safetyBarWidth" style="height: 4px; transition: 0.5s;"></div>
+                    </div>
+                    <div class="input-wrapper" style="margin-bottom: 14px;">
+                      <label>Wiederholen</label>
+                      <input #repeatpass type="password" autocomplete="off" placeholder="Neues Passwort" class="ui-inputtext ui-widget">
+                    </div>
+          
+                    <p-button type="submit" label="Speichern" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" icon="fa fa-check"></p-button>
+                  </div>
+                </form>
+        
+              </div>
+            </div>
+
+</div>
+
+
+<!-- Variante 2) Der Vulkan 
+
+<div style="position:fixed;border-top: 1px solid white;border-left: 1px solid white; border-bottom: 1px solid white;
+            height: 800px; top: 50%; margin-top: -400px;  /*set to a negative number 1/2 of your height*/
+            width: 800px; left: 50%; margin-left: -800px; /*set to a negative number 1/2 of your width*/">
+  <div>
+    <img src="assets/layout/images/login_bg_1.png" width="799" height="798" alt="california-layout"/>
+  </div>
+</div>
+
+<div style="position:fixed;  background:white;border-top: 1px solid white;border-right: 1px solid white;border-bottom: 1px solid white;
+            height: 800px; top: 50%; margin-top: -400px;  /*set to a negative number 1/2 of your height*/
+            width: 800px; left: 50%;  /*set to a negative number 1/2 of your width*/">
+            <div style="margin-top: 125px; text-align:center" >
+              <img src="assets/layout/images/logo.png" width="244" height="64" alt="california-layout"/>
+            </div>
+            <div style="margin-top: 50px; text-align:center" >
+              <h2 style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">Willkommen bei Jmeleon!</h2>
+            </div>
+
+            <div style="margin-left: 100px" class="login-panel ui-fluid">
+              <div class="ui-g">
+                <div class="ui-g-12 ui-lg-12 ui-md-12">
+                  <p-messages [value]="msgs"></p-messages>
+                </div>
+                <form *ngIf="!enforcePasswdChange" #loginForm="ngForm" (ngSubmit)="login(username.value, password.value)">
+                  <div class="ui-g-12 ui-lg-12 ui-md-12">
+                    <div class="input-wrapper">
+                      <label>Benutzername</label>
+                      <input #username [disabled]="loginDisabled" name="username" id="username" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="text" autocomplete="off" placeholder="Benutzername" class="ui-inputtext ui-widget">
+                    </div>
+                  </div>
+                  <div class="ui-g-12 ui-lg-12 ui-md-12">
+                    <div class="input-wrapper">
+                      <label>Passwort</label>
+                      <input #password [disabled]="loginDisabled" name="password" id="password" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="password" autocomplete="off" placeholder="Passwort" class="ui-inputtext ui-widget">
+                    </div>
+                  </div>
+                  <div class="ui-g-12 ui-lg-12 ui-md-12 button-container">
+                    <p-button [disabled]="loginDisabled" type="submit" id="loginBt" name="loginBt" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" label="Anmelden"></p-button>
+                    <a *ngIf="!loginDisabled" href="#" style="float: right">Passwort vergessen?</a>
+                  </div>
+                </form>
+        
+                <form *ngIf="enforcePasswdChange" #changePasswordForm="ngForm" (ngSubmit)="changePassword(oldpass.value, newpass.value, repeatpass.value)" class="ui-g ui-fluid">
+                  <div class="ui-g-12 ui-md-12 form-group">
+                    <div class="input-wrapper" style="margin-bottom: 14px;">
+                      <label>Altes Passwort</label>
+                      <input #oldpass type="password" autocomplete="off" placeholder="Altes Passwort" class="ui-inputtext ui-widget">
+                    </div>
+                    <div class="input-wrapper" style="margin-bottom: 10px;">
+                      <label>Neues Passwort</label>
+                      <input #newpass type="password" autocomplete="off" placeholder="Neues Passwort" class="ui-inputtext ui-widget" (input)="passwordChanged(newpass.value)">
+                      <div [style.background-color]="safetyBarColor" [style.width]="safetyBarWidth" style="height: 4px; transition: 0.5s;"></div>
+                    </div>
+                    <div class="input-wrapper" style="margin-bottom: 14px;">
+                      <label>Wiederholen</label>
+                      <input #repeatpass type="password" autocomplete="off" placeholder="Neues Passwort" class="ui-inputtext ui-widget">
+                    </div>
+          
+                    <p-button type="submit" label="Speichern" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" icon="fa fa-check"></p-button>
+                  </div>
+                </form>
+        
+              </div>
+            </div>
+</div>
+-->
+
+
+<!-- Variante 3) Nepal 
+
+<div style="position:fixed;border-top: 1px solid white;border-left: 1px solid white; border-bottom: 1px solid white;
+            height: 800px; top: 50%; margin-top: -400px;  /*set to a negative number 1/2 of your height*/
+            width: 800px; left: 50%; margin-left: -800px; /*set to a negative number 1/2 of your width*/">
+  <div>
+    <img src="assets/layout/images/login_bg_3.png" width="799" height="798" alt="california-layout"/>
+  </div>
+</div>
+
+<div style="position:fixed;  background:white;border-top: 1px solid white;border-right: 1px solid white;border-bottom: 1px solid white;
+            height: 800px; top: 50%; margin-top: -400px;  /*set to a negative number 1/2 of your height*/
+            width: 800px; left: 50%;  /*set to a negative number 1/2 of your width*/">
+            <div style="margin-top: 125px; text-align:center" >
+              <img src="assets/layout/images/logo.png" width="244" height="64" alt="california-layout"/>
+            </div>
+            <div style="margin-top: 50px; text-align:center" >
+              <h2 style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">Willkommen bei Jmeleon!</h2>
+            </div>
+
+            <div style="margin-left: 100px" class="login-panel ui-fluid">
+              <div class="ui-g">
+                <div class="ui-g-12 ui-lg-12 ui-md-12">
+                  <p-messages [value]="msgs"></p-messages>
+                </div>
+                <form *ngIf="!enforcePasswdChange" #loginForm="ngForm" (ngSubmit)="login(username.value, password.value)">
+                  <div class="ui-g-12 ui-lg-12 ui-md-12">
+                    <div class="input-wrapper">
+                      <label>Benutzername</label>
+                      <input #username [disabled]="loginDisabled" name="username" id="username" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="text" autocomplete="off" placeholder="Benutzername" class="ui-inputtext ui-widget">
+                    </div>
+                  </div>
+                  <div class="ui-g-12 ui-lg-12 ui-md-12">
+                    <div class="input-wrapper">
+                      <label>Passwort</label>
+                      <input #password [disabled]="loginDisabled" name="password" id="password" [ngClass]="{'ng-dirty': loginFailed, 'ng-invalid': loginFailed}" type="password" autocomplete="off" placeholder="Passwort" class="ui-inputtext ui-widget">
+                    </div>
+                  </div>
+                  <div class="ui-g-12 ui-lg-12 ui-md-12 button-container">
+                    <p-button [disabled]="loginDisabled" type="submit" id="loginBt" name="loginBt" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" label="Anmelden"></p-button>
+                    <a *ngIf="!loginDisabled" href="#" style="float: right">Passwort vergessen?</a>
+                  </div>
+                </form>
+        
+                <form *ngIf="enforcePasswdChange" #changePasswordForm="ngForm" (ngSubmit)="changePassword(oldpass.value, newpass.value, repeatpass.value)" class="ui-g ui-fluid">
+                  <div class="ui-g-12 ui-md-12 form-group">
+                    <div class="input-wrapper" style="margin-bottom: 14px;">
+                      <label>Altes Passwort</label>
+                      <input #oldpass type="password" autocomplete="off" placeholder="Altes Passwort" class="ui-inputtext ui-widget">
+                    </div>
+                    <div class="input-wrapper" style="margin-bottom: 10px;">
+                      <label>Neues Passwort</label>
+                      <input #newpass type="password" autocomplete="off" placeholder="Neues Passwort" class="ui-inputtext ui-widget" (input)="passwordChanged(newpass.value)">
+                      <div [style.background-color]="safetyBarColor" [style.width]="safetyBarWidth" style="height: 4px; transition: 0.5s;"></div>
+                    </div>
+                    <div class="input-wrapper" style="margin-bottom: 14px;">
+                      <label>Wiederholen</label>
+                      <input #repeatpass type="password" autocomplete="off" placeholder="Neues Passwort" class="ui-inputtext ui-widget">
+                    </div>
+          
+                    <p-button type="submit" label="Speichern" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" icon="fa fa-check"></p-button>
+                  </div>
+                </form>
+        
+              </div>
+            </div>
+</div>
+
+-->
