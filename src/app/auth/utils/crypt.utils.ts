@@ -3,23 +3,31 @@ import { strict } from 'assert';
 
 export default class CryptUtils {
 
-    private static _key = '03062b1d-9142-4be5-ad2b-7b6486773709';
-    private static _logLength = 100;
-    private static ENCRYPTED_TOKEN_PREFIX = '#$§$§$§#';
+    // todo: find better way to store hard wired key
+    private static readonly _key = '03062b1d-9142-4be5-ad2b-7b6486773709';
+    private static readonly _logLength = 100;
+    private static readonly ENCRYPTED_TOKEN_PREFIX = '#$§$§$§#';
 
     static encryptForLocalStorage = (value: string): string => {
 
-        if (!value || value.trim().length === 0){
+        if (!value || value.trim().length === 0) {
             return value;
         }
 
         // read token
         const obj = JSON.parse(value);
-        const token = obj['user']['token'];
+        if (!obj || !Object.keys(obj).some(key => key === 'user')) {
+            return value;
+        }
+        const userObj = obj['user'];
+        if (!userObj || !Object.keys(userObj).some(key => key === 'token')) {
+            return value;
+        }
+        const token = userObj['token'];
         // console.log('token:', token);
 
         // if token is empty, return
-        if (!token){
+        if (!token) {
             return value;
         }
 
@@ -42,10 +50,17 @@ export default class CryptUtils {
 
         // read token
         const obj = JSON.parse(value);
-        const encryptedToken = obj['user']['token'] as string;
+        if (!obj || !Object.keys(obj).some(key => key === 'user')) {
+            return value;
+        }
+        const userObj = obj['user'];
+        if (!userObj || !Object.keys(userObj).some(key => key === 'token')) {
+            return value;
+        }
+        const encryptedToken = userObj['token'] as string;
 
         // check if token is encrypted
-        if (!encryptedToken.startsWith(CryptUtils.ENCRYPTED_TOKEN_PREFIX)){
+        if (!encryptedToken.startsWith(CryptUtils.ENCRYPTED_TOKEN_PREFIX)) {
             // console.log('token has no prefix. No decrypting will take place.');
             return value;
         }
