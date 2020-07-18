@@ -140,7 +140,8 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
       .hideAttachments()
       .hideButtons()
       .setScrollable()
-      .setScrollHeight('700px');
+      .setScrollHeight('700px')
+      .disableInlineEdit();
     this.header = type + ' auswählen';
     this.displayEntitySelectionDialog_add = true;
   }
@@ -152,7 +153,8 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
       .hideAttachments()
       .hideButtons()
       .setScrollable()
-      .setScrollHeight('700px');
+      .setScrollHeight('700px')
+      .disableInlineEdit();
     this.updatedRowData = attribute;
     this.header = type + ' auswählen';
     this.displayEntitySelectionDialog_update = true;
