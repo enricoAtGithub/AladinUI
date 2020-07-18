@@ -34,6 +34,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   @Input() mainType: string;
   @Input() dblClickCallback: (data) => any;
   @Output() entitySelection = new EventEmitter();
+  @Output() entityOperation = new EventEmitter();
 
   configuration: EntityConfiguration;
   subscriptions: Subscription[] = [];
@@ -58,6 +59,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   cellEditCache: any;
   lastCellRef: any;
   crudColumnSpace: number;
+  refreshTrigger: Subject<any>;
 
   constructor(
     private entityService: EntityService,
@@ -79,6 +81,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.cellEditCache = new Map();
     this.configuration = new EntityConfiguration();
     this.entityData = new EntityData();
+
+    this.refreshTrigger = new Subject();
+    this.subscriptions.push(this.refreshTrigger.asObservable().subscribe(() => this.refreshTableContents()));
+
     this.subscriptions.push(configuration$.subscribe(async config => {
       // Get the config according to the given name
       this.configuration = config;
@@ -308,7 +314,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.subscriptions.push(
       dialogRef.onClose.subscribe((result: Observable<Object>) => {
         if (result !== undefined) {
-          result.subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
+          result.subscribe(() => {
+            this.loadLazy(this.lastLazyLoadEvent);
+            this.entityOperation.emit(null);
+          });
         }
       })
     );
@@ -331,7 +340,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.subscriptions.push(
       dialogRef.onClose.subscribe((result: Observable<Object>) => {
         if (result !== undefined) {
-          result.subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
+          result.subscribe(() => { 
+            this.loadLazy(this.lastLazyLoadEvent);
+            this.entityOperation.emit(null);
+          });
         }
       })
     );
@@ -366,7 +378,12 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.confirmationService.confirm({
       message: 'Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?',
       accept: () => {
-        this.subscriptions.push(this.entityService.deleteEntity(this.configuration.type, data['id']).subscribe(() => this.loadLazy(this.lastLazyLoadEvent)));
+        this.subscriptions.push(
+          this.entityService.deleteEntity(this.configuration.type, data['id']).subscribe(() => {
+            this.loadLazy(this.lastLazyLoadEvent);
+            this.entityOperation.emit(null);
+          })
+        );
       }
     });
   }

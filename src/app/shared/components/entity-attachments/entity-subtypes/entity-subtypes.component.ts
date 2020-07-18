@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges, Output, EventEmitter } from '@angular/core';
 import { TableData } from 'src/app/shared/models/table-data';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-entity-subtypes',
@@ -11,6 +12,7 @@ export class EntitySubtypesComponent implements OnInit, OnChanges {
 
   @Input() subtype: string;
   @Input() mainId: number;
+  @Input() refreshTrigger: Subject<any>;
 
   constructor() { }
 
@@ -25,6 +27,12 @@ export class EntitySubtypesComponent implements OnInit, OnChanges {
         //.hideHeader()
         .hideHeadline()
         .disablePagination();
+    }
+  }
+
+  onEntityOperation() {
+    if (this.refreshTrigger) {
+      this.refreshTrigger.next(null);
     }
   }
 
