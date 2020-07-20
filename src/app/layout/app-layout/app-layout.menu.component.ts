@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MenuItem } from 'primeng/primeng';
 import { AppLayoutComponent } from '../app-layout/app-layout.component';
@@ -6,6 +6,8 @@ import { JMeleonPermissionsService } from 'src/app/auth/services/jmeleon-permiss
 import { environment } from 'src/environments/environment';
 import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 import { root } from 'src/app/jmeleon/modules/permissions/permissions';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 
 
 @Component({
@@ -28,7 +30,7 @@ export class AppMenuComponent implements OnInit {
     ngOnInit() {
         this.model = [
             {
-                label: 'Dashboard', icon: 'fa fa-th', routerLink: ['/'],
+                label: 'Dashboard', icon: 'fa fa-th', routerLink: ['/dashboard'],
                 visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.dashboard)
             },
             {
@@ -159,7 +161,9 @@ export class AppMenuComponent implements OnInit {
     /* tslint:enable:component-selector */
     template: `
         <ng-template ngFor let-child let-i="index" [ngForOf]="(root ? item : item.items)">
-            <li [ngClass]="{'active-menuitem': isActive(i)}" [class]="child.badgeStyleClass" *ngIf="child.visible === false ? false : true">
+            <li [ngClass]="{'active-menuitem': isActive(i)}" [class]="child.badgeStyleClass" *ngIf="child.visible === false ? false : true" routerLinkActive="active-menuitem"
+            [routerLinkActiveOptions]="{exact: true}">
+                <!--menu dropdown-->
                 <a [href]="child.url||'#'" (click)="itemClick($event,child,i)" (mouseenter)="onMouseEnter(i)"
                    class="ripplelink" *ngIf="!child.routerLink"
                    [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target"
@@ -169,9 +173,9 @@ export class AppMenuComponent implements OnInit {
                     <i class="fa fa-fw fa-angle-down layout-menuitem-toggler" *ngIf="child.items"></i>
                 </a>
 
+                <!--menu item-->
                 <a (click)="itemClick($event,child,i)" (mouseenter)="onMouseEnter(i)" class="ripplelink" *ngIf="child.routerLink"
-                   [routerLink]="child.routerLink" routerLinkActive="active-menuitem-routerlink"
-                   [routerLinkActiveOptions]="{exact: true}" [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target"
+                   [routerLink]="child.routerLink"  [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target"
                    [id]="!!child.id ? child.id : 'menuItem'+i">
                     <i [ngClass]="child.icon"></i><span>{{child.label}}</span>
                     <span class="menuitem-badge" *ngIf="child.badge">{{child.badge}}</span>
@@ -207,9 +211,10 @@ export class AppMenuComponent implements OnInit {
             transition('visibleAnimated => hiddenAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')),
             transition('hiddenAnimated => visibleAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
         ])
-    ]
+    ],
+    providers: [Location, {provide: LocationStrategy, useClass: PathLocationStrategy}],
 })
-export class AppSubMenuComponent {
+export class AppSubMenuComponent implements OnInit, OnDestroy {
 
     @Input() item: MenuItem;
 
@@ -223,7 +228,34 @@ export class AppSubMenuComponent {
 
     activeIndex: number;
 
-    constructor(public app: AppLayoutComponent) { }
+    location: Location;
+
+    constructor(public app: AppLayoutComponent
+        , private router: Router
+        // , loc: Location
+        ) { }
+
+    ngOnInit(): void {
+
+        // this.activeRoute.url.pipe(
+        //     distinctUntilChanged(),
+        //     tap(url => console.log('tap url', url))
+        // ).subscribe(parts => {
+        //     const url = parts.join('');
+        //     console.log('item: ', this.item);
+        //     console.log('url: ', url);
+        // });
+        // this.router.events.subscribe(val => {
+        //     if (this.location.pathname !== '') {
+        //         console.log('no route');
+        //     } else {
+        //         console.log('route: ', this.location.pathname);
+        //     }
+        // });
+    }
+    ngOnDestroy(): void {
+
+    }
 
     itemClick(event: Event, item: MenuItem, index: number) {
         if (this.root) {

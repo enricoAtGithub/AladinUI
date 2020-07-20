@@ -120,6 +120,7 @@ import { PermissionsModule } from './jmeleon/modules/permissions/permissions.mod
 import { AccountsComponent } from './accounts/accounts.component';
 import { ProductsComponent } from './domain/components/products/products.component';
 import { QuotationsComponent } from './domain/components/quotations/quotations.component';
+import { RouterModule } from '@angular/router';
 
 export function initializeApp(appConfig: AppConfig) {
     console.log('initialize app');
@@ -217,6 +218,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingsModule,
         SchedulerModule,
         PermissionsModule,
+        RouterModule
     ],
     declarations: [
         AppComponent,
