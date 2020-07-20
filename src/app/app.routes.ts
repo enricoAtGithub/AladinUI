@@ -5,7 +5,6 @@ import { AuthGuard } from './auth/guards/auth.guard';
 import { LoginComponent } from './auth/components/login/login.component';
 import { UserModule } from './user/user.module';
 import { UserManagementComponent } from './user/components/user-management/user-management.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { OrdersComponent } from './domain/components/orders/orders.component';
 import { ReportsComponent } from './reports/reports.component';
 import { InvoicesComponent } from './invoices/invoices.component';
@@ -29,6 +28,10 @@ import { AccountsComponent } from './accounts/accounts.component';
 import { ProductsComponent } from './domain/components/products/products.component';
 import { QuotationsComponent } from './domain/components/quotations/quotations.component';
 import { ScriptActionsComponent } from './jmeleon/components/script-actions/script-actions.component';
+import { FinComponent } from './domain/components/fin/fin.component';
+import { ModelSetComponent } from './domain/components/model_set/modelset.component';
+import { ManufacturerCodeComponent } from './domain/components/manufacturercode/manufacturer_code.component';
+import { ManufacturerComponent } from './domain/components/manufacturer/manufacturer.component';
 
 export const routes: Routes = [
   // App-Layout routes
@@ -37,8 +40,11 @@ export const routes: Routes = [
     component: AppLayoutComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent },
+      { path: '', redirectTo: 'fins', pathMatch: 'full' },
+      { path: 'fins', component: FinComponent },
+      { path: 'modelsets', component: ModelSetComponent },
+      { path: 'manufacturer', component: ManufacturerComponent },
+      { path: 'manufacturercodes', component: ManufacturerCodeComponent },
       {
         path: 'masterdata',
         children: [
@@ -101,7 +107,7 @@ export const routes: Routes = [
   // No-Layout routes
   { path: 'login', canActivate: [LoginGuard], component: LoginComponent },
 
-  { path: '**', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '**', redirectTo: 'fins', pathMatch: 'full' },
 ];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(

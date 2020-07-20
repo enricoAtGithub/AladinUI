@@ -85,7 +85,6 @@ import { AppFooterComponent } from './layout/app-footer/app.footer.component';
 
 import { BreadcrumbService } from './breadcrumb.service';
 import { UserModule } from './user/user.module';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReportsComponent } from './reports/reports.component';
 import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -120,6 +119,10 @@ import { PermissionsModule } from './jmeleon/modules/permissions/permissions.mod
 import { AccountsComponent } from './accounts/accounts.component';
 import { ProductsComponent } from './domain/components/products/products.component';
 import { QuotationsComponent } from './domain/components/quotations/quotations.component';
+import { FinComponent } from './domain/components/fin/fin.component';
+import { ModelSetComponent } from './domain/components/model_set/modelset.component';
+import { ManufacturerComponent } from './domain/components/manufacturer/manufacturer.component';
+import { ManufacturerCodeComponent } from './domain/components/manufacturercode/manufacturer_code.component';
 
 export function initializeApp(appConfig: AppConfig) {
     console.log('initialize app');
@@ -229,7 +232,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         AppThemeComponent,
         AppFooterComponent,
         AppProfileComponent,
-        DashboardComponent,
         UseraltComponent,
         ProfileComponent,
         ReportsComponent,
@@ -237,7 +239,11 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         OrdersComponent,
         AccountsComponent,
         ProductsComponent,
-        QuotationsComponent
+        QuotationsComponent,
+        FinComponent,
+        ModelSetComponent,
+        ManufacturerComponent,
+        ManufacturerCodeComponent
 
     ],
     providers: [

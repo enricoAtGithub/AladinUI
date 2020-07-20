@@ -28,62 +28,20 @@ export class AppMenuComponent implements OnInit {
     ngOnInit() {
         this.model = [
             {
-                label: 'Dashboard', icon: 'fa fa-th', routerLink: ['/'],
-                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.dashboard)
+                label: 'FINs', icon: 'fa fa-th', routerLink: ['/fins'],
+                visible: true //this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.dashboard)
             },
             {
-                label: 'Kaufm. Stammdaten', icon: 'fa fa-archive',
-                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.stammdaten.show),
-                items: [
-                    {
-                        label: 'Produkte', icon: 'fa fa-star-o', routerLink: ['/masterdata/products'],
-                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.stammdaten.produkte)
-                    },
-                    {
-                        label: 'Accounts', icon: 'fa fa-address-card', routerLink: ['/masterdata/accounts'],
-                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.stammdaten.accounts)
-                    },
-                ]
+                label: 'Modelsets', icon: 'fa fa-th', routerLink: ['/modelsets'],
+                visible: true //this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.dashboard)
             },
             {
-                label: 'Vertrieb', icon: 'fa fa-archive',
-                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.vertrieb.show),
-                items: [
-                    {
-                        label: 'Angebote', icon: 'fa fa-file-text-o', routerLink: ['/sales/quotations'],
-                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.vertrieb.angebote)
-                    },
-                    {
-                        label: 'Aufträge', icon: 'fa fa-fw fa-tasks', routerLink: ['/sales/orders'],
-                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.vertrieb.auftraege)
-                    }
-                ]
+                label: 'Hersteller', icon: 'fa fa-th', routerLink: ['/manufacturer'],
+                visible: true //this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.dashboard)
             },
             {
-                label: 'Einsatzplanung', icon: 'fa fa-truck', routerLink: ['/scheduler'],
-                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.einsatzplanung)
-            },
-            {
-                label: 'Rechnungen', icon: 'fa fa-fw fa-eur', routerLink: ['/invoices'],
-                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.rechnungen)
-            },
-            {
-                label: 'Berichte', icon: 'fa fa-fw fa-file', routerLink: ['/reports'],
-                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.berichte)
-            },
-            {
-                label: 'Ressourcenverwaltung', icon: 'fa fa-archive',
-                visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.ressourcenverwaltung.show),
-                items: [
-                    {
-                        label: 'Ressourcen', icon: 'fa fa-odnoklassniki', routerLink: ['/resource-management/resources'],
-                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.ressourcenverwaltung.ressourcen)
-                    },
-                    {
-                        label: 'An-/Abwesenheiten', icon: 'fa fa-plane', routerLink: ['/resource-management/availability'],
-                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.ressourcenverwaltung.anwesenheiten)
-                    },
-                ]
+                label: 'HerstellerCodes', icon: 'fa fa-th', routerLink: ['/manufacturercodes'],
+                visible: true //this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.dashboard)
             },
             {
                 label: 'Objekte', icon: 'fa fa-fw fa-eur', routerLink: ['/dto-entities'],
@@ -129,15 +87,6 @@ export class AppMenuComponent implements OnInit {
                     }
                 ]
             },
-            {
-                label: 'Playground', icon: 'fa fa-flask',
-                visible: environment.loadPlayground,
-                items: [
-                    { label: 'Start', routerLink: ['/playground'] },
-                    { label: 'JMeleonPermissionDirective', routerLink: ['/playground/permission'] },
-                    { label: 'Entity-Tests', routerLink: ['/playground/entity-test'] },
-                ]
-            }
         ];
         // this.jmlActionPermissionsService.userHasPermissionForAction(root.)
     }

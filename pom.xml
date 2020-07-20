@@ -5,10 +5,10 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <name>JMeleon Angular UI</name>
+    <name>Aladin UI</name>
     <groupId>de.simply.jmeleon</groupId>
-    <artifactId>jmeleon-ui</artifactId>
-    <version>1.0.5</version>
+    <artifactId>aladin-ui</artifactId>
+    <version>0.8.5</version>
     <packaging>war</packaging>
 
 
