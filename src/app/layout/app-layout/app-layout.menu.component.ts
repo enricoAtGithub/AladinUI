@@ -6,8 +6,10 @@ import { JMeleonPermissionsService } from 'src/app/auth/services/jmeleon-permiss
 import { environment } from 'src/environments/environment';
 import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 import { root } from 'src/app/jmeleon/modules/permissions/permissions';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { distinctUntilChanged, filter, tap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -185,6 +187,7 @@ export class AppMenuComponent implements OnInit {
                 <ul app-submenu [item]="child" *ngIf="child.items" [visible]="isActive(i)" [reset]="reset" [parentActive]="isActive(i)"
                     [@children]="(app.isSlim()||app.isHorizontal())&&root ? isActive(i) ?
                     'visible' : 'hidden' : isActive(i) ? 'visibleAnimated' : 'hiddenAnimated'"></ul>
+                
             </li>
         </ng-template>
     `,
@@ -230,12 +233,18 @@ export class AppSubMenuComponent implements OnInit, OnDestroy {
 
     location: Location;
 
+    lastNavEndItem: NavigationEnd;
+
+    subscriptions: Subscription[] = [];
+
     constructor(public app: AppLayoutComponent
         , private router: Router
         // , loc: Location
         ) { }
 
     ngOnInit(): void {
+
+        // this.subscriptions = [];
 
         // this.activeRoute.url.pipe(
         //     distinctUntilChanged(),
@@ -252,9 +261,35 @@ export class AppSubMenuComponent implements OnInit, OnDestroy {
         //         console.log('route: ', this.location.pathname);
         //     }
         // });
+
+        console.log('subscription count: ', this.subscriptions.length);
+
+         this.subscriptions.push(
+             this.router.events.pipe(
+                filter(event => event instanceof NavigationEnd),
+                filter((navEndEvent: NavigationEnd) => !this.lastNavEndItem || navEndEvent.url !== this.lastNavEndItem.url),
+                // distinctUntilChanged(),
+                // distinctUntilChanged((ev1, ev2) => ev1.url === ev2.url),
+                distinctUntilChanged((ev1, ev2) => {
+                    console.log('ev1 & ev2', ev1, ev2);
+                    console.log('item', this.item);
+                    return ev1.url === ev2.url;
+                }),
+
+                tap((navEndEvent: NavigationEnd) => {
+                    // console.log('lastNavEndItem: ', this.lastNavEndItem);
+                    // console.log('navEndItem', navEndEvent);
+                    this.lastNavEndItem = navEndEvent;
+                    // console.log('lastNavEndItem updated: ', this.lastNavEndItem);
+                    // // console.log(navEndEvent);
+
+                }),
+                ).subscribe()
+            );
     }
     ngOnDestroy(): void {
-
+        console.log('destroying subscriptions. subscriptioncount: ', this.subscriptions.length);
+        this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
     itemClick(event: Event, item: MenuItem, index: number) {
