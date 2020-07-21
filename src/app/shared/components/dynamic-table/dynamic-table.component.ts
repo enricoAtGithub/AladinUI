@@ -3,7 +3,7 @@ import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
 import { EntityData } from '../../models/entity-data';
 import { EntityService } from '../../services/entity.service';
-import { LazyLoadEvent, DialogService, ConfirmationService } from 'primeng/primeng';
+import { LazyLoadEvent, DialogService, ConfirmationService, SelectItem } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
 import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
 import { Observable, Subject, Subscription } from 'rxjs';
@@ -131,6 +131,12 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
                     }
                   });
                 }));
+          } else if (field.type === 'dtoType') {
+            // get all dtoConfigs for field.type === 'dtoType' (e.g. for Script Actions)
+            const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
+            this.subscriptions.push(
+              configurations$.subscribe(configs => Object.values(configs).map(o => field.options.push({ label: o.type, value: o.type })))
+            );
           } else {
             // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
             this.subscriptions.push(
@@ -340,7 +346,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.subscriptions.push(
       dialogRef.onClose.subscribe((result: Observable<Object>) => {
         if (result !== undefined) {
-          result.subscribe(() => { 
+          result.subscribe(() => {
             this.loadLazy(this.lastLazyLoadEvent);
             this.entityOperation.emit(null);
           });

@@ -83,6 +83,10 @@
                     <p-dropdown [placeholder]="field.header" class="dropdownFullWidth" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}" [style]="{'minWidth': '0px', 'display':'grid'}" [(ngModel)]="rowData[field.field]"
                       (onChange)="cell.isEdited = false; completeCellEdit(rowData)"></p-dropdown>
                   </ng-container>
+                  <ng-container *ngSwitchCase="'dtoType'">
+                    <p-dropdown [placeholder]="field.header" class="dropdownFullWidth" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}" [style]="{'minWidth': '0px', 'display':'grid'}" [(ngModel)]="rowData[field.field]"
+                      (onChange)="cell.isEdited = false; completeCellEdit(rowData)"></p-dropdown>
+                  </ng-container>
                   <ng-container *ngSwitchCase="'Currency'">
                     <div class="ui-inputgroup" style="width: calc(100% - 2.143em);">            
                       <input [name]="field.field" appAutoFocus [(ngModel)]="rowData[field.field]" pattern="^\d{1,3}((\.)?\d{3})*(,\d{1,2})?$" id="float-input" type="text" style="width: calc(100% - 28px); font-family: monospace;"
