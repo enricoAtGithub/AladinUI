@@ -231,27 +231,22 @@ export class AppSubMenuComponent implements OnInit, OnDestroy {
 
     activeIndex: number;
 
-    location: Location;
-
-    // lastNavEndItem: NavigationEnd;
-
     subscriptions: Subscription[] = [];
 
     constructor(public app: AppLayoutComponent
         , private router: Router
-        // , loc: Location
         ) { }
 
     ngOnInit(): void {
 
+        // url navigation menu highlighting for top-level menu items
          this.subscriptions.push(
              this.router.events.pipe(
                 filter(event => event instanceof NavigationEnd),
-                distinctUntilChanged(),
                 // filter out root
-                filter((navEndEvent: NavigationEnd) => !Array.isArray(this.item)),
+                filter(() => !this.root),
                 // filter out  empty parent elements and leafs
-                filter((navEndEvent: NavigationEnd) => !!this.item.items && this.item.items.length > 0 && (this.item.items[0] as MenuItem).label !== undefined ),
+                filter(() => !!this.item.items && this.item.items.length > 0 && (this.item.items[0] as MenuItem).label !== undefined ),
                 // filter for the parent menu item
                 filter((navEndEvent: NavigationEnd) => {
                     const items = this.item.items as MenuItem[];
@@ -260,24 +255,14 @@ export class AppSubMenuComponent implements OnInit, OnDestroy {
                     }
                     return items.some(item => item.routerLink[0] === navEndEvent.url);
                 }),
-                // filter(() => !!this.item.items && this.item.items.length > 0 && (this.item.items[0] as MenuItem).routerLink === undefined ),
-
+                // set active index for selected url to highlight nav menu entry
                 tap((navEndEvent: NavigationEnd) => {
-                    // console.log('lastNavEndItem: ', this.lastNavEndItem);
-                    console.log('navEndItem', navEndEvent);
-                    console.log('item', this.item);
-                    console.log('typeof', typeof this.item.items);
-                    // console.log('typeof', typeof this.item.items[0]);
-                    // this.lastNavEndItem = navEndEvent;
-                    // console.log('lastNavEndItem updated: ', this.lastNavEndItem);
-                    // // console.log(navEndEvent);
                     const items = this.item.items as MenuItem[];
                     if (items === undefined) {
                         return false;
                     }
                     const index = items.findIndex(item => item.routerLink[0] === navEndEvent.url);
-                    if (index >= 0){
-                        console.log('setting active index to ', index);
+                    if (index >= 0) {
                         this.activeIndex = index;
                     }
 
@@ -285,34 +270,38 @@ export class AppSubMenuComponent implements OnInit, OnDestroy {
                 ).subscribe()
             );
 
-            this.subscriptions.push(
-                this.router.events.pipe(
-                    filter(event => event instanceof NavigationEnd),
-                    filter(() => this.root),
-                    tap((navEndEvent: NavigationEnd) => {
-                        const items = this.item as MenuItem[];
-                        if (!items){
-                            console.log('no root?');
-                            return;
+        // url navigation menu highlighting for second-level menu items
+        this.subscriptions.push(
+            this.router.events.pipe(
+                filter(event => event instanceof NavigationEnd),
+                // filter for root only
+                filter(() => this.root),
+                // set active index for selected url to highlight nav menu entry
+                tap((navEndEvent: NavigationEnd) => {
+                    const items = this.item as MenuItem[];
+                    if (!items) {
+                        console.log('no root?');
+                        return;
+                    }
+                    const currentIndex = items.findIndex(item => {
+                        if (!item.items) {
+                            return false;
                         }
-                        const currentIndex = items.findIndex(item => {
-                            if (!item.items){
-                                return false;
-                            }
-                            const subItems = item.items as MenuItem[];
-                            if (!subItems){
-                                return false;
-                            }
-                            const result = subItems.some(si => si.routerLink !== undefined && si.routerLink[0] === navEndEvent.url);
-                            return result;
-                        });
-                        if (currentIndex >= 0){
-                            this.activeIndex = currentIndex;
-                            console.log('set active index to: ', this.activeIndex);
+                        const subItems = item.items as MenuItem[];
+                        if (!subItems) {
+                            return false;
                         }
-                    })
-                ).subscribe()
-            );
+                        return subItems.some(si => si.routerLink !== undefined && si.routerLink[0] === navEndEvent.url);
+                    });
+                    if (currentIndex >= 0) {
+                        this.activeIndex = currentIndex;
+                        console.log('set active index to: ', this.activeIndex);
+                    } else {
+                        this.activeIndex = null;
+                    }
+                })
+            ).subscribe()
+        );
     }
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe());
