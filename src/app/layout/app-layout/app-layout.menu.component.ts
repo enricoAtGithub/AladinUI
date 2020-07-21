@@ -187,7 +187,7 @@ export class AppMenuComponent implements OnInit {
                 <ul app-submenu [item]="child" *ngIf="child.items" [visible]="isActive(i)" [reset]="reset" [parentActive]="isActive(i)"
                     [@children]="(app.isSlim()||app.isHorizontal())&&root ? isActive(i) ?
                     'visible' : 'hidden' : isActive(i) ? 'visibleAnimated' : 'hiddenAnimated'"></ul>
-                
+
             </li>
         </ng-template>
     `,
@@ -233,7 +233,7 @@ export class AppSubMenuComponent implements OnInit, OnDestroy {
 
     location: Location;
 
-    lastNavEndItem: NavigationEnd;
+    // lastNavEndItem: NavigationEnd;
 
     subscriptions: Subscription[] = [];
 
@@ -244,51 +244,77 @@ export class AppSubMenuComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
 
-        // this.subscriptions = [];
-
-        // this.activeRoute.url.pipe(
-        //     distinctUntilChanged(),
-        //     tap(url => console.log('tap url', url))
-        // ).subscribe(parts => {
-        //     const url = parts.join('');
-        //     console.log('item: ', this.item);
-        //     console.log('url: ', url);
-        // });
-        // this.router.events.subscribe(val => {
-        //     if (this.location.pathname !== '') {
-        //         console.log('no route');
-        //     } else {
-        //         console.log('route: ', this.location.pathname);
-        //     }
-        // });
-
-        console.log('subscription count: ', this.subscriptions.length);
-
          this.subscriptions.push(
              this.router.events.pipe(
                 filter(event => event instanceof NavigationEnd),
-                filter((navEndEvent: NavigationEnd) => !this.lastNavEndItem || navEndEvent.url !== this.lastNavEndItem.url),
-                // distinctUntilChanged(),
-                // distinctUntilChanged((ev1, ev2) => ev1.url === ev2.url),
-                distinctUntilChanged((ev1, ev2) => {
-                    console.log('ev1 & ev2', ev1, ev2);
-                    console.log('item', this.item);
-                    return ev1.url === ev2.url;
+                distinctUntilChanged(),
+                // filter out root
+                filter((navEndEvent: NavigationEnd) => !Array.isArray(this.item)),
+                // filter out  empty parent elements and leafs
+                filter((navEndEvent: NavigationEnd) => !!this.item.items && this.item.items.length > 0 && (this.item.items[0] as MenuItem).label !== undefined ),
+                // filter for the parent menu item
+                filter((navEndEvent: NavigationEnd) => {
+                    const items = this.item.items as MenuItem[];
+                    if (items === undefined) {
+                        return false;
+                    }
+                    return items.some(item => item.routerLink[0] === navEndEvent.url);
                 }),
+                // filter(() => !!this.item.items && this.item.items.length > 0 && (this.item.items[0] as MenuItem).routerLink === undefined ),
 
                 tap((navEndEvent: NavigationEnd) => {
                     // console.log('lastNavEndItem: ', this.lastNavEndItem);
-                    // console.log('navEndItem', navEndEvent);
-                    this.lastNavEndItem = navEndEvent;
+                    console.log('navEndItem', navEndEvent);
+                    console.log('item', this.item);
+                    console.log('typeof', typeof this.item.items);
+                    // console.log('typeof', typeof this.item.items[0]);
+                    // this.lastNavEndItem = navEndEvent;
                     // console.log('lastNavEndItem updated: ', this.lastNavEndItem);
                     // // console.log(navEndEvent);
+                    const items = this.item.items as MenuItem[];
+                    if (items === undefined) {
+                        return false;
+                    }
+                    const index = items.findIndex(item => item.routerLink[0] === navEndEvent.url);
+                    if (index >= 0){
+                        console.log('setting active index to ', index);
+                        this.activeIndex = index;
+                    }
 
                 }),
                 ).subscribe()
             );
+
+            this.subscriptions.push(
+                this.router.events.pipe(
+                    filter(event => event instanceof NavigationEnd),
+                    filter(() => this.root),
+                    tap((navEndEvent: NavigationEnd) => {
+                        const items = this.item as MenuItem[];
+                        if (!items){
+                            console.log('no root?');
+                            return;
+                        }
+                        const currentIndex = items.findIndex(item => {
+                            if (!item.items){
+                                return false;
+                            }
+                            const subItems = item.items as MenuItem[];
+                            if (!subItems){
+                                return false;
+                            }
+                            const result = subItems.some(si => si.routerLink !== undefined && si.routerLink[0] === navEndEvent.url);
+                            return result;
+                        });
+                        if (currentIndex >= 0){
+                            this.activeIndex = currentIndex;
+                            console.log('set active index to: ', this.activeIndex);
+                        }
+                    })
+                ).subscribe()
+            );
     }
     ngOnDestroy(): void {
-        console.log('destroying subscriptions. subscriptioncount: ', this.subscriptions.length);
         this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
