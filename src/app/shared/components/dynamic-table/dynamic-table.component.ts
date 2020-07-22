@@ -21,6 +21,7 @@ import { SettingsService } from 'src/app/jmeleon/modules/settings/services/setti
 import { ScriptActionDefinition, ScriptActionPayload } from '../../models/script-action';
 import { ScriptResultComponent } from 'src/app/jmeleon/components/script-result/script-result.component';
 import { FileUploadDialogComponent } from '../file-upload-dialog/file-upload-dialog.component';
+import { CodeEditorComponent } from '../code-editor/code-editor.component';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -550,7 +551,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
   }
 
-  initCellEdit(cellRef, field: string, rowData) {
+  initCellEdit(cellRef, field: string, rowData, type: string) {
       // If another cell is being edited abort the edit operation and initialize the new edit operation
     if (this.lastCellRef !== undefined && this.cellEditCache !== undefined) {
       const rowDataPrev = this.entityData.data.find(row => row['id'] === this.cellEditCache.data['id']);
@@ -560,6 +561,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.cellEditCache = {field: field, data: Object.assign({}, rowData)};
     cellRef.isEdited = true;
     this.lastCellRef = cellRef;
+    // in case of code edit open code editor directly
+    if (type === 'python' || type === 'json') {
+      this.openCodeEditor(rowData, type, field);
+    }
   }
 
   completeCellEdit(data) {
@@ -582,6 +587,26 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       });
       this.entityData.data[index] = result['fields'];
     }, error => this.refreshTableContents());
+  }
+
+  openCodeEditor(data: any, syntax: string, field: string) {
+    const dialogRef = this.dialogService.open(CodeEditorComponent, {
+      data: {
+        syntax: syntax,
+        code: data[field]
+      },
+      header: syntax + ' Code Editor',
+      width: '80%'
+    });
+
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe((code: string) => {
+        data[field] = code;
+        // pass entity with edited code (data) to inline edit save routine
+        this.completeCellEdit(data);
+      })
+    );
+
   }
 
 }
