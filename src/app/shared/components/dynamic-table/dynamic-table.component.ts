@@ -140,7 +140,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           } else {
             // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
             this.subscriptions.push(
-              this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
+              this.entityService.filter(this.tableData.entityType, 1, 100000, undefined, undefined, undefined)
                 .subscribe(data => {
                   data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
                 }));
