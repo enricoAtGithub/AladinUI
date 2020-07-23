@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     AppConfig.uiInfo$.subscribe(uiInfo => {
       // Story #1733: https://redmine.simply4it.de/issues/1733
-      this.productiveCheck(environment.productiveFrontendBackendCheck, window.location.href, uiInfo.baseUrl);
+      this.productiveCheck(uiInfo.FEBEsameURLcheck, window.location.href, uiInfo.baseUrl);
 
       // console.log('[LoginComponent-ngOnInit-subscribe(uiInfo)]');
       this.uiDetails = 'UI version=' + uiInfo.version + '.' + uiInfo.git_branch + '.' + uiInfo.build_no + '.' + uiInfo.git_sha;

@@ -3,5 +3,6 @@
     "git_branch": "#git_branch#",
     "git_sha": "#git_sha#",
     "version": "#version#",
-    "build_no": "#build_no#"
+    "build_no": "#build_no#",
+    "FEBEsameURLcheck": false
 }
