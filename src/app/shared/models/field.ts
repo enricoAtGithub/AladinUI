@@ -17,11 +17,11 @@ export class Field extends BasicFieldConfig {
     formula: string;
 
     public static isPrimitiveType(type: string) {
-        return type === 'String' || type === 'int' || type === 'boolean' || type === 'Date' || type === 'Currency' || type === 'float' ;
+        return type === 'String' || type === 'int' || type === 'boolean' || type === 'Date' || type === 'Currency' || type === 'float' || type === 'json' || type === 'python';
     }
 
     public static isKnownType(type: string) {
-        return this.isPrimitiveType(type)  || type === 'json' || type === 'python' || type === 'dtoType' || type === 'CatalogueEntry' || type === 'Icon';
+        return this.isPrimitiveType(type)  || type === 'dtoType' || type === 'CatalogueEntry' || type === 'Icon';
     }
 }
 
