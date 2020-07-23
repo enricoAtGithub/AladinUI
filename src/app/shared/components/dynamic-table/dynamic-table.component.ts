@@ -284,12 +284,15 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         return input ? '<python>' : undefined;
       case 'json':
         return input ? '<json>' : undefined;
+      case 'float':
+        let digits: number;
+        (field['decimals']) ? digits = field['decimals'] : digits = 2;
+        return (<number>input).toLocaleString('de', { minimumFractionDigits: digits, maximumFractionDigits: digits });
       case 'String':
       case 'int':
       case 'Icon':
       case 'Currency':
       case 'dtoType':
-      case 'float':
         return input;
       default:
         return input['_repr_'];
@@ -608,6 +611,13 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       })
     );
 
+  }
+
+  // get regex pattern for input fields currency and float depending on the number of allowed decimals
+  getInputPattern(decimals: number): string {
+    // important: the backslash must be escaped: \\d instead of \d
+    const inputPattern: string = '^\\d{1,3}((\\.)?\\d{3})*(,\\d{1,' + decimals + '})?$';
+    return inputPattern;
   }
 
 }
