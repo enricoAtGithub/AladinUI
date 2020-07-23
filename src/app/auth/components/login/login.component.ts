@@ -91,7 +91,7 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    // get the URL part until the first slash
+    // get the URL part until the first slash after http://
     const frontendCompString = frontendURL.slice(0 , frontendURL.indexOf('/', (frontendURL.search('://') + 3)));
     const backendCompString = backendURL.slice(0 , backendURL.indexOf('/', (backendURL.search('://') + 3)));
 
