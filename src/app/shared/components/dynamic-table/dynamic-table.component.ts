@@ -138,14 +138,15 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             this.subscriptions.push(
               configurations$.subscribe(configs => Object.values(configs).map(o => field.options.push({ label: o.type, value: o.type })))
             );
-          } else {
-            // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
-            this.subscriptions.push(
-              this.entityService.filter(this.tableData.entityType, 1, 100000, undefined, undefined, undefined)
-                .subscribe(data => {
-                  data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
-                }));
-          }
+          } 
+          // else {
+          //   // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
+          //   this.subscriptions.push(
+          //     this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
+          //       .subscribe(data => {
+          //         data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
+          //       }));
+          // }
         }
       });
 
