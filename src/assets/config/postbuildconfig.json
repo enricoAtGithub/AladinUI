@@ -4,5 +4,5 @@
     "git_sha": "#git_sha#",
     "version": "#version#",
     "build_no": "#build_no#",
-    "FEBEsameURLcheck": true
+    "FEBEsameURLcheck": false
 }
