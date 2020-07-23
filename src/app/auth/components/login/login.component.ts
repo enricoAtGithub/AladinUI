@@ -108,7 +108,7 @@ export class LoginComponent implements OnInit {
       });
       this.loginDisabled = true;
     } else {
-      console.log('Productive environment. Compatibility of frontend and backend URL successfully checked.');
+      console.log('Compatibility of frontend and backend URL successfully checked.');
     }
   }
 
