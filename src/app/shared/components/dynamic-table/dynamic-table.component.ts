@@ -613,11 +613,4 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
   }
 
-  // get regex pattern for input fields currency and float depending on the number of allowed decimals
-  getInputPattern(decimals: number): string {
-    // important: the backslash must be escaped: \\d instead of \d
-    const inputPattern: string = '^\\d{1,3}((\\.)?\\d{3})*(,\\d{1,' + decimals + '})?$';
-    return inputPattern;
-  }
-
 }
