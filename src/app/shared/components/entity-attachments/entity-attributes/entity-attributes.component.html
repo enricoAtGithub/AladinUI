@@ -267,7 +267,10 @@
     {{rowData.attributeType === 'String' ? rowData.stringValue : ''}}
     {{rowData.attributeType === 'Long' ? rowData.longValue : ''}}
     {{rowData.attributeType === 'Date' ? rowData.dateValue : ''}}
-    {{rowData.attributeType === 'Reference' ? rowData.value : ''}}
+    <!-- {{rowData.attributeType === 'Reference' ? rowData.value : ''}} -->
+    <div *ngIf="rowData.attributeType === 'Reference'">
+        <a [routerLink]="generateRouteUrl(rowData.referenceType)" [queryParams]="generateRouteQueryParams(rowData.referenceType, rowData.referenceId)">{{rowData.value}}</a>
+    </div>
     <div *ngIf="rowData.attributeType === 'Icon'">
         <i class="{{rowData.stringValue}}" style="font-size: 1.25em; padding: 5px; vertical-align: middle;"></i>
         <span style="vertical-align: middle;">{{rowData.stringValue}}</span>
