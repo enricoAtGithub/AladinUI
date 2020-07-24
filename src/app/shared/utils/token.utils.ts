@@ -1,5 +1,7 @@
 export default class TokenUtils {
 
+    static readonly DEFAULT_TOKEN_LENGTH = 20;
+
     static generateToken(length: number = 20): string {
         // https://gist.github.com/6174/6062387#gistcomment-2762722
         const radom13chars = function () {
