@@ -15,6 +15,7 @@ export class Field extends BasicFieldConfig {
     width: string;
     options: Option[];
     formula: string;
+    decimals: number;       // number of decimals for float type
 
     public static isPrimitiveType(type: string) {
         return type === 'String' || type === 'int' || type === 'boolean' || type === 'Date' || type === 'Currency' || type === 'float' || type === 'json' || type === 'python';
