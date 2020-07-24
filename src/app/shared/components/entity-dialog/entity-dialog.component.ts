@@ -246,4 +246,11 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     }
   }
 
+  // get regex pattern for input fields currency and float depending on the number of allowed decimals
+  getInputPattern(decimals: number): string {
+    // important: the backslash must be escaped: \\d instead of \d
+    const inputPattern: string = '^\\d{1,3}((\\.)?\\d{3})*(,\\d{1,' + decimals + '})?$';
+    return inputPattern;
+  }
+
 }
