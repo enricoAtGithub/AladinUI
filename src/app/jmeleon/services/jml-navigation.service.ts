@@ -55,10 +55,14 @@ export class JmlNavigationService {
   // }
 
   public removeUrlParam = (router: Router, key: string): void => this.addUrlParam(router, key, null);
-  
+
   public readUrlParam(route: ActivatedRoute, key: string): Observable<string> {
     return route.queryParams.pipe(
       map(params => params[key])
     );
   }
+
+  public readToken = (route: ActivatedRoute): Observable<string> => this.readUrlParam(route, 'token');
+  public readId = (route: ActivatedRoute): Observable<string> => this.readUrlParam(route, 'id');
+  public clearId = (router: Router): void => this.removeUrlParam(router, 'id');
 }

@@ -33,6 +33,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   @Input() mainId: number;
   @Input() mainType: string;
   @Input() dblClickCallback: (data) => any;
+  @Input() selectedId: string;
+  @Input() token: string;
   @Output() entitySelection = new EventEmitter();
 
   configuration: EntityConfiguration;
@@ -213,6 +215,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         }
       }
     });
+
+    if (!!this.selectedId){
+      qualifier += `EQ('id',${this.selectedId}),`;
+    }
 
     const sort = this.fields.find(field => { if (field.field === event.sortField) { return true; } });
 
