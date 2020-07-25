@@ -40,12 +40,13 @@ export class JmlNavigationService {
   public addUrlParam<T>(router: Router, key: string, value: T): void {
     const param = {};
     param[key] = (!!value ? value.toString() : value);
+    console.log('setting param:', param);
     router.navigate(
       [],
       {
         queryParams: param,
         queryParamsHandling: 'merge',
-        skipLocationChange: true
+        skipLocationChange: false
       }
     );
   }
@@ -64,5 +65,8 @@ export class JmlNavigationService {
 
   public readToken = (route: ActivatedRoute): Observable<string> => this.readUrlParam(route, 'token');
   public readId = (route: ActivatedRoute): Observable<string> => this.readUrlParam(route, 'id');
-  public clearId = (router: Router): void => this.removeUrlParam(router, 'id');
+  public clearId = (router: Router): void => {
+    this.removeUrlParam(router, 'id');
+    console.log('removed id query param');
+  }
 }

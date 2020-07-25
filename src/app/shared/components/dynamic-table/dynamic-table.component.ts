@@ -21,6 +21,8 @@ import { SettingsService } from 'src/app/jmeleon/modules/settings/services/setti
 import { ScriptActionDefinition, ScriptActionPayload } from '../../models/script-action';
 import { ScriptResultComponent } from 'src/app/jmeleon/components/script-result/script-result.component';
 import { FileUploadDialogComponent } from '../file-upload-dialog/file-upload-dialog.component';
+import { JmlNavigationService } from 'src/app/jmeleon/services/jml-navigation.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -69,7 +71,9 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     private errorNotificationService: ErrorNotificationService,
     private store$: Store<RootStoreState.State>,
     private japs: JmeleonActionsPermissionService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private jmlNavigationService: JmlNavigationService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -567,4 +571,14 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }, error => this.refreshTableContents());
   }
 
+  filterAreActive(){
+    return this.filtersInTable || !!this.selectedId;
+  }
+  resetFilter(){
+    if (!!this.selectedId){
+      this.selectedId = undefined;
+      this.jmlNavigationService.clearId(this.router);
+      // this.router.navigate([])
+    }
+  }
 }

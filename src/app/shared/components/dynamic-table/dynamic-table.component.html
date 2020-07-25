@@ -15,7 +15,7 @@
         <button *ngIf="configuration.type !== 'File'" pButton (click)="showAddEntityDialog()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Hinzufügen"></button>
         <button *ngIf="configuration.type === 'File'" pButton (click)="uploadFile()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Datei hochladen"></button>
         <button pButton (click)="refreshTableContents()" icon="pi pi-undo" style="float: right; margin-top: -5px; margin-right: 5px;" pTooltip="Ansicht aktualisieren"></button>
-        <button pButton (click)="resetFilter()" icon="pi pi-times-circle" style="float: right; margin-top: -5px; margin-right: 5px;" pTooltip="Filter zurücksetzen"></button>
+        <button *ngIf="filterAreActive()" pButton (click)="resetFilter()" icon="pi pi-times-circle" style="float: right; margin-top: -5px; margin-right: 5px;" pTooltip="Filter zurücksetzen"></button>
       </ng-template>
       
       <!-- Table Headers -->
