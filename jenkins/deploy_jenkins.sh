@@ -2,10 +2,12 @@
 set -e
 # Any subsequent(*) commands which fail will cause the shell script to exit immediately
 
-TOMCAT_SERVICE=$1
-TOMCAT_PORT=$2
-TOMCAT_PATH=$3
-APP_NAME=$4
+# $1: settings profile
+
+source settings.properties
+if [ -n "$1" ]; then
+  source settings-$1.properties
+fi
 
 echo "Deploying $APP_NAME on $TOMCAT_SERVICE (Path: $TOMCAT_PATH, Port: $TOMCAT_PORT)"
 
