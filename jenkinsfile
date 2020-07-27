@@ -39,8 +39,8 @@ pipeline {
 						build_profile = 'jenkins-dev'
 						deploy_profile = 'jenkins-dev'
 					} 
-					echo 'Build Profile: ${build_profile}'
-					echo 'Deploy Profile: ${deploy_profile}'
+					echo "Build Profile: ${build_profile}"
+					echo "Deploy Profile: ${deploy_profile}"
 				}
             }
         }
