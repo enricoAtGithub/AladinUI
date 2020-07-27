@@ -285,9 +285,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       case 'json':
         return input ? '<json>' : undefined;
       case 'float':
-        let digits: number;
-        (field['decimals']) ? digits = field['decimals'] : digits = 2;
-        return (<number>input).toLocaleString('de', { minimumFractionDigits: digits, maximumFractionDigits: digits });
       case 'String':
       case 'int':
       case 'Icon':

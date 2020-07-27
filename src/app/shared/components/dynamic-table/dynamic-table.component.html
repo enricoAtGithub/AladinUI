@@ -128,6 +128,7 @@
                     <div *ngSwitchCase="'Icon'"><i [class]="rowData[field.field]?.icon" [ngStyle]="{'color': rowData[field.field]?.color}" style="font-size: 2em;"></i></div>
                     <div *ngSwitchCase="'json'" style="font-family: monospace;">{{processData(rowData[field.field], field)}}</div>
                     <div *ngSwitchCase="'python'" style="font-family: monospace;">{{processData(rowData[field.field], field)}}</div>
+                    <div *ngSwitchCase="'float'"> {{(processData(rowData[field.field], field)).toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals })}}</div>
                     <div *ngSwitchDefault>{{processData(rowData[field.field], field)}}</div>
                   </ng-container>
                   <i *ngIf="field.editable && tableData.inlineEdit" class="pi pi-pencil cellEditIcon" (click)="$event.stopPropagation(); initCellEdit(cell, field.field, rowData, field.type);"></i>
