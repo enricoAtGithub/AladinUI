@@ -12,6 +12,7 @@ import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
 import { Field } from 'src/app/shared/models/field';
 import { EntityService } from 'src/app/shared/services/entity.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-catalogue-management',
@@ -68,13 +69,20 @@ export class CatalogueManagementComponent implements OnInit, OnDestroy {
       width: '500px'
     });
 
+    // following code is refactored according https://medium.com/@paynoattn/3-common-mistakes-i-see-people-use-in-rx-and-the-observable-pattern-ba55fee3d031
+    // this.subscriptions.push(
+    //   dialogRef.onClose.subscribe((fields: Field[]) => {
+    //     if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+    //       this.entityService.createEntity(this.catalogueConfig.type, fields)
+    //         .subscribe(() => this.loadCatalogues());
+    //         }
+    //       })
+    // );
+
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((fields: Field[]) => {
-        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-          this.entityService.createEntity(this.catalogueConfig.type, fields)
-            .subscribe(() => this.loadCatalogues());
-            }
-          })
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.catalogueConfig.type, fields) : undefined))
+        .subscribe(() => this.loadCatalogues())
     );
 
   }
@@ -92,12 +100,9 @@ export class CatalogueManagementComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((fields: Field[]) => {
-        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-          this.entityService.createEntity(this.catalogueEntryConfig.type, fields)
-            .subscribe(() => this.loadCatalogues());
-            }
-          })
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.catalogueEntryConfig.type, fields) : undefined))
+        .subscribe(() => this.loadCatalogues())
     );
 
   }
@@ -139,18 +144,14 @@ export class CatalogueManagementComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((fields: Field[]) => {
-        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-          this.entityService.updateEntity(this.catalogueConfig.type, data['id'], fields)
-            .subscribe(() => this.loadCatalogues());
-        }
-      })
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity(this.catalogueConfig.type, data['id'], fields) : undefined))
+        .subscribe(() => this.loadCatalogues())
     );
 
   }
 
   updateCatalogueEntry(data: any, parent: any) {
-    console.log(data);
     data['catalogueId'] = { _repr_: parent['name'], id: parent['id'] };
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
@@ -164,12 +165,9 @@ export class CatalogueManagementComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((fields: Field[]) => {
-        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-          this.entityService.updateEntity(this.catalogueEntryConfig.type, data['id'], fields)
-            .subscribe(() => this.loadCatalogues());
-        }
-      })
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity(this.catalogueEntryConfig.type, data['id'], fields) : undefined))
+        .subscribe(() => this.loadCatalogues())
     );
 
   }

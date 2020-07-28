@@ -34,7 +34,7 @@ import { ContextMenu } from 'primeng/contextmenu';
 import { ResizeEvent } from 'angular-resizable-element';
 import { SchedulerTimeRange, TimeRange } from '../../config/scheduler.timerange';
 import { JmeleonActionsPermissionService } from '../../../permissions/services/jmeleon-actions-permission.service';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
@@ -423,19 +423,17 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((fields: Field[]) => {
-        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-          this.entityService.updateEntity('Order', data.RefId, fields).subscribe(() => {
-            this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
-            if (this.showResourceScheduler) {
-              this.getSchedulerResourcesAndSchedulerEvents(
-                { schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter },
-                SchedulerTimeRange.get(this.currResSchInterval.currView).getRange(this.currResSchInterval.currDate)
-              );
-            }
-          });
-        }
-      })
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity('Order', data.RefId, fields) : undefined))
+        .subscribe(() => {
+          this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
+          if (this.showResourceScheduler) {
+            this.getSchedulerResourcesAndSchedulerEvents(
+              { schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter },
+              SchedulerTimeRange.get(this.currResSchInterval.currView).getRange(this.currResSchInterval.currDate)
+            );
+          }
+        })
     );
 
   }
@@ -456,13 +454,11 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((fields: Field[]) => {
-        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-          this.entityService.createEntity('Order', fields).subscribe(() => {
-            this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
-          });
-        }
-      })
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.createEntity('Order', fields) : undefined))
+        .subscribe(() => {
+          this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
+        })
     );
 
   }

@@ -33,7 +33,7 @@ import { TimeRange, SchedulerTimeRange } from '../../config/scheduler.timerange'
 import { ResizeEvent } from 'angular-resizable-element';
 import { root } from 'src/app/jmeleon/modules/permissions/permissions';
 import { JmeleonActionsPermissionService } from '../../../permissions/services/jmeleon-actions-permission.service';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
@@ -228,14 +228,11 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((fields: Field[]) => {
-        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-          this.entityService.updateEntity('ResourceAvailability', data.RefId, fields)
-            .subscribe(() => {
-              this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
-            });
-        }
-      })
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity('ResourceAvailability', data.RefId, fields) : undefined))
+        .subscribe(() => {
+          this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
+        })
     );
 
   }
@@ -261,14 +258,11 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((fields: Field[]) => {
-        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-          this.entityService.createEntity(this.configuration.type, fields)
-            .subscribe(() => {
-              this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
-            });
-        }
-      })
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.configuration.type, fields) : undefined))
+        .subscribe(() => {
+          this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
+        })
     );
 
   }

@@ -12,7 +12,7 @@ import { delay } from 'q';
 import { UrlCollection } from '../../url-collection';
 import * as fromConfigSelectors from '../../../root-store/config-store/config.selectors';
 import { Store, select } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import { CatalogueService } from 'src/app/user/services/catalogue.service';
 import { root } from 'src/app/jmeleon/modules/permissions/permissions';
@@ -318,16 +318,26 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       width: '500px'
     });
 
+    // following code is refactored according https://medium.com/@paynoattn/3-common-mistakes-i-see-people-use-in-rx-and-the-observable-pattern-ba55fee3d031
+    // this.subscriptions.push(
+    //   dialogRef.onClose.subscribe((fields: Field[]) => {
+    //     if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+    //       this.entityService.createEntity(this.configuration.type, fields)
+    //         .subscribe(() => {
+    //           this.loadLazy(this.lastLazyLoadEvent);
+    //           this.entityOperation.emit(null);
+    //         });
+    //     }
+    //   })
+    // );
+
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((fields: Field[]) => {
-        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-          this.entityService.createEntity(this.configuration.type, fields)
-            .subscribe(() => {
-              this.loadLazy(this.lastLazyLoadEvent);
-              this.entityOperation.emit(null);
-            });
-        }
-      })
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.configuration.type, fields) : undefined))
+        .subscribe(() => {
+          this.loadLazy(this.lastLazyLoadEvent);
+          this.entityOperation.emit(null);
+        })
     );
 
   }
@@ -346,15 +356,12 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     });
 
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((fields: Field[]) => {
-        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-          this.entityService.updateEntity(this.configuration.type, rowData['id'], fields)
-            .subscribe(() => {
-              this.loadLazy(this.lastLazyLoadEvent);
-              this.entityOperation.emit(null);
-            });
-        }
-      })
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity(this.configuration.type, rowData['id'], fields) : undefined))
+        .subscribe(() => {
+          this.loadLazy(this.lastLazyLoadEvent);
+          this.entityOperation.emit(null);
+        })
     );
 
   }
