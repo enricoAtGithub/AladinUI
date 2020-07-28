@@ -38,6 +38,7 @@ import { map } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
+import { Field } from 'src/app/shared/models/field';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -413,7 +414,6 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
-        scenario: 'update',           // executeAction, create, update
         entityId: data.RefId,
         fields: this.configuration.fields,
         configType: 'Order'
@@ -422,10 +422,10 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       width: '500px'
     });
 
-    dialogRef.onClose.subscribe((result: Observable<Object>) => {
-      if (result !== undefined) {
-        this.subscriptions.push(
-          result.subscribe(() => {
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe((fields: Field[]) => {
+        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+          this.entityService.updateEntity('Order', data.RefId, fields).subscribe(() => {
             this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
             if (this.showResourceScheduler) {
               this.getSchedulerResourcesAndSchedulerEvents(
@@ -433,10 +433,11 @@ export class SchedulerComponent implements OnInit, OnDestroy {
                 SchedulerTimeRange.get(this.currResSchInterval.currView).getRange(this.currResSchInterval.currDate)
               );
             }
-          })
-        );
-      }
-    });
+          });
+        }
+      })
+    );
+
   }
 
   addSchedulerEvent(data: any) {
@@ -446,7 +447,6 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
-        scenario: 'create',           // executeAction, create, update
         entity: { startDate: data.startTime, endDate: data.endTime },
         fields: this.configuration.fields,
         configType: 'Order'
@@ -455,13 +455,16 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       width: '500px'
     });
 
-    dialogRef.onClose.subscribe((result: Observable<Object>) => {
-      if (result !== undefined) {
-        this.subscriptions.push(
-          result.subscribe(() => this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate)))
-        );
-      }
-    });
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe((fields: Field[]) => {
+        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+          this.entityService.createEntity('Order', fields).subscribe(() => {
+            this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
+          });
+        }
+      })
+    );
+
   }
 
   deleteSchedulerEvent(data: SchedulerEvent) {

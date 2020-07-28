@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BreadcrumbService } from 'src/app/breadcrumb.service';
 import { CatalogueService } from '../../services/catalogue.service';
 import { TreeNode } from 'primeng/primeng';
 import { DialogService, ConfirmationService } from 'primeng/api';
 import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/entity-dialog.component';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { EntityConfiguration } from 'src/app/shared/models/entity-configuration';
 
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
+import { Field } from 'src/app/shared/models/field';
+import { EntityService } from 'src/app/shared/services/entity.service';
 
 @Component({
   selector: 'app-catalogue-management',
@@ -17,7 +19,7 @@ import * as fromConfigSelectors from 'src/app/root-store/config-store/config.sel
   styleUrls: ['./catalogue-management.component.css'],
   providers: [ConfirmationService]
 })
-export class CatalogueManagementComponent implements OnInit {
+export class CatalogueManagementComponent implements OnInit, OnDestroy {
   allCatalogues: TreeNode[];
 
   catalogueConfig: EntityConfiguration;
@@ -26,13 +28,15 @@ export class CatalogueManagementComponent implements OnInit {
   selectedEntryId: number;
   catalogueSelected = false;
   catalogueEntrySelected = false;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private breadcrumbService: BreadcrumbService,
     private catalogueService: CatalogueService,
     private dialogService: DialogService,
     private confirmationService: ConfirmationService,
-    private store$: Store<RootStoreState.State>
+    private store$: Store<RootStoreState.State>,
+    private entityService: EntityService
   ) {
     this.breadcrumbService.setItems([
       { label: 'Katalogverwaltung' }
@@ -45,6 +49,10 @@ export class CatalogueManagementComponent implements OnInit {
     configurations$.subscribe(configs => { this.catalogueConfig = configs['Catalogue']; this.catalogueEntryConfig = configs['CatalogueEntry']; });
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
   loadCatalogues() {
     this.catalogueService.getAllCatalogues().then(catalogues => this.allCatalogues = catalogues);
   }
@@ -53,7 +61,6 @@ export class CatalogueManagementComponent implements OnInit {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
-        scenario: 'create',                     // executeAction, create, update
         fields: this.catalogueConfig.fields,
         configType: this.catalogueConfig.type
       },
@@ -61,18 +68,21 @@ export class CatalogueManagementComponent implements OnInit {
       width: '500px'
     });
 
-    dialogRef.onClose.subscribe((result: Observable<Object>) => {
-      if (result !== undefined) {
-        result.subscribe(res => this.loadCatalogues());
-      }
-    });
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe((fields: Field[]) => {
+        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+          this.entityService.createEntity(this.catalogueConfig.type, fields)
+            .subscribe(() => this.loadCatalogues());
+            }
+          })
+    );
+
   }
 
   addEntry(catalogue: any) {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
-        scenario: 'create',                     // executeAction, create, update
         entity: { catalogueId: { _repr_: catalogue['name'], id: catalogue['id'] } },
         fields: this.catalogueEntryConfig.fields,
         configType: this.catalogueEntryConfig.type
@@ -81,11 +91,15 @@ export class CatalogueManagementComponent implements OnInit {
       width: '500px'
     });
 
-    dialogRef.onClose.subscribe((result: Observable<Object>) => {
-      if (result !== undefined) {
-        result.subscribe(() => this.loadCatalogues());
-      }
-    });
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe((fields: Field[]) => {
+        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+          this.entityService.createEntity(this.catalogueEntryConfig.type, fields)
+            .subscribe(() => this.loadCatalogues());
+            }
+          })
+    );
+
   }
 
   deleteCatalogue(catalogueId: string) {
@@ -116,7 +130,6 @@ export class CatalogueManagementComponent implements OnInit {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
-        scenario: 'update',                    // executeAction, create, update
         entity: data,
         fields: this.catalogueConfig.fields,
         configType: this.catalogueConfig.type
@@ -125,11 +138,15 @@ export class CatalogueManagementComponent implements OnInit {
       width: '500px'
     });
 
-    dialogRef.onClose.subscribe((result: Observable<Object>) => {
-      if (result !== undefined) {
-        result.subscribe(() => this.loadCatalogues());
-      }
-    });
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe((fields: Field[]) => {
+        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+          this.entityService.updateEntity(this.catalogueConfig.type, data['id'], fields)
+            .subscribe(() => this.loadCatalogues());
+        }
+      })
+    );
+
   }
 
   updateCatalogueEntry(data: any, parent: any) {
@@ -138,7 +155,6 @@ export class CatalogueManagementComponent implements OnInit {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
-        scenario: 'update',                    // executeAction, create, update
         entity: data,
         fields: this.catalogueEntryConfig.fields,
         configType: this.catalogueEntryConfig.type
@@ -147,11 +163,15 @@ export class CatalogueManagementComponent implements OnInit {
       width: '500px'
     });
 
-    dialogRef.onClose.subscribe((result: Observable<Object>) => {
-      if (result !== undefined) {
-        result.subscribe(() => this.loadCatalogues());
-      }
-    });
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe((fields: Field[]) => {
+        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+          this.entityService.updateEntity(this.catalogueEntryConfig.type, data['id'], fields)
+            .subscribe(() => this.loadCatalogues());
+        }
+      })
+    );
+
   }
 
   nodeSelect(event: any) {

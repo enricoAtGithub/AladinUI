@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, AfterViewInit, OnDestroy } from '@angular/core';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
-import { EntityData } from '../../models/entity-data';
+import { EntityData, Entity } from '../../models/entity-data';
 import { EntityService } from '../../services/entity.service';
 import { LazyLoadEvent, DialogService, ConfirmationService, SelectItem } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
@@ -306,11 +306,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       this.lZ(date.getHours()) + ':' + this.lZ(date.getMinutes());
   }
 
-  showAddEntityDialog() {
+  createEntity() {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
-        scenario: 'create',           // executeAction, create, update
         fields: this.configuration.fields,
         configType: this.configuration.type,
         mainId: this.mainId
@@ -320,41 +319,44 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     });
 
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((result: Observable<Object>) => {
-        if (result !== undefined) {
-          result.subscribe(() => {
-            this.loadLazy(this.lastLazyLoadEvent);
-            this.entityOperation.emit(null);
-          });
+      dialogRef.onClose.subscribe((fields: Field[]) => {
+        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+          this.entityService.createEntity(this.configuration.type, fields)
+            .subscribe(() => {
+              this.loadLazy(this.lastLazyLoadEvent);
+              this.entityOperation.emit(null);
+            });
         }
       })
     );
+
   }
 
-  updateEntity(data: any) {
+  updateEntity(rowData: Field[]) {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
-        scenario: 'update',           // executeAction, create, update
-        entity: data,
+        entity: rowData,
         fields: this.configuration.fields,
         configType: this.configuration.type,
         mainId: this.mainId
       },
-      header: data['_repr_'] + ' bearbeiten',
+      header: rowData['_repr_'] + ' bearbeiten',
       width: '500px'
     });
 
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((result: Observable<Object>) => {
-        if (result !== undefined) {
-          result.subscribe(() => {
-            this.loadLazy(this.lastLazyLoadEvent);
-            this.entityOperation.emit(null);
-          });
+      dialogRef.onClose.subscribe((fields: Field[]) => {
+        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+          this.entityService.updateEntity(this.configuration.type, rowData['id'], fields)
+            .subscribe(() => {
+              this.loadLazy(this.lastLazyLoadEvent);
+              this.entityOperation.emit(null);
+            });
         }
       })
     );
+
   }
 
   // covers multiple scenarios:
@@ -461,34 +463,33 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     // run getAction API to retrieve information (HRID and params) required to execute the action
     this.subscriptions.push(
       this.entityService.getAction(payload).subscribe((actionDetails: ScriptActionDefinition) => {
-        payload['actionHrid'] = actionDetails.actionHrid; // prepare payload for executeAction (add HRID)
+        payload.actionHrid = actionDetails.actionHrid; // prepare payload for executeAction (add HRID)
 
         if (actionDetails.params.length > 0) {  // if there are params to be specified open entity dialog
-          let entityObj: Object;
-          entityObj = <Object>(actionDetails);
-
           const dialogRef = this.dialogService.open(EntityDialogComponent, {
             data: {
               update: true,
-              scenario: 'executeAction',           // executeAction, create, update
-              entity: entityObj,
+              entity: actionDetails,
               fields: actionDetails.params,
               configType: this.configuration.type,
               mainId: this.mainId,
-              payload: payload
             },
             header: 'Aktionsparameter',
             width: '500px'
           });
 
-          dialogRef.onClose.subscribe((response: Observable<Object>) => {
-            if (response !== undefined) {
-              response.subscribe((result) => {
-                this.loadLazy(this.lastLazyLoadEvent);
-                this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
-              });
-            }
-          });
+          this.subscriptions.push(
+            dialogRef.onClose.subscribe((fields: Field[]) => {
+              if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+                payload.params = fields;
+                this.entityService.executeAction(payload, false)
+                  .subscribe((result) => {
+                    this.loadLazy(this.lastLazyLoadEvent);
+                    this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
+                  });
+                }
+            })
+          );
 
           // if there are no params do not make any turnarounds and just go!
         } else {

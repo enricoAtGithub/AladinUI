@@ -41,8 +41,6 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   showCodeEditor = false;
   fields: Field[];
   configType: string;
-  payload: ScriptActionPayload;
-  scenario: string;
 
   constructor(
     public ref: DynamicDialogRef,
@@ -64,8 +62,6 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     }
 
     this.configType = data['configType'];
-    this.payload = data['payload'];
-    this.scenario = data['scenario'];
 
 
     // get items for fields with type 'CatalogueEntry'
@@ -215,16 +211,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
       entityForm.value['mainId'] = this.mainId;
     }
 
-    if (this.scenario === 'update') {
-      this.ref.close(this.entityService.updateEntity(this.configType, this.entity['id'], entityForm.value));
-    } else if (this.scenario === 'create') {
-      this.ref.close(this.entityService.createEntity(this.configType, entityForm.value));
-    } else if (this.scenario === 'executeAction') {
-      this.payload.params = entityForm.value;
-      this.ref.close(this.entityService.executeAction(this.payload, false));
-    } else {
-      console.error(this.scenario, ' is no valid scenario');
-    }
+    this.ref.close(<Field[]>entityForm.value);
   }
 
   shouldDisplayScrollPanel() {

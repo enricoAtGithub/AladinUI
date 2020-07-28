@@ -38,6 +38,7 @@ import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
 import { EntityConfiguration } from 'src/app/shared/models/entity-configuration';
+import { Field } from 'src/app/shared/models/field';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -218,7 +219,6 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
-        scenario: 'update',           // executeAction, create, update
         entityId: data.RefId,
         fields: this.configuration.fields,
         configType: 'ResourceAvailability'
@@ -227,15 +227,17 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
       width: '500px'
     });
 
-    dialogRef.onClose.subscribe((result: Observable<Object>) => {
-      if (result !== undefined) {
-        this.subscriptions.push(
-          result.subscribe(() => {
-            this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
-          })
-        );
-      }
-    });
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe((fields: Field[]) => {
+        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+          this.entityService.updateEntity('ResourceAvailability', data.RefId, fields)
+            .subscribe(() => {
+              this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
+            });
+        }
+      })
+    );
+
   }
 
   addAvailability(data: any) {
@@ -258,13 +260,17 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
       width: '500px'
     });
 
-    dialogRef.onClose.subscribe((result: Observable<Object>) => {
-      if (result !== undefined) {
-        this.subscriptions.push(
-          result.subscribe(() => this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate)))
-        );
-      }
-    });
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe((fields: Field[]) => {
+        if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+          this.entityService.createEntity(this.configuration.type, fields)
+            .subscribe(() => {
+              this.getResourceAvailabilities(SchedulerTimeRange.get(this.currInterval.currView).getRange(this.currInterval.currDate));
+            });
+        }
+      })
+    );
+
   }
 
   deleteAvailability(data: Availability) {
