@@ -1,8 +1,6 @@
 export const environment = {
   production: true,
-  loadPlayground: true,
-  // Story #1733: https://redmine.simply4it.de/issues/1733
-  productiveFrontendBackendCheck: false,
+  loadPlayground: true, 
 
   baseUrl: 'http://localhost:8081/rest/api',
   companyName: 'DOT-IT GmbH',

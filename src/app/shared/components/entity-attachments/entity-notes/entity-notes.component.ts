@@ -29,6 +29,7 @@ export class EntityNotesComponent implements OnChanges {
         .setScrollable()
         .setScrollHeight('175px')
         .setDataSource(dataSource)
+        .disableInlineEdit()
         .disablePagination();
     } else {
       this.selectedNote = undefined;

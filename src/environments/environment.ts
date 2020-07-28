@@ -5,11 +5,8 @@
 export const environment = {
   production: false,
   loadPlayground: true,
-  // Story #1733: https://redmine.simply4it.de/issues/1733
-  productiveFrontendBackendCheck: false,
 
-
-  baseUrl: 'http://splylnx2.simply.local:8023/jmeleon/rest/api',
+  baseUrl: 'http://splylnx2:8023/jmeleon/rest/api',
   companyName: 'DOT-IT GmbH',
   companyStreet: 'Alte Landstr. 23',
   companyCity: '85521 Ottobrunn',

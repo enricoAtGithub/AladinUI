@@ -35,3 +35,4 @@ testem.log
 
 # End of https://www.gitignore.io/api/angular
 target/
+pom.xml.versionsBackup

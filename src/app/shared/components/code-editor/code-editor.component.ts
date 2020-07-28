@@ -6,6 +6,7 @@ import 'brace/mode/python';
 import 'brace/snippets/python';
 import 'brace/ext/language_tools';
 import 'brace/theme/github';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/primeng';
 
 @Component({
   selector: 'app-code-editor',
@@ -17,12 +18,25 @@ export class CodeEditorComponent implements OnInit {
 @Input() syntax: string;
 @Input() code: string;
 @Output() editedCode = new EventEmitter<string>();
+calledFromHTML = true;
 
 public aceconfig: AceConfigInterface;
 
-  constructor() { }
+  constructor(
+    public ref: DynamicDialogRef,
+    public config: DynamicDialogConfig
+    ) { }
 
   ngOnInit() {
+
+    // If called from html syntax and code is available via @Input() => nothing to do
+    // If called via dynamic dialog service get syntax and code from config.data
+    if (!this.syntax && !this.code) {
+      this.calledFromHTML = false;
+      this.syntax = this.config.data['syntax'];
+      this.code = this.config.data['code'];
+    }
+
     this.aceconfig = {
       theme: 'github',
       readOnly : false,
@@ -30,7 +44,14 @@ public aceconfig: AceConfigInterface;
   }
 
   save() {
-    this.editedCode.emit(this.code);
+    // send edited code back to "caller"
+    // in case of Entity dialog this component is called from html
+    // in all other cases it is called via primeng dynamic dialog
+    if (this.calledFromHTML) {
+      this.editedCode.emit(this.code);
+    } else {
+      this.ref.close(this.code);
+    }
   }
 
 }

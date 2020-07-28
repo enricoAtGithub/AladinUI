@@ -1,8 +1,5 @@
-master_version = '1.0.0'
-version = '0.9-SNAPSHOT'
-tomcat_service = ''
-tomcat_port = ''
-tomcat_path = ''
+build_profile = ''
+deploy_profile = ''
 app_name = 'jmeleon-ui'
 
 pipeline {
@@ -35,34 +32,28 @@ pipeline {
 				'''
 				script {
 					if (env.BRANCH_NAME == 'master') {
-						version = master_version
+						build_profile = 'jenkins-qa'
+						deploy_profile = 'jenkins-qa'
 					} 
-					echo "set build version to ${version}"
+					if (env.BRANCH_NAME == 'develop') {
+						build_profile = 'jenkins-dev'
+						deploy_profile = 'jenkins-dev'
+					} 
+					echo "Build Profile: ${build_profile}"
+					echo "Deploy Profile: ${deploy_profile}"
 				}
             }
         }
 		
 		stage('Build') {
             steps {
-				sh "bash ./jenkins/build.sh ${env.BUILD_NUMBER} ${version}"
+				sh "bash ./build.sh ${build_profile} ${env.BUILD_NUMBER}"
 	        }
         }
 
         stage('Deploy') {
             steps {
-				script{
-					if (env.BRANCH_NAME == 'master') {
-						tomcat_service = 'jmeleon_qa'
-						tomcat_path = '/opt/tomcat/tomcat_jmeleon_qa'
-						tomcat_port = '8123'
-					} 
-					if (env.BRANCH_NAME == 'develop') {
-						tomcat_service = 'tomcat'
-						tomcat_path = '/opt/tomcat/apache-tomcat-8.5.41'
-						tomcat_port = '8023'
-					} 
-				}
-				sh "bash ./jenkins/deploy.sh ${tomcat_service} ${tomcat_port} ${tomcat_path} ${app_name}"
+				sh "bash ./jenkins/deploy_jenkins.sh ${deploy_profile}"
 			}
         }
 		
@@ -71,10 +62,9 @@ pipeline {
                 branch 'master'
             }
             steps {
-			
                 echo 'uploading artefacts'
-				sh "bash ./jenkins/upload_master.sh ${version}"
-				slackSend teamDomain: "simply4it", channel: "#jenkins_notifications", tokenCredentialId: "simply4it_jenkins", color: "good", message: "Artefact: ${env.JOB_NAME} with version ${version} was uploaded to owncloud"
+				sh "bash ./jenkins/upload_master.sh ${deploy_profile}"
+				slackSend teamDomain: "simply4it", channel: "#jenkins_notifications", tokenCredentialId: "simply4it_jenkins", color: "good", message: "Artefact: ${env.JOB_NAME} with version ${env.VERSION} was uploaded to owncloud"
             }
         }   
 	}

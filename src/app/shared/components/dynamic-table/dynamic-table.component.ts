@@ -3,7 +3,7 @@ import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
 import { EntityData } from '../../models/entity-data';
 import { EntityService } from '../../services/entity.service';
-import { LazyLoadEvent, DialogService, ConfirmationService } from 'primeng/primeng';
+import { LazyLoadEvent, DialogService, ConfirmationService, SelectItem } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
 import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
 import { Observable, Subject, Subscription } from 'rxjs';
@@ -23,6 +23,7 @@ import { ScriptResultComponent } from 'src/app/jmeleon/components/script-result/
 import { FileUploadDialogComponent } from '../file-upload-dialog/file-upload-dialog.component';
 import { JmlNavigationService } from 'src/app/jmeleon/services/jml-navigation.service';
 import { Router } from '@angular/router';
+import { CodeEditorComponent } from '../code-editor/code-editor.component';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -38,6 +39,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   @Input() selectedId: string;
   @Input() token: string;
   @Output() entitySelection = new EventEmitter();
+  @Output() entityOperation = new EventEmitter();
 
   configuration: EntityConfiguration;
   subscriptions: Subscription[] = [];
@@ -62,6 +64,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   cellEditCache: any;
   lastCellRef: any;
   crudColumnSpace: number;
+  refreshTrigger: Subject<any>;
 
   constructor(
     private entityService: EntityService,
@@ -85,6 +88,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.cellEditCache = new Map();
     this.configuration = new EntityConfiguration();
     this.entityData = new EntityData();
+
+    this.refreshTrigger = new Subject();
+    this.subscriptions.push(this.refreshTrigger.asObservable().subscribe(() => this.refreshTableContents()));
+
     this.subscriptions.push(configuration$.subscribe(async config => {
       // Get the config according to the given name
       this.configuration = config;
@@ -131,14 +138,21 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
                     }
                   });
                 }));
-          } else {
-            // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
+          } else if (field.type === 'dtoType') {
+            // get all dtoConfigs for field.type === 'dtoType' (e.g. for Script Actions)
+            const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
             this.subscriptions.push(
-              this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
-                .subscribe(data => {
-                  data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
-                }));
-          }
+              configurations$.subscribe(configs => Object.values(configs).map(o => field.options.push({ label: o.type, value: o.type })))
+            );
+          } 
+          // else {
+          //   // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
+          //   this.subscriptions.push(
+          //     this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
+          //       .subscribe(data => {
+          //         data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
+          //       }));
+          // }
         }
       });
 
@@ -280,12 +294,12 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         return input ? '<python>' : undefined;
       case 'json':
         return input ? '<json>' : undefined;
+      case 'float':
       case 'String':
       case 'int':
       case 'Icon':
       case 'Currency':
       case 'dtoType':
-      case 'float':
         return input;
       default:
         return input['_repr_'];
@@ -318,7 +332,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.subscriptions.push(
       dialogRef.onClose.subscribe((result: Observable<Object>) => {
         if (result !== undefined) {
-          result.subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
+          result.subscribe(() => {
+            this.loadLazy(this.lastLazyLoadEvent);
+            this.entityOperation.emit(null);
+          });
         }
       })
     );
@@ -341,7 +358,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.subscriptions.push(
       dialogRef.onClose.subscribe((result: Observable<Object>) => {
         if (result !== undefined) {
-          result.subscribe(() => this.loadLazy(this.lastLazyLoadEvent));
+          result.subscribe(() => {
+            this.loadLazy(this.lastLazyLoadEvent);
+            this.entityOperation.emit(null);
+          });
         }
       })
     );
@@ -376,7 +396,12 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.confirmationService.confirm({
       message: 'Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?',
       accept: () => {
-        this.subscriptions.push(this.entityService.deleteEntity(this.configuration.type, data['id']).subscribe(() => this.loadLazy(this.lastLazyLoadEvent)));
+        this.subscriptions.push(
+          this.entityService.deleteEntity(this.configuration.type, data['id']).subscribe(() => {
+            this.loadLazy(this.lastLazyLoadEvent);
+            this.entityOperation.emit(null);
+          })
+        );
       }
     });
   }
@@ -537,7 +562,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
   }
 
-  initCellEdit(cellRef, field: string, rowData) {
+  initCellEdit(cellRef, field: string, rowData, type: string) {
       // If another cell is being edited abort the edit operation and initialize the new edit operation
     if (this.lastCellRef !== undefined && this.cellEditCache !== undefined) {
       const rowDataPrev = this.entityData.data.find(row => row['id'] === this.cellEditCache.data['id']);
@@ -547,6 +572,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.cellEditCache = {field: field, data: Object.assign({}, rowData)};
     cellRef.isEdited = true;
     this.lastCellRef = cellRef;
+    // in case of code edit open code editor directly
+    if (type === 'python' || type === 'json') {
+      this.openCodeEditor(rowData, type, field);
+    }
   }
 
   completeCellEdit(data) {
@@ -570,6 +599,25 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       this.entityData.data[index] = result['fields'];
     }, error => this.refreshTableContents());
   }
+
+  openCodeEditor(data: any, syntax: string, field: string) {
+    const dialogRef = this.dialogService.open(CodeEditorComponent, {
+      data: {
+        syntax: syntax,
+        code: data[field]
+      },
+      header: syntax + ' Code Editor',
+      width: '80%'
+    });
+
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe((code: string) => {
+        data[field] = code;
+        // pass entity with edited code (data) to inline edit save routine
+        this.completeCellEdit(data);
+      })
+    );
+}
 
   filterAreActive(){
     return this.filtersInTable || !!this.selectedId;

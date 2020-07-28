@@ -66,9 +66,19 @@
                     <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check"></button>
                   </div>
                   <ng-container *ngSwitchCase="'int'">
-                    <input [name]="field.field" type="number" appAutoFocus [(ngModel)]="rowData[field.field]" style="width: calc(100% - 30px)" pInputText
+                    <input #intInput [name]="field.field" type="number" min="0" step="1" appAutoFocus [(ngModel)]="rowData[field.field]" style="width: calc(100% - 30px)" pInputText
                       (click)="$event.stopPropagation()" (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
-                    <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check"></button>
+                    <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!intInput.validity.valid"></button>
+                  </ng-container>
+                  <!-- <ng-container *ngSwitchCase="'int'">
+                    <input #intInput [name]="field.field" type="text" pattern="^\d{1,3}((\.)?\d{3})*$" appAutoFocus [(ngModel)]="rowData[field.field]" style="width: calc(100% - 30px)" pInputText
+                      (click)="$event.stopPropagation()" (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
+                    <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!intInput.validity.valid"></button>
+                  </ng-container> -->
+                  <ng-container *ngSwitchCase="'float'">
+                    <input #floatInput [name]="field.field" type="text" pattern="{{'^\\d{1,3}((\\.)?\\d{3})*(,\\d{1,' + field.decimals + '})?$'}}" appAutoFocus [ngModel]="(rowData[field.field]).toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals })" (ngModelChange)="rowData[field.field]=$event"  style="width: calc(100% - 30px)" pInputText
+                      (click)="$event.stopPropagation()" (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
+                    <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!floatInput.validity.valid"></button>
                   </ng-container>
                   <ng-container *ngSwitchCase="'boolean'">
                     <p-checkbox [name]="field.field" [binary]="true" [(ngModel)]="rowData[field.field]" ngClass="centerCheckbox"
@@ -84,13 +94,27 @@
                     <p-dropdown [placeholder]="field.header" class="dropdownFullWidth" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}" [style]="{'minWidth': '0px', 'display':'grid'}" [(ngModel)]="rowData[field.field]"
                       (onChange)="cell.isEdited = false; completeCellEdit(rowData)"></p-dropdown>
                   </ng-container>
+                  <ng-container *ngSwitchCase="'dtoType'">
+                    <p-dropdown [placeholder]="field.header" class="dropdownFullWidth" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}" [style]="{'minWidth': '0px', 'display':'grid'}" [(ngModel)]="rowData[field.field]"
+                      (onChange)="cell.isEdited = false; completeCellEdit(rowData)"></p-dropdown>
+                  </ng-container>
                   <ng-container *ngSwitchCase="'Currency'">
                     <div class="ui-inputgroup" style="width: calc(100% - 2.143em);">            
-                      <input [name]="field.field" appAutoFocus [(ngModel)]="rowData[field.field]" pattern="^\d{1,3}((\.)?\d{3})*(,\d{1,2})?$" id="float-input" type="text" style="width: calc(100% - 28px); font-family: monospace;"
+                      <input #currencyInput [name]="field.field" appAutoFocus [(ngModel)]="rowData[field.field]" pattern="^\d{1,3}((\.)?\d{3})*(,\d{1,2})?$" type="text" style="width: calc(100% - 28px); font-family: monospace;"
                         (click)="$event.stopPropagation()"(blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
                       <span class="ui-inputgroup-addon">{{currency$ | async}}</span>
                     </div>
-                    <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check"></button>
+                    <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!currencyInput.validity.valid"></button>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'python'">
+                    <span class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
+                      <input [disabled]="true" [placeholder]="'<' + field.type + '>'" style="width: 100%" pInputText>
+                    </span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'json'">
+                    <span class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
+                      <input [disabled]="true" [placeholder]="'<' + field.type + '>'" style="width: 100%" pInputText>
+                    </span>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
                     <input [disabled]="true" [placeholder]="rowData[field.field]?._repr_" style="width: calc(100% - 2.143em)" pInputText
@@ -105,9 +129,10 @@
                     <div *ngSwitchCase="'Icon'"><i [class]="rowData[field.field]?.icon" [ngStyle]="{'color': rowData[field.field]?.color}" style="font-size: 2em;"></i></div>
                     <div *ngSwitchCase="'json'" style="font-family: monospace;">{{processData(rowData[field.field], field)}}</div>
                     <div *ngSwitchCase="'python'" style="font-family: monospace;">{{processData(rowData[field.field], field)}}</div>
+                    <div *ngSwitchCase="'float'"> {{(processData(rowData[field.field], field)).toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals })}}</div>
                     <div *ngSwitchDefault>{{processData(rowData[field.field], field)}}</div>
                   </ng-container>
-                  <i *ngIf="field.editable && tableData.inlineEdit" class="pi pi-pencil cellEditIcon" (click)="$event.stopPropagation(); initCellEdit(cell, field.field, rowData, $event);"></i>
+                  <i *ngIf="field.editable && tableData.inlineEdit" class="pi pi-pencil cellEditIcon" (click)="$event.stopPropagation(); initCellEdit(cell, field.field, rowData, field.type);"></i>
                 </ng-template>
               </ng-container>
             </div>
@@ -132,6 +157,6 @@
     </p-table>
   </div>
 
-  <app-dynamic-table-attachments *ngIf="tableData.showAttachments" [configName]="configuration.type" [entryId]="selectedEntryId"></app-dynamic-table-attachments>
+  <app-dynamic-table-attachments *ngIf="tableData.showAttachments" [configName]="configuration.type" [entryId]="selectedEntryId" [refreshTrigger]="refreshTrigger"></app-dynamic-table-attachments>
 
 </div>

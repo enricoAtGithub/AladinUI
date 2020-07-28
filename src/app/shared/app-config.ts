@@ -18,6 +18,7 @@ export class UIInfo {
     git_sha: string;
     version: string;
     build_no: string;
+    FEBEsameURLcheck: boolean;
 }
 
 

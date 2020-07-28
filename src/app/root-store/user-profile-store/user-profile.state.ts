@@ -13,3 +13,5 @@ export const initialState: UserProfileState = {
   isInLogin: false,
   isInLogout: false
 };
+
+export const userProfileStoreKey = 'userProfile';

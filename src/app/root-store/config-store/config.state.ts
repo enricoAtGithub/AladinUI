@@ -10,3 +10,5 @@ export const initialState: ConfigState = {
     configs: null,
     groupConfigs: null
 };
+
+export const configStoreKey = 'config';
