@@ -9,6 +9,9 @@ import { SelectItem } from 'primeng/api';
 import { InputText } from 'primeng/primeng';
 import { TableData } from 'src/app/shared/models/table-data';
 import { NgForm } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-entity-attributes',
@@ -34,6 +37,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
   entitySelectionTableData: TableData;
   updatedRowData: Attribute;
   header: string;
+  currency$: Observable<string>;
 
   types = [
     { label: 'Long', value: 'Long' },
@@ -43,13 +47,15 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
     { label: 'Color', value: 'Color' },
     { label: 'Icon', value: 'Icon' },
     { label: 'Reference', value: 'Reference' },
-    { label: 'Float', value: 'Float' }
+    { label: 'Float', value: 'Float' },
+    { label: 'Currency', value: 'Currency' }
 
   ];
 
   constructor(
     private entityService: EntityService,
-    private store$: Store<RootStoreState.State>
+    private store$: Store<RootStoreState.State>,
+    private settingsService: SettingsService
   ) { }
 
   ngOnInit() {
@@ -58,6 +64,10 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
     configurations$.subscribe(configs => {
       this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
     });
+
+    // get Currency from settings
+    this.currency$ = this.settingsService.getSetting('CURRENCY').pipe(map(setting => setting.value));
+
     if (!this.attrGroup) { this.dtoTypeUnknown = true; }
   }
 
