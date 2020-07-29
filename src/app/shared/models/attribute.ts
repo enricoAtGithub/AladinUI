@@ -12,6 +12,7 @@ export class Attribute {
     value: string;
     referenceId: number;
     referenceType: string;
+    floatValue: number;
     public static copyFrom(source: Attribute, target: Attribute): void {
         target.id = source.id;
         target.booleanValue = source.booleanValue;
@@ -21,5 +22,6 @@ export class Attribute {
         target.value = source.value;
         target.referenceId = source.referenceId;
         target.referenceType = source.referenceType;
+        target.floatValue = source.floatValue;
     }
 }

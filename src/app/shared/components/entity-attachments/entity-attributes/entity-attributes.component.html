@@ -79,6 +79,14 @@
                 <label for="float-input">Wert</label>
             </span>
 
+            <!-- Float -->
+            <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px"
+                *ngIf="newAttribute.attributeType === 'Float'">
+                <input required name="Wert" id="float-input" type="number" [(ngModel)]="newAttribute.floatValue"
+                    style="width: 100%" pInputText>
+                <label for="float-input">Wert</label>
+            </span>
+
             <!-- Boolean -->
             <span class="ui-float-label form-group" style="margin-top: 25px; margin-bottom: 20px; height: 26px"
                 *ngIf="newAttribute.attributeType === 'Boolean'">
@@ -238,12 +246,11 @@
 </p-table>
 
 <ng-template #dataTable_body_input let-rowData="rowData">
-    <p-checkbox *ngIf="rowData.attributeType === 'Boolean'" binary="true" [(ngModel)]="rowData.booleanValue">
-    </p-checkbox>
-    <input *ngIf="rowData.attributeType === 'Long'" pInputText type="number" [(ngModel)]="rowData.longValue"
-        style="width: 100%">
-    <input *ngIf="rowData.attributeType === 'String'" pInputTexttype="text" [(ngModel)]="rowData.stringValue"
-        style="width: 100%">
+    <p-checkbox *ngIf="rowData.attributeType === 'Boolean'" binary="true" [(ngModel)]="rowData.booleanValue"></p-checkbox>
+    <input *ngIf="rowData.attributeType === 'Long'" pInputText type="number" [(ngModel)]="rowData.longValue" style="width: 100%">
+    <input *ngIf="rowData.attributeType === 'Float'" pInputText type="number" [ngModel]="rowData.floatValue.toLocaleString('de')" (ngModelChange)="rowData.floatValue=$event" style="width: 100%">
+    <!-- [ngModel]="(rowData[field.field]).toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals })" (ngModelChange)="rowData[field.field]=$event" -->
+    <input *ngIf="rowData.attributeType === 'String'" pInputTexttype="text" [(ngModel)]="rowData.stringValue" style="width: 100%">
     <p-calendar *ngIf="rowData.attributeType === 'Date'" [showIcon]="true" [(ngModel)]="rowData.dateValue"
         showTime="true" dateFormat="dd.mm.yy" [inputStyle]="{'width':'calc(100% - 30px)'}" [style]="{'width': '100%'}">
     </p-calendar>
@@ -266,6 +273,8 @@
 <ng-template #dataTable_body_output let-rowData="rowData">
     {{rowData.attributeType === 'String' ? rowData.stringValue : ''}}
     {{rowData.attributeType === 'Long' ? rowData.longValue : ''}}
+    {{rowData.attributeType === 'Float' ? rowData.floatValue.toLocaleString('de') : ''}}
+    <!-- {{rowData.attributeType === 'Float' ? rowData.floatValue : ''}} -->
     {{rowData.attributeType === 'Date' ? rowData.dateValue : ''}}
     {{rowData.attributeType === 'Reference' ? rowData.value : ''}}
     <div *ngIf="rowData.attributeType === 'Icon'">
