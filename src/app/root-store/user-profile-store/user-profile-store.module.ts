@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreModule } from '@ngrx/store';
-import { userProfileReducer, USER_PROFILE_REDUCER } from './user-profile.reducers';
+import { userProfileReducer, USER_PROFILE_REDUCER, publicUserProfileReducer } from './user-profile.reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { UserProfileEffects } from './user-profile.effects';
 import * as fromUserProfileState from './user-profile.state';
@@ -12,6 +12,8 @@ import * as fromUserProfileState from './user-profile.state';
     CommonModule,
     // StoreModule.forFeature(fromUserProfileState.userProfileStoreKey, userProfileReducer),
     StoreModule.forFeature(fromUserProfileState.userProfileStoreKey, USER_PROFILE_REDUCER),
+    // StoreModule.forFeature(fromUserProfileState.userProfileStoreKey, publicUserProfileReducer),
+
     
     EffectsModule.forFeature([UserProfileEffects])
   ],
