@@ -18,7 +18,7 @@ input:valid {
 }
 
 input:invalid {
-    background-color: rgba(220,160,140,0.5);
+    background-color: rgba(220,160,140,0.2);
   }
 
 input:required:valid {
@@ -26,5 +26,5 @@ input:required:valid {
 }
 
 input:required:invalid {
-    background-color: rgba(220,160,140,0.5);
+    background-color: rgba(220,160,140,0.2);
 }
