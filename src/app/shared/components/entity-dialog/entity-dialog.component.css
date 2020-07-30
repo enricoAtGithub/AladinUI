@@ -7,3 +7,24 @@ input[type=number]::-webkit-outer-spin-button {
 input[type=number] {
     -moz-appearance:textfield;
 }
+
+
+/* 
+If a field is required (mandatory) and empty => invalid
+If a field is not required and empty => valid
+*/
+input:valid {
+    background-color: none;
+}
+
+input:invalid {
+    background-color: rgba(220,160,140,0.5);
+  }
+
+input:required:valid {
+    background-color: none;
+}
+
+input:required:invalid {
+    background-color: rgba(220,160,140,0.5);
+}
