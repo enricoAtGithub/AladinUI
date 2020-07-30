@@ -30,7 +30,7 @@
         </span>
         <span *ngSwitchCase="'float'" class="ui-float-label" style="flex-grow: 1;">
           <input [required]="field.mandatory" [name]="field.field" type="text" pattern="{{'^\\d{1,3}((\\.)?\\d{3})*(,\\d{1,' + field.decimals + '})?$'}}" id="float-input" pInputText
-            [ngModel]="(entity) ? entity[field.field].toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals }) : defaultCache[field.field].toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals })">
+            [ngModel]="(entity) && entity[field.field] != undefined ? entity[field.field].toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals }) :  defaultCache[field.field] ?  defaultCache[field.field].toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals }) : ''">
             <label for="float-input">{{field.header}}</label>
         </span>
         <div *ngSwitchCase="'Currency'" class="ui-inputgroup ui-float-label" style="flex-grow: 1;">            
