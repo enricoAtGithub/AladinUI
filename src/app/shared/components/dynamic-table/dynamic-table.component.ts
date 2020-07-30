@@ -343,11 +343,13 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     this.subscriptions.push(
       dialogRef.onClose.pipe(
-        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.configuration.type, fields) : undefined))
-        .subscribe(() => {
-          this.loadLazy(this.lastLazyLoadEvent);
-          this.entityOperation.emit(null);
-        })
+        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.configuration.type, fields) : undefined)).subscribe(
+          () => {
+            this.loadLazy(this.lastLazyLoadEvent);
+            this.entityOperation.emit(null);
+          },
+          error => console.error('[Dynamic-Table] Method createEntity failed!\n' + error)
+        )
     );
 
   }
@@ -367,11 +369,13 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     this.subscriptions.push(
       dialogRef.onClose.pipe(
-        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity(this.configuration.type, rowData['id'], fields) : undefined))
-        .subscribe(() => {
-          this.loadLazy(this.lastLazyLoadEvent);
-          this.entityOperation.emit(null);
-        })
+        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity(this.configuration.type, rowData['id'], fields) : undefined)).subscribe(
+          () => {
+            this.loadLazy(this.lastLazyLoadEvent);
+            this.entityOperation.emit(null);
+          },
+          error => console.error('[Dynamic-Table] Method updateEntity failed!\n' + error)
+        )
     );
 
   }
@@ -499,21 +503,26 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             dialogRef.onClose.subscribe((fields: Field[]) => {
               if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
                 payload.params = fields;
-                this.entityService.executeAction(payload, false)
-                  .subscribe((result) => {
+                this.entityService.executeAction(payload, false).subscribe(
+                  (result) => {
                     this.loadLazy(this.lastLazyLoadEvent);
                     this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
-                  });
-                }
+                  },
+                  error => console.error('[Dynamic-Table] Method executeAction failed!\n' + error)
+                );
+              }
             })
           );
 
           // if there are no params do not make any turnarounds and just go!
         } else {
-          this.entityService.executeAction(payload, false).subscribe(result => {
-            this.loadLazy(this.lastLazyLoadEvent);
-            this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
-          });
+          this.entityService.executeAction(payload, false).subscribe(
+            result => {
+              this.loadLazy(this.lastLazyLoadEvent);
+              this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
+            },
+            error => console.error('[Dynamic-Table] Method executeAction failed!\n' + error)
+          );
         }
       })
     );
