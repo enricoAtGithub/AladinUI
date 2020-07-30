@@ -21,6 +21,8 @@ import { SettingsService } from 'src/app/jmeleon/modules/settings/services/setti
 import { ScriptActionDefinition, ScriptActionPayload } from '../../models/script-action';
 import { ScriptResultComponent } from 'src/app/jmeleon/components/script-result/script-result.component';
 import { FileUploadDialogComponent } from '../file-upload-dialog/file-upload-dialog.component';
+import { JmlNavigationService } from 'src/app/jmeleon/services/jml-navigation.service';
+import { Router } from '@angular/router';
 import { CodeEditorComponent } from '../code-editor/code-editor.component';
 
 @Component({
@@ -34,6 +36,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   @Input() mainId: number;
   @Input() mainType: string;
   @Input() dblClickCallback: (data) => any;
+  @Input() selectedId: string;
+  @Input() token: string;
   @Output() entitySelection = new EventEmitter();
   @Output() entityOperation = new EventEmitter();
 
@@ -70,7 +74,9 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     private errorNotificationService: ErrorNotificationService,
     private store$: Store<RootStoreState.State>,
     private japs: JmeleonActionsPermissionService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private jmlNavigationService: JmlNavigationService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -227,6 +233,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         }
       }
     });
+
+    if (!!this.selectedId){
+      qualifier += `EQ('id',${this.selectedId}),`;
+    }
 
     const sort = this.fields.find(field => { if (field.field === event.sortField) { return true; } });
 
@@ -615,6 +625,18 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         this.completeCellEdit(data);
       })
     );
+}
+
+  filterAreActive(){
+    return this.filtersInTable || !!this.selectedId;
+  }
+  resetFilter(){
+    if (!!this.selectedId){
+      this.selectedId = undefined;
+      this.jmlNavigationService.clearId(this.router);
+      // this.router.navigate([])
+    }
+  }
 
   }
 

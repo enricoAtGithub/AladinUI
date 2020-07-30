@@ -215,7 +215,7 @@ export class AppMenuComponent implements OnInit {
             transition('hiddenAnimated => visibleAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
         ])
     ],
-    providers: [Location, {provide: LocationStrategy, useClass: PathLocationStrategy}],
+    // providers: [Location, {provide: LocationStrategy, useClass: PathLocationStrategy}],
 })
 export class AppSubMenuComponent implements OnInit, OnDestroy {
 

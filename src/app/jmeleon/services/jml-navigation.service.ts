@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationTarget } from '../models/navigation-target.model';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -36,4 +36,37 @@ export class JmlNavigationService {
 
   // public serializeEntityRoute = (route: ActivatedRoute, selectedEntityId?: number, selectedPage?: number, selectedTabId?: number): EntityNavTarget =>
   //   new EntityNavTarget(route.snapshot.url.join(''), selectedEntityId, selectedPage, selectedTabId)
+
+  public addUrlParam<T>(router: Router, key: string, value: T): void {
+    const param = {};
+    param[key] = (!!value ? value.toString() : value);
+    console.log('setting param:', param);
+    router.navigate(
+      [],
+      {
+        queryParams: param,
+        queryParamsHandling: 'merge',
+        skipLocationChange: false
+      }
+    );
+  }
+
+  // public addParamToTargetUrl<T>(url: string, key: string, value: T): string {
+
+  // }
+
+  public removeUrlParam = (router: Router, key: string): void => this.addUrlParam(router, key, null);
+
+  public readUrlParam(route: ActivatedRoute, key: string): Observable<string> {
+    return route.queryParams.pipe(
+      map(params => params[key])
+    );
+  }
+
+  public readToken = (route: ActivatedRoute): Observable<string> => this.readUrlParam(route, 'token');
+  public readId = (route: ActivatedRoute): Observable<string> => this.readUrlParam(route, 'id');
+  public clearId = (router: Router): void => {
+    this.removeUrlParam(router, 'id');
+    console.log('removed id query param');
+  }
 }

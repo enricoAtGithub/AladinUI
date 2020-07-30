@@ -5,7 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { ErrorNotificationService } from './app/shared/services/error-notification.service';
 import { AuthService } from './app/auth/services/auth.service';
 import { Store } from '@ngrx/store';
-import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-index';
+// import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-index';
 import { AuthFacadeService } from './app/auth/services/auth-facade.service';
 
 export enum ServerErrorCode {

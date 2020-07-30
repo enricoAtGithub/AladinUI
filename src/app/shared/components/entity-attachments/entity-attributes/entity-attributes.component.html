@@ -285,7 +285,7 @@
         <div *ngSwitchCase="'Float'">{{rowData.floatValue.toLocaleString('de')}}</div>
         <div *ngSwitchCase="'Currency'" style="font-family: monospace;">{{rowData.stringValue}}&nbsp;{{currency$ | async}}</div>
         <div *ngSwitchCase="'Date'">{{rowData.dateValue}}</div>
-        <div *ngSwitchCase="'Reference'">{{rowData.value}}</div>
+        <div *ngSwitchCase="'Reference'"> <a [routerLink]="generateRouteUrl(rowData.referenceType)" [queryParams]="generateRouteQueryParams(rowData.referenceType, rowData.referenceId)">{{rowData.value}}</a></div>
         <div *ngSwitchCase="'Icon'">
             <i class="{{rowData.stringValue}}" style="font-size: 1.25em; padding: 5px; vertical-align: middle;"></i>
             <span style="vertical-align: middle;">{{rowData.stringValue}}</span>
