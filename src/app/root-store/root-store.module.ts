@@ -20,8 +20,10 @@ import { ConfigurationStoreModule } from './config-store/config-store.module';
 
 
 const reducers: ActionReducerMap<RootStoreState.State> = {
-  userProfile: UserProfileReducers.userProfileReducer,
-  config: ConfigReducers.configReducer
+  // userProfile: UserProfileReducers.userProfileReducer,
+  // config: ConfigReducers.configReducer
+  userProfile: UserProfileReducers.publicUserProfileReducer,
+  config: ConfigReducers.publicConfigReducer
 };
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {

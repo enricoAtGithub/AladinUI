@@ -10,7 +10,7 @@ import * as fromUserProfileState from './user-profile.state';
   declarations: [],
   imports: [
     CommonModule,
-    // StoreModule.forFeature(fromUserProfileState.userProfileStoreKey, userProfileReducer),
+    // StoreModule.forFeature(fromUserProfileState.userProfileStoreKey, publicUserProfileReducer),
     StoreModule.forFeature(fromUserProfileState.userProfileStoreKey, USER_PROFILE_REDUCER),
     
     EffectsModule.forFeature([UserProfileEffects])

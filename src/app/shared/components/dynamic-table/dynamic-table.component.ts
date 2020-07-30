@@ -638,6 +638,4 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
   }
 
-  }
-
 }
