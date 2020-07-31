@@ -57,7 +57,8 @@
         <!-- Processing and displaying the data -->
         <tr [pSelectableRow]="rowData" (dblclick)="doubleClickTableRow(rowData)">
           <td *ngFor="let field of fields" id="hoverEffect" [style.width]="calcWidth(field, dt.el.nativeElement.offsetWidth)" style="word-wrap: break-word;">
-            <div style="display: flex; align-items: center;" [style.justify-content]="field.type === 'boolean' ? 'center' : 'space-between'">
+            <!-- <div style="display: flex; align-items: center;" [style.justify-content]="field.type === 'boolean' ? 'center' : 'space-between'"> -->
+            <div style="display: flex; align-items: center;" [style.justify-content]="(field.type === 'boolean' || field.type === 'Date') ? 'center' : field.type === 'Currency' ? 'flex-end' : 'space-between'">  
               <ng-container [var]="{isEdited: false}" #cell="var">
                 <ng-container *ngIf="cell.isEdited else displayEditable" [ngSwitch]="field.type">
                   <div *ngSwitchCase="'String'">
@@ -125,7 +126,7 @@
                 <ng-template #displayEditable>
                   <span class="ui-column-title">{{field.header}}</span>
                   <ng-container [ngSwitch]="field.type">
-                    <div *ngSwitchCase="'Currency'" style="font-family: monospace; text-align: right;">{{processData(rowData[field.field], field)}}&nbsp;{{currency$ | async}}</div>
+                    <div *ngSwitchCase="'Currency'" style="font-family: monospace">{{processData(rowData[field.field], field)}}&nbsp;{{currency$ | async}}</div>
                     <div *ngSwitchCase="'Icon'"><i [class]="rowData[field.field]?.icon" [ngStyle]="{'color': rowData[field.field]?.color}" style="font-size: 2em;"></i></div>
                     <div *ngSwitchCase="'json'" style="font-family: monospace;">{{processData(rowData[field.field], field)}}</div>
                     <div *ngSwitchCase="'python'" style="font-family: monospace;">{{processData(rowData[field.field], field)}}</div>
