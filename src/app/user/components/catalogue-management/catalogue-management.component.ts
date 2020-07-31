@@ -4,7 +4,7 @@ import { CatalogueService } from '../../services/catalogue.service';
 import { TreeNode } from 'primeng/primeng';
 import { DialogService, ConfirmationService } from 'primeng/api';
 import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/entity-dialog.component';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, EMPTY } from 'rxjs';
 import { EntityConfiguration } from 'src/app/shared/models/entity-configuration';
 
 import { Store, select } from '@ngrx/store';
@@ -81,7 +81,7 @@ export class CatalogueManagementComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       dialogRef.onClose.pipe(
-        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.catalogueConfig.type, fields) : undefined))
+        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.catalogueConfig.type, fields) : EMPTY))
         .subscribe(() => this.loadCatalogues())
     );
 
@@ -101,7 +101,7 @@ export class CatalogueManagementComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       dialogRef.onClose.pipe(
-        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.catalogueEntryConfig.type, fields) : undefined))
+        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.catalogueEntryConfig.type, fields) : EMPTY))
         .subscribe(() => this.loadCatalogues())
     );
 
@@ -145,7 +145,7 @@ export class CatalogueManagementComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       dialogRef.onClose.pipe(
-        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity(this.catalogueConfig.type, data['id'], fields) : undefined))
+        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity(this.catalogueConfig.type, data['id'], fields) : EMPTY))
         .subscribe(() => this.loadCatalogues())
     );
 
@@ -166,7 +166,7 @@ export class CatalogueManagementComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       dialogRef.onClose.pipe(
-        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity(this.catalogueEntryConfig.type, data['id'], fields) : undefined))
+        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity(this.catalogueEntryConfig.type, data['id'], fields) : EMPTY))
         .subscribe(() => this.loadCatalogues())
     );
 

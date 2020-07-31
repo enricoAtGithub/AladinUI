@@ -6,7 +6,7 @@ import { EntityService } from '../../services/entity.service';
 import { LazyLoadEvent, DialogService, ConfirmationService, SelectItem } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
 import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription, EMPTY } from 'rxjs';
 import { ErrorNotificationService } from '../../services/error-notification.service';
 import { delay } from 'q';
 import { UrlCollection } from '../../url-collection';
@@ -144,7 +144,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             this.subscriptions.push(
               configurations$.subscribe(configs => Object.values(configs).map(o => field.options.push({ label: o.type, value: o.type })))
             );
-          } 
+          }
           // else {
           //   // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
           //   this.subscriptions.push(
@@ -343,7 +343,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     this.subscriptions.push(
       dialogRef.onClose.pipe(
-        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.configuration.type, fields) : undefined)).subscribe(
+        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.configuration.type, fields) : EMPTY)).subscribe(
           () => {
             this.loadLazy(this.lastLazyLoadEvent);
             this.entityOperation.emit(null);
@@ -369,7 +369,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     this.subscriptions.push(
       dialogRef.onClose.pipe(
-        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity(this.configuration.type, rowData['id'], fields) : undefined)).subscribe(
+        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity(this.configuration.type, rowData['id'], fields) : EMPTY)).subscribe(
           () => {
             this.loadLazy(this.lastLazyLoadEvent);
             this.entityOperation.emit(null);

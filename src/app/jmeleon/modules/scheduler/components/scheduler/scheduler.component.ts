@@ -24,7 +24,7 @@ import * as gregorian from 'cldr-data/main/de/ca-gregorian.json';
 import * as numbers from 'cldr-data/main/de/numbers.json';
 import * as timeZoneNames from 'cldr-data/main/de/timeZoneNames.json';
 import de from '../../config/translations.json';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, EMPTY } from 'rxjs';
 import { SchedulerEvent, SchedulerResource } from '../../models/scheduler.model';
 import { EventSchedulerSettings, ResourceSchedulerSettings, ContextMenuSettings } from '../../config/scheduler.config';
 import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/entity-dialog.component';
@@ -424,7 +424,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       dialogRef.onClose.pipe(
-        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity('Order', data.RefId, fields) : undefined))
+        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity('Order', data.RefId, fields) : EMPTY))
         .subscribe(() => {
           this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
           if (this.showResourceScheduler) {
@@ -455,7 +455,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       dialogRef.onClose.pipe(
-        switchMap((fields: Field[]) => fields ? this.entityService.createEntity('Order', fields) : undefined))
+        switchMap((fields: Field[]) => fields ? this.entityService.createEntity('Order', fields) : EMPTY))
         .subscribe(() => {
           this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
         })
