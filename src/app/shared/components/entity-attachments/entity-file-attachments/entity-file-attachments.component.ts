@@ -47,7 +47,7 @@ export class EntityFileAttachmentsComponent implements OnChanges, OnDestroy {
   addFileAttachment() {
     const dialogRef = this.dialogService.open(FileUploadDialogComponent, {
       data: {
-        catalogueName: 'FileTypes',
+        catalogueName: 'FILE_TYPES',
         catalogueDisplayName: 'Dateityp',
         createAttachment: true,
         ownerId: this.ownerId,

@@ -390,7 +390,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
     const dialogRef = this.dialogService.open(FileUploadDialogComponent, {
       data: {
-        catalogueName: 'FileTypes',
+        catalogueName: 'FILE_TYPES',
         catalogueDisplayName: 'Dateityp',
         ownerId: ownerId,
         ownerType: ownerType,
