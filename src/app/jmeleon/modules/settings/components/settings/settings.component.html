@@ -55,7 +55,7 @@
 
 <p-card styleClass="spacing-bottom-small">
     <div>
-        <h2 style="padding: 0px; margin: 0px;">Initialisierung</h2>
+        <h2 style="padding: 0px; margin: 0px;">Aktionen</h2>
         <!-- <small>Einrichtung</small> -->
         <div  style="margin-bottom: 1cm; border-color:ghostwhite"><hr> </div>
         <!-- <ng-template ngFor let-setting [ngForOf]="category.settings"> -->
@@ -65,18 +65,28 @@
                 </div>
                 <div class="p-col-8"> 
                     <div class="p-grid">
-
-                        
                         <div  class="p-col-10">
                             <label></label>
                         </div>
                         <div class="p-col-2">
                             <p-button pTooltip="Synchronisieren"  icon="pi pi-refresh" (click)="syncGuiActionsWithServer()" ></p-button>
                         </div>
-
                     </div>
-
-
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-4">
+                    Settings-Cache im Server zurücksetzen
+                </div>
+                <div class="p-col-8"> 
+                    <div class="p-grid">
+                        <div  class="p-col-10">
+                            <label></label>
+                        </div>
+                        <div class="p-col-2">
+                            <p-button pTooltip="Cache leeren"  icon="pi pi-refresh" (click)="resetServerSettingsCache()" ></p-button>
+                        </div>
+                    </div>
                 </div>
             </div>
         <!-- </ng-template> -->
