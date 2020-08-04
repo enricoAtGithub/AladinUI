@@ -39,7 +39,7 @@
             <span class="ui-inputgroup-addon">{{currency$ | async}}</span>
         </div>     
         <span *ngSwitchCase="'boolean'" style="flex-grow: 1; align-self: center;">
-          <p-checkbox [required]="field.mandatory" [name]="field.field" [binary]="true" [label]="field.header" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]"></p-checkbox>
+          <p-checkbox [required]="field.mandatory" [name]="field.field" [binary]="true" [label]="field.header" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field] ? defaultCache[field.field]: false"></p-checkbox>
         </span>
         <span *ngSwitchCase="'Date'" class="ui-float-label" style="flex-grow: 1;">
           <p-calendar [required]="field.mandatory" [name]="field.field" showIcon="true" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]" [inputStyle]="{'width':'170px'}"></p-calendar>
@@ -74,7 +74,7 @@
           <label *ngIf="textModule['value'] !== field.header" for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
           <button *ngIf="!field.mandatory" pButton type="button" (click)="nullField(field, entityForm); textModule['value'] = field.header" icon="pi pi-times"></button>
         </span>
-        <button *ngIf="_isKnownType(field.type)" pButton type="button" (click)="nullField(field, entityForm)" icon="pi pi-times"></button>
+        <button *ngIf="_isKnownType(field.type) && field.type !== 'boolean'" pButton type="button" (click)="nullField(field, entityForm)" icon="pi pi-times"></button>
       </div>
     </div>
   </ng-template>
