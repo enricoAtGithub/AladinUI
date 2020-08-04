@@ -506,9 +506,9 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
                 this.entityService.executeAction(payload, false).subscribe(
                   (result) => {
                     this.loadLazy(this.lastLazyLoadEvent);
-                    this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
+                    this.showActionResult(actionDetails.name, result['result'], result['output'], true, actionDetails.showResult);
                   },
-                  error => console.error('[Dynamic-Table] Method executeAction failed!\n' + error)
+                  error => this.showActionResult(actionDetails.name, error.error.message, error.error.trace, false, true)
                 );
               }
             })
@@ -519,18 +519,18 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           this.entityService.executeAction(payload, false).subscribe(
             result => {
               this.loadLazy(this.lastLazyLoadEvent);
-              this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
+              this.showActionResult(actionDetails.name, result['result'], result['output'], true, actionDetails.showResult);
             },
-            error => console.error('[Dynamic-Table] Method executeAction failed!\n' + error)
+            error => this.showActionResult(actionDetails.name, error.error.message, error.error.trace, false, true)
           );
         }
       })
     );
   }
 
-  showActionResult(actionName: string, result: string, output: string, showResult: boolean) {
+  showActionResult(actionName: string, result: string, output: string, success: boolean, showResult: boolean) {
     if (!showResult) {
-      this.errorNotificationService.addSuccessNotification('Aktion ' + actionName + ' executed sucessfully', result);
+      if (success) { this.errorNotificationService.addSuccessNotification('Aktion ' + actionName + ' executed sucessfully', result); }
     } else {
       const dialogRef = this.dialogService.open(ScriptResultComponent, {
         data: {

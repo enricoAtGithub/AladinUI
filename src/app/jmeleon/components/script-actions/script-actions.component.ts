@@ -43,8 +43,8 @@ export class ScriptActionsComponent implements OnInit {
         this.output = response['output'];
       },
       (error) => {
-        this.result = 'Sorry, this did not work out so well.';
-        this.output = JSON.stringify(error);
+        this.result = error.error.message;
+        this.output = error.error.trace;
       }
     );
   }
