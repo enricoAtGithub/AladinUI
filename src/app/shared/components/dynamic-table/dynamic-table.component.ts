@@ -105,7 +105,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
       this.checkShowButtons();
 
-      this.minTableWidth = this.showButtons ? 90 : 0;
+      this.minTableWidth = 0;
       this.fields = this.configuration.fields.filter(field => field.visible === true);
       this.fields.forEach(field => {
         if (!field.width) {
@@ -458,18 +458,23 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   calcWidth(col: Field, width: number) {
-    if (this.configuration.minWidth && this.configuration.scrollable) {
-      width = Math.max(width, this.configuration.minWidth);
+    if (this.configuration.minWidth && this.configuration.scrollable && width < this.configuration.minWidth) {
+      if (this.crudColumnSpace === undefined) {
+        this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
+      }
+
+      width = this.configuration.minWidth - (this.showButtons ? this.crudColumnSpace : 0) - this.minTableWidth;
+      if (!col.width) {
+        return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
+      } else if (col.width.endsWith('px')) {
+        return col.width;
+      } else {
+        return Math.floor(Number.parseInt(col.width, 10) * width / 100.0) + 'px';
+      }
+    } else {
+      return col.width;
     }
 
-    width -= this.minTableWidth + (this.showButtons ? (this.crudColumnSpace) : 2);
-    if (!col.width) {
-      return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
-    } else if (col.width.endsWith('px')) {
-      return col.width;
-    } else {
-      return Math.floor(Number.parseInt(col.width, 10) * width / 100.0) + 'px';
-    }
   }
 
   calcCrudColWidth(actionCount: number): number	{
