@@ -19,12 +19,20 @@ input:valid {
 
 input:invalid {
     background-color: rgba(220,160,140,0.2);
-  }
+}
 
 input:required:valid {
     background-color: none;
 }
 
 input:required:invalid {
+    background-color: rgba(220,160,140,0.2);
+}
+
+::ng-deep p-calendar .ui-inputtext:invalid {
+    background-color: rgba(220,160,140,0.2);
+}
+
+::ng-deep p-dropdown.ng-invalid label {
     background-color: rgba(220,160,140,0.2);
 }
