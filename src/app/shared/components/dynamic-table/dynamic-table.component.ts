@@ -614,6 +614,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         }
       });
       this.entityData.data[index] = result['fields'];
+      this.entityOperation.emit(null);
     }, error => this.refreshTableContents());
   }
 
@@ -634,13 +635,14 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         this.completeCellEdit(data);
       })
     );
-}
+  }
 
-  filterAreActive(){
+  filterAreActive() {
     return this.filtersInTable || !!this.selectedId;
   }
-  resetFilter(){
-    if (!!this.selectedId){
+
+  resetFilter() {
+    if (!!this.selectedId) {
       this.selectedId = undefined;
       this.jmlNavigationService.clearId(this.router);
       // this.router.navigate([])
