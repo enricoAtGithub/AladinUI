@@ -63,7 +63,7 @@
                 <ng-container *ngIf="cell.isEdited else displayEditable" [ngSwitch]="field.type">
                   <div *ngSwitchCase="'String'">
                     <input [name]="field.field" type="text" appAutoFocus [(ngModel)]="rowData[field.field]" style="width: calc(100% - 30px)" pInputText
-                      (click)="$event.stopPropagation()" (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
+                      (click)="$event.stopPropagation()" (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)" (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
                     <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check"></button>
                   </div>
                   <!-- <ng-container *ngSwitchCase="'int'">
@@ -73,12 +73,12 @@
                   </ng-container> -->
                   <ng-container *ngSwitchCase="'int'">
                     <input #intInput [name]="field.field" type="text" pattern="^\d{1,3}((\.)?\d{3})*$" appAutoFocus [(ngModel)]="rowData[field.field]" style="width: calc(100% - 30px)" pInputText
-                      (click)="$event.stopPropagation()" (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
+                      (click)="$event.stopPropagation()" (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)" (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
                     <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!intInput.validity.valid"></button>
                   </ng-container>
                   <ng-container *ngSwitchCase="'float'">
                     <input #floatInput [name]="field.field" type="text" pattern="{{'^\\d{1,3}((\\.)?\\d{3})*(,\\d{1,' + field.decimals + '})?$'}}" appAutoFocus [ngModel]="(rowData[field.field]).toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals })" (ngModelChange)="rowData[field.field]=$event"  style="width: calc(100% - 30px)" pInputText
-                      (click)="$event.stopPropagation()" (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
+                      (click)="$event.stopPropagation()" (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)" (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
                     <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!floatInput.validity.valid"></button>
                   </ng-container>
                   <ng-container *ngSwitchCase="'boolean'">
@@ -88,7 +88,7 @@
                   </ng-container>
                   <ng-container *ngSwitchCase="'Date'">
                     <p-calendar [name]="field.field" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" class="calenderInputWidthFix" [(ngModel)]="rowData[field.field]"
-                      (click)="$event.stopPropagation()" (onClose)="cell.isEdited = false; abortCellEdit(rowData, $event)"></p-calendar>
+                      (click)="$event.stopPropagation()" (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)" (onClose)="cell.isEdited = false; abortCellEdit(rowData, $event)"></p-calendar>
                     <button pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; completeCellEdit(rowData);"></button>
                   </ng-container>
                   <ng-container *ngSwitchCase="'CatalogueEntry'">
@@ -102,7 +102,7 @@
                   <ng-container *ngSwitchCase="'Currency'">
                     <div class="ui-inputgroup" style="width: calc(100% - 2.143em);">            
                       <input #currencyInput [name]="field.field" appAutoFocus [(ngModel)]="rowData[field.field]" pattern="^\d{1,3}((\.)?\d{3})*(,\d{1,2})?$" type="text" style="width: calc(100% - 28px); font-family: monospace;"
-                        (click)="$event.stopPropagation()"(blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
+                        (click)="$event.stopPropagation()" (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)" (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
                       <span class="ui-inputgroup-addon">{{currency$ | async}}</span>
                     </div>
                     <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!currencyInput.validity.valid"></button>
