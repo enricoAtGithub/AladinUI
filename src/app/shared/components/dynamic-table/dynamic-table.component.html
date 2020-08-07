@@ -25,7 +25,7 @@
             <div style="display:flex; flex-direction: column;">            
               <!-- Header titles and sorting icon-->
               <div [pSortableColumn]="col.sortable ? col.field : null" style="margin: 0px">
-                <p style="margin: 0px; padding: 5px" style="word-wrap: break-word;">
+                <p style="margin: 0px; padding: 5px" style="overflow-wrap: anywhere;">
                   {{col.header}}
                   <p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
                 </p>
@@ -56,7 +56,7 @@
       <ng-template pTemplate="body" let-rowData let-fields="columns">
         <!-- Processing and displaying the data -->
         <tr [pSelectableRow]="rowData" (dblclick)="doubleClickTableRow(rowData)">
-          <td *ngFor="let field of fields" id="hoverEffect" [style.width]="calcWidth(field, dt.el.nativeElement.offsetWidth)" style="word-wrap: break-word;">
+          <td *ngFor="let field of fields" id="hoverEffect" [style.width]="calcWidth(field, dt.el.nativeElement.offsetWidth)" style="overflow-wrap: anywhere;">
             <!-- <div style="display: flex; align-items: center;" [style.justify-content]="field.type === 'boolean' ? 'center' : 'space-between'"> -->
             <div style="display: flex; align-items: center;" [style.justify-content]="(field.type === 'boolean' || field.type === 'Date') ? 'center' : field.type === 'Currency' ? 'flex-end' : 'space-between'">  
               <ng-container [var]="{isEdited: false}" #cell="var">
