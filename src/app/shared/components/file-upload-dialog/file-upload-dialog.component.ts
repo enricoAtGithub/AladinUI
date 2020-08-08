@@ -21,6 +21,7 @@ export class FileUploadDialogComponent implements OnInit {
   catalogueDisplayName: string;
   catalogueName: string;
   fileId: string;
+  fileType: string;
 
   // entity to attach file to
   ownerId: number;
@@ -52,6 +53,7 @@ export class FileUploadDialogComponent implements OnInit {
     // collect input parameters
     const data = this.config.data;
     this.fileId = data['fileId'];
+    this.fileType = data['fileType'];
     this.catalogueName = data ['catalogueName'];
     this.catalogueDisplayName = data['catalogueDisplayName'];
     this.ownerId = data['ownerId'];

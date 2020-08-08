@@ -4,7 +4,8 @@
         <app-catalogue-chooser-dialog 
             [catalogueName]="catalogueName" 
             [catalogueDisplayName]="catalogueDisplayName"
-            [visible]="showCatalogChooser" 
+            [visible]="showCatalogChooser"
+            [preSelectedOption]="fileType"
             (itemSelected)='onCatalogueItemSelected($event)'>
         </app-catalogue-chooser-dialog>
     </div>
