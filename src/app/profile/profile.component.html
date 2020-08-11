@@ -2,26 +2,24 @@
   <div class="ui-g-12 ui-lg-4">
     <div class="card">
       <h1>Passwort ändern</h1>
-      <div class="ui-g">
+      <form #passwordForm="ngForm" (submit)="submit()" class="ui-g ui-fluid">
         <div class="ui-g-12 ui-md-12 form-group">
-          <p-messages [value]="msgs"></p-messages>
           <div class="input-wrapper" style="margin-bottom: 14px;">
             <label>Altes Passwort</label>
-            <input #oldpass type="password" autocomplete="off" placeholder="Altes Passwort" class="ui-inputtext ui-widget">
+            <input [required]="true" name="newpass" type="password" autocomplete="off" [(ngModel)]="oldpass" placeholder="Altes Passwort" class="ui-inputtext ui-widget">
           </div>
           <div class="input-wrapper" style="margin-bottom: 10px;">
             <label>Neues Passwort</label>
-            <input #newpass type="password" autocomplete="off" placeholder="Neues Passwort" class="ui-inputtext ui-widget" (input)="passwordChanged(newpass.value)">
-            <div [style.background-color]="safetyBarColor" [style.width]="safetyBarWidth" style="height: 4px; transition: 0.5s;"></div>
+            <app-password-input [required]="true" name="newpass" [(ngModel)]="newpass" placeholder="Neues Passwort" [required]="true"></app-password-input>
           </div>
           <div class="input-wrapper" style="margin-bottom: 14px;">
             <label>Wiederholen</label>
-            <input #repeatpass type="password" autocomplete="off" placeholder="Neues Passwort" class="ui-inputtext ui-widget">
+            <input [required]="true" name="repeatpass" type="password" autocomplete="off" [(ngModel)]="repeatpass" placeholder="Neues Passwort" class="ui-inputtext ui-widget">
           </div>
 
-          <button type="button" label="Speichern" pButton icon="fa fa-check" (click)="submit(oldpass.value, newpass.value, repeatpass.value)"></button>
+          <button type="submit" label="Speichern" [disabled]="!passwordForm.valid" pButton icon="fa fa-check"></button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </div>
