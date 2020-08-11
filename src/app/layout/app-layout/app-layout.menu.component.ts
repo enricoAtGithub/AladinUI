@@ -44,6 +44,10 @@ export class AppMenuComponent implements OnInit {
                 visible: true //this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.dashboard)
             },
             {
+                label: 'J48 Bäume', icon: 'fa fa-th', routerLink: ['/j48trees'],
+                visible: true //this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.dashboard)
+            },
+            {
                 label: 'Objekte', icon: 'fa fa-fw fa-eur', routerLink: ['/dto-entities'],
                 visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.objekte)
             },

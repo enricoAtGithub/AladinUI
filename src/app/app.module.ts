@@ -123,6 +123,7 @@ import { FinComponent } from './domain/components/fin/fin.component';
 import { ModelSetComponent } from './domain/components/model_set/modelset.component';
 import { ManufacturerComponent } from './domain/components/manufacturer/manufacturer.component';
 import { ManufacturerCodeComponent } from './domain/components/manufacturercode/manufacturer_code.component';
+import { J48TreeComponent } from './domain/components/j48tree/j48tree.component';
 
 export function initializeApp(appConfig: AppConfig) {
     console.log('initialize app');
@@ -243,8 +244,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         FinComponent,
         ModelSetComponent,
         ManufacturerComponent,
-        ManufacturerCodeComponent
-
+        ManufacturerCodeComponent,
+        J48TreeComponent
     ],
     providers: [
         AppConfig,

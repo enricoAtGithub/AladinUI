@@ -32,6 +32,7 @@ import { FinComponent } from './domain/components/fin/fin.component';
 import { ModelSetComponent } from './domain/components/model_set/modelset.component';
 import { ManufacturerCodeComponent } from './domain/components/manufacturercode/manufacturer_code.component';
 import { ManufacturerComponent } from './domain/components/manufacturer/manufacturer.component';
+import { J48TreeComponent } from './domain/components/j48tree/j48tree.component';
 
 export const routes: Routes = [
   // App-Layout routes
@@ -45,6 +46,7 @@ export const routes: Routes = [
       { path: 'modelsets', component: ModelSetComponent },
       { path: 'manufacturer', component: ManufacturerComponent },
       { path: 'manufacturercodes', component: ManufacturerCodeComponent },
+      { path: 'j48trees', component: J48TreeComponent },
       {
         path: 'masterdata',
         children: [
