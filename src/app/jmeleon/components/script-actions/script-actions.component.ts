@@ -37,10 +37,16 @@ export class ScriptActionsComponent implements OnInit {
 
   execute() {
     const payload = { snippet: this.code, entityReference: null, context: null };
-    this.entityService.executeCodeSnippet(payload).subscribe((response) => {
-      this.result = response['result'];
-      this.output = response['output'];
-    });
+    this.entityService.executeCodeSnippet(payload).subscribe(
+      (response) => {
+        this.result = response['result'];
+        this.output = response['output'];
+      },
+      (error) => {
+        this.result = error.error.message;
+        this.output = error.error.trace;
+      }
+    );
   }
 
 }

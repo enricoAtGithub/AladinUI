@@ -3,7 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Message } from 'primeng/primeng';
 import { AppConfig, ServerInfo, UIInfo } from 'src/app/shared/app-config';
-import { RootStoreState, UserProfileActions, UserProfileSelectors, UserProfileState } from 'src/app/root-store/root-index';
+// import { RootStoreState, UserProfileActions, UserProfileSelectors, UserProfileState } from 'src/app/root-store/root-index';
 // import {UserProfileSelectors} from 'src/app/root-store/user-profile-store/user-profile-index';
 import { Store, select } from '@ngrx/store';
 // import { selectError } from 'src/app/root-store/root-selectors';
@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     AppConfig.uiInfo$.subscribe(uiInfo => {
       // Story #1733: https://redmine.simply4it.de/issues/1733
-      this.productiveCheck(environment.productiveFrontendBackendCheck, window.location.href, uiInfo.baseUrl);
+      this.productiveCheck(uiInfo.FEBEsameURLcheck, window.location.href, uiInfo.baseUrl);
 
       // console.log('[LoginComponent-ngOnInit-subscribe(uiInfo)]');
       this.uiDetails = 'UI version=' + uiInfo.version + '.' + uiInfo.git_branch + '.' + uiInfo.build_no + '.' + uiInfo.git_sha;
@@ -91,7 +91,7 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    // get the URL part until the first slash
+    // get the URL part until the first slash after http://
     const frontendCompString = frontendURL.slice(0 , frontendURL.indexOf('/', (frontendURL.search('://') + 3)));
     const backendCompString = backendURL.slice(0 , backendURL.indexOf('/', (backendURL.search('://') + 3)));
 
@@ -108,7 +108,11 @@ export class LoginComponent implements OnInit {
       });
       this.loginDisabled = true;
     } else {
-      console.log('Productive environment. Compatibility of frontend and backend URL successfully checked.');
+      console.log(
+        'frontend URL: ' + frontendCompString + '\n' +
+        'backend URL:  ' + backendCompString + '\n' +
+        'Success! Frontend and backend URL compatible!'
+        );
     }
   }
 

@@ -1,13 +1,7 @@
-<p-panel collapsed="true">
-    <p-header>
-        <span class="ui-panel-title" style="padding-top: 8px">{{syntax}} Code Editor</span>
-        <button pButton (click)="save()" icon="pi pi-save"
-            class="ui-button-success" style="float: right"></button>
-    </p-header>
-</p-panel>
-
 <div class="content-container" style="height:700px; border: 1px solid #CCCCCC;">
-    <div style="height:699px; width:100%">
+    <div style="height:698px;">
         <ace [config]="aceconfig" [(value)]="code" [mode]="syntax"></ace>
     </div>
 </div>
+
+<button pButton (click)="save()" label="Bestätigen" icon="pi pi-check" class="ui-button-info" style="margin-top: 15px;"></button>

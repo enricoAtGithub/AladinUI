@@ -1,6 +1,8 @@
-import { initialState } from './user-profile.state';
-import { createReducer, on } from '@ngrx/store';
+import { initialState, UserProfileState } from './user-profile.state';
+import { createReducer, on, ActionReducer, Action } from '@ngrx/store';
 import * as UserProfileActions from './user-profile.actions';
+import { InjectionToken } from '@angular/core';
+
 
  export const userProfileReducer = createReducer(
    initialState,
@@ -53,3 +55,9 @@ import * as UserProfileActions from './user-profile.actions';
      };
    })
  );
+
+ export function publicUserProfileReducer(state: UserProfileState, action: Action){
+   return userProfileReducer(state, action);
+ }
+
+ export const USER_PROFILE_REDUCER = new InjectionToken<ActionReducer<UserProfileState>>('User Profile Reducer');

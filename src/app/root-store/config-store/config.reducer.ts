@@ -1,6 +1,7 @@
-import { initialState } from './config.state';
-import { createReducer, on } from '@ngrx/store';
+import { initialState, ConfigState } from './config.state';
+import { createReducer, on, ActionReducer, Action } from '@ngrx/store';
 import * as ConfigActions from './config.actions';
+import { InjectionToken } from '@angular/core';
 
 export const configReducer = createReducer(
     initialState,
@@ -20,4 +21,8 @@ export const configReducer = createReducer(
             };
         }
     )
-);
+);export function publicConfigReducer(state: ConfigState, action: Action){
+    return configReducer(state, action);
+  }
+
+export const CONFIG_PROFILE_REDUCER = new InjectionToken<ActionReducer<ConfigState>>('Config Reducer');

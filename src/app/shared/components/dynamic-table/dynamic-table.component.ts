@@ -1,18 +1,18 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, AfterViewInit, OnDestroy } from '@angular/core';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
-import { EntityData } from '../../models/entity-data';
+import { EntityData, Entity } from '../../models/entity-data';
 import { EntityService } from '../../services/entity.service';
-import { LazyLoadEvent, DialogService, ConfirmationService } from 'primeng/primeng';
+import { LazyLoadEvent, DialogService, ConfirmationService, SelectItem } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
 import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription, EMPTY } from 'rxjs';
 import { ErrorNotificationService } from '../../services/error-notification.service';
 import { delay } from 'q';
 import { UrlCollection } from '../../url-collection';
 import * as fromConfigSelectors from '../../../root-store/config-store/config.selectors';
 import { Store, select } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import { CatalogueService } from 'src/app/user/services/catalogue.service';
 import { root } from 'src/app/jmeleon/modules/permissions/permissions';
@@ -21,6 +21,9 @@ import { SettingsService } from 'src/app/jmeleon/modules/settings/services/setti
 import { ScriptActionDefinition, ScriptActionPayload } from '../../models/script-action';
 import { ScriptResultComponent } from 'src/app/jmeleon/components/script-result/script-result.component';
 import { FileUploadDialogComponent } from '../file-upload-dialog/file-upload-dialog.component';
+import { JmlNavigationService } from 'src/app/jmeleon/services/jml-navigation.service';
+import { Router } from '@angular/router';
+import { CodeEditorComponent } from '../code-editor/code-editor.component';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -33,6 +36,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   @Input() mainId: number;
   @Input() mainType: string;
   @Input() dblClickCallback: (data) => any;
+  @Input() selectedId: string;
+  @Input() token: string;
   @Output() entitySelection = new EventEmitter();
   @Output() entityOperation = new EventEmitter();
 
@@ -69,7 +74,9 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     private errorNotificationService: ErrorNotificationService,
     private store$: Store<RootStoreState.State>,
     private japs: JmeleonActionsPermissionService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private jmlNavigationService: JmlNavigationService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -98,7 +105,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
       this.checkShowButtons();
 
-      this.minTableWidth = this.showButtons ? 90 : 0;
+      this.minTableWidth = 0;
       this.fields = this.configuration.fields.filter(field => field.visible === true);
       this.fields.forEach(field => {
         if (!field.width) {
@@ -131,14 +138,21 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
                     }
                   });
                 }));
-          } else {
-            // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
+          } else if (field.type === 'dtoType') {
+            // get all dtoConfigs for field.type === 'dtoType' (e.g. for Script Actions)
+            const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
             this.subscriptions.push(
-              this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
-                .subscribe(data => {
-                  data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
-                }));
+              configurations$.subscribe(configs => Object.values(configs).map(o => field.options.push({ label: o.type, value: o.type })))
+            );
           }
+          // else {
+          //   // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
+          //   this.subscriptions.push(
+          //     this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
+          //       .subscribe(data => {
+          //         data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
+          //       }));
+          // }
         }
       });
 
@@ -220,6 +234,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       }
     });
 
+    if (!!this.selectedId){
+      qualifier += `EQ('id',${this.selectedId}),`;
+    }
+
     const sort = this.fields.find(field => { if (field.field === event.sortField) { return true; } });
 
     if (sort) {
@@ -276,12 +294,12 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         return input ? '<python>' : undefined;
       case 'json':
         return input ? '<json>' : undefined;
+      case 'float':
       case 'String':
       case 'int':
       case 'Icon':
       case 'Currency':
       case 'dtoType':
-      case 'float':
         return input;
       default:
         return input['_repr_'];
@@ -298,11 +316,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       this.lZ(date.getHours()) + ':' + this.lZ(date.getMinutes());
   }
 
-  showAddEntityDialog() {
+  createEntity() {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
-        scenario: 'create',           // executeAction, create, update
         fields: this.configuration.fields,
         configType: this.configuration.type,
         mainId: this.mainId
@@ -311,42 +328,56 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       width: '500px'
     });
 
+    // following code is refactored according https://medium.com/@paynoattn/3-common-mistakes-i-see-people-use-in-rx-and-the-observable-pattern-ba55fee3d031
+    // this.subscriptions.push(
+    //   dialogRef.onClose.subscribe((fields: Field[]) => {
+    //     if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+    //       this.entityService.createEntity(this.configuration.type, fields)
+    //         .subscribe(() => {
+    //           this.loadLazy(this.lastLazyLoadEvent);
+    //           this.entityOperation.emit(null);
+    //         });
+    //     }
+    //   })
+    // );
+
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((result: Observable<Object>) => {
-        if (result !== undefined) {
-          result.subscribe(() => {
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.configuration.type, fields) : EMPTY)).subscribe(
+          () => {
             this.loadLazy(this.lastLazyLoadEvent);
             this.entityOperation.emit(null);
-          });
-        }
-      })
+          },
+          error => console.error('[Dynamic-Table] Method createEntity failed!\n' + error)
+        )
     );
+
   }
 
-  updateEntity(data: any) {
+  updateEntity(rowData: Field[]) {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
-        scenario: 'update',           // executeAction, create, update
-        entity: data,
+        entity: rowData,
         fields: this.configuration.fields,
         configType: this.configuration.type,
         mainId: this.mainId
       },
-      header: data['_repr_'] + ' bearbeiten',
+      header: rowData['_repr_'] + ' bearbeiten',
       width: '500px'
     });
 
     this.subscriptions.push(
-      dialogRef.onClose.subscribe((result: Observable<Object>) => {
-        if (result !== undefined) {
-          result.subscribe(() => { 
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity(this.configuration.type, rowData['id'], fields) : EMPTY)).subscribe(
+          () => {
             this.loadLazy(this.lastLazyLoadEvent);
             this.entityOperation.emit(null);
-          });
-        }
-      })
+          },
+          error => console.error('[Dynamic-Table] Method updateEntity failed!\n' + error)
+        )
     );
+
   }
 
   // covers multiple scenarios:
@@ -355,15 +386,16 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   // 2a) FileAttachment entity: create new file:      ownerId: set         ownerType: set         fileId: undefined
   // 2b) FileAttachment entity: update existing file: ownerId: set         ownerType: set         fileId: set
   // FileUploadDialogComponent decides depending on these parameters what to do (attach yes/no, update/create)
-  uploadFile(ownerId?: number, ownerType?: string, fileId?: number) {
+  uploadFile(ownerId?: number, ownerType?: string, fileId?: number, fileType?: string) {
 
     const dialogRef = this.dialogService.open(FileUploadDialogComponent, {
       data: {
-        catalogueName: 'FileTypes',
+        catalogueName: 'FILE_TYPES',
         catalogueDisplayName: 'Dateityp',
         ownerId: ownerId,
         ownerType: ownerType,
-        fileId: fileId
+        fileId: fileId,
+        fileType: fileType
       },
       header: 'Datei aktualisieren',
       width: '800px'
@@ -427,18 +459,23 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   calcWidth(col: Field, width: number) {
-    if (this.configuration.minWidth && this.configuration.scrollable) {
-      width = Math.max(width, this.configuration.minWidth);
+    if (this.configuration.minWidth && this.configuration.scrollable && width < this.configuration.minWidth) {
+      if (this.crudColumnSpace === undefined) {
+        this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
+      }
+
+      width = this.configuration.minWidth - (this.showButtons ? this.crudColumnSpace : 0) - this.minTableWidth;
+      if (!col.width) {
+        return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
+      } else if (col.width.endsWith('px')) {
+        return col.width;
+      } else {
+        return Math.floor(Number.parseInt(col.width, 10) * width / 100.0) + 'px';
+      }
+    } else {
+      return col.width;
     }
 
-    width -= this.minTableWidth + (this.showButtons ? (this.crudColumnSpace) : 2);
-    if (!col.width) {
-      return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
-    } else if (col.width.endsWith('px')) {
-      return col.width;
-    } else {
-      return Math.floor(Number.parseInt(col.width, 10) * width / 100.0) + 'px';
-    }
   }
 
   calcCrudColWidth(actionCount: number): number	{
@@ -453,49 +490,53 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     // run getAction API to retrieve information (HRID and params) required to execute the action
     this.subscriptions.push(
       this.entityService.getAction(payload).subscribe((actionDetails: ScriptActionDefinition) => {
-        payload['actionHrid'] = actionDetails.actionHrid; // prepare payload for executeAction (add HRID)
+        payload.actionHrid = actionDetails.actionHrid; // prepare payload for executeAction (add HRID)
 
         if (actionDetails.params.length > 0) {  // if there are params to be specified open entity dialog
-          let entityObj: Object;
-          entityObj = <Object>(actionDetails);
-
           const dialogRef = this.dialogService.open(EntityDialogComponent, {
             data: {
               update: true,
-              scenario: 'executeAction',           // executeAction, create, update
-              entity: entityObj,
+              entity: actionDetails,
               fields: actionDetails.params,
               configType: this.configuration.type,
               mainId: this.mainId,
-              payload: payload
             },
             header: 'Aktionsparameter',
             width: '500px'
           });
 
-          dialogRef.onClose.subscribe((response: Observable<Object>) => {
-            if (response !== undefined) {
-              response.subscribe((result) => {
-                this.loadLazy(this.lastLazyLoadEvent);
-                this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
-              });
-            }
-          });
+          this.subscriptions.push(
+            dialogRef.onClose.subscribe((fields: Field[]) => {
+              if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+                payload.params = fields;
+                this.entityService.executeAction(payload, false).subscribe(
+                  (result) => {
+                    this.loadLazy(this.lastLazyLoadEvent);
+                    this.showActionResult(actionDetails.name, result['result'], result['output'], true, actionDetails.showResult);
+                  },
+                  error => this.showActionResult(actionDetails.name, error.error.message, error.error.trace, false, true)
+                );
+              }
+            })
+          );
 
           // if there are no params do not make any turnarounds and just go!
         } else {
-          this.entityService.executeAction(payload, false).subscribe(result => {
-            this.loadLazy(this.lastLazyLoadEvent);
-            this.showActionResult(actionDetails.name, result['result'], result['output'], actionDetails.showResult);
-          });
+          this.entityService.executeAction(payload, false).subscribe(
+            result => {
+              this.loadLazy(this.lastLazyLoadEvent);
+              this.showActionResult(actionDetails.name, result['result'], result['output'], true, actionDetails.showResult);
+            },
+            error => this.showActionResult(actionDetails.name, error.error.message, error.error.trace, false, true)
+          );
         }
       })
     );
   }
 
-  showActionResult(actionName: string, result: string, output: string, showResult: boolean) {
+  showActionResult(actionName: string, result: string, output: string, success: boolean, showResult: boolean) {
     if (!showResult) {
-      this.errorNotificationService.addSuccessNotification('Aktion ' + actionName + ' executed sucessfully', result);
+      if (success) { this.errorNotificationService.addSuccessNotification('Aktion ' + actionName + ' executed sucessfully', result); }
     } else {
       const dialogRef = this.dialogService.open(ScriptResultComponent, {
         data: {
@@ -544,7 +585,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
   }
 
-  initCellEdit(cellRef, field: string, rowData) {
+  initCellEdit(cellRef, field: string, rowData, type: string) {
       // If another cell is being edited abort the edit operation and initialize the new edit operation
     if (this.lastCellRef !== undefined && this.cellEditCache !== undefined) {
       const rowDataPrev = this.entityData.data.find(row => row['id'] === this.cellEditCache.data['id']);
@@ -554,6 +595,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.cellEditCache = {field: field, data: Object.assign({}, rowData)};
     cellRef.isEdited = true;
     this.lastCellRef = cellRef;
+    // in case of code edit open code editor directly
+    if (type === 'python' || type === 'json') {
+      this.openCodeEditor(rowData, type, field);
+    }
   }
 
   completeCellEdit(data) {
@@ -575,7 +620,39 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         }
       });
       this.entityData.data[index] = result['fields'];
+      this.entityOperation.emit(null);
     }, error => this.refreshTableContents());
+  }
+
+  openCodeEditor(data: any, syntax: string, field: string) {
+    const dialogRef = this.dialogService.open(CodeEditorComponent, {
+      data: {
+        syntax: syntax,
+        code: data[field]
+      },
+      header: syntax + ' Code Editor',
+      width: '80%'
+    });
+
+    this.subscriptions.push(
+      dialogRef.onClose.subscribe((code: string) => {
+        data[field] = code;
+        // pass entity with edited code (data) to inline edit save routine
+        this.completeCellEdit(data);
+      })
+    );
+  }
+
+  filterAreActive() {
+    return this.filtersInTable || !!this.selectedId;
+  }
+
+  resetFilter() {
+    if (!!this.selectedId) {
+      this.selectedId = undefined;
+      this.jmlNavigationService.clearId(this.router);
+      // this.router.navigate([])
+    }
   }
 
 }

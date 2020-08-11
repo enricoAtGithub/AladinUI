@@ -4,6 +4,7 @@ import { SettingsService } from '../../services/settings.service';
 import { Observable } from 'rxjs';
 import { SettingsModel } from '../../models/setting.model';
 import { JmeleonActionsFacadeService } from '../../../permissions/services/jmeleon-actions-facade.service';
+import { ErrorNotificationService } from 'src/app/shared/services/error-notification.service';
 
 @Component({
   selector: 'app-settings',
@@ -18,6 +19,7 @@ export class SettingsComponent implements OnInit {
   orgSettingValue: string;
   constructor(
     private settingService: SettingsService,
+    private notificationService: ErrorNotificationService,
     private jmlActionsFacade: JmeleonActionsFacadeService
   ) { }
 
@@ -62,4 +64,9 @@ export class SettingsComponent implements OnInit {
     this.jmlActionsFacade.syncGuiActionsWithServer();
   }
 
+  resetServerSettingsCache() {
+    this.settingService.clear().subscribe( () => {
+      this.notificationService.addSuccessNotification('Erfolg', 'Settings-Cache geleert')
+    } );
+  }
 }

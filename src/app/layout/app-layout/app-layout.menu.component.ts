@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MenuItem } from 'primeng/primeng';
 import { AppLayoutComponent } from '../app-layout/app-layout.component';
@@ -6,6 +6,10 @@ import { JMeleonPermissionsService } from 'src/app/auth/services/jmeleon-permiss
 import { environment } from 'src/environments/environment';
 import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 import { root } from 'src/app/jmeleon/modules/permissions/permissions';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { distinctUntilChanged, filter, tap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -112,7 +116,9 @@ export class AppMenuComponent implements OnInit {
     /* tslint:enable:component-selector */
     template: `
         <ng-template ngFor let-child let-i="index" [ngForOf]="(root ? item : item.items)">
-            <li [ngClass]="{'active-menuitem': isActive(i)}" [class]="child.badgeStyleClass" *ngIf="child.visible === false ? false : true">
+            <li [ngClass]="{'active-menuitem': isActive(i)}" [class]="child.badgeStyleClass" *ngIf="child.visible === false ? false : true" routerLinkActive="active-menuitem"
+            [routerLinkActiveOptions]="{exact: true}">
+                <!--menu dropdown-->
                 <a [href]="child.url||'#'" (click)="itemClick($event,child,i)" (mouseenter)="onMouseEnter(i)"
                    class="ripplelink" *ngIf="!child.routerLink"
                    [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target"
@@ -122,9 +128,9 @@ export class AppMenuComponent implements OnInit {
                     <i class="fa fa-fw fa-angle-down layout-menuitem-toggler" *ngIf="child.items"></i>
                 </a>
 
+                <!--menu item-->
                 <a (click)="itemClick($event,child,i)" (mouseenter)="onMouseEnter(i)" class="ripplelink" *ngIf="child.routerLink"
-                   [routerLink]="child.routerLink" routerLinkActive="active-menuitem-routerlink"
-                   [routerLinkActiveOptions]="{exact: true}" [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target"
+                   [routerLink]="child.routerLink"  [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target"
                    [id]="!!child.id ? child.id : 'menuItem'+i">
                     <i [ngClass]="child.icon"></i><span>{{child.label}}</span>
                     <span class="menuitem-badge" *ngIf="child.badge">{{child.badge}}</span>
@@ -134,6 +140,7 @@ export class AppMenuComponent implements OnInit {
                 <ul app-submenu [item]="child" *ngIf="child.items" [visible]="isActive(i)" [reset]="reset" [parentActive]="isActive(i)"
                     [@children]="(app.isSlim()||app.isHorizontal())&&root ? isActive(i) ?
                     'visible' : 'hidden' : isActive(i) ? 'visibleAnimated' : 'hiddenAnimated'"></ul>
+
             </li>
         </ng-template>
     `,
@@ -160,9 +167,10 @@ export class AppMenuComponent implements OnInit {
             transition('visibleAnimated => hiddenAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')),
             transition('hiddenAnimated => visibleAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
         ])
-    ]
+    ],
+    // providers: [Location, {provide: LocationStrategy, useClass: PathLocationStrategy}],
 })
-export class AppSubMenuComponent {
+export class AppSubMenuComponent implements OnInit, OnDestroy {
 
     @Input() item: MenuItem;
 
@@ -176,7 +184,81 @@ export class AppSubMenuComponent {
 
     activeIndex: number;
 
-    constructor(public app: AppLayoutComponent) { }
+    subscriptions: Subscription[] = [];
+
+    constructor(public app: AppLayoutComponent
+        , private router: Router
+        ) { }
+
+    ngOnInit(): void {
+
+        // url navigation menu highlighting for top-level menu items
+         this.subscriptions.push(
+             this.router.events.pipe(
+                filter(event => event instanceof NavigationEnd),
+                // filter out root
+                filter(() => !this.root),
+                // filter out  empty parent elements and leafs
+                filter(() => !!this.item.items && this.item.items.length > 0 && (this.item.items[0] as MenuItem).label !== undefined ),
+                // filter for the parent menu item
+                filter((navEndEvent: NavigationEnd) => {
+                    const items = this.item.items as MenuItem[];
+                    if (items === undefined) {
+                        return false;
+                    }
+                    return items.some(item => item.routerLink[0] === navEndEvent.url);
+                }),
+                // set active index for selected url to highlight nav menu entry
+                tap((navEndEvent: NavigationEnd) => {
+                    const items = this.item.items as MenuItem[];
+                    if (items === undefined) {
+                        return false;
+                    }
+                    const index = items.findIndex(item => item.routerLink[0] === navEndEvent.url);
+                    if (index >= 0) {
+                        this.activeIndex = index;
+                    }
+
+                }),
+                ).subscribe()
+            );
+
+        // url navigation menu highlighting for second-level menu items
+        this.subscriptions.push(
+            this.router.events.pipe(
+                filter(event => event instanceof NavigationEnd),
+                // filter for root only
+                filter(() => this.root),
+                // set active index for selected url to highlight nav menu entry
+                tap((navEndEvent: NavigationEnd) => {
+                    const items = this.item as MenuItem[];
+                    if (!items) {
+                        console.log('no root?');
+                        return;
+                    }
+                    const currentIndex = items.findIndex(item => {
+                        if (!item.items) {
+                            return false;
+                        }
+                        const subItems = item.items as MenuItem[];
+                        if (!subItems) {
+                            return false;
+                        }
+                        return subItems.some(si => si.routerLink !== undefined && si.routerLink[0] === navEndEvent.url);
+                    });
+                    if (currentIndex >= 0) {
+                        this.activeIndex = currentIndex;
+                        console.log('set active index to: ', this.activeIndex);
+                    } else {
+                        this.activeIndex = null;
+                    }
+                })
+            ).subscribe()
+        );
+    }
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => sub.unsubscribe());
+    }
 
     itemClick(event: Event, item: MenuItem, index: number) {
         if (this.root) {

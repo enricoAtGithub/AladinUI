@@ -119,6 +119,8 @@ import { PermissionsModule } from './jmeleon/modules/permissions/permissions.mod
 import { AccountsComponent } from './accounts/accounts.component';
 import { ProductsComponent } from './domain/components/products/products.component';
 import { QuotationsComponent } from './domain/components/quotations/quotations.component';
+import { RouterModule } from '@angular/router';
+
 import { FinComponent } from './domain/components/fin/fin.component';
 import { ModelSetComponent } from './domain/components/model_set/modelset.component';
 import { ManufacturerComponent } from './domain/components/manufacturer/manufacturer.component';
@@ -221,6 +223,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingsModule,
         SchedulerModule,
         PermissionsModule,
+        RouterModule
     ],
     declarations: [
         AppComponent,

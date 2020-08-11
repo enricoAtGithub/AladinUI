@@ -87,8 +87,9 @@ export class EntityService {
         .build());
   }
 
-  updateEntity(type: String, id: number, data) {
-    return this.http.post(UrlCollection.Entities.UPDATE(),
+  updateEntity(type: String, id: number, data): Observable<Entity> {
+    return this.http.post<Entity>(
+      UrlCollection.Entities.UPDATE(),
       { type: type, fields: { ...data, ...{ 'id': id } } },
       new HttpOptionsFactory()
         .addAcceptJson()

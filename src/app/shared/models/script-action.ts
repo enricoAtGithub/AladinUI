@@ -1,4 +1,4 @@
-import { BasicFieldConfig } from './field';
+import { BasicFieldConfig, Field } from './field';
 
 export class ScriptActionDefinition {
     public actionHrid: string;
@@ -18,5 +18,5 @@ export class ScriptActionPayload {
       dtoType: string;
       id: number
     };
-    params?: [];
+    params?: Field[];
   }

@@ -24,7 +24,7 @@ import * as gregorian from 'cldr-data/main/de/ca-gregorian.json';
 import * as numbers from 'cldr-data/main/de/numbers.json';
 import * as timeZoneNames from 'cldr-data/main/de/timeZoneNames.json';
 import de from '../../config/translations.json';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, EMPTY } from 'rxjs';
 import { SchedulerEvent, SchedulerResource } from '../../models/scheduler.model';
 import { EventSchedulerSettings, ResourceSchedulerSettings, ContextMenuSettings } from '../../config/scheduler.config';
 import { EntityDialogComponent } from 'src/app/shared/components/entity-dialog/entity-dialog.component';
@@ -34,10 +34,11 @@ import { ContextMenu } from 'primeng/contextmenu';
 import { ResizeEvent } from 'angular-resizable-element';
 import { SchedulerTimeRange, TimeRange } from '../../config/scheduler.timerange';
 import { JmeleonActionsPermissionService } from '../../../permissions/services/jmeleon-actions-permission.service';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
+import { Field } from 'src/app/shared/models/field';
 
 loadCldr(numberingSystems['default'], gregorian['default'], numbers['default'], timeZoneNames['default']);
 L10n.load(de);
@@ -413,7 +414,6 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: true,
-        scenario: 'update',           // executeAction, create, update
         entityId: data.RefId,
         fields: this.configuration.fields,
         configType: 'Order'
@@ -422,21 +422,20 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       width: '500px'
     });
 
-    dialogRef.onClose.subscribe((result: Observable<Object>) => {
-      if (result !== undefined) {
-        this.subscriptions.push(
-          result.subscribe(() => {
-            this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
-            if (this.showResourceScheduler) {
-              this.getSchedulerResourcesAndSchedulerEvents(
-                { schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter },
-                SchedulerTimeRange.get(this.currResSchInterval.currView).getRange(this.currResSchInterval.currDate)
-              );
-            }
-          })
-        );
-      }
-    });
+    this.subscriptions.push(
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.updateEntity('Order', data.RefId, fields) : EMPTY))
+        .subscribe(() => {
+          this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
+          if (this.showResourceScheduler) {
+            this.getSchedulerResourcesAndSchedulerEvents(
+              { schedulerEvent: this.schedulerStatus.currentSchedulerEvent, filter: this.currentResourceFilter },
+              SchedulerTimeRange.get(this.currResSchInterval.currView).getRange(this.currResSchInterval.currDate)
+            );
+          }
+        })
+    );
+
   }
 
   addSchedulerEvent(data: any) {
@@ -446,7 +445,6 @@ export class SchedulerComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialogService.open(EntityDialogComponent, {
       data: {
         update: false,
-        scenario: 'create',           // executeAction, create, update
         entity: { startDate: data.startTime, endDate: data.endTime },
         fields: this.configuration.fields,
         configType: 'Order'
@@ -455,13 +453,14 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       width: '500px'
     });
 
-    dialogRef.onClose.subscribe((result: Observable<Object>) => {
-      if (result !== undefined) {
-        this.subscriptions.push(
-          result.subscribe(() => this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate)))
-        );
-      }
-    });
+    this.subscriptions.push(
+      dialogRef.onClose.pipe(
+        switchMap((fields: Field[]) => fields ? this.entityService.createEntity('Order', fields) : EMPTY))
+        .subscribe(() => {
+          this.getSchedulerEvents(SchedulerTimeRange.get(this.currEvSchInterval.currView).getRange(this.currEvSchInterval.currDate));
+        })
+    );
+
   }
 
   deleteSchedulerEvent(data: SchedulerEvent) {

@@ -46,6 +46,7 @@ import { AceModule } from 'ngx-ace-wrapper';
 import { VarDirective } from './directives/var.directive';
 import { AutoFocusDirective } from './directives/auto-focus.directive';
 import { TooltipModule } from 'primeng/tooltip';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -100,7 +101,8 @@ import { TooltipModule } from 'primeng/tooltip';
     IconPickerModule,
     ReactiveFormsModule,
     PanelModule,
-    AceModule
+    AceModule,
+    RouterModule
   ],
   entryComponents: [
     EntityDialogComponent,

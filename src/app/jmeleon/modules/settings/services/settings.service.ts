@@ -44,6 +44,12 @@ export class SettingsService {
     );
   }
 
+  clear(): Observable<any> {
+    return this.getSettingUrl('clear').pipe(
+      switchMap(url => this.http.get<any>(url))
+    ); 
+  }
+
   getMaxUpload(): Observable<number> {
     return this.getSetting('MAX_UPLOAD_SIZE_MB').pipe(
       map(result => +result.value)

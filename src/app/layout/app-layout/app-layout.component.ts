@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, Renderer2, ViewChild} from '@angular/core';
 import {ScrollPanel} from 'primeng/primeng';
 import { AuthService } from '../../auth/services/auth.service';
-import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-index';
+// import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-index';
 import { Store, select } from '@ngrx/store';
 import { selectError } from 'src/app/root-store/root.selectors';
 import { Router } from '@angular/router';
