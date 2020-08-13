@@ -23,11 +23,14 @@ export class PasswordInputComponent implements OnInit, OnChanges, ControlValueAc
   @Input() floatLabel: string;
   @Input() minLength: number;
   @Input() maxLength: number;
+  @Input() enableTooltip = true;
 
   value = '';
   safetyBarColor: string;
   safetyBarWidth = '0px';
   validationFn: Function;
+  tooltipText = '';
+  valid = true;
 
   constructor() { }
 
@@ -45,6 +48,11 @@ export class PasswordInputComponent implements OnInit, OnChanges, ControlValueAc
     }
 
     this.validationFn = this.createPasswordValidator(this.minLength, this.maxLength);
+
+    if (this.enableTooltip) {
+      this.tooltipText = 'The password must contain:\n - Between ' + this.minLength + ' and ' + this.maxLength +
+        ' characters\n - At least one number\n - At least one small letter\n - At least one big letter\n - At least one of the symbols\n   *"§\'.!@#$%^&(){}[]:;<>,.?/~_-+=|\\';
+    }
   }
 
   ngOnChanges(changes) {
@@ -58,21 +66,21 @@ export class PasswordInputComponent implements OnInit, OnChanges, ControlValueAc
       const pass: string = c.value;
       if (pass === undefined) {
         return {
-          lengthError: {
-            given: 0,
-            min: minLength,
-            max: maxLength
+          emptyPasswordError: {
+            given: '',
           }
         };
       }
-      const re = new RegExp('^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*"§\'.!@#$%^&(){}\\[\\]:;<>,.?\\/~_\\-+=|]).{' + minLength + ',' + maxLength + '}$');
+      const re = new RegExp('^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*"§\'.!@#$%^&(){}\\[\\]:;<>,.?\\/~_\\-+=|\\\\]).{' + minLength + ',' + maxLength + '}$');
 
       if (re.test(pass)) {
+        this.valid = true;
         return null;
       }
 
+      this.valid = false;
       return {
-        matchError: {
+        passwordMatchError: {
           given: pass
         }
       };
@@ -99,11 +107,38 @@ export class PasswordInputComponent implements OnInit, OnChanges, ControlValueAc
     }
     this.safetyBarColor = 'hsl(' + passwordSafety * 1.2 + ', 100%, 50%)';
     this.safetyBarWidth = passwordSafety + '%';
+
+    if (this.enableTooltip) {
+      let ttText = 'The password must contain:\n';
+
+      if (password.length < this.minLength || password.length > this.maxLength) {
+        ttText += ' - Between ' + this.minLength + ' and ' + this.maxLength + ' characters\n';
+      }
+
+      if (!new RegExp('.*[0-9].*').test(password)) {
+        ttText += ' - At least one number\n';
+      }
+
+      if (!new RegExp('.*[a-z].*').test(password)) {
+        ttText += ' - At least one small letter\n';
+      }
+
+      if (!new RegExp('.*[A-Z].*').test(password)) {
+        ttText += ' - At least one big letter\n';
+      }
+
+      if (!new RegExp('.*[*"§\'.!@#$%^&(){}\\[\\]:;<>,.?\\/~_\\-+=|\\\\].*').test(password)) {
+        ttText += ' - At least one of the symbols\n   *"§\'.!@#$%^&(){}[]:;<>,.?/~_-+=|\\';
+      }
+
+      this.tooltipText = (ttText.length !== 27) ? ttText : '';
+    }
   }
 
   writeValue(value: any): void {
     if (value !== undefined) {
       this.value = value;
+      console.log(value);
     }
   }
 

@@ -63,10 +63,12 @@
 
             <div class="ui-g-12 ui-md-12 ui-md-12 input-wrapper">
               <label>Passwort wiederholen</label>
-              <input name="repeatpass" [(ngModel)]="repeatpass" type="password" [required]="true" autocomplete="off" placeholder="Passwort wiederholen" class="ui-inputtext ui-widget" pInputText>
+              <input [required]="true" tooltipEvent="focus" [pTooltip]="(newpass !== repeatpass && newpass !== '') ? 'Passwords need to match' : ''" 
+                [ngClass]="(newpass !== repeatpass && newpass !== '') ? 'input-invalid' : ''" name="repeatpass" type="password" autocomplete="off" 
+                [(ngModel)]="repeatpass" placeholder="Neues Passwort" class="ui-inputtext ui-widget">
             </div>
     
-            <button type="submit" label="Speichern" [disabled]="!passwordForm.valid" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" icon="fa fa-check" pButton></button>
+            <button type="submit" label="Speichern" [disabled]="(!passwordForm.valid) || newpass !== repeatpass" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" icon="fa fa-check" pButton></button>
           </form>
         </ng-template>
 
@@ -139,10 +141,12 @@
 
                     <div class="ui-g-12 ui-md-12 ui-md-12 input-wrapper">
                       <label style="color:white">Passwort wiederholen</label>
-                      <input name="repeatpass" [(ngModel)]="repeatpass" type="password" [required]="true" autocomplete="off" placeholder="Passwort wiederholen" class="ui-inputtext ui-widget" pInputText>
+                      <input [required]="true" tooltipEvent="focus" [pTooltip]="(newpass !== repeatpass && newpass !== '') ? 'Passwords need to match' : ''" 
+                        [ngClass]="(newpass !== repeatpass && newpass !== '') ? 'input-invalid' : ''" name="repeatpass" type="password" autocomplete="off" 
+                        [(ngModel)]="repeatpass" placeholder="Neues Passwort" class="ui-inputtext ui-widget">
                     </div>
             
-                    <button type="submit" label="Speichern" [disabled]="!passwordForm.valid" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" icon="fa fa-check" pButton></button>
+                    <button type="submit" label="Speichern" [disabled]="(!passwordForm.valid) || newpass !== repeatpass" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" icon="fa fa-check" pButton></button>
                   </form>
                 </ng-template>
         
@@ -210,10 +214,12 @@
 
                     <div class="ui-g-12 ui-md-12 ui-md-12 input-wrapper">
                       <label>Passwort wiederholen</label>
-                      <input name="repeatpass" [(ngModel)]="repeatpass" type="password" [required]="true" autocomplete="off" placeholder="Passwort wiederholen" class="ui-inputtext ui-widget" pInputText>
+                      <input [required]="true" tooltipEvent="focus" [pTooltip]="(newpass !== repeatpass && newpass !== '') ? 'Passwords need to match' : ''" 
+                        [ngClass]="(newpass !== repeatpass && newpass !== '') ? 'input-invalid' : ''" name="repeatpass" type="password" autocomplete="off" 
+                        [(ngModel)]="repeatpass" placeholder="Neues Passwort" class="ui-inputtext ui-widget">
                     </div>
             
-                    <button type="submit" label="Speichern" [disabled]="!passwordForm.valid" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" icon="fa fa-check" pButton></button>
+                    <button type="submit" label="Speichern" [disabled]="(!passwordForm.valid) || newpass !== repeatpass" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" icon="fa fa-check" pButton></button>
                   </form>
                 </ng-template>
         
@@ -281,10 +287,12 @@
 
                     <div class="ui-g-12 ui-md-12 ui-md-12 input-wrapper">
                       <label>Passwort wiederholen</label>
-                      <input name="repeatpass" [(ngModel)]="repeatpass" type="password" [required]="true" autocomplete="off" placeholder="Passwort wiederholen" class="ui-inputtext ui-widget" pInputText>
+                      <input [required]="true" tooltipEvent="focus" [pTooltip]="(newpass !== repeatpass && newpass !== '') ? 'Passwords need to match' : ''" 
+                        [ngClass]="(newpass !== repeatpass && newpass !== '') ? 'input-invalid' : ''" name="repeatpass" type="password" autocomplete="off" 
+                        [(ngModel)]="repeatpass" placeholder="Neues Passwort" class="ui-inputtext ui-widget">
                     </div>
             
-                    <button type="submit" label="Speichern" [disabled]="!passwordForm.valid" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" icon="fa fa-check" pButton></button>
+                    <button type="submit" label="Speichern" [disabled]="(!passwordForm.valid) || newpass !== repeatpass" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" icon="fa fa-check" pButton></button>
                   </form>
                 </ng-template>
         

@@ -6,7 +6,7 @@
         <div class="ui-g-12 ui-md-12 form-group">
           <div class="input-wrapper" style="margin-bottom: 14px;">
             <label>Altes Passwort</label>
-            <input [required]="true" name="newpass" type="password" autocomplete="off" [(ngModel)]="oldpass" placeholder="Altes Passwort" class="ui-inputtext ui-widget">
+            <input [required]="true" name="oldpass" type="password" autocomplete="off" [(ngModel)]="oldpass" placeholder="Altes Passwort" class="ui-inputtext ui-widget">
           </div>
           <div class="input-wrapper" style="margin-bottom: 10px;">
             <label>Neues Passwort</label>
@@ -14,10 +14,12 @@
           </div>
           <div class="input-wrapper" style="margin-bottom: 14px;">
             <label>Wiederholen</label>
-            <input [required]="true" name="repeatpass" type="password" autocomplete="off" [(ngModel)]="repeatpass" placeholder="Neues Passwort" class="ui-inputtext ui-widget">
+            <input [required]="true" tooltipEvent="focus" [pTooltip]="(newpass !== repeatpass && newpass !== '') ? 'Passwords need to match' : ''" 
+              [ngClass]="(newpass !== repeatpass && newpass !== '') ? 'input-invalid' : ''" name="repeatpass" type="password" autocomplete="off" 
+              [(ngModel)]="repeatpass" placeholder="Neues Passwort" class="ui-inputtext ui-widget">
           </div>
 
-          <button type="submit" label="Speichern" [disabled]="!passwordForm.valid" pButton icon="fa fa-check"></button>
+          <button type="submit" label="Speichern" [disabled]="(!passwordForm.valid) || newpass !== repeatpass" pButton icon="fa fa-check"></button>
         </div>
       </form>
     </div>
