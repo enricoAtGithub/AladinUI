@@ -13,7 +13,7 @@
             <app-password-input [required]="true" name="newpass" [(ngModel)]="newpass" placeholder="Neues Passwort" [required]="true"></app-password-input>
           </div>
           <div class="input-wrapper" style="margin-bottom: 14px;">
-            <label>Wiederholen</label>
+            <label>Passwort wiederholen</label>
             <input [required]="true" tooltipEvent="focus" [pTooltip]="(newpass !== repeatpass && newpass !== '') ? 'Passwords need to match' : ''" 
               [ngClass]="(newpass !== repeatpass && newpass !== '') ? 'input-invalid' : ''" name="repeatpass" type="password" autocomplete="off" 
               [(ngModel)]="repeatpass" placeholder="Neues Passwort" class="ui-inputtext ui-widget">
