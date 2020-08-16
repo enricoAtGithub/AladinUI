@@ -65,6 +65,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   lastCellRef: any;
   crudColumnSpace: number;
   refreshTrigger: Subject<any>;
+  customFields: string[] = [];
 
   constructor(
     private entityService: EntityService,
@@ -99,6 +100,19 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         console.log('[Dynamic-Table] config with name ' + this.tableData.entityType + ' not found!');
         return;
       }
+
+      this.configuration.fields.forEach(field => {
+        if (field.field.startsWith('custom')) {
+          const c = field.field.charAt(6).toLowerCase();
+          let fieldName = field.field.substr(7);
+          fieldName = c.concat(fieldName);
+
+          const field2 = this.configuration.fields.find(f => f.field === fieldName);
+          if (field2) {
+            this.customFields.push(fieldName);
+          }
+        }
+      });
 
       // get Currency from settings
       this.currency$ = this.settingsService.getSetting('CURRENCY').pipe(map(setting => setting.value));
@@ -609,6 +623,18 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     dateFields.forEach(field => {
       if (data[field.field] !== null) {
         data[field.field] = new Date(data[field.field]).toISOString();
+      }
+    });
+
+    this.configuration.fields.forEach(field => {
+      if (field.field.startsWith('custom')) {
+        const c = field.field.charAt(6).toLowerCase();
+        let fieldName = field.field.substr(7);
+        fieldName = c.concat(fieldName);
+
+        if (data[fieldName] !== undefined) {
+          data[field.field] = data[fieldName];
+        }
       }
     });
 
