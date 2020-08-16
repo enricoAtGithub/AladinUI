@@ -43,9 +43,7 @@
     <div *ngIf="!this.excludedPanels?.includes('FileAttachments')">
       <p-tabPanel *ngIf="this.configuration?.components?.includes('FileAttachments')" header="Dateianhänge"
         [selected]="this.selectedPanel === 'FileAttachments'">
-        <div style="height: 250px">
-          <app-entity-file-attachments [ownerType]="configName" [ownerId]="entryId"></app-entity-file-attachments>
-        </div>
+        <app-entity-file-attachments [ownerType]="configName" [ownerId]="entryId"></app-entity-file-attachments>
       </p-tabPanel>
     </div>
 
