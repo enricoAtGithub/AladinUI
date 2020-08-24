@@ -60,7 +60,7 @@ export class FileUploadDialogComponent implements OnInit {
     this.ownerType = data['ownerType'];
 
 
-    this.setMaxUploadSize(1);
+    this.setMaxUploadSize(10);
     // this.fileId is set in case of updating an existing file => update; if not set => upload
     (this.fileId) ? this.url = this.fileService.getUpdateFileUrl() : this.url = this.fileService.getUploadUrl();
 
