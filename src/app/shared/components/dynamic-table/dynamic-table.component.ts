@@ -114,23 +114,26 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         }
       });
 
+      // Calculate minWidth if set to auto (-1)
       if (this.configuration.minWidth === -1) {
         this.configuration.fields.forEach(field =>  {
-          switch (field.type) {
-            case 'int':
-              this.configuration.minWidth += 100;
-              break;
-            case 'String':
-              this.configuration.minWidth += 250;
-              break;
-            case 'boolean':
-              this.configuration.minWidth += 50;
-              break;
-            case 'Date':
-              this.configuration.minWidth += 150;
-              break;
-            default:
-              this.configuration.minWidth += 200;
+          if (field.visible) {
+            switch (field.type) {
+              case 'int':
+                this.configuration.minWidth += 100;
+                break;
+              case 'String':
+                this.configuration.minWidth += 200;
+                break;
+              case 'boolean':
+                this.configuration.minWidth += 50;
+                break;
+              case 'Date':
+                this.configuration.minWidth += 150;
+                break;
+              default:
+                this.configuration.minWidth += 150;
+            }
           }
         });
       }
