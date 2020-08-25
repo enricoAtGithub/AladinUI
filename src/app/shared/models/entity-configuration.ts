@@ -4,6 +4,7 @@ export interface AttributeGroup {
     attributes: AttributeGroupEntries[];
     hrid: string;
     name: string;
+    appearance: string;
 }
 
 export interface AttributeGroupEntries {
