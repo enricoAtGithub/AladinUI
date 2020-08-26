@@ -8,7 +8,7 @@
   <div [ngClass]="{'card': tableData.showHeadline, 'card-w-title': tableData.showHeadline }">
     <!-- <h1 *ngIf="tableData.showHeadline">{{tableData.tableName}}</h1> -->
     <p-table #dt [columns]="fields" [value]="entityData.data" selectionMode="single" dataKey="id" [(selection)]="selectedEntry" (onRowSelect)="rowSelect()" (onRowUnselect)="rowUnselect()"
-      [paginator]="tableData.pagination" [(rows)]="configuration.rowsPerPage" [rowsPerPageOptions]="[10,25,50]" [responsive]="true" [lazy]="true" (onLazyLoad)="loadLazy($event)" [loading]="loading"
+      [paginator]="tableData.pagination" [(rows)]="configuration.rowsPerPage" [rowsPerPageOptions]="rowsPerPageOptions" [responsive]="true" [lazy]="true" (onLazyLoad)="loadLazy($event)" [loading]="loading"
       [totalRecords]="entityData.count" [scrollable]="tableData.scrollable || configuration?.minWidth" [scrollHeight]="tableData.scrollHeight" styleClass="ui-table-customers" (window:resize)="onTableResize($event)">
       <ng-template *ngIf="tableData.showHeader" pTemplate="caption">
         {{configuration.displayName}}

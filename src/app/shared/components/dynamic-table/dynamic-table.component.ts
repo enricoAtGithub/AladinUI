@@ -66,6 +66,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   crudColumnSpace: number;
   refreshTrigger: Subject<any>;
   customFields: string[] = [];
+  rowsPerPageOptions = [10, 25, 50];
 
   constructor(
     private entityService: EntityService,
@@ -113,6 +114,11 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           }
         }
       });
+
+      if (!this.rowsPerPageOptions.includes(this.configuration.rowsPerPage)) {
+        this.rowsPerPageOptions.push(this.configuration.rowsPerPage);
+        this.rowsPerPageOptions.sort();
+      }
 
       // Calculate minWidth if set to auto (-1)
       if (this.configuration.minWidth === -1) {
