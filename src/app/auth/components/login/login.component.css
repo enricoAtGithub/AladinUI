@@ -5,4 +5,8 @@
     /* Set the fixed height of the footer here */
     height: 60px;
     line-height: 60px;
-  }
+}
+
+.input-invalid {
+    background-color: #f8ece8;
+}

@@ -48,6 +48,9 @@
         <span *ngSwitchCase="'CatalogueEntry'" style="flex-grow: 1;">
           <p-dropdown [required]="field.mandatory" [placeholder]="field.header" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" [ngModel]="(entity) ? entity[field.field]?.id : defaultCache[field.field]" [style]="{'width':'200px'}"></p-dropdown>
         </span>
+        <ng-container *ngSwitchCase="'Password'">
+          <app-password-input [name]="field.field" [ngModel]="(entity) ? entity[field.field]?.id : defaultCache[field.field]" [floatLabel]="field.header"></app-password-input>
+        </ng-container>
 
         <span *ngSwitchCase="'python'" class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
           <input #textModule [disabled]="true" [placeholder]="'<' + field.type + '>'" id="float-input" style="width: 100%" pInputText>

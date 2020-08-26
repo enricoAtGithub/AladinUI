@@ -34,6 +34,10 @@ export class LoginComponent implements OnInit {
   safetyBarWidth = '0%';
   loginDisabled = false;
 
+  oldpass: string;
+  newpass: string;
+  repeatpass: string;
+
   constructor(
     public authService: AuthService,
     public router: Router,
@@ -120,36 +124,14 @@ export class LoginComponent implements OnInit {
     this.authFacade.login(userName, password);
   }
 
-  passwordChanged(password: string): void {
-    let passwordSafety = 0;
-    if (password.length >= 0) {
-      passwordSafety += (password.length) * (password.length) / 3;
-      if (password !== password.toLowerCase() && password !== password.toUpperCase()) {
-        passwordSafety *= 1.5;
-      }
-      if (password.match(/\d/) !== null) {
-        passwordSafety *= 1.2;
-      }
-      if (password.match(/[^A-Za-z0-9]/) !== null) {
-        passwordSafety *= 1.3;
-      }
-    }
-
-    if (passwordSafety > 100) {
-      passwordSafety = 100;
-    }
-    this.safetyBarColor = 'hsl(' + passwordSafety * 1.2 + ', 100%, 50%)';
-    this.safetyBarWidth = passwordSafety + '%';
-  }
-
-  changePassword(oldpass, newpass, repeatpass) {
-    if (newpass !== repeatpass) {
+  changePassword() {
+    if (this.newpass !== this.repeatpass) {
       this.msgs = [];
       this.msgs.push({ severity: 'error', summary: '', detail: 'Die beiden Passwörter stimmen nicht überein!' });
       return;
     }
 
-    this.authService.changePassword(oldpass, newpass).subscribe(resp => {
+    this.authService.changePassword(this.oldpass, this.newpass).subscribe(resp => {
       this.msgs = [];
       if (resp === true) {
         this.msgs.push({ severity: 'success', summary: '', detail: 'Das Passwort wurde erfolgreich geändert!' });

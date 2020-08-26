@@ -13,7 +13,6 @@ import * as fromConfigSelectors from 'src/app/root-store/config-store/config.sel
 import { Field } from '../../models/field';
 import { SettingsService } from 'src/app/jmeleon/modules/settings/services/settings.service';
 import DateTimeUtils from '../../utils/date-time.utils';
-import { ScriptActionPayload } from '../../models/script-action';
 
 
 @Component({

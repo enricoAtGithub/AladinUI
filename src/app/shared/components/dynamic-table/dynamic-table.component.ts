@@ -65,6 +65,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   lastCellRef: any;
   crudColumnSpace: number;
   refreshTrigger: Subject<any>;
+  customFields: string[] = [];
+  rowsPerPageOptions = [10, 25, 50];
 
   constructor(
     private entityService: EntityService,
@@ -100,12 +102,54 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         return;
       }
 
+      this.configuration.fields.forEach(field => {
+        if (field.field.startsWith('custom')) {
+          const c = field.field.charAt(6).toLowerCase();
+          let fieldName = field.field.substr(7);
+          fieldName = c.concat(fieldName);
+
+          const field2 = this.configuration.fields.find(f => f.field === fieldName);
+          if (field2) {
+            this.customFields.push(fieldName);
+          }
+        }
+      });
+
+      if (!this.rowsPerPageOptions.includes(this.configuration.rowsPerPage)) {
+        this.rowsPerPageOptions.push(this.configuration.rowsPerPage);
+        this.rowsPerPageOptions.sort();
+      }
+
+      // Calculate minWidth if set to auto (-1)
+      if (this.configuration.minWidth === -1) {
+        this.configuration.fields.forEach(field =>  {
+          if (field.visible) {
+            switch (field.type) {
+              case 'int':
+                this.configuration.minWidth += 100;
+                break;
+              case 'String':
+                this.configuration.minWidth += 200;
+                break;
+              case 'boolean':
+                this.configuration.minWidth += 50;
+                break;
+              case 'Date':
+                this.configuration.minWidth += 150;
+                break;
+              default:
+                this.configuration.minWidth += 150;
+            }
+          }
+        });
+      }
+
       // get Currency from settings
       this.currency$ = this.settingsService.getSetting('CURRENCY').pipe(map(setting => setting.value));
 
       this.checkShowButtons();
 
-      this.minTableWidth = this.showButtons ? 90 : 0;
+      this.minTableWidth = 0;
       this.fields = this.configuration.fields.filter(field => field.visible === true);
       this.fields.forEach(field => {
         if (!field.width) {
@@ -386,7 +430,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   // 2a) FileAttachment entity: create new file:      ownerId: set         ownerType: set         fileId: undefined
   // 2b) FileAttachment entity: update existing file: ownerId: set         ownerType: set         fileId: set
   // FileUploadDialogComponent decides depending on these parameters what to do (attach yes/no, update/create)
-  uploadFile(ownerId?: number, ownerType?: string, fileId?: number) {
+  uploadFile(ownerId?: number, ownerType?: string, fileId?: number, fileType?: string) {
 
     const dialogRef = this.dialogService.open(FileUploadDialogComponent, {
       data: {
@@ -394,7 +438,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         catalogueDisplayName: 'Dateityp',
         ownerId: ownerId,
         ownerType: ownerType,
-        fileId: fileId
+        fileId: fileId,
+        fileType: fileType
       },
       header: 'Datei aktualisieren',
       width: '800px'
@@ -458,18 +503,23 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   calcWidth(col: Field, width: number) {
-    if (this.configuration.minWidth && this.configuration.scrollable) {
-      width = Math.max(width, this.configuration.minWidth);
+    if (this.configuration.minWidth && width < this.configuration.minWidth) {
+      if (this.crudColumnSpace === undefined) {
+        this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
+      }
+
+      width = this.configuration.minWidth - (this.showButtons ? this.crudColumnSpace : 0) - this.minTableWidth;
+      if (!col.width) {
+        return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
+      } else if (col.width.endsWith('px')) {
+        return col.width;
+      } else {
+        return Math.floor(Number.parseInt(col.width, 10) * width / 100.0) + 'px';
+      }
+    } else {
+      return col.width;
     }
 
-    width -= this.minTableWidth + (this.showButtons ? (this.crudColumnSpace) : 2);
-    if (!col.width) {
-      return Math.floor(this.freeColumnSpace / this.zeroWidthColumns * width / 100.0) + 'px';
-    } else if (col.width.endsWith('px')) {
-      return col.width;
-    } else {
-      return Math.floor(Number.parseInt(col.width, 10) * width / 100.0) + 'px';
-    }
   }
 
   calcCrudColWidth(actionCount: number): number	{
@@ -606,6 +656,18 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       }
     });
 
+    this.configuration.fields.forEach(field => {
+      if (field.field.startsWith('custom')) {
+        const c = field.field.charAt(6).toLowerCase();
+        let fieldName = field.field.substr(7);
+        fieldName = c.concat(fieldName);
+
+        if (data[fieldName] !== undefined) {
+          data[field.field] = data[fieldName];
+        }
+      }
+    });
+
     this.entityService.updateEntity(this.tableData.entityType, data['id'], data).subscribe(result => {
       const index = this.entityData.data.findIndex(data_ => data_['id'] === result['fields']['id']);
       dateFields.forEach(field => {
@@ -614,6 +676,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         }
       });
       this.entityData.data[index] = result['fields'];
+      this.entityOperation.emit(null);
     }, error => this.refreshTableContents());
   }
 
@@ -634,13 +697,14 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         this.completeCellEdit(data);
       })
     );
-}
+  }
 
-  filterAreActive(){
+  filterAreActive() {
     return this.filtersInTable || !!this.selectedId;
   }
-  resetFilter(){
-    if (!!this.selectedId){
+
+  resetFilter() {
+    if (!!this.selectedId) {
       this.selectedId = undefined;
       this.jmlNavigationService.clearId(this.router);
       // this.router.navigate([])

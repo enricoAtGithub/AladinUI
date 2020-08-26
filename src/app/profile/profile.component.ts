@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BreadcrumbService } from '../breadcrumb.service';
 import { AuthService } from '../auth/services/auth.service';
 import { Password, Message } from 'primeng/primeng';
+import { ErrorNotificationService } from '../shared/services/error-notification.service';
 
 @Component({
   selector: 'app-profile',
@@ -9,55 +10,34 @@ import { Password, Message } from 'primeng/primeng';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  msgs: Message[] = [];
   safetyBarColor = 'red';
   safetyBarWidth = '0%';
 
-  constructor(private breadcrumbService: BreadcrumbService, private authService: AuthService) {
+  oldpass: string;
+  newpass: string;
+  repeatpass: string;
+
+  constructor(private breadcrumbService: BreadcrumbService, private authService: AuthService, private errorNotificationService: ErrorNotificationService) {
     this.breadcrumbService.setItems([
         { label: 'Profil' }
     ]);
   }
 
-  passwordChanged(password: string): void {
-    let passwordSafety = 0;
-    if (password.length >= 0) {
-      passwordSafety += (password.length) * (password.length) / 3;
-      if (password !== password.toLowerCase() && password !== password.toUpperCase()) {
-        passwordSafety *= 1.5;
-      }
-      if (password.match(/\d/) !== null) {
-        passwordSafety *= 1.2;
-      }
-      if (password.match(/[^A-Za-z0-9]/) !== null) {
-        passwordSafety *= 1.3;
-      }
-    }
+  ngOnInit() {}
 
-    if (passwordSafety > 100) {
-      passwordSafety = 100;
-    }
-    this.safetyBarColor = 'hsl(' + passwordSafety * 1.2 + ', 100%, 50%)';
-    this.safetyBarWidth = passwordSafety + '%';
-  }
-
-  submit(oldpass, newpass, repeatpass) {
-    if (newpass !== repeatpass) {
-      this.msgs = [];
-      this.msgs.push({ severity: 'error', summary: '', detail: 'Die beiden Passwörter stimmen nicht überein!' });
+  submit() {
+    if (this.newpass !== this.repeatpass) {
+      this.errorNotificationService.addErrorNotification('', 'Die beiden Passwörter stimmen nicht überein!');
       return;
     }
 
-    this.authService.changePassword(oldpass, newpass).subscribe(resp => {
-      this.msgs = [];
+    this.authService.changePassword(this.oldpass, this.newpass).subscribe(resp => {
       if (resp === true) {
-        this.msgs.push({ severity: 'success', summary: '', detail: 'Das Passwort wurde erfolgreich geändert!' });
+        this.errorNotificationService.addSuccessNotification('', 'Das Passwort wurde erfolgreich geändert!');
       } else {
-        this.msgs.push({ severity: 'error', summary: '', detail: resp.toString()});
+        this.errorNotificationService.addErrorNotification('', resp.toString());
       }
     });
   }
-
-  ngOnInit() {}
 
 }
