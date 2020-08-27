@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { EntityConfiguration } from '../../models/entity-configuration';
+import { EntityConfiguration, EntityAttachment } from '../../models/entity-configuration';
 import { DialogService } from 'primeng/api';
 
 import { Store, select } from '@ngrx/store';
@@ -21,10 +21,12 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   @Input() refreshTrigger: Subject<any>;
 
   isEmpty: boolean;
-  hasContent: boolean;
   showActionTab = false;
 
   configuration: EntityConfiguration;
+  tabViewAttachments: EntityAttachment[];
+  panelAttachments: EntityAttachment[];
+
   selectedPanel: string;
 
   constructor(public dialogService: DialogService, private store$: Store<RootStoreState.State>) { }
@@ -34,36 +36,57 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
       select(fromConfigSelectors.selectConfigs),
       map(configs => configs[this.configName])
     );
+
     configuration$.subscribe(config => {
-      this.hasContent = !!config.components || config.groups !== null || config.subtypes !== null;
+      let hasContent: boolean;
+      config.entityAttachments.length > 0 ? hasContent = true : hasContent = false;
 
       if (this.configName === 'SecurityRight') {
         this.showActionTab = true;
       }
-      this.isEmpty = !this.hasContent && !this.showActionTab;
+      this.isEmpty = !hasContent && !this.showActionTab;
 
-      if (config.groups) {
-        config.groups.some(group => {
-          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(group))) {
-            this.selectedPanel = group;
+      this.tabViewAttachments = config.entityAttachments.filter(entityAttachment => entityAttachment.appearance === 'tabView');
+      console.log('tabViewAttachments', this.tabViewAttachments);
+
+      this.panelAttachments = config.entityAttachments.filter(entityAttachment => entityAttachment.appearance === 'panel');
+      console.log('panelAttachments', this.panelAttachments);
+
+      const tabViewGroupAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'group' );
+      if (tabViewGroupAttachments) {
+        tabViewGroupAttachments.some(group => {
+          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(group.name))) {
+            this.selectedPanel = group.name;
             return true;
           }
         });
       }
 
-      if (!this.selectedPanel && config.components) {
-        config.components.some(component => {
-          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(component))) {
-            this.selectedPanel = component;
+      const tabViewAttrGroupAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'attributeGroup' );
+      if (!this.selectedPanel && tabViewAttrGroupAttachments) {
+        tabViewAttrGroupAttachments.some(attributeGroup => {
+          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(attributeGroup.name))) {
+            this.selectedPanel = attributeGroup.name;
             return true;
           }
         });
       }
 
-      if (!this.selectedPanel && config.subtypes) {
-        config.subtypes.some(subtype => {
-          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(subtype))) {
-            this.selectedPanel = subtype;
+      const tabViewComponentAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'component' );
+      if (!this.selectedPanel && tabViewComponentAttachments) {
+        tabViewComponentAttachments.some(component => {
+          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(component.name))) {
+            this.selectedPanel = component.name;
+            return true;
+          }
+        });
+      }
+
+      const tabViewSubentityAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'subentity' );
+      if (!this.selectedPanel && tabViewSubentityAttachments) {
+        tabViewSubentityAttachments.some(subentity => {
+          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(subentity.name))) {
+            this.selectedPanel = subentity.name;
             return true;
           }
         });

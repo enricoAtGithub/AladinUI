@@ -1,89 +1,129 @@
 <div *ngIf="entryId !== undefined && entryId !== null && !isEmpty" style="padding: 0px" class="card">
 
   <!-- ### Panels ### -->
-
-  <!-- Attribute Groups -->
-  <ng-template ngFor let-attrGroup [ngForOf]="configuration?.attributeGroups">
-    <div class="ui-g-12" style="padding:0px; margin-bottom:15px">
-      <p-panel *ngIf="!this.excludedPanels?.includes(attrGroup) && attrGroup.appearance==='panel'" collapsed="true" [toggleable]="true">
+  <ng-container *ngFor="let entityAttachment of panelAttachments" [ngSwitch]="entityAttachment.type">
+    
+    <!-- Subentities -->
+    <div *ngSwitchCase="'subEntity'" class="ui-g-12" style="padding:0px; margin-bottom:15px">
+      <p-panel *ngIf="!this.excludedPanels?.includes(entityAttachment.name)" [collapsed]="entityAttachment.showCollapsed" [toggleable]="true">
         <p-header>
-            <span class="ui-panel-title" style="padding: 8px">{{attrGroup.name}}</span>
+            <span class="ui-panel-title" style="padding: 8px">{{entityAttachment.displayName}}</span>
         </p-header>
-        <app-entity-attributes [ownerType]="configName" [ownerId]="entryId" [attrGroup]="attrGroup"></app-entity-attributes>
+        <app-entity-subtypes [subtype]="entityAttachment.name" [mainId]="entryId" [refreshTrigger]="refreshTrigger"></app-entity-subtypes>
       </p-panel>
     </div>
-  </ng-template>
 
-  
-  <!-- ### Tabs ### -->
-  <p-tabView [style]="{'margin-bottom':'15px'}">
+    <!-- Attribute Groups -->
+    <div *ngSwitchCase="'attributeGroup'" class="ui-g-12" style="padding:0px; margin-bottom:15px">
+      <p-panel *ngIf="!this.excludedPanels?.includes(entityAttachment.name)" [collapsed]="entityAttachment.showCollapsed" [toggleable]="true">
+        <p-header>
+            <span class="ui-panel-title" style="padding: 8px">{{entityAttachment.displayName}}</span>
+        </p-header>
+        <app-entity-attributes [ownerType]="configName" [ownerId]="entryId" [attrGroup]="entityAttachment"></app-entity-attributes>
+      </p-panel>
+    </div>
+
+  </ng-container>
+
+
+    <!-- ### Tab View ### -->
+    <p-tabView [style]="{'margin-bottom':'15px'}">
+      <ng-container *ngFor="let entityAttachment of tabViewAttachments" [ngSwitch]="entityAttachment.type">
+
+        <!-- Components -->
+        <div *ngSwitchCase="'component'">     
+          
+          <!-- Log Entries -->
+          <p-tabPanel *ngIf="entityAttachment.name === 'LogEntries' && !this.excludedPanels?.includes(entityAttachment.name)" [header]="entityAttachment.displayName" [selected]="this.selectedPanel === entityAttachment.name">
+            <app-entity-logs [ownerType]="configName" [ownerId]="entryId"></app-entity-logs>
+          </p-tabPanel>
+
+          <!-- Notes -->
+          <p-tabPanel *ngIf="entityAttachment.name === 'Notes' && !this.excludedPanels?.includes(entityAttachment.name)" [header]="entityAttachment.displayName" [selected]="this.selectedPanel === entityAttachment.name">
+            <app-entity-notes [ownerType]="configName" [ownerId]="entryId"></app-entity-notes>
+          </p-tabPanel>
+
+          <!-- File Attachments -->
+          <p-tabPanel *ngIf="entityAttachment.name === 'FileAttachments' && !this.excludedPanels?.includes(entityAttachment.name)" [header]="entityAttachment.displayName" [selected]="this.selectedPanel === entityAttachment.name">
+            <app-entity-file-attachments [ownerType]="configName" [ownerId]="entryId"></app-entity-file-attachments>
+          </p-tabPanel>
+
+          <!-- Attributes --> 
+          <p-tabPanel *ngIf="entityAttachment.name === 'Attributes' && !this.excludedPanels?.includes(entityAttachment.name)" [header]="entityAttachment.displayName" [selected]="this.selectedPanel === entityAttachment.name">
+            <app-entity-attributes [ownerType]="configName" [ownerId]="entryId"></app-entity-attributes>
+          </p-tabPanel> 
+
+        </div>
+      </ng-container>
+
+    </p-tabView>  
     
     <!-- Group Relations -->
-    <ng-template ngFor let-group [ngForOf]="configuration?.groups">
+    <!-- <ng-template ngFor let-group [ngForOf]="configuration?.groups">
       <p-tabPanel *ngIf="!this.excludedPanels?.includes(group)" [header]="(getGroupHeader(group) | async).displayName"
         [selected]="this.selectedPanel === group">
         <app-entity-group-relation [ownerType]="configName" [ownerId]="entryId" [relation]="group">
         </app-entity-group-relation>
       </p-tabPanel>
-    </ng-template>
+    </ng-template> -->
 
-    <!-- Log Entries -->
-    <div *ngIf="!this.excludedPanels?.includes('LogEntries')">
-      <p-tabPanel *ngIf="this.configuration?.components?.includes('LogEntries')" header="Logbuch"
-        [selected]="this.selectedPanel === 'LogEntries'">
-        <app-entity-logs [ownerType]="configName" [ownerId]="entryId"></app-entity-logs>
-      </p-tabPanel>
-    </div>
+                  <!-- Log Entries -->
+                  <!-- <div *ngIf="!this.excludedPanels?.includes('LogEntries')">
+                    <p-tabPanel *ngIf="this.configuration?.components?.includes('LogEntries')" header="Logbuch"
+                      [selected]="this.selectedPanel === 'LogEntries'">
+                      <app-entity-logs [ownerType]="configName" [ownerId]="entryId"></app-entity-logs>
+                    </p-tabPanel>
+                  </div> -->
 
-    <!-- Notes -->
-    <div *ngIf="!this.excludedPanels?.includes('Notes')">
-      <p-tabPanel *ngIf="this.configuration?.components?.includes('Notes')" header="Notizen"
-        [selected]="this.selectedPanel === 'Notes'">
-        <app-entity-notes [ownerType]="configName" [ownerId]="entryId"></app-entity-notes>
-      </p-tabPanel>
-    </div>
+                  <!-- Notes -->
+                  <!-- <div *ngIf="!this.excludedPanels?.includes('Notes')">
+                    <p-tabPanel *ngIf="this.configuration?.components?.includes('Notes')" header="Notizen"
+                      [selected]="this.selectedPanel === 'Notes'">
+                      <app-entity-notes [ownerType]="configName" [ownerId]="entryId"></app-entity-notes>
+                    </p-tabPanel>
+                  </div> -->
 
     <!-- Attribute Groups -->
-    <ng-template ngFor let-attrGroup [ngForOf]="configuration?.attributeGroups">
+    <!-- <ng-template ngFor let-attrGroup [ngForOf]="configuration?.attributeGroups">
       <p-tabPanel *ngIf="!this.excludedPanels?.includes(attrGroup) && attrGroup.appearance==='tabView'" [header]="attrGroup.name"
         [selected]="this.selectedPanel === attrGroup">
         <app-entity-attributes [ownerType]="configName" [ownerId]="entryId" [attrGroup]="attrGroup">
         </app-entity-attributes>
       </p-tabPanel>
-    </ng-template>
+    </ng-template> -->
 
-    <!-- Attributes -->
-    <div *ngIf="!this.excludedPanels?.includes('Attributes')">
-      <p-tabPanel *ngIf="this.configuration?.components?.includes('Attributes')" header="Attribute"
-        [selected]="this.selectedPanel === 'Attributes'">
-        <app-entity-attributes [ownerType]="configName" [ownerId]="entryId">
-        </app-entity-attributes>
-      </p-tabPanel>
-    </div>
+                  <!-- Attributes -->
+                  <!-- <div *ngIf="!this.excludedPanels?.includes('Attributes')">
+                    <p-tabPanel *ngIf="this.configuration?.components?.includes('Attributes')" header="Attribute"
+                      [selected]="this.selectedPanel === 'Attributes'">
+                      <app-entity-attributes [ownerType]="configName" [ownerId]="entryId">
+                      </app-entity-attributes>
+                    </p-tabPanel>
+                  </div> -->
 
-    <!-- File Attachments -->
-    <div *ngIf="!this.excludedPanels?.includes('FileAttachments')">
-      <p-tabPanel *ngIf="this.configuration?.components?.includes('FileAttachments')" header="Dateianhänge"
-        [selected]="this.selectedPanel === 'FileAttachments'">
-        <app-entity-file-attachments [ownerType]="configName" [ownerId]="entryId"></app-entity-file-attachments>
-      </p-tabPanel>
-    </div>
+                  <!-- File Attachments -->
+                  <!-- <div *ngIf="!this.excludedPanels?.includes('FileAttachments')">
+                    <p-tabPanel *ngIf="this.configuration?.components?.includes('FileAttachments')" header="Dateianhänge"
+                      [selected]="this.selectedPanel === 'FileAttachments'">
+                      <app-entity-file-attachments [ownerType]="configName" [ownerId]="entryId"></app-entity-file-attachments>
+                    </p-tabPanel>
+                  </div> -->
 
     <!-- Subtypes -->
-    <ng-template ngFor let-subtype [ngForOf]="configuration?.subtypes">
-      <p-tabPanel *ngIf="!this.excludedPanels?.includes(subtype)"
-        [header]="(getSubTypeHeader(subtype) | async).displayName" [selected]="this.selectedPanel === subtype">
-        <app-entity-subtypes [subtype]="subtype" [mainId]="entryId" [refreshTrigger]="refreshTrigger"></app-entity-subtypes>
+    <!-- <ng-template ngFor let-subtype [ngForOf]="configuration?.subtypes">
+      <p-tabPanel *ngIf="!this.excludedPanels?.includes(subtype.subtype) && subtype.appearance==='tabView'"
+        [header]="(getSubTypeHeader(subtype) | async).displayName" [selected]="this.selectedPanel === subtype.subtype">
+        <app-entity-subtypes [subtype]="subtype.subtype" [mainId]="entryId" [refreshTrigger]="refreshTrigger"></app-entity-subtypes>
       </p-tabPanel>
-    </ng-template>
+    </ng-template> -->
 
     <!-- Script Actions -->
-    <div *ngIf="!this.excludedPanels?.includes('Actions')">
+    <!-- <div *ngIf="!this.excludedPanels?.includes('Actions')">
       <p-tabPanel *ngIf="showActionTab" header="Aktionen" [selected]="this.selectedPanel === 'Actions'">
         <app-right-actions-editor [ownerId]="entryId"></app-right-actions-editor>
       </p-tabPanel>
-    </div>
+    </div> -->
 
-  </p-tabView>  
+
 
 </div>
