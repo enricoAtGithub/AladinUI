@@ -1,4 +1,4 @@
-<div *ngIf="entryId !== undefined && entryId !== null && !hasContent" style="padding: 0px">
+<div *ngIf="entryId !== undefined && entryId !== null && hasContent===true" style="padding: 0px">
 
   <!-- ### Panels ### -->
   <ng-template ngFor let-entityAttachment [ngForOf]="panelAttachments"> 
