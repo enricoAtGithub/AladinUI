@@ -39,57 +39,59 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
 
     configuration$.subscribe(config => {
       let hasContent: boolean;
-      config.entityAttachments.length > 0 ? hasContent = true : hasContent = false;
+      config.entityAttachments ? hasContent = true : hasContent = false;
 
       if (this.configName === 'SecurityRight') {
         this.showActionTab = true;
       }
       this.isEmpty = !hasContent && !this.showActionTab;
 
-      this.tabViewAttachments = config.entityAttachments.filter(entityAttachment => entityAttachment.appearance === 'tabView');
-      console.log('tabViewAttachments', this.tabViewAttachments);
+      if (hasContent) {
+        this.tabViewAttachments = config.entityAttachments.filter(entityAttachment => entityAttachment.appearance === 'tabView');
+        console.log('tabViewAttachments', this.tabViewAttachments);
 
-      this.panelAttachments = config.entityAttachments.filter(entityAttachment => entityAttachment.appearance === 'panel');
-      console.log('panelAttachments', this.panelAttachments);
+        this.panelAttachments = config.entityAttachments.filter(entityAttachment => entityAttachment.appearance === 'panel');
+        console.log('panelAttachments', this.panelAttachments);
 
-      const tabViewGroupAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'group' );
-      if (tabViewGroupAttachments) {
-        tabViewGroupAttachments.some(group => {
-          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(group.name))) {
-            this.selectedPanel = group.name;
-            return true;
-          }
-        });
-      }
+        const tabViewGroupAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'group' );
+        if (tabViewGroupAttachments) {
+          tabViewGroupAttachments.some(group => {
+            if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(group.name))) {
+              this.selectedPanel = group.name;
+              return true;
+            }
+          });
+        }
 
-      const tabViewAttrGroupAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'attributeGroup' );
-      if (!this.selectedPanel && tabViewAttrGroupAttachments) {
-        tabViewAttrGroupAttachments.some(attributeGroup => {
-          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(attributeGroup.name))) {
-            this.selectedPanel = attributeGroup.name;
-            return true;
-          }
-        });
-      }
+        const tabViewAttrGroupAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'attributeGroup' );
+        if (!this.selectedPanel && tabViewAttrGroupAttachments) {
+          tabViewAttrGroupAttachments.some(attributeGroup => {
+            if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(attributeGroup.name))) {
+              this.selectedPanel = attributeGroup.name;
+              return true;
+            }
+          });
+        }
 
-      const tabViewComponentAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'component' );
-      if (!this.selectedPanel && tabViewComponentAttachments) {
-        tabViewComponentAttachments.some(component => {
-          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(component.name))) {
-            this.selectedPanel = component.name;
-            return true;
-          }
-        });
-      }
+        const tabViewComponentAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'component' );
+        if (!this.selectedPanel && tabViewComponentAttachments) {
+          tabViewComponentAttachments.some(component => {
+            if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(component.name))) {
+              this.selectedPanel = component.name;
+              return true;
+            }
+          });
+        }
 
-      const tabViewSubentityAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'subentity' );
-      if (!this.selectedPanel && tabViewSubentityAttachments) {
-        tabViewSubentityAttachments.some(subentity => {
-          if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(subentity.name))) {
-            this.selectedPanel = subentity.name;
-            return true;
-          }
-        });
+        const tabViewSubentityAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'subentity' );
+        if (!this.selectedPanel && tabViewSubentityAttachments) {
+          tabViewSubentityAttachments.some(subentity => {
+            if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(subentity.name))) {
+              this.selectedPanel = subentity.name;
+              return true;
+            }
+          });
+        }
       }
 
       if (!this.selectedPanel && this.showActionTab) {
