@@ -40,10 +40,8 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
 
       if (this.hasContent) {
         this.tabViewAttachments = config.entityAttachments.filter(entityAttachment => entityAttachment.appearance === 'tabView');
-        console.log('tabViewAttachments', this.tabViewAttachments);
 
         this.panelAttachments = config.entityAttachments.filter(entityAttachment => entityAttachment.appearance === 'panel');
-        console.log('panelAttachments', this.panelAttachments);
 
         const tabViewGroupAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'group' );
         if (tabViewGroupAttachments) {
