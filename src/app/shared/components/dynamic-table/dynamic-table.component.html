@@ -6,11 +6,10 @@
 
 <div *ngIf="configuration" class="ui-g-12" style="padding:0px">
   <div [ngClass]="{'card': tableData.showHeadline, 'card-w-title': tableData.showHeadline }">
-    <!-- <h1 *ngIf="tableData.showHeadline">{{tableData.tableName}}</h1> -->
     <p-table #dt [columns]="fields" [value]="entityData.data" selectionMode="single" dataKey="id" [(selection)]="selectedEntry" (onRowSelect)="rowSelect()" (onRowUnselect)="rowUnselect()"
       [paginator]="tableData.pagination" [(rows)]="configuration.rowsPerPage" [rowsPerPageOptions]="rowsPerPageOptions" [responsive]="true" [lazy]="true" (onLazyLoad)="loadLazy($event)" [loading]="loading"
       [totalRecords]="entityData.count" [scrollable]="tableData.scrollable || configuration?.minWidth" [scrollHeight]="tableData.scrollHeight" styleClass="ui-table-customers" (window:resize)="onTableResize($event)">
-      <ng-template *ngIf="tableData.showHeader" pTemplate="caption">
+     <ng-template *ngIf="tableData.showHeader" pTemplate="caption">
         {{configuration.displayName}}
         <button *ngIf="configuration.type !== 'File'" pButton (click)="createEntity()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Hinzufügen"></button>
         <button *ngIf="configuration.type === 'File'" pButton (click)="uploadFile()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Datei hochladen"></button>
@@ -49,8 +48,14 @@
 
             </div>
           </th>
-          
-          <th *ngIf="showButtons" [style.width.px]="crudColumnSpace">Bearbeiten</th>
+          <th *ngIf="showButtons" [style.width.px]="crudColumnSpace">
+            <ng-container *ngIf="!tableData.showHeader">
+              <button *ngIf="configuration.type !== 'File'" pButton (click)="createEntity()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Hinzufügen" class="ui-button-success"></button>
+              <button *ngIf="configuration.type === 'File'" pButton (click)="uploadFile()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Datei hochladen" class="ui-button-success"></button>
+              <button pButton (click)="refreshTableContents()" icon="pi pi-undo" style="float: right; margin-top: -5px; margin-right: 5px;" pTooltip="Ansicht aktualisieren" class="ui-button-success"></button>
+              <button *ngIf="filterAreActive()" pButton (click)="resetFilter()" icon="pi pi-times-circle" style="float: right; margin-top: -5px; margin-right: 5px;" pTooltip="Filter zurücksetzen" class="ui-button-success"></button>
+            </ng-container>          
+          </th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-fields="columns">
