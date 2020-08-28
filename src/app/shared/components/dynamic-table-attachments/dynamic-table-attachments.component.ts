@@ -23,6 +23,7 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   configuration: EntityConfiguration;
   tabViewAttachments: EntityAttachment[];
   panelAttachments: EntityAttachment[];
+  hasContent: boolean;
 
   selectedPanel: string;
 
@@ -35,10 +36,9 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
     );
 
     configuration$.subscribe(config => {
-      let hasContent: boolean;
-      config.entityAttachments ? hasContent = true : hasContent = false;
+      config.entityAttachments ? this.hasContent = true : this.hasContent = false;
 
-      if (hasContent) {
+      if (this.hasContent) {
         this.tabViewAttachments = config.entityAttachments.filter(entityAttachment => entityAttachment.appearance === 'tabView');
         console.log('tabViewAttachments', this.tabViewAttachments);
 
