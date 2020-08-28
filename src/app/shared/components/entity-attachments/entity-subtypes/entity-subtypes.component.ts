@@ -23,10 +23,10 @@ export class EntitySubtypesComponent implements OnInit, OnChanges {
     if (changes.subtype) {
       this.tableData = new TableData('', changes.subtype.currentValue)
         .setScrollable()
-        .setScrollHeight('222px')
-        //.hideHeader()
+        //.setScrollHeight('222px')
+        .hideHeader()
         .hideHeadline()
-        .disablePagination();
+        //.disablePagination();
     }
   }
 
