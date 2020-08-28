@@ -20,9 +20,6 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   @Input() excludedPanels: string[];
   @Input() refreshTrigger: Subject<any>;
 
-  isEmpty: boolean;
-  showActionTab = false;
-
   configuration: EntityConfiguration;
   tabViewAttachments: EntityAttachment[];
   panelAttachments: EntityAttachment[];
@@ -40,11 +37,6 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
     configuration$.subscribe(config => {
       let hasContent: boolean;
       config.entityAttachments ? hasContent = true : hasContent = false;
-
-      if (this.configName === 'SecurityRight') {
-        this.showActionTab = true;
-      }
-      this.isEmpty = !hasContent && !this.showActionTab;
 
       if (hasContent) {
         this.tabViewAttachments = config.entityAttachments.filter(entityAttachment => entityAttachment.appearance === 'tabView');
@@ -92,10 +84,6 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
             }
           });
         }
-      }
-
-      if (!this.selectedPanel && this.showActionTab) {
-        this.selectedPanel = 'Actions';
       }
 
       this.configuration = config;
