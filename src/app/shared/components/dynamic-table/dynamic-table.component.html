@@ -132,7 +132,7 @@
                     </div>
                     <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!currencyInput.validity.valid"></button>
                   </ng-container>
-                  <ng-container *ngSwitchCase="'python'">
+                  <!--ng-container *ngSwitchCase="'python'">
                     <span class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
                       <input [disabled]="true" [placeholder]="'<' + field.type + '>'" style="width: 100%" pInputText>
                     </span>
@@ -146,7 +146,7 @@
                     <input [disabled]="true" [placeholder]="rowData[field.field]?._repr_" style="width: calc(100% - 2.143em)" pInputText
                       (click)="$event.stopPropagation()">
                     <button pButton type="button" (click)="cell.isEdited = false; $event.stopPropagation(); openEntitySelectionDialog(field, rowData['id'])" icon="pi pi-pencil"></button>
-                  </ng-container>
+                  </ng-container-->
                 </ng-container>
                 <ng-template #displayEditable>
                   <span class="ui-column-title">{{field.header}}</span>
@@ -159,7 +159,7 @@
                     <div *ngSwitchDefault>{{processData(rowData[field.field], field)}}</div>
                   </ng-container>
                   <i *ngIf="(field.editable || customFields.includes(field.field)) && tableData.inlineEdit" class="pi pi-pencil cellEditIcon"
-                    (click)="$event.stopPropagation(); initCellEdit(cell, field.field, rowData, field.type);"></i>
+                    (click)="$event.stopPropagation(); initCellEdit(cell, field, rowData);"></i>
                 </ng-template>
               </ng-container>
             </div>

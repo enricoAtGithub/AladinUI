@@ -629,20 +629,29 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
   }
 
-  initCellEdit(cellRef, field: string, rowData, type: string) {
+  initCellEdit(cellRef, field, rowData) {
       // If another cell is being edited abort the edit operation and initialize the new edit operation
     if (this.lastCellRef !== undefined && this.cellEditCache !== undefined) {
       const rowDataPrev = this.entityData.data.find(row => row['id'] === this.cellEditCache.data['id']);
-      rowDataPrev[this.cellEditCache.field] = this.cellEditCache.data[this.cellEditCache.field];
+      rowDataPrev[this.cellEditCache.field.field] = this.cellEditCache.data[this.cellEditCache.field.field];
       this.lastCellRef.isEdited = false;
     }
-    this.cellEditCache = {field: field, data: Object.assign({}, rowData)};
+
+    // in case of entity selection open dialog directly
+    if (!Field.isKnownType(field.type)) {
+      this.openEntitySelectionDialog(field, rowData['id']);
+      return;
+    }
+    // in case of code edit open code editor directly
+    if (field.type === 'python' || field.type === 'json') {
+      this.openCodeEditor(rowData, field.type, field.field);
+      return;
+    }
+
+    this.cellEditCache = {field: field.field, data: Object.assign({}, rowData)};
     cellRef.isEdited = true;
     this.lastCellRef = cellRef;
-    // in case of code edit open code editor directly
-    if (type === 'python' || type === 'json') {
-      this.openCodeEditor(rowData, type, field);
-    }
+
   }
 
   completeCellEdit(data) {
