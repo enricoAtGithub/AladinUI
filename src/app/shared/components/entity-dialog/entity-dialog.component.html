@@ -75,10 +75,10 @@
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : undefined" type="hidden">
           <button pButton type="button" (click)="openEntitySelectionDialog(field, textModule)" icon="pi pi-pencil"></button>
           <label *ngIf="textModule['value'] !== field.header" for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
-          <button *ngIf="!field.mandatory" pButton type="button" (click)="nullField(field, entityForm); textModule['value'] = field.header" icon="pi pi-times"></button>
+          <button *ngIf="!field.mandatory" pButton type="button" tabindex="-1" (click)="nullField(field, entityForm); textModule['value'] = field.header" icon="pi pi-times"></button>
         </span>
         <!--button *ngIf="_isKnownType(field.type) && field.type !== 'boolean'" pButton type="button" (click)="nullField(field, entityForm)" icon="pi pi-times"></button-->
-        <button *ngIf="!_isCatalogueEntry(field) && field.type !== 'boolean'" pButton type="button" (click)="nullField(field, entityForm)" icon="pi pi-times"></button>
+        <button *ngIf="!_isCatalogueEntry(field) && field.type !== 'boolean'" pButton type="button" tabindex="-1" (click)="nullField(field, entityForm)" icon="pi pi-times"></button>
       </div>
     </div>
   </ng-template>
