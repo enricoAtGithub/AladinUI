@@ -19,54 +19,54 @@
 
   <ng-template #formFields>
     <div *ngFor="let field of fields" >
-      <div [ngSwitch]="field.type" *ngIf="(field.mandatory && !update) || field.editable" class="p-col form-group ui-g-12 ui-md-12" style="margin-bottom: 5px; display: flex">
-        <span *ngSwitchCase="'String'" class="ui-float-label" style="flex-grow: 1;">
+      <div [ngSwitch]="true" *ngIf="(field.mandatory && !update) || field.editable" class="p-col form-group ui-g-12 ui-md-12" style="margin-bottom: 5px; display: flex">
+        <span *ngSwitchCase="field.type === 'String'" class="ui-float-label" style="flex-grow: 1;">
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]" id="float-input" type="text" style="width: 100%" pInputText>
           <label for="float-input">{{field.header}}</label>
         </span>
-        <span *ngSwitchCase="'int'" class="ui-float-label" style="flex-grow: 1;">
+        <span *ngSwitchCase="field.type === 'int'" class="ui-float-label" style="flex-grow: 1;">
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]" pattern="^\d{1,3}((\.)?\d{3})*$" id="float-input" type="text" pInputText> 
           <label for="float-input">{{field.header}}</label>
         </span>
-        <span *ngSwitchCase="'float'" class="ui-float-label" style="flex-grow: 1;">
+        <span *ngSwitchCase="field.type === 'float'" class="ui-float-label" style="flex-grow: 1;">
           <input [required]="field.mandatory" [name]="field.field" type="text" pattern="{{'^\\d{1,3}((\\.)?\\d{3})*(,\\d{1,' + field.decimals + '})?$'}}" id="float-input" pInputText
             [ngModel]="(entity) && entity[field.field] != undefined ? entity[field.field].toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals }) :  defaultCache[field.field] ?  defaultCache[field.field].toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals }) : ''">
             <label for="float-input">{{field.header}}</label>
         </span>
-        <div *ngSwitchCase="'Currency'" class="ui-inputgroup ui-float-label" style="flex-grow: 1;">            
+        <div *ngSwitchCase="field.type === 'Currency'" class="ui-inputgroup ui-float-label" style="flex-grow: 1;">            
             <input [required]="field.mandatory" [name]="field.field" [ngModel]="((entity) ? entity[field.field] : defaultCache[field.field])" id="float-input" type="text" pattern="^\d{1,3}((\.)?\d{3})*(,\d{1,2})?$" style="width: 172px; height: 27px; font-family: monospace;" pInputText>
             <label for="float-input">{{field.header}}</label>
             <span class="ui-inputgroup-addon">{{currency$ | async}}</span>
         </div>     
-        <span *ngSwitchCase="'boolean'" style="flex-grow: 1; align-self: center;">
+        <span *ngSwitchCase="field.type === 'boolean'" style="flex-grow: 1; align-self: center;">
           <p-checkbox [required]="field.mandatory" [name]="field.field" [binary]="true" [label]="field.header" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field] ? defaultCache[field.field]: false"></p-checkbox>
         </span>
-        <span *ngSwitchCase="'Date'" class="ui-float-label" style="flex-grow: 1;">
+        <span *ngSwitchCase="field.type === 'Date'" class="ui-float-label" style="flex-grow: 1;">
           <p-calendar [required]="field.mandatory" [name]="field.field" showIcon="true" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]" [inputStyle]="{'width':'170px'}"></p-calendar>
           <label for="float-input">{{field.header}}</label>
         </span>
-        <span *ngSwitchCase="'CatalogueEntry'" style="flex-grow: 1;">
+        <span *ngSwitchCase="_isCatalogueEntry(field)" style="flex-grow: 1;">
           <p-dropdown [required]="field.mandatory" [placeholder]="field.header" [name]="field.field" [options]="catalogueOptions.get(field.defaultCatalogue)" [ngModel]="(entity) ? entity[field.field]?.id : defaultCache[field.field]" [style]="{'width':'200px'}"></p-dropdown>
         </span>
-        <ng-container *ngSwitchCase="'Password'">
+        <ng-container *ngSwitchCase="field.type === 'Password'">
           <app-password-input [name]="field.field" [ngModel]="(entity) ? entity[field.field]?.id : defaultCache[field.field]" [floatLabel]="field.header"></app-password-input>
         </ng-container>
 
-        <span *ngSwitchCase="'python'" class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
+        <span *ngSwitchCase="field.type === 'python'" class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
           <input #textModule [disabled]="true" [placeholder]="'<' + field.type + '>'" id="float-input" style="width: 100%" pInputText>
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : undefined" type="hidden">
           <button pButton type="button" (click)="openCodeEditor(field, textModule, entityForm)" icon="pi pi-pencil"></button>
           <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
         </span>
 
-        <span *ngSwitchCase="'json'" class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
+        <span *ngSwitchCase="field.type === 'json'" class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
           <input #textModule [disabled]="true" [placeholder]="'<' + field.type + '>'" id="float-input" style="width: 100%" pInputText>
           <input [required]="field.mandatory" [name]="field.field" [ngModel]="(entity) ? entity[field.field] : undefined" type="hidden">
           <button pButton type="button" (click)="openCodeEditor(field, textModule, entityForm)" icon="pi pi-pencil"></button>
           <label for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
         </span>
 
-        <span *ngSwitchCase="'dtoType'" style="flex-grow: 1;">
+        <span *ngSwitchCase="field.type === 'dtoType'" style="flex-grow: 1;">
           <p-dropdown [required]="field.mandatory" [placeholder]="field.header" [name]="field.field" [options]="dtoConfigs" [ngModel]="(entity) ? entity[field.field] : defaultCache[field.field]" [style]="{'width':'200px'}"></p-dropdown>          
         </span>    
 
@@ -77,7 +77,8 @@
           <label *ngIf="textModule['value'] !== field.header" for="float-input" style="top: -.75em; font-size: 12px;">{{field.header}}</label>
           <button *ngIf="!field.mandatory" pButton type="button" (click)="nullField(field, entityForm); textModule['value'] = field.header" icon="pi pi-times"></button>
         </span>
-        <button *ngIf="_isKnownType(field.type) && field.type !== 'boolean'" pButton type="button" (click)="nullField(field, entityForm)" icon="pi pi-times"></button>
+        <!--button *ngIf="_isKnownType(field.type) && field.type !== 'boolean'" pButton type="button" (click)="nullField(field, entityForm)" icon="pi pi-times"></button-->
+        <button *ngIf="!_isCatalogueEntry(field) && field.type !== 'boolean'" pButton type="button" (click)="nullField(field, entityForm)" icon="pi pi-times"></button>
       </div>
     </div>
   </ng-template>

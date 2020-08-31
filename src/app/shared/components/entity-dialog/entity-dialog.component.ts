@@ -65,7 +65,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
 
     // get items for fields with type 'CatalogueEntry'
     this.fields.forEach(field => {
-      if (field.type === 'CatalogueEntry') {
+      if (Field.isCatalogueEntry(field)) {
         this.subscriptions.push(
           this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
             const values = catalogue.values.map(e => ({ label: e['name'], value: e['id'] }));
@@ -155,9 +155,9 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     this.displayEntitySelectionDialog = false;
   }
 
-  openEntitySelectionDialog(field: any, input: InputText) {
-    this.entitySelectionContext = { field: field['field'], textModule: input };
-    this.entitySelectionTableData = new TableData(field['type'], field['type'])
+  openEntitySelectionDialog(field: Field, input: InputText) {
+    this.entitySelectionContext = { field: field.field, textModule: input };
+    this.entitySelectionTableData = new TableData(field.referenceType, field.referenceType)
       .hideHeader()
       .hideHeadline()
       .hideAttachments()
@@ -181,10 +181,6 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
       this.codeSelCntxt.textModule['value'] = '<' + this.codeSelCntxt.field.type + '>*';
     }
     this.showCodeEditor = false;
-  }
-
-  _isKnownType(type: string) {
-    return Field.isKnownType(type);
   }
 
   nullField(field: Field, form: NgForm) {
@@ -232,4 +228,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     }
   }
 
+  _isCatalogueEntry(field: Field): boolean {
+    return Field.isCatalogueEntry(field)
+  }
 }

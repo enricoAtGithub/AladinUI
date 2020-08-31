@@ -160,45 +160,44 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         }
 
         this.filtersInTable = field.filterType !== 'none' || this.filtersInTable;
-        if (!Field.isPrimitiveType(field.type)) {
-          field.options = [];
+        field.options = [];
 
-          if ((field.type === 'CatalogueEntry' || field.type === 'Icon') && field.defaultCatalogue) {
-            this.subscriptions.push(
-              this.catalogueService.getCatalogue(field.defaultCatalogue)
-                .subscribe(catalogue => {
-                  catalogue.values.forEach(o => {
-                    if (field.type === 'CatalogueEntry') {
-                      field.options.push({ label: o.name, value: o.id });
-                    } else {
-                      this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe((attributes: any) => {
-                        const icon = attributes.find(attr => attr['name'] === 'icon');
-                        const color = attributes.find(attr => attr['name'] === 'color');
-                        field.options.push({
-                          label: '__icon__', value:
-                            { id: '' + o.id, icon: icon ? icon['stringValue'] : '', color: color ? color['stringValue'] : '' }
-                        });
+        if ((Field.isCatalogueEntry(field) || Field.isIcon(field)) && field.defaultCatalogue) {
+          this.subscriptions.push(
+            this.catalogueService.getCatalogue(field.defaultCatalogue)
+              .subscribe(catalogue => {
+                catalogue.values.forEach(o => {
+                  if (Field.isCatalogueEntry(field)) {
+                    field.options.push({ label: o.name, value: o.id });
+                  } else {
+                    this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe((attributes: any) => {
+                      const icon = attributes.find(attr => attr['name'] === 'icon');
+                      const color = attributes.find(attr => attr['name'] === 'color');
+                      field.options.push({
+                        label: '__icon__', value:
+                          { id: '' + o.id, icon: icon ? icon['stringValue'] : '', color: color ? color['stringValue'] : '' }
                       });
-                    }
-                  });
-                }));
-          } else if (field.type === 'dtoType') {
-            // get all dtoConfigs for field.type === 'dtoType' (e.g. for Script Actions)
-            const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
-            this.subscriptions.push(
-              configurations$.subscribe(configs => Object.values(configs).map(o => field.options.push({ label: o.type, value: o.type })))
-            );
-          }
-          // else {
-          //   // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
-          //   this.subscriptions.push(
-          //     this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
-          //       .subscribe(data => {
-          //         data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
-          //       }));
-          // }
+                    });
+                  }
+                });
+              }));
+        } else if (Field.isDtoType(field)) {
+          // get all dtoConfigs for field.type === 'dtoType' (e.g. for Script Actions)
+          const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
+          this.subscriptions.push(
+            configurations$.subscribe(configs => Object.values(configs).map(o => field.options.push({ label: o.type, value: o.type })))
+          );
         }
-      });
+        // else {
+        //   // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
+        //   this.subscriptions.push(
+        //     this.entityService.filter(field.referenceType, 1, 100000, undefined, undefined, undefined)
+        //       .subscribe(data => {
+        //         data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
+        //       }));
+        // }
+      }
+      ); // loop fields.forEach
 
       this.subscriptions.push(this.tableData.triggerRefresh.subscribe(() => this.refreshTableContents()));
     }));
@@ -603,7 +602,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
   openEntitySelectionDialog(field: any, id: number) {
     this.entitySelectionContext = { field: field['field'], id: id };
-    this.entitySelectionTableData = new TableData(field['type'], field['type'])
+    this.entitySelectionTableData = new TableData(field.referenceType, field.referenceType)
       .hideHeader()
       .hideHeadline()
       .hideAttachments()
@@ -638,7 +637,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
 
     // in case of entity selection open dialog directly
-    if (!Field.isKnownType(field.type)) {
+    if (Field.isReference(field) && !Field.isCatalogueEntry(field)) {
       this.openEntitySelectionDialog(field, rowData['id']);
       return;
     }
@@ -718,6 +717,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       this.jmlNavigationService.clearId(this.router);
       // this.router.navigate([])
     }
+  }
+
+  _isCatalogueEntry(field: Field): boolean {
+    return Field.isCatalogueEntry(field)
   }
 
 }

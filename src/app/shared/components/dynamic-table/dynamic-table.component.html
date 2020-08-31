@@ -37,7 +37,7 @@
                 <input *ngSwitchCase="'text'" pInputText type="text" style="width:100%; max-width: 200px;" (input)="dt.filter($event.target.value, col.field, 'contains')">
                 <input *ngSwitchCase="'integer'" type="number" pInputText pKeyFilter="int" style="width:100%; max-width: 200px;" (input)="dt.filter($event.target.value, col.field, 'equals')">
                 <p-dropdown *ngSwitchCase="'dropdown'" [options]="col.options" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
-                <p-multiSelect *ngSwitchCase="'multiSelect'" [options]="col.options" [filter]='col.type === "CatalogueEntry"' [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'in')" [defaultLabel]="'Auswählen..'" [selectedItemsLabel]="'{0} Element(e)'" maxSelectedLabels="1">
+                <p-multiSelect *ngSwitchCase="'multiSelect'" [options]="col.options" [filter]="_isCatalogueEntry(col)" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'in')" [defaultLabel]="'Auswählen..'" [selectedItemsLabel]="'{0} Element(e)'" maxSelectedLabels="1">
                   <ng-template let-item let-i="index" pTemplate="item">
                     <span *ngIf="item.label !== '__icon__';else displayIcon2">{{item.label}}</span>
                     <ng-template #displayIcon2>
@@ -113,7 +113,7 @@
                       (onClose)="cell.isEdited = false; abortCellEdit(rowData, $event)" appAutoFocus></p-calendar>
                     <button pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; completeCellEdit(rowData);"></button>
                   </ng-container>
-                  <ng-container *ngSwitchCase="'CatalogueEntry'">
+                  <ng-container *ngSwitchCase="'Reference'">
                     <p-dropdown [placeholder]="field.header" class="dropdownFullWidth"[name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}"
                       [style]="{'minWidth': '0px', 'display':'grid'}" [(ngModel)]="rowData[field.field]"
                       (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
