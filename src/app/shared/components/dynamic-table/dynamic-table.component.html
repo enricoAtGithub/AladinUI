@@ -137,21 +137,6 @@
                     </div>
                     <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!currencyInput.validity.valid"></button>
                   </ng-container>
-                  <!--ng-container *ngSwitchCase="'python'">
-                    <span class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
-                      <input [disabled]="true" [placeholder]="'<' + field.type + '>'" style="width: 100%" pInputText>
-                    </span>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="'json'">
-                    <span class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
-                      <input [disabled]="true" [placeholder]="'<' + field.type + '>'" style="width: 100%" pInputText>
-                    </span>
-                  </ng-container>
-                  <ng-container *ngSwitchDefault>
-                    <input [disabled]="true" [placeholder]="rowData[field.field]?._repr_" style="width: calc(100% - 2.143em)" pInputText
-                      (click)="$event.stopPropagation()">
-                    <button pButton type="button" (click)="cell.isEdited = false; $event.stopPropagation(); openEntitySelectionDialog(field, rowData['id'])" icon="pi pi-pencil"></button>
-                  </ng-container-->
                 </ng-container>
                 <ng-template #displayEditable>
                   <span class="ui-column-title">{{field.header}}</span>
@@ -180,7 +165,7 @@
               <button *ngSwitchCase="'UPLOAD'" pButton type="button" icon="fa fa-upload" class="crudButton" fileSaver pTooltip="aktualisieren" (click)="uploadFile(mainId, mainType, rowData['id'], rowData['fileType'])"></button>
               <button *ngSwitchCase="'DOWNLOAD'" pButton type="button" icon="fa fa-download" class="crudButton" fileSaver pTooltip="herunterladen" [method]="'GET'" [fileName]="rowData['fileName']" [url]="downloadUrl(rowData['id'])"></button>
               <!-- dynamic script actions -->
-              <button *ngSwitchDefault pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton" (click)="executeAction(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
+              <button *ngSwitchDefault pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton"  [pTooltip]="configuration.actions[action].tooltip" (click)="executeAction(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
             </code>
           </td>
 
