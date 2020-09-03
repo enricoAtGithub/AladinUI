@@ -44,6 +44,10 @@ export class AppMenuComponent implements OnInit {
                         visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.stammdaten.produkte)
                     },
                     {
+                        label: 'Produkttemplates', icon: 'fa fa-puzzle-piece', routerLink: ['/masterdata/producttemplates'],
+                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.stammdaten.produkttemplates)
+                    },
+                    {
                         label: 'Accounts', icon: 'fa fa-address-card', routerLink: ['/masterdata/accounts'],
                         visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.stammdaten.accounts)
                     },

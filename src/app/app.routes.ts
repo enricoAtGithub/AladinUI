@@ -33,6 +33,7 @@ export const routes: Routes = [
         path: 'masterdata',
         children: [
           { path: 'products', pathMatch: 'full', component: EntityViewComponent, data: { entityType: 'Product', displayName: 'Produkte' } },
+          { path: 'producttemplates', pathMatch: 'full', component: EntityViewComponent, data: { entityType: 'ProductTemplate', displayName: 'Produkt-Templates' } },
           { path: 'accounts', pathMatch: 'full', component: EntityViewComponent, data: { entityType: 'Account', displayName: 'Accounts' } },
         ]
       },

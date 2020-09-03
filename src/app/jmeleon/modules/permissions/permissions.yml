@@ -38,6 +38,7 @@
   - stammdaten:
     - show
     - produkte
+    - produkttemplates
     - accounts
   - vertrieb:
     - show

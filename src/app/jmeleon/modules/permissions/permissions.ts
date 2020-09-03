@@ -50,6 +50,7 @@ export const root = {
         stammdaten: {
             show: 'Menuitems.stammdaten.show',
             produkte: 'Menuitems.stammdaten.produkte',
+            produkttemplates: 'Menuitems.stammdaten.produkttemplates',
             accounts: 'Menuitems.stammdaten.accounts',
         },
         vertrieb: {
@@ -112,6 +113,7 @@ export const list = [
     'Menuitems.dashboard',
     'Menuitems.stammdaten.show',
     'Menuitems.stammdaten.produkte',
+    'Menuitems.stammdaten.produkttemplates',
     'Menuitems.stammdaten.accounts',
     'Menuitems.vertrieb.show',
     'Menuitems.vertrieb.angebote',
