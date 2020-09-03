@@ -12,8 +12,6 @@ import { UserManagementComponent } from './components/user-management/user-manag
 import { AddUserDialogComponent } from './components/add-user-dialog/add-user-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { UpdateUserDialogComponent } from './components/update-user-dialog/update-user-dialog.component';
-import { PermissionManagementComponent } from './components/permission-management/permission-management.component';
-import { RoleManagementComponent } from './components/role-management/role-management.component';
 import { SharedModule } from '../shared/shared.module';
 import { CatalogueManagementComponent } from './components/catalogue-management/catalogue-management.component';
 
@@ -24,8 +22,6 @@ import { CatalogueManagementComponent } from './components/catalogue-management/
     UserManagementComponent,
     AddUserDialogComponent,
     UpdateUserDialogComponent,
-    RoleManagementComponent,
-    PermissionManagementComponent,
     CatalogueManagementComponent
   ],
   imports: [
