@@ -48,6 +48,7 @@ import { AutoFocusDirective } from './directives/auto-focus.directive';
 import { TooltipModule } from 'primeng/tooltip';
 import { RouterModule } from '@angular/router';
 import { PasswordInputComponent } from './components/password-input/password-input.component';
+import { EntityViewComponent } from './components/entity-view/entity-view.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { PasswordInputComponent } from './components/password-input/password-inp
     CodeEditorComponent,
     VarDirective,
     AutoFocusDirective,
-    PasswordInputComponent
+    PasswordInputComponent,
+    EntityViewComponent
   ],
   imports: [
     CommonModule,
