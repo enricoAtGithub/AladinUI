@@ -12,8 +12,8 @@
      <!-- show buttons here if table header is visible -->
       <ng-template *ngIf="tableData.showHeader" pTemplate="caption">
         {{configuration.displayName}}
-        <button *ngIf="configuration.type !== 'File'" pButton (click)="createEntity()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Hinzufügen"></button>
-        <button *ngIf="configuration.type === 'File'" pButton (click)="uploadFile()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Datei hochladen"></button>
+        <button *ngIf="configuration.type !== 'File' &&  configuration.type !== 'FileAttachment'" pButton (click)="createEntity()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Hinzufügen"></button>
+        <button *ngIf="configuration.type === 'File' || configuration.type === 'FileAttachment'" pButton (click)="uploadFile(mainId, mainType)" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Datei hochladen"></button>
         <button pButton (click)="refreshTableContents()" icon="pi pi-undo" style="float: right; margin-top: -5px; margin-right: 5px;" pTooltip="Ansicht aktualisieren"></button>
         <button *ngIf="filterAreActive()" pButton (click)="resetFilter()" icon="pi pi-times-circle" style="float: right; margin-top: -5px; margin-right: 5px;" pTooltip="Filter zurücksetzen"></button>
       </ng-template>
@@ -54,8 +54,8 @@
             <ng-template [ngIf]="!tableData.showHeader">
               <!-- Header titles and sorting icon-->
               <div style="display:flex;justify-content: center;align-items: flex-end;flex-wrap: wrap;height: 30px;">            
-                <button *ngIf="configuration.type !== 'File'" pButton (click)="createEntity()" icon="pi pi-plus" style="float: right; margin-right: 5px" pTooltip="Hinzufügen" class="ui-button-success"></button>
-                <button *ngIf="configuration.type === 'File'" pButton (click)="uploadFile()" icon="pi pi-plus" style="float: right; margin-right: 5px" pTooltip="Datei hochladen" class="ui-button-success"></button>
+                <button *ngIf="configuration.type !== 'File' &&  configuration.type !== 'FileAttachment'" pButton (click)="createEntity()" icon="pi pi-plus" style="float: right; margin-right: 5px" pTooltip="Hinzufügen" class="ui-button-success"></button>
+                <button *ngIf="configuration.type === 'File' || configuration.type === 'FileAttachment'" pButton (click)="uploadFile(mainId, mainType)" icon="pi pi-plus" style="float: right; margin-right: 5px" pTooltip="Datei hochladen" class="ui-button-success"></button>
                 <button pButton (click)="refreshTableContents()" icon="pi pi-undo" style="float: right;" pTooltip="Ansicht aktualisieren" class="ui-button-success"></button>
                 <button *ngIf="filterAreActive()" pButton (click)="resetFilter()" icon="pi pi-times-circle" style="float: right; margin-right: 5px" pTooltip="Filter zurücksetzen" class="ui-button-success"></button>                    
               </div>

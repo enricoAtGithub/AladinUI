@@ -1,8 +1,6 @@
 import { Component, OnInit, Input, OnChanges, OnDestroy } from '@angular/core';
 import { TableData } from 'src/app/shared/models/table-data';
 import { EntityService } from 'src/app/shared/services/entity.service';
-import { DialogService } from 'primeng/primeng';
-import { FileUploadDialogComponent } from '../../file-upload-dialog/file-upload-dialog.component';
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
@@ -19,7 +17,6 @@ export class EntityFileAttachmentsComponent implements OnChanges, OnDestroy {
 
   constructor(
     private entityService: EntityService,
-    private dialogService: DialogService
     ) { }
 
   ngOnDestroy() {
@@ -44,20 +41,4 @@ export class EntityFileAttachmentsComponent implements OnChanges, OnDestroy {
     }
   }
 
-  addFileAttachment() {
-    const dialogRef = this.dialogService.open(FileUploadDialogComponent, {
-      data: {
-        catalogueName: 'FILE_TYPES',
-        catalogueDisplayName: 'Dateityp',
-        createAttachment: true,
-        ownerId: this.ownerId,
-        ownerType: this.ownerType
-      },
-      header: 'Datei hochladen',
-      width: '800px'
-    });
-
-    this.subscriptions.push(
-      dialogRef.onClose.subscribe(() => this.fileTableData.triggerRefresh.next()));
-  }
 }
