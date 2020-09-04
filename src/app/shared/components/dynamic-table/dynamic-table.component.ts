@@ -188,16 +188,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             configurations$.subscribe(configs => Object.values(configs).map(o => field.options.push({ label: o.type, value: o.type })))
           );
         }
-        // else {
-        //   // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
-        //   this.subscriptions.push(
-        //     this.entityService.filter(field.referenceType, 1, 100000, undefined, undefined, undefined)
-        //       .subscribe(data => {
-        //         data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
-        //       }));
-        // }
-      }
-      ); // loop fields.forEach
+      }); // loop fields.forEach
 
       this.subscriptions.push(this.tableData.triggerRefresh.subscribe(() => this.refreshTableContents()));
     }));
@@ -312,17 +303,21 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           .subscribe(data => {
             this.entityData = data; this.loading = false;
             this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
-            this.selectedEntryId = +this.selectedId;
-            this.selectedEntry = data.data.find(entity => entity['id'] === +this.selectedId);
-            }));
+            if (this.selectedId) {
+              this.selectedEntryId = +this.selectedId;
+              this.selectedEntry = data.data.find(entity => entity['id'] === +this.selectedId);
+            }
+          }));
     } else {
       this.subscriptions.push(
         this.tableData.dataSource
           .subscribe(data => {
             this.entityData = data; this.loading = false;
             this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
-            this.selectedEntryId = +this.selectedId;
-            this.selectedEntry = data.data.find(entity => entity['id'] === +this.selectedId);
+            if (this.selectedId) {
+              this.selectedEntryId = +this.selectedId;
+              this.selectedEntry = data.data.find(entity => entity['id'] === +this.selectedId);
+            }
           }));
     }
   }
