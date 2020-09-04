@@ -312,6 +312,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           .subscribe(data => {
             this.entityData = data; this.loading = false;
             this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
+            this.selectedEntryId = +this.selectedId;
+            this.selectedEntry = data.data.find(entity => entity['id'] === +this.selectedId);
             }));
     } else {
       this.subscriptions.push(
@@ -319,6 +321,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           .subscribe(data => {
             this.entityData = data; this.loading = false;
             this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
+            this.selectedEntryId = +this.selectedId;
+            this.selectedEntry = data.data.find(entity => entity['id'] === +this.selectedId);
           }));
     }
   }

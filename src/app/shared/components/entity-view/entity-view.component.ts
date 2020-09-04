@@ -32,11 +32,10 @@ export class EntityViewComponent implements OnInit, OnDestroy {
           { label: data.displayName }
         ]);
         this.tableData = new TableData(data.displayName, data.entityType);
-
-        this.token$ = this.jmlNavigationService.readToken(this.route).pipe(filter(token => !!token));
-        this.id$ = this.jmlNavigationService.readId(this.route).pipe(filter(id => !!id));
       })
     );
+    this.token$ = this.jmlNavigationService.readToken(this.route).pipe(filter(token => !!token));
+    this.id$ = this.jmlNavigationService.readId(this.route).pipe(filter(id => !!id));
   }
 
   ngOnDestroy() {
