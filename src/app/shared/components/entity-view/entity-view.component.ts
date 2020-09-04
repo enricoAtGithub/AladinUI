@@ -12,7 +12,7 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./entity-view.component.css']
 })
 export class EntityViewComponent implements OnInit, OnDestroy {
-  tableData: any;
+  tableData: TableData;
 
   token$: Observable<string>;
   id$: Observable<string>;
