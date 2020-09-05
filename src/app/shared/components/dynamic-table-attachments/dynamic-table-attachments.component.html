@@ -47,7 +47,7 @@
 
     <!-- Group Relations -->
     <div *ngSwitchCase="'group'">
-      <app-entity-group-relation [ownerType]="configName" [ownerId]="entryId" [relation]="group"></app-entity-group-relation>
+      <app-entity-group-relation [ownerType]="configName" [ownerId]="entryId" [relation]="entityAttachment.name"></app-entity-group-relation>
     </div> 
 
   </ng-container>
