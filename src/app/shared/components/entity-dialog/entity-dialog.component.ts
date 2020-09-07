@@ -199,6 +199,8 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
         if (entityForm.value[field.field] != null) {
           entityForm.value[field.field] = new Date(entityForm.value[field.field]).toISOString();
         }
+      } else if (entityForm.value[field.field] === undefined) {
+        entityForm.value[field.field] = null;
       }
     });
 

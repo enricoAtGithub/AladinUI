@@ -545,7 +545,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           const dialogRef = this.dialogService.open(EntityDialogComponent, {
             data: {
               update: true,
-              entity: actionDetails,
               fields: actionDetails.params,
               configType: this.configuration.type,
               mainId: this.mainId,
