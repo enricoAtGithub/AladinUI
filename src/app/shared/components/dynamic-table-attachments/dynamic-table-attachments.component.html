@@ -37,7 +37,7 @@
 
     <!-- Sub Entities -->
     <div *ngSwitchCase="'subEntity'">
-      <app-entity-subtypes [subtype]="entityAttachment.name" [mainId]="entryId" [refreshTrigger]="refreshTrigger"></app-entity-subtypes>
+      <app-entity-subtypes [subtype]="entityAttachment.name" [mainType]="configName" [mainId]="entryId" [refreshTrigger]="refreshTrigger"></app-entity-subtypes>
     </div>
 
     <!-- Attribute Groups -->

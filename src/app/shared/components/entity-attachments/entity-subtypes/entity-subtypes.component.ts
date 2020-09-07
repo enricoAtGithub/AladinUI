@@ -12,6 +12,7 @@ export class EntitySubtypesComponent implements OnInit, OnChanges {
 
   @Input() subtype: string;
   @Input() mainId: number;
+  @Input() mainType: number;
   @Input() refreshTrigger: Subject<any>;
 
   constructor() { }
