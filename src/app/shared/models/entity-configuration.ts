@@ -34,4 +34,11 @@ export class EntityConfiguration {
     fields: Field[];
     minWidth: number;
     actions: Object;
+    customCreation: {
+        creationMode: string,
+        creationAction: {
+            action: string;
+            condition: string;
+        };
+    };
 }

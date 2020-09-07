@@ -359,40 +359,47 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   createEntity() {
-    const dialogRef = this.dialogService.open(EntityDialogComponent, {
-      data: {
-        update: false,
-        fields: this.configuration.fields,
-        configType: this.configuration.type,
-        mainId: this.mainId
-      },
-      header: 'Hinzufügen',
-      width: '500px'
-    });
 
-    // following code is refactored according https://medium.com/@paynoattn/3-common-mistakes-i-see-people-use-in-rx-and-the-observable-pattern-ba55fee3d031
-    // this.subscriptions.push(
-    //   dialogRef.onClose.subscribe((fields: Field[]) => {
-    //     if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-    //       this.entityService.createEntity(this.configuration.type, fields)
-    //         .subscribe(() => {
-    //           this.loadLazy(this.lastLazyLoadEvent);
-    //           this.entityOperation.emit(null);
-    //         });
-    //     }
-    //   })
-    // );
+    if ((!this.configuration.customCreation) || this.configuration.customCreation.creationMode === 'createEntity') {
+      const dialogRef = this.dialogService.open(EntityDialogComponent, {
+        data: {
+          update: false,
+          fields: this.configuration.fields,
+          configType: this.configuration.type,
+          mainId: this.mainId
+        },
+        header: 'Hinzufügen',
+        width: '500px'
+      });
 
-    this.subscriptions.push(
-      dialogRef.onClose.pipe(
-        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.configuration.type, fields) : EMPTY)).subscribe(
-          () => {
-            this.loadLazy(this.lastLazyLoadEvent);
-            this.entityOperation.emit(null);
-          },
-          error => console.error('[Dynamic-Table] Method createEntity failed!\n' + error)
-        )
-    );
+      // following code is refactored according https://medium.com/@paynoattn/3-common-mistakes-i-see-people-use-in-rx-and-the-observable-pattern-ba55fee3d031
+      // this.subscriptions.push(
+      //   dialogRef.onClose.subscribe((fields: Field[]) => {
+      //     if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+      //       this.entityService.createEntity(this.configuration.type, fields)
+      //         .subscribe(() => {
+      //           this.loadLazy(this.lastLazyLoadEvent);
+      //           this.entityOperation.emit(null);
+      //         });
+      //     }
+      //   })
+      // );
+
+      this.subscriptions.push(
+        dialogRef.onClose.pipe(
+          switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.configuration.type, fields) : EMPTY)).subscribe(
+            () => {
+              this.loadLazy(this.lastLazyLoadEvent);
+              this.entityOperation.emit(null);
+            },
+            error => console.error('[Dynamic-Table] Method createEntity failed!\n' + error)
+          )
+      );
+
+    } else if (this.configuration.customCreation.creationMode === 'executeAction') {
+      this.executeAction(this.configuration.customCreation.creationAction.action, this.mainType, this.mainId);
+
+    }
 
   }
 
