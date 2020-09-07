@@ -114,7 +114,7 @@
                     <button pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; completeCellEdit(rowData);"></button>
                   </ng-container>
                   <ng-container *ngSwitchCase="'Reference'">
-                    <p-dropdown [placeholder]="field.header" class="dropdownFullWidth"[name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}"
+                    <p-dropdown [placeholder]="field.header" [showClear]="!field.mandatory" class="dropdownFullWidth" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}"
                       [style]="{'minWidth': '0px', 'display':'grid'}" [(ngModel)]="rowData[field.field]"
                       (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
                       (onChange)="cell.isEdited = false; completeCellEdit(rowData)" appAutoFocus></p-dropdown>
