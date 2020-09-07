@@ -30,6 +30,10 @@ export class Field extends BasicFieldConfig {
         return field.type === 'Reference' && field.referenceType === 'CatalogueEntry';
     }
 
+    public static isEntityReference(field: Field): boolean {
+        return field.type === 'Reference' && field.referenceType !== 'CatalogueEntry';
+    }
+
     public static isDtoType(field: Field): boolean {
         return field.type === 'dtoType';
     }

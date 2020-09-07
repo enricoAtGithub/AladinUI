@@ -229,6 +229,10 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
   }
 
   _isCatalogueEntry(field: Field): boolean {
-    return Field.isCatalogueEntry(field)
+    return Field.isCatalogueEntry(field);
+  }
+
+  _isEntityReference(field: Field): boolean {
+    return Field.isEntityReference(field);
   }
 }
