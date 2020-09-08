@@ -404,7 +404,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       );
 
     } else if (this.configuration.customCreation.creationMode === 'executeAction') {
-      this.executeAction(this.configuration.customCreation.creationAction.action, this.mainType, this.mainId);
+      this.executeAction(this.configuration.customCreation.creationAction.action, this.mainType, this.mainId, true);
 
     }
 
@@ -540,7 +540,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     return actionCount ? (actionCount * 32) + 26 : 90;
   }
 
-  executeAction(actionHrid: string, dtoType: string, entityId: number) {
+  executeAction(actionHrid: string, dtoType: string, entityId: number, suppressOutput?: boolean) {
     const payload: ScriptActionPayload = { actionHrid: actionHrid, entityReference: { dtoType: dtoType, id: entityId } };
 
     // run getAction API to retrieve information (HRID and params) required to execute the action
@@ -568,7 +568,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
                 this.entityService.executeAction(payload, false).subscribe(
                   (result) => {
                     this.loadLazy(this.lastLazyLoadEvent);
-                    this.showActionResult(actionDetails.name, result['result'], result['output'], true, actionDetails.showResult);
+                    if (!suppressOutput) { this.showActionResult(actionDetails.name, result['result'], result['output'], true, actionDetails.showResult); }
                   },
                   error => this.showActionResult(actionDetails.name, error.error.message, error.error.trace, false, true)
                 );
@@ -582,7 +582,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           this.entityService.executeAction(payload, false).subscribe(
             result => {
               this.loadLazy(this.lastLazyLoadEvent);
-              this.showActionResult(actionDetails.name, result['result'], result['output'], true, actionDetails.showResult);
+              if (!suppressOutput) { this.showActionResult(actionDetails.name, result['result'], result['output'], true, actionDetails.showResult); }
             },
             error => this.showActionResult(actionDetails.name, error.error.message, error.error.trace, false, true)
           );
