@@ -387,7 +387,14 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
       this.subscriptions.push(
         dialogRef.onClose.pipe(
-          switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.configuration.type, fields) : EMPTY)).subscribe(
+          switchMap((fields: Field[]) => {
+              if (fields) {
+                this.loading = true;
+                return this.entityService.createEntity(this.configuration.type, fields);
+              } else {
+                return EMPTY;
+              }
+            })).subscribe(
             () => {
               this.loadLazy(this.lastLazyLoadEvent);
               this.entityOperation.emit(null);
@@ -556,7 +563,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           this.subscriptions.push(
             dialogRef.onClose.subscribe((fields: Field[]) => {
               if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-                payload.params = fields;
+              this.loading = true;
+              payload.params = fields;
                 this.entityService.executeAction(payload, false).subscribe(
                   (result) => {
                     this.loadLazy(this.lastLazyLoadEvent);
@@ -570,6 +578,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
           // if there are no params do not make any turnarounds and just go!
         } else {
+          this.loading = true;
           this.entityService.executeAction(payload, false).subscribe(
             result => {
               this.loadLazy(this.lastLazyLoadEvent);
@@ -583,8 +592,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   showActionResult(actionName: string, result: string, output: string, success: boolean, showResult: boolean) {
-    if (!showResult) {
-      if (success) { this.errorNotificationService.addSuccessNotification('Aktion ' + actionName + ' executed sucessfully', result); }
+    if (!showResult && success) {
+      this.errorNotificationService.addSuccessNotification('Aktion ' + actionName + ' executed sucessfully', result);
     } else {
       const dialogRef = this.dialogService.open(ScriptResultComponent, {
         data: {
