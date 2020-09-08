@@ -16,6 +16,7 @@ export class Field extends BasicFieldConfig {
     width: string;
     options: Option[];
     formula: string;
+    alternativeFieldForEditing: string;
     decimals: number;       // number of decimals for float type
 
     // private static isPrimitiveType(type: string) {

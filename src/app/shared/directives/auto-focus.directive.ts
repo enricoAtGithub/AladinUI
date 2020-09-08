@@ -10,7 +10,6 @@ export class AutoFocusDirective implements AfterContentInit {
 
   public ngAfterContentInit(): void {
     setTimeout(() => {
-      console.log(this.el.nativeElement);
       const ne = this.el.nativeElement;
       switch (ne.localName) {
         case 'p-dropdown':

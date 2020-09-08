@@ -148,7 +148,7 @@
                     <div *ngSwitchCase="'float'"> {{(processData(rowData[field.field], field)).toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals })}}</div>
                     <div *ngSwitchDefault>{{processData(rowData[field.field], field)}}</div>
                   </ng-container>
-                  <i *ngIf="(field.editable || customFields.includes(field.field)) && tableData.inlineEdit" class="pi pi-pencil cellEditIcon"
+                  <i *ngIf="(field.editable || field.alternativeFieldForEditing) && tableData.inlineEdit" class="pi pi-pencil cellEditIcon"
                     (click)="$event.stopPropagation(); initCellEdit(cell, field, rowData);"></i>
                 </ng-template>
               </ng-container>

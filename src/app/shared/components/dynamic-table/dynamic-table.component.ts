@@ -65,7 +65,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   lastCellRef: any;
   crudColumnSpace: number;
   refreshTrigger: Subject<any>;
-  customFields: string[] = [];
   rowsPerPageOptions = [10, 25, 50];
 
   constructor(
@@ -101,19 +100,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         console.log('[Dynamic-Table] config with name ' + this.tableData.entityType + ' not found!');
         return;
       }
-
-      this.configuration.fields.forEach(field => {
-        if (field.field.startsWith('custom')) {
-          const c = field.field.charAt(6).toLowerCase();
-          let fieldName = field.field.substr(7);
-          fieldName = c.concat(fieldName);
-
-          const field2 = this.configuration.fields.find(f => f.field === fieldName);
-          if (field2) {
-            this.customFields.push(fieldName);
-          }
-        }
-      });
 
       if (!this.rowsPerPageOptions.includes(this.configuration.rowsPerPage)) {
         this.rowsPerPageOptions.push(this.configuration.rowsPerPage);
@@ -671,22 +657,17 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.lastCellRef = undefined;
     this.cellEditCache = undefined;
 
-    const dateFields = this.configuration.fields.filter(field => field.type === 'Date');
-    dateFields.forEach(field => {
-      if (data[field.field] !== null) {
-        data[field.field] = new Date(data[field.field]).toISOString();
-      }
-    });
-
+    const dateFields: Field[] = [];
     this.configuration.fields.forEach(field => {
-      if (field.field.startsWith('custom')) {
-        const c = field.field.charAt(6).toLowerCase();
-        let fieldName = field.field.substr(7);
-        fieldName = c.concat(fieldName);
-
-        if (data[fieldName] !== undefined) {
-          data[field.field] = data[fieldName];
+      if (field.type === 'Date') {
+        dateFields.push(field);
+        if (data[field.field] !== null) {
+          data[field.field] = new Date(data[field.field]).toISOString();
         }
+      }
+
+      if (field.alternativeFieldForEditing) {
+        data[field.alternativeFieldForEditing] = data[field.field];
       }
     });
 
