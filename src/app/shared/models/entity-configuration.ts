@@ -13,6 +13,11 @@ export interface AttributeGroupEntry {
     dtoType: string;
 }
 
+export interface AttachmentCategory {
+    attachmentCatHrid: string; // HRID of attachment category catalogue entry
+    displayName: string;
+}
+
 export class EntityAttachment {
     type: string;
     name: string;
@@ -20,6 +25,7 @@ export class EntityAttachment {
     appearance: string;
     showCollapsed: boolean;
     attributes: AttributeGroupEntry[];
+    attachmentCategories: AttachmentCategory[];
 }
 
 export class EntityConfiguration {

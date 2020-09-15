@@ -37,6 +37,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   @Input() mainType: string;
   @Input() dblClickCallback: (data) => any;
   @Input() selectedId: string;
+  @Input() attachmentCategory: string; // FileAttachment category
   @Input() token: string;
   @Output() entitySelection = new EventEmitter();
   @Output() entityOperation = new EventEmitter();
@@ -437,7 +438,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         ownerId: ownerId,
         ownerType: ownerType,
         fileId: fileId,
-        fileType: fileType
+        fileType: fileType,
+        attachmentCategory: this.attachmentCategory
       },
       header: 'Datei aktualisieren',
       width: '800px'

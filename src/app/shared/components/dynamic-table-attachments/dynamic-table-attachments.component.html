@@ -28,7 +28,7 @@
     <div *ngSwitchCase="'component'">
       <div [ngSwitch]="entityAttachment.name">
         <app-entity-notes *ngSwitchCase="'Notes'" [ownerType]="configName" [ownerId]="entryId"></app-entity-notes>
-        <app-entity-file-attachments *ngSwitchCase="'FileAttachments'" [ownerType]="configName" [ownerId]="entryId"></app-entity-file-attachments>
+        <app-entity-file-attachments *ngSwitchCase="'FileAttachments'" [ownerType]="configName" [ownerId]="entryId" [categories]="entityAttachment.attachmentCategories"></app-entity-file-attachments>
         <app-entity-attributes *ngSwitchCase="'Attributes'" [ownerType]="configName" [ownerId]="entryId"></app-entity-attributes>
         <app-entity-logs *ngSwitchCase="'LogEntries'" [ownerType]="configName" [ownerId]="entryId"></app-entity-logs>
         <app-right-actions-editor *ngSwitchCase="'SecurityActionEditor'" [ownerId]="entryId"></app-right-actions-editor>
