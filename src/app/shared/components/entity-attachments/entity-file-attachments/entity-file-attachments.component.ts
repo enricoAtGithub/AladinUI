@@ -3,7 +3,6 @@ import { TableData } from 'src/app/shared/models/table-data';
 import { EntityService } from 'src/app/shared/services/entity.service';
 import { Observable, Subscription } from 'rxjs';
 import { AttachmentCategory } from 'src/app/shared/models/entity-configuration';
-import { EntityData } from 'src/app/shared/models/entity-data';
 
 @Component({
   selector: 'app-entity-file-attachments',
@@ -19,10 +18,11 @@ export class EntityFileAttachmentsComponent implements OnInit, OnChanges, OnDest
   subscriptions: Subscription[] = [];
 
   constructor(
-    private entityService: EntityService,
+    private entityService: EntityService
     ) { }
 
   ngOnInit() {
+    // for each category we have a separate entry in fileTableData[]
     if (this.categories) {
       this.categories.forEach(category => {
         this.initFileTable(category.attachmentCatHrid);
@@ -47,15 +47,16 @@ export class EntityFileAttachmentsComponent implements OnInit, OnChanges, OnDest
     this.fileTableData.push(tableData);
   }
 
-  // not working properly
   refreshFileTable(idx: number) {
-    const categoryHrid = this.categories[idx].attachmentCatHrid;
+    let categoryHrid: string;
+    this.categories ? categoryHrid = this.categories[idx].attachmentCatHrid : categoryHrid = undefined;
       this.fileTableData[idx].dataSource  = this.entityService
         .postEntityDataFromUrl('/attachment/all', {attachmentType: 'File', attachmentCategory: categoryHrid, ownerType: this.ownerType, ownerId: this.ownerId});
       this.fileTableData[idx].triggerRefresh.next();
   }
 
-  // not working properly
+  // called when any data-bound property of a directive changes
+  // this means it is called when selecting another main entity
   ngOnChanges() {
     if (this.ownerId && this.ownerType) {
       if (this.fileTableData) {
