@@ -118,6 +118,7 @@ import { RouterModule } from '@angular/router';
 
 export function initializeApp(appConfig: AppConfig) {
     console.log('initialize app');
+    appConfig.loadServerInfo();
     return () => appConfig.load();
     // return appConfig.load();
 }

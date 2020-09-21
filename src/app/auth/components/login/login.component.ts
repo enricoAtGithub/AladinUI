@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit {
       this.appDetails = this.uiDetails + ', loading BE details....';
       // } );
       // console.log('[LoginComponent-ngOnInit-subscribe(uiInfo)] loading server infos. uiInfo: ', uiInfo);
-      this.appConfig.loadServerInfo();
+      // this.appConfig.loadServerInfo();
     });
 
     AppConfig.serverInfo$.subscribe(serverInfo => {
