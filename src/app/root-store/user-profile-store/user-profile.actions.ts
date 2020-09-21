@@ -7,3 +7,6 @@ export const loginSucceeded = createAction('[Login] Login Success', props<{ user
 export const passwordChangeRequired = createAction('[Login] Login Password change required', props<{ user: User }>());
 export const logoutRequested = createAction('[Logout] Logout Requested', props<{ sendLogoutRequestToServer: boolean }>());
 export const logoutSucceeded = createAction('[Logout] Logout Success');
+export const validateTokenRequested = createAction('[AppModule] Token validation requested');
+export const validateTokenSucceeded = createAction('[Auth] Token validation succeeded');
+export const validateTokenFailed = createAction('[Auth] Token validation failed');

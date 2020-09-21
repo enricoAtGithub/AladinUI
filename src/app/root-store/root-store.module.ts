@@ -41,7 +41,6 @@ export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionRedu
   const customStoreNames = [];
   return localStorageSync(
     {
-      // keys: jmeleonStoreNames.concat(customStoreNames),
       keys: jmeleonStoreNames.concat(customStoreNames),
 
       rehydrate: true

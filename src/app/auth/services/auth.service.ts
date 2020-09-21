@@ -184,4 +184,19 @@ export class AuthService {
 
   }
 
+  validateToken(): Observable<boolean>{
+    const result = this.http
+      .get<User>(UrlCollection.UserManagement.VALIDATE_TOKEN())
+      .pipe(
+        map(() => {
+          return true;
+        }),
+        catchError((err: HttpErrorResponse) => {
+          console.log('validate token failed: ', err);
+          return of(false);
+        })
+      );
+      return result;
+  }
+
 }

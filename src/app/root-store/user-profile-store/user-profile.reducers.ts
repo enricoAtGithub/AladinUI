@@ -53,6 +53,14 @@ import { InjectionToken } from '@angular/core';
         error: '',
         user: null
      };
+   }),
+   on(UserProfileActions.validateTokenFailed, (state, action) => {
+     return {
+        ...state,
+        isInLogout: false,
+        error: '',
+        user: null
+     };
    })
  );
 

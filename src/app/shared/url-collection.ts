@@ -29,6 +29,7 @@ export class UrlCollection {
         static CHANGE_PASSWD(): string { return UrlCollection.USER_API_BASE_PATH() + '/changepwd'; }
 
         static RIGHT(): string { return UrlCollection.USER_API_BASE_PATH() + '/right'; }
+        static VALIDATE_TOKEN(): string {return UrlCollection.USER_API_BASE_PATH() + '/validateToken'; }
 
         static buildGetUrl(userName: string) {
             return UrlCollection.UserManagement.GET() + '/' + userName;

@@ -76,4 +76,21 @@ export class UserProfileEffects {
 
     )
   );
+
+  validateRequested$ = createEffect(() => 
+      this.actions$.pipe(
+        ofType(UserProfileActions.validateTokenRequested),
+        concatMap(() =>
+          this.authService.validateToken()
+            .pipe(
+              tap(result => {
+                if (!result){
+                  this.router.navigate(['/login']);
+                }
+              }),
+              map(result => result ? UserProfileActions.validateTokenSucceeded() : UserProfileActions.validateTokenFailed())
+            )
+        )
+      )
+  );
 }
