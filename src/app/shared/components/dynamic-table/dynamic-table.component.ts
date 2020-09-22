@@ -82,6 +82,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   ) { }
 
   ngOnInit() {
+    // Get observable for entity configuration from store
     const configuration$: Observable<EntityConfiguration> = this.store$.pipe(
       select(fromConfigSelectors.selectConfigs),
       map(configs => configs[this.tableData.entityType])
@@ -102,33 +103,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         return;
       }
 
+      // Add rows per page option to dropdown if defined in config
       if (!this.rowsPerPageOptions.includes(this.configuration.rowsPerPage)) {
         this.rowsPerPageOptions.push(this.configuration.rowsPerPage);
         this.rowsPerPageOptions.sort();
-      }
-
-      // Calculate minWidth if set to auto (-1)
-      if (this.configuration.minWidth === -1) {
-        this.configuration.fields.forEach(field =>  {
-          if (field.visible) {
-            switch (field.type) {
-              case 'int':
-                this.configuration.minWidth += 100;
-                break;
-              case 'String':
-                this.configuration.minWidth += 200;
-                break;
-              case 'boolean':
-                this.configuration.minWidth += 50;
-                break;
-              case 'Date':
-                this.configuration.minWidth += 150;
-                break;
-              default:
-                this.configuration.minWidth += 150;
-            }
-          }
-        });
       }
 
       // get Currency from settings
@@ -137,8 +115,29 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       this.checkShowButtons();
 
       this.minTableWidth = 0;
+      const calcMinWidth = this.configuration.minWidth === -1;
       this.fields = this.configuration.fields.filter(field => field.visible === true);
       this.fields.forEach(field => {
+        // Calculate minWidth if set to auto (-1)
+        if (calcMinWidth) {
+          switch (field.type) {
+            case 'int':
+              this.configuration.minWidth += 100;
+              break;
+            case 'String':
+              this.configuration.minWidth += 200;
+              break;
+            case 'boolean':
+              this.configuration.minWidth += 50;
+              break;
+            case 'Date':
+              this.configuration.minWidth += 150;
+              break;
+            default:
+              this.configuration.minWidth += 150;
+          }
+        }
+
         if (!field.width) {
           this.zeroWidthColumns++;
         } else {
@@ -149,6 +148,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         this.filtersInTable = field.filterType !== 'none' || this.filtersInTable;
         field.options = [];
 
+        // get catalogue information for every field of type CatalogueEntry
         if ((Field.isCatalogueEntry(field) || Field.isIcon(field)) && field.defaultCatalogue) {
           this.subscriptions.push(
             this.catalogueService.getCatalogue(field.defaultCatalogue)
