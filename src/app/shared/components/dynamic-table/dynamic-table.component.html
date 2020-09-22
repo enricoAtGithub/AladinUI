@@ -9,11 +9,16 @@
     <p-table #dt [columns]="fields" [value]="entityData.data" selectionMode="single" dataKey="id" [(selection)]="selectedEntry" (onRowSelect)="rowSelect()" (onRowUnselect)="rowUnselect()"
       [paginator]="tableData.pagination" [(rows)]="configuration.rowsPerPage" [rowsPerPageOptions]="rowsPerPageOptions" [responsive]="true" [lazy]="true" (onLazyLoad)="loadLazy($event)" [loading]="loading"
       [totalRecords]="entityData.count" [scrollable]="tableData.scrollable || configuration?.minWidth" [scrollHeight]="tableData.scrollHeight" styleClass="ui-table-customers" (window:resize)="onTableResize($event)">
-     <!-- show buttons here if table header is visible -->
+
+      <!-- show buttons here if table header is visible -->
       <ng-template *ngIf="tableData.showHeader" pTemplate="caption">
         {{configuration.displayName}}
-        <button *ngIf="configuration.type !== 'File' &&  configuration.type !== 'FileAttachment'" pButton (click)="createEntity()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Hinzufügen"></button>
-        <button *ngIf="configuration.type === 'File' || configuration.type === 'FileAttachment'" pButton (click)="uploadFile(mainId, mainType)" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Datei hochladen"></button>
+        <ng-template [ngIf]="configuration.type !== 'File' &&  configuration.type !== 'FileAttachment'">
+          <button *appPermissionCheck="root.dto.$dtoType.create; varArr ['$dtoType', configuration.type]" pButton (click)="createEntity()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Hinzufügen"></button>
+        </ng-template>
+        <ng-template [ngIf]="configuration.type === 'File' || configuration.type === 'FileAttachment'">
+          <button *appPermissionCheck="root.dto.File.upload" pButton (click)="uploadFile(mainId, mainType)" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Datei hochladen"></button>
+        </ng-template>
         <button pButton (click)="refreshTableContents()" icon="pi pi-undo" style="float: right; margin-top: -5px; margin-right: 5px;" pTooltip="Ansicht aktualisieren"></button>
         <button *ngIf="filterAreActive()" pButton (click)="resetFilter()" icon="pi pi-times-circle" style="float: right; margin-top: -5px; margin-right: 5px;" pTooltip="Filter zurücksetzen"></button>
       </ng-template>
@@ -22,7 +27,7 @@
       <ng-template pTemplate="header" let-columns>
         <tr>
           <th *ngFor="let col of columns" [style.width]="calcWidth(col, dt.el.nativeElement.offsetWidth)" [ngSwitch]="col.filterType" style="padding: 0px;">
-            <div style="display:flex; flex-direction: column;">            
+            <div *appPermissionCheck="root.dto.$dtoType.$dtoField.read; varArr ['$dtoType', configuration.type, '$dtoField', col.field]" style="display:flex; flex-direction: column;">            
               <!-- Header titles and sorting icon-->
               <div [pSortableColumn]="col.sortable ? col.field : null" style="margin: 0px">
                 <p style="margin: 0px; padding: 5px" style="overflow-wrap: anywhere;">
@@ -46,29 +51,34 @@
                   </ng-template>
                 </p-multiSelect>
               </div>
-
             </div>
-          </th>
-          <th *ngIf="showButtons" [style.width.px]="crudColumnSpace">
+          </th>          
+
+          <th *ngIf="showButtons" [style.width.px]="crudColumnSpace">            
             <!-- show buttons here in case table header is hidden  -->
             <ng-template [ngIf]="!tableData.showHeader">
               <!-- Header titles and sorting icon-->
               <div style="display:flex;justify-content: center;align-items: flex-end;flex-wrap: wrap;height: 30px;">            
-                <button *ngIf="configuration.type !== 'File' &&  configuration.type !== 'FileAttachment'" pButton (click)="createEntity()" icon="pi pi-plus" style="float: right; margin-right: 5px" pTooltip="Hinzufügen" class="ui-button-success"></button>
-                <button *ngIf="configuration.type === 'File' || configuration.type === 'FileAttachment'" pButton (click)="uploadFile(mainId, mainType)" icon="pi pi-plus" style="float: right; margin-right: 5px" pTooltip="Datei hochladen" class="ui-button-success"></button>
+                <ng-template [ngIf]="configuration.type !== 'File' &&  configuration.type !== 'FileAttachment'">
+                  <button *appPermissionCheck="root.dto.$dtoType.create; varArr ['$dtoType', configuration.type]" pButton (click)="createEntity()" icon="pi pi-plus" style="float: right; margin-right: 5px" pTooltip="Hinzufügen" class="ui-button-success"></button>
+                </ng-template>
+                <ng-template [ngIf]="configuration.type === 'File' || configuration.type === 'FileAttachment'">
+                  <button *appPermissionCheck="root.dto.File.upload" pButton (click)="uploadFile(mainId, mainType)" icon="pi pi-plus" style="float: right; margin-right: 5px" pTooltip="Datei hochladen" class="ui-button-success"></button>
+                </ng-template>                
                 <button pButton (click)="refreshTableContents()" icon="pi pi-undo" style="float: right;" pTooltip="Ansicht aktualisieren" class="ui-button-success"></button>
                 <button *ngIf="filterAreActive()" pButton (click)="resetFilter()" icon="pi pi-times-circle" style="float: right; margin-right: 5px" pTooltip="Filter zurücksetzen" class="ui-button-success"></button>                    
               </div>
             </ng-template>          
           </th>
+
         </tr>
       </ng-template>
+
+      <!-- Processing and displaying table data -->
       <ng-template pTemplate="body" let-rowData let-fields="columns">
-        <!-- Processing and displaying the data -->
         <tr [pSelectableRow]="rowData" (dblclick)="doubleClickTableRow(rowData)">
           <td *ngFor="let field of fields" id="hoverEffect" [style.width]="calcWidth(field, dt.el.nativeElement.offsetWidth)" style="overflow-wrap: anywhere;">
-            <!-- <div style="display: flex; align-items: center;" [style.justify-content]="field.type === 'boolean' ? 'center' : 'space-between'"> -->
-            <div style="display: flex; align-items: center;" [style.justify-content]="(field.type === 'boolean' || field.type === 'Date') ? 'center' : field.type === 'Currency' ? 'flex-end' : 'space-between'">  
+            <div *appPermissionCheck="root.dto.$dtoType.$dtoField.read; varArr ['$dtoType', configuration.type, '$dtoField', field.field]" style="display: flex; align-items: center;" [style.justify-content]="(field.type === 'boolean' || field.type === 'Date') ? 'center' : field.type === 'Currency' ? 'flex-end' : 'space-between'">  
               <ng-container [var]="{isEdited: false}" #cell="var">
                 <ng-container *ngIf="cell.isEdited else displayEditable" [ngSwitch]="field.type">
                   <div *ngSwitchCase="'String'">
@@ -148,23 +158,40 @@
                     <div *ngSwitchCase="'float'"> {{(processData(rowData[field.field], field)).toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals })}}</div>
                     <div *ngSwitchDefault>{{processData(rowData[field.field], field)}}</div>
                   </ng-container>
-                  <i *ngIf="(field.editable || field.alternativeFieldForEditing) && tableData.inlineEdit" class="pi pi-pencil cellEditIcon"
-                    (click)="$event.stopPropagation(); initCellEdit(cell, field, rowData);"></i>
+                  <ng-template [ngIf]="(field.editable || field.alternativeFieldForEditing) && tableData.inlineEdit">
+                    <i *appPermissionCheck="root.dto.$dtoType.$dtoField.write; varArr ['$dtoType', configuration.type, '$dtoField', field.field]" class="pi pi-pencil cellEditIcon"
+                      (click)="$event.stopPropagation(); initCellEdit(cell, field, rowData);"></i>
+                  </ng-template>    
                 </ng-template>
               </ng-container>
             </div>
           </td>
 
-
-          <!-- Crud Buttons -->
+          <!-- Crud Buttons at last column -->
           <td *ngIf="showButtons"  [style.width.px]="crudColumnSpace" style="text-align: center;">
             <code *ngFor="let action of rowData._actions_" [ngSwitch]="action" class="html"> 
               <!-- hard coded actions -->
-              <button *ngSwitchCase="'UPDATE'" pButton type="button" icon="pi pi-pencil" class="crudButton" pTooltip="bearbeiten" (click)="updateEntity(rowData)"></button>
-              <button *ngSwitchCase="'DELETE'" pButton type="button" icon="pi pi-trash" class="crudButton" pTooltip="löschen" (click)="deleteEntity(rowData)"></button>
-              <button *ngSwitchCase="'UPLOAD'" pButton type="button" icon="fa fa-upload" class="crudButton" fileSaver pTooltip="aktualisieren" (click)="uploadFile(mainId, mainType, rowData['id'], rowData['fileType'])"></button>
-              <button *ngSwitchCase="'DOWNLOAD'" pButton type="button" icon="fa fa-download" class="crudButton" fileSaver pTooltip="herunterladen" [method]="'GET'" [fileName]="rowData['fileName']" [url]="downloadUrl(rowData['id'])"></button>
-              <!-- dynamic script actions -->
+              <ng-template [ngSwitchCase]="'UPDATE'">
+                <button *appPermissionCheck="root.dto.$dtoType.write; varArr ['$dtoType', configuration.type]" pButton type="button" icon="pi pi-pencil" class="crudButton" pTooltip="bearbeiten" (click)="updateEntity(rowData)"></button>
+              </ng-template>
+
+              <ng-template [ngSwitchCase]="'DELETE'">
+                <button *appPermissionCheck="root.dto.$dtoType.delete; varArr ['$dtoType', configuration.type]" pButton type="button" icon="pi pi-trash" class="crudButton" pTooltip="löschen" (click)="deleteEntity(rowData)"></button>
+              </ng-template>
+
+              <ng-template [ngSwitchCase]="'UPLOAD'">
+                <ng-template [ngIf]="configuration.type === 'File' || configuration.type === 'FileAttachment'">
+                  <button *appPermissionCheck="root.dto.File.upload" pButton type="button" icon="fa fa-upload" class="crudButton" fileSaver pTooltip="aktualisieren" (click)="uploadFile(mainId, mainType, rowData['id'], rowData['fileType'])"></button>
+                </ng-template>
+              </ng-template>              
+
+              <ng-template [ngSwitchCase]="'DOWNLOAD'"> 
+                <ng-template [ngIf]="configuration.type === 'File' || configuration.type === 'FileAttachment'">
+                  <button *appPermissionCheck="root.dto.File.download" pButton type="button" icon="fa fa-download" class="crudButton" fileSaver pTooltip="herunterladen" [method]="'GET'" [fileName]="rowData['fileName']" [url]="downloadUrl(rowData['id'])"></button>
+                </ng-template>
+              </ng-template>
+
+                <!-- dynamic script actions -->
               <button *ngSwitchDefault pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton"  [pTooltip]="configuration.actions[action].tooltip" (click)="executeAction(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
             </code>
           </td>
