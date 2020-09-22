@@ -189,9 +189,11 @@ export class AuthService {
       .get<User>(UrlCollection.UserManagement.VALIDATE_TOKEN())
       .pipe(
         map(() => {
+          console.log('token validation succeeded.');
           return true;
         }),
-        catchError((err: HttpErrorResponse) => {
+        // catchError((err: HttpErrorResponse) => {
+        catchError((err: any) => {
           console.log('validate token failed: ', err);
           return of(false);
         })

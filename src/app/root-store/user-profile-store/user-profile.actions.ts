@@ -10,3 +10,4 @@ export const logoutSucceeded = createAction('[Logout] Logout Success');
 export const validateTokenRequested = createAction('[AppModule] Token validation requested');
 export const validateTokenSucceeded = createAction('[Auth] Token validation succeeded');
 export const validateTokenFailed = createAction('[Auth] Token validation failed');
+export const validateTokenUnnecessary = createAction('[Auth] Token validation not needed (No token available)');
