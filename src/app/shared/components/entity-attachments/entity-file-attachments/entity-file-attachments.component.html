@@ -9,10 +9,18 @@
       <ng-template ngFor let-category [ngForOf]="categories" let-i="index"> 
         <p-tabPanel [header]="category.displayName" [selected]="this.selectedPanel === category.attachmentCatHrid">
           <div class="ui-g ui-fluid">
-            <app-dynamic-table style="padding: 0px" *ngIf="fileTableData" [tableData]="fileTableData[i]" [mainId]="ownerId" [mainType]="ownerType" [attachmentCategory]="category.attachmentCatHrid"></app-dynamic-table>
+            <app-dynamic-table style="padding: 0px" [tableData]="fileTableData[i]" [mainId]="ownerId" [mainType]="ownerType"
+              [attachmentCategory]="category.attachmentCatHrid"></app-dynamic-table>
           </div>
         </p-tabPanel> 
       </ng-template>
+      <p-tabPanel *ngIf="showZombieAttachmentTab" header="Andere" [selected]="this.selectedPanel === 'Andere'">
+        <div class="ui-g ui-fluid">
+          <app-dynamic-table style="padding: 0px" *ngIf="fileTableData"
+            [tableData]="fileTableData[(fileTableData.length - 1)]" [mainId]="ownerId" [mainType]="ownerType"
+            [attachmentCategory]="'Andere'"></app-dynamic-table>
+        </div>
+      </p-tabPanel>
     </p-tabView>     
   </ng-template>
 

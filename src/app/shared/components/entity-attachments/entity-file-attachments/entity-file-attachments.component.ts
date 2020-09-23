@@ -1,8 +1,10 @@
-import { Component, OnInit, Input, OnChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { TableData } from 'src/app/shared/models/table-data';
 import { EntityService } from 'src/app/shared/services/entity.service';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AttachmentCategory } from 'src/app/shared/models/entity-configuration';
+import { EntityData } from 'src/app/shared/models/entity-data';
+
 
 @Component({
   selector: 'app-entity-file-attachments',
@@ -14,32 +16,52 @@ export class EntityFileAttachmentsComponent implements OnInit, OnChanges, OnDest
   @Input() ownerId: number;
   @Input() categories: AttachmentCategory[];
 
-  fileTableData: TableData[] = [];
   subscriptions: Subscription[] = [];
+  fileTableData: TableData[];
+  showZombieAttachmentTab: boolean;
 
   constructor(
     private entityService: EntityService
   ) { }
 
   ngOnInit() {
-    // for each category we have a separate entry in fileTableData[]
-    if (this.categories) {
-      this.categories.forEach(category => {             // initialize data (=attached files) for each category
+    this.fileTableData = [];
+    this.showZombieAttachmentTab = false;
+
+    if (this.categories) {                               // initialze FileTable for each category
+      const attachmentCatHrid: string[] = [];
+      this.categories.forEach(category => {
         this.initFileTable(category.attachmentCatHrid);
+        attachmentCatHrid.push(category.attachmentCatHrid);
       });
-    } else {
+      this.initFileTable(null, attachmentCatHrid);
+    } else {                                             // no categories
       this.initFileTable();
     }
   }
 
-  initFileTable(categoryHrid?: string) {
-    const dataSource = this.entityService
-      .postEntityDataFromUrl('/attachment/all', { attachmentType: 'File', attachmentCategory: categoryHrid, ownerType: this.ownerType, ownerId: this.ownerId });
+  // no param set: no attachment category defined => get all file attachments
+  // only catHrid is set: get file attachments for category
+  // only excludedCats[] is set: get all file attachments excluding the ones belonging to the specified categories ("zombie attachments")
+  initFileTable(catHrid?: string, excludedCats?: string[]) {
+    const dataSource$ = this.entityService
+      .postEntityDataFromUrl('/attachment/all', {
+        attachmentType: 'File', attachmentCategory: catHrid, ownerType: this.ownerType,
+        ownerId: this.ownerId, excludeAttachmentCategories: excludedCats
+      });
+
+    if (excludedCats) {
+      this.subscriptions.push(
+        dataSource$.subscribe(entityData => {
+          entityData.data.length === 0 ? this.showZombieAttachmentTab = false : this.showZombieAttachmentTab = true;
+        })
+      );
+    }
 
     const tableData = new TableData('FileAttachment', 'FileAttachment')
       .setScrollable()
       .setScrollHeight('175px')
-      .setDataSource(dataSource)
+      .setDataSource(dataSource$)
       .hideHeadline()
       .hideHeader()
       .disablePagination();
@@ -48,22 +70,8 @@ export class EntityFileAttachmentsComponent implements OnInit, OnChanges, OnDest
   }
 
   // called when any data-bound property of a directive changes, e.g. when another entity is selected
-  ngOnChanges() {
-    if (this.ownerId && this.ownerType) {
-      if (this.fileTableData) {                             // do not run when initializing the component
-        this.fileTableData.forEach((tableData, index) => {  // refresh every attachment category
-          this.refreshFileTable(index);
-        });
-      }
-    }
-  }
-
-  refreshFileTable(idx: number) {
-    let categoryHrid: string;
-    this.categories ? categoryHrid = this.categories[idx].attachmentCatHrid : categoryHrid = undefined;
-    this.fileTableData[idx].dataSource = this.entityService
-      .postEntityDataFromUrl('/attachment/all', { attachmentType: 'File', attachmentCategory: categoryHrid, ownerType: this.ownerType, ownerId: this.ownerId });
-    this.fileTableData[idx].triggerRefresh.next();
+  ngOnChanges(changes: SimpleChanges) {
+    if (!changes.ownerId.firstChange) { this.ngOnInit(); }
   }
 
   ngOnDestroy() {
