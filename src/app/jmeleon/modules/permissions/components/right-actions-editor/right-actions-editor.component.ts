@@ -46,7 +46,7 @@ export class RightActionsEditorComponent implements OnInit, OnChanges, OnDestroy
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.entryId) {
+    if (changes.ownerId) {
       this.facade.requestActionTreeFromBackend(this.ownerId);
       this.facade.selectSection(null);
     }

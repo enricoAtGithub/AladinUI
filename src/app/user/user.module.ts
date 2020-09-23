@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { UpdateUserDialogComponent } from './components/update-user-dialog/update-user-dialog.component';
 import { SharedModule } from '../shared/shared.module';
 import { CatalogueManagementComponent } from './components/catalogue-management/catalogue-management.component';
+import { RoleManagementComponent } from './components/role-management/role-management.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { CatalogueManagementComponent } from './components/catalogue-management/
     UserManagementComponent,
     AddUserDialogComponent,
     UpdateUserDialogComponent,
-    CatalogueManagementComponent
+    CatalogueManagementComponent,
+    RoleManagementComponent
   ],
   imports: [
     CommonModule,

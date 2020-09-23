@@ -35,6 +35,7 @@ export class EntityGroupRelationComponent implements OnChanges {
         select(fromConfigSelectors.selectGroupConfigs),
         map(configs => configs[this.relation])
       );
+
       groupConfigurations$.subscribe(groupConfig => {
         this.groupConfig = groupConfig;
         this.entityService.filter(groupConfig.member, 1, 2147483647, undefined, '', '').subscribe(allMembers => {

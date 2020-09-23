@@ -19,6 +19,7 @@ import { AvailabilityComponent } from './jmeleon/modules/scheduler/components/av
 import { DTOEntitiesComponent } from './jmeleon/components/dto-entities/dto-entities.component';
 import { ScriptActionsComponent } from './jmeleon/components/script-actions/script-actions.component';
 import { EntityViewComponent } from './shared/components/entity-view/entity-view.component';
+import { RoleManagementComponent } from './user/components/role-management/role-management.component';
 
 export const routes: Routes = [
   // App-Layout routes
@@ -67,8 +68,7 @@ export const routes: Routes = [
         children: [
           { path: 'user-management', pathMatch: 'full', component: UserManagementComponent },
           { path: 'useralt-management', pathMatch: 'full', component: EntityViewComponent, data: { entityType: 'User', displayName: 'Benutzer' } },
-          { path: 'role-management', pathMatch: 'full', component: EntityViewComponent, data: { entityType: 'SecurityRole', displayName: 'Rollenverwaltung' } },
-          { path: 'permission-management', pathMatch: 'full', component: EntityViewComponent, data: { entityType: 'SecurityRight', displayName: 'Rechteverwaltung' } },
+          { path: 'role-management', pathMatch: 'full', component: RoleManagementComponent },
         ]
       },
       {
