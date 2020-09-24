@@ -3,8 +3,6 @@ import { TableData } from 'src/app/shared/models/table-data';
 import { EntityService } from 'src/app/shared/services/entity.service';
 import { Subscription } from 'rxjs';
 import { AttachmentCategory } from 'src/app/shared/models/entity-configuration';
-import { EntityData } from 'src/app/shared/models/entity-data';
-
 
 @Component({
   selector: 'app-entity-file-attachments',
@@ -25,6 +23,10 @@ export class EntityFileAttachmentsComponent implements OnInit, OnChanges, OnDest
   ) { }
 
   ngOnInit() {
+    this.init();
+  }
+
+  init() {
     this.fileTableData = [];
     this.showZombieAttachmentTab = false;
 
@@ -71,7 +73,7 @@ export class EntityFileAttachmentsComponent implements OnInit, OnChanges, OnDest
 
   // called when any data-bound property of a directive changes, e.g. when another entity is selected
   ngOnChanges(changes: SimpleChanges) {
-    if (!changes.ownerId.firstChange) { this.ngOnInit(); }
+    if (!changes.ownerId.firstChange) { this.init(); }
   }
 
   ngOnDestroy() {
