@@ -5,13 +5,15 @@ export interface UserProfileState {
   error: string;
   isInLogin: boolean;
   isInLogout: boolean;
+  tokenIsValidated: boolean;
 }
 
 export const initialState: UserProfileState = {
   user: null,
   error: '',
   isInLogin: false,
-  isInLogout: false
+  isInLogout: false,
+  tokenIsValidated: false
 };
 
 export const userProfileStoreKey = 'userProfile';

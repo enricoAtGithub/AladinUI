@@ -96,11 +96,13 @@ export class UserProfileEffects {
             return this.authService.validateToken()
               .pipe(
                 tap(result => {
-                  if (!result) {
+                  if (!result.tokenIsValid) {
                     this.router.navigate(['/login']);
                   }
                 }),
-                map(result => result ? UserProfileActions.validateTokenSucceeded() : UserProfileActions.validateTokenFailed())
+                map(result => result.tokenIsValid ?
+                  UserProfileActions.validateTokenSucceeded({user: result.loginContext} ) :
+                  UserProfileActions.validateTokenFailed())
               );
           }
         )

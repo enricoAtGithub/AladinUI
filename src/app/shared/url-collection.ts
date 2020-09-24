@@ -29,7 +29,7 @@ export class UrlCollection {
         static CHANGE_PASSWD(): string { return UrlCollection.USER_API_BASE_PATH() + '/changepwd'; }
 
         static ROLE(): string { return UrlCollection.USER_API_BASE_PATH() + '/role'; }
-        static VALIDATE_TOKEN(): string {return UrlCollection.USER_API_BASE_PATH() + '/validateToken'; }
+        static VALIDATE_TOKEN(token: string): string {return UrlCollection.USER_API_BASE_PATH() + '/validateToken/' + token; }
 
         static buildGetUrl(userName: string) {
             return UrlCollection.UserManagement.GET() + '/' + userName;
