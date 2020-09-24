@@ -148,7 +148,7 @@
                             (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)"
                             (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
                             (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)" appAutoFocus>
-                          <span class="ui-inputgroup-addon">{{currency$ | async}}</span>
+                          <span class="ui-inputgroup-addon">{{currency}}</span>
                         </div>
                         <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!currencyInput.validity.valid"></button>
                       </ng-container>

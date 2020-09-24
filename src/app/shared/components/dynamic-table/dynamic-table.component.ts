@@ -57,7 +57,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   minTableWidth: number;
   freeColumnSpace = 100;
   zeroWidthColumns = 0;
-  currency$: Observable<string>;
+  currency: string;
   actionCount: number;
   displayEntitySelectionDialog = false;
   entitySelectionTableData: TableData;
@@ -95,6 +95,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.refreshTrigger = new Subject();
     this.subscriptions.push(this.refreshTrigger.asObservable().subscribe(() => this.refreshTableContents()));
 
+    this.settingsService.getSetting('CURRENCY').pipe(map(setting => setting.value)).subscribe(currency => this.currency = currency);
+
     this.subscriptions.push(configuration$.subscribe(async config => {
       // Get the config according to the given name
       this.configuration = config;
@@ -108,9 +110,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         this.rowsPerPageOptions.push(this.configuration.rowsPerPage);
         this.rowsPerPageOptions.sort();
       }
-
-      // get Currency from settings
-      this.currency$ = this.settingsService.getSetting('CURRENCY').pipe(map(setting => setting.value));
 
       this.checkShowButtons();
 
