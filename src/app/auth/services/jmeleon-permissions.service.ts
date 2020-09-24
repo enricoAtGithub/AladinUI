@@ -46,7 +46,7 @@ export class JMeleonPermissionsService {
   currentUserHasPermission(permissionName: string): boolean {
     const permissions = this.permissionsService.getPermissions();
     const userHasPermission = Object.keys(permissions).some(key => key === permissionName);
-    console.log(`user has permission '${permissionName}': ${userHasPermission} `);
+    // console.log(`user has permission '${permissionName}': ${userHasPermission} `);
     return userHasPermission;
   }
 

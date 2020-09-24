@@ -64,7 +64,7 @@ export class JmeleonActionsPermissionService {
       return result;
     }).pipe(
       tap(result => {
-        console.log(`user has ${(result ? '' : 'no ')} permission for: '${action}'`);
+        // console.log(`user has ${(result ? '' : 'no ')} permission for: '${action}'`);
         // if (!result){
         //   this.ngxPermissionService.permissions$.subscribe(perm => {
         //     console.log('current permissions: ', perm);
