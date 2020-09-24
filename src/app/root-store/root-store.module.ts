@@ -32,8 +32,9 @@ export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionRedu
   const jmeleonStoreNames = [
     {
       'userProfile': {
-        encrypt: (state: string) => CryptUtils.encryptForLocalStorage(state),
-        decrypt: (state: string) => CryptUtils.decryptForLocalStorage(state),
+        // en-/decrypt is not called when used with de-/serialize. moved en/decrypt into de-/serialize.
+        // encrypt: (state: string) => CryptUtils.encryptForLocalStorage(state),
+        // decrypt: (state: string) => CryptUtils.decryptForLocalStorage(state),
         serialize: (userState: UserProfileState) => {
           // clone state
           // console.log('serializing state. input: ', userState);
@@ -45,6 +46,9 @@ export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionRedu
             state.user.user = undefined;
             state.tokenIsValidated = false;
           }
+          if (!!state && !!state.user && !!state.user.token){
+            state.user.token = CryptUtils.encryptToken(state.user.token);
+          }
           return state;
           // serialize (doesn't seems to be necessary)
           // console.log('serializing state. ', state);
@@ -54,6 +58,9 @@ export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionRedu
 
           // console.log('deserializing state. ', state);
           // return JSON.parse(state);
+          if (!!state && !!state.user && !!state.user.token){
+            state.user.token = CryptUtils.decryptToken(state.user.token);
+          }
           return state;
         }
       }
