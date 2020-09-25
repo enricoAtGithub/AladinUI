@@ -44,7 +44,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
   configuration: EntityConfiguration;
   subscriptions: Subscription[] = [];
-  fields: Field[];
+  fields: Field[] = [];
   loading = true; // Needs to be true to prevent ExpressionHasChangedError
   entityData: EntityData;
   selectedEntry: any;
@@ -115,66 +115,77 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
       this.minTableWidth = 0;
       const calcMinWidth = this.configuration.minWidth === -1;
-      this.fields = this.configuration.fields.filter(field => field.visible === true);
-      this.fields.forEach(field => {
-        // Calculate minWidth if set to auto (-1)
-        if (calcMinWidth) {
-          switch (field.type) {
-            case 'int':
-              this.configuration.minWidth += 100;
-              break;
-            case 'String':
-              this.configuration.minWidth += 200;
-              break;
-            case 'boolean':
-              this.configuration.minWidth += 50;
-              break;
-            case 'Date':
-              this.configuration.minWidth += 150;
-              break;
-            default:
-              this.configuration.minWidth += 150;
-          }
-        }
 
-        if (!field.width) {
-          this.zeroWidthColumns++;
-        } else {
-          this.minTableWidth += !field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
-          this.freeColumnSpace -= field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
-        }
+      this.configuration.fields.forEach(field => {
+        this.subscriptions.push(
 
-        this.filtersInTable = field.filterType !== 'none' || this.filtersInTable;
-        field.options = [];
+          // only consider allowed fields (user has reading permissions) which are visible === true
+          this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.read, { '$dtoType': this.configuration.type, '$dtoField': field.field }).subscribe(userHasPermission => {
+            if (userHasPermission && field.visible) {
+              this.fields.push(field);
 
-        // get catalogue information for every field of type CatalogueEntry
-        if ((Field.isCatalogueEntry(field) || Field.isIcon(field)) && field.defaultCatalogue) {
-          this.subscriptions.push(
-            this.catalogueService.getCatalogue(field.defaultCatalogue)
-              .subscribe(catalogue => {
-                catalogue.values.forEach(o => {
-                  if (Field.isCatalogueEntry(field)) {
-                    field.options.push({ label: o.name, value: o.id });
-                  } else {
-                    this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe((attributes: any) => {
-                      const icon = attributes.find(attr => attr['name'] === 'icon');
-                      const color = attributes.find(attr => attr['name'] === 'color');
-                      field.options.push({
-                        label: '__icon__', value:
-                          { id: '' + o.id, icon: icon ? icon['stringValue'] : '', color: color ? color['stringValue'] : '' }
+              // Calculate minWidth if set to auto (-1)
+              if (calcMinWidth) {
+                switch (field.type) {
+                  case 'int':
+                    this.configuration.minWidth += 100;
+                    break;
+                  case 'String':
+                    this.configuration.minWidth += 200;
+                    break;
+                  case 'boolean':
+                    this.configuration.minWidth += 50;
+                    break;
+                  case 'Date':
+                    this.configuration.minWidth += 150;
+                    break;
+                  default:
+                    this.configuration.minWidth += 150;
+                }
+              }
+
+              if (!field.width) {
+                this.zeroWidthColumns++;
+              } else {
+                this.minTableWidth += !field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
+                this.freeColumnSpace -= field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
+              }
+
+              this.filtersInTable = field.filterType !== 'none' || this.filtersInTable;
+              field.options = [];
+
+              // get catalogue information for every field of type CatalogueEntry
+              if ((Field.isCatalogueEntry(field) || Field.isIcon(field)) && field.defaultCatalogue) {
+                this.subscriptions.push(
+                  this.catalogueService.getCatalogue(field.defaultCatalogue)
+                    .subscribe(catalogue => {
+                      catalogue.values.forEach(o => {
+                        if (Field.isCatalogueEntry(field)) {
+                          field.options.push({ label: o.name, value: o.id });
+                        } else {
+                          this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe((attributes: any) => {
+                            const icon = attributes.find(attr => attr['name'] === 'icon');
+                            const color = attributes.find(attr => attr['name'] === 'color');
+                            field.options.push({
+                              label: '__icon__', value:
+                                { id: '' + o.id, icon: icon ? icon['stringValue'] : '', color: color ? color['stringValue'] : '' }
+                            });
+                          });
+                        }
                       });
-                    });
-                  }
-                });
-              }));
-        } else if (Field.isDtoType(field)) {
-          // get all dtoConfigs for field.type === 'dtoType' (e.g. for Script Actions)
-          const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
-          this.subscriptions.push(
-            configurations$.subscribe(configs => Object.values(configs).map(o => field.options.push({ label: o.type, value: o.type })))
-          );
-        }
-      }); // loop fields.forEach
+                    }));
+              } else if (Field.isDtoType(field)) {
+                // get all dtoConfigs for field.type === 'dtoType' (e.g. for Script Actions)
+                const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
+                this.subscriptions.push(
+                  configurations$.subscribe(configs => Object.values(configs).map(o => field.options.push({ label: o.type, value: o.type })))
+                );
+              }
+
+            }
+          })
+        );
+      });
 
       this.subscriptions.push(this.tableData.triggerRefresh.subscribe(() => this.refreshTableContents()));
     }));
@@ -254,7 +265,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       }
     });
 
-    if (!!this.selectedId){
+    if (!!this.selectedId) {
       qualifier += `EQ('id',${this.selectedId}),`;
     }
 
@@ -374,13 +385,13 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       this.subscriptions.push(
         dialogRef.onClose.pipe(
           switchMap((fields: Field[]) => {
-              if (fields) {
-                this.loading = true;
-                return this.entityService.createEntity(this.configuration.type, fields);
-              } else {
-                return EMPTY;
-              }
-            })).subscribe(
+            if (fields) {
+              this.loading = true;
+              return this.entityService.createEntity(this.configuration.type, fields);
+            } else {
+              return EMPTY;
+            }
+          })).subscribe(
             () => {
               this.loadLazy(this.lastLazyLoadEvent);
               this.entityOperation.emit(null);
@@ -521,7 +532,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
   }
 
-  calcCrudColWidth(actionCount: number): number	{
+  calcCrudColWidth(actionCount: number): number {
     // width required to display action icons, per Icon 32px required, additional offset of 2x13px for margin
     // if there is no actionCount (empty table) just return 90px
     return actionCount ? (actionCount * 32) + 26 : 90;
@@ -550,8 +561,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           this.subscriptions.push(
             dialogRef.onClose.subscribe((fields: Field[]) => {
               if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-              this.loading = true;
-              payload.params = fields;
+                this.loading = true;
+                payload.params = fields;
                 this.entityService.executeAction(payload, false).subscribe(
                   (result) => {
                     this.loadLazy(this.lastLazyLoadEvent);
@@ -630,7 +641,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   initCellEdit(cellRef, field, rowData) {
-      // If another cell is being edited abort the edit operation and initialize the new edit operation
+    // If another cell is being edited abort the edit operation and initialize the new edit operation
     if (this.lastCellRef !== undefined && this.cellEditCache !== undefined) {
       const rowDataPrev = this.entityData.data.find(row => row['id'] === this.cellEditCache.data['id']);
       rowDataPrev[this.cellEditCache.field.field] = this.cellEditCache.data[this.cellEditCache.field.field];
@@ -648,7 +659,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       return;
     }
 
-    this.cellEditCache = {field: field.field, data: Object.assign({}, rowData)};
+    this.cellEditCache = { field: field.field, data: Object.assign({}, rowData) };
     cellRef.isEdited = true;
     this.lastCellRef = cellRef;
 

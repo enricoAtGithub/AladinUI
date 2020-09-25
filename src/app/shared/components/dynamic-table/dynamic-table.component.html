@@ -29,7 +29,7 @@
         <ng-template pTemplate="header" let-columns>
           <tr>
             <ng-template ngFor let-col [ngForOf]="columns">
-              <th *appPermissionCheck="root.dto.$dtoType.$dtoField.read; varArr ['$dtoType', configuration.type, '$dtoField', col.field]" [style.width]="calcWidth(col, dt.el.nativeElement.offsetWidth)" [ngSwitch]="col.filterType" style="padding: 0px;">
+              <th [style.width]="calcWidth(col, dt.el.nativeElement.offsetWidth)" [ngSwitch]="col.filterType" style="padding: 0px;">
                 <div style="display:flex; flex-direction: column;">            
                   <!-- Header titles and sorting icon-->
                   <div [pSortableColumn]="col.sortable ? col.field : null" style="margin: 0px">
@@ -82,7 +82,7 @@
         <ng-template pTemplate="body" let-rowData let-fields="columns">
           <tr [pSelectableRow]="rowData" (dblclick)="doubleClickTableRow(rowData)">
             <ng-template ngFor let-field [ngForOf]="fields">
-              <td *appPermissionCheck="root.dto.$dtoType.$dtoField.read; varArr ['$dtoType', configuration.type, '$dtoField', field.field]" id="hoverEffect" [style.width]="calcWidth(field, dt.el.nativeElement.offsetWidth)" style="overflow-wrap: anywhere;">
+              <td id="hoverEffect" [style.width]="calcWidth(field, dt.el.nativeElement.offsetWidth)" style="overflow-wrap: anywhere;">
                 <div style="display: flex; align-items: center;" [style.justify-content]="(field.type === 'boolean' || field.type === 'Date') ? 'center' : field.type === 'Currency' ? 'flex-end' : 'space-between'">  
                   <ng-container [var]="{isEdited: false}" #cell="var">
                     <ng-container *ngIf="cell.isEdited else displayEditable" [ngSwitch]="field.type">
