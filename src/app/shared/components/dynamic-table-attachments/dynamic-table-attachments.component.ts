@@ -43,7 +43,7 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
 
         this.panelAttachments = config.entityAttachments.filter(entityAttachment => entityAttachment.appearance === 'panel');
 
-        const tabViewGroupAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'group' );
+        const tabViewGroupAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'group');
         if (tabViewGroupAttachments) {
           tabViewGroupAttachments.some(group => {
             if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(group.name))) {
@@ -53,7 +53,7 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
           });
         }
 
-        const tabViewAttrGroupAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'attributeGroup' );
+        const tabViewAttrGroupAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'attributeGroup');
         if (!this.selectedPanel && tabViewAttrGroupAttachments) {
           tabViewAttrGroupAttachments.some(attributeGroup => {
             if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(attributeGroup.name))) {
@@ -63,7 +63,7 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
           });
         }
 
-        const tabViewComponentAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'component' );
+        const tabViewComponentAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'component');
         if (!this.selectedPanel && tabViewComponentAttachments) {
           tabViewComponentAttachments.some(component => {
             if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(component.name))) {
@@ -73,7 +73,7 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
           });
         }
 
-        const tabViewSubentityAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'subentity' );
+        const tabViewSubentityAttachments: EntityAttachment[] = this.tabViewAttachments.filter(entityAttachment => entityAttachment.type === 'subentity');
         if (!this.selectedPanel && tabViewSubentityAttachments) {
           tabViewSubentityAttachments.some(subentity => {
             if (!this.excludedPanels || (this.excludedPanels && !this.excludedPanels.includes(subentity.name))) {
@@ -96,7 +96,9 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.configName) {
-      this.init();
+      if (!changes.configName.firstChange) {
+        this.init();
+      }
     }
   }
 
