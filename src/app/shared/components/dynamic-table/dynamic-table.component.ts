@@ -137,9 +137,9 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         }
 
         // collect all "createable" fields (user has create permission)
-        const createDtoFieldAllowed$ = createDtoTypeAllowed$.pipe(switchMap(editDtoTypeAllowed => {
-          if (editDtoTypeAllowed) {
-            return this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.write, { '$dtoType': this.configuration.type, '$dtoField': field.field });
+        const createDtoFieldAllowed$ = createDtoTypeAllowed$.pipe(switchMap(createDtoTypeAllowed => {
+          if (createDtoTypeAllowed) {
+            return this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.create, { '$dtoType': this.configuration.type, '$dtoField': field.field });
           }
         }));
         this.subscriptions.push(
@@ -218,6 +218,20 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
       this.subscriptions.push(this.tableData.triggerRefresh.subscribe(() => this.refreshTableContents()));
     }));
+  }
+
+  // not used currently
+  getAllowedFields(dtoTypePermission$: Observable<boolean>, dtoType: string, dtofield: string) {
+    const dtoFieldAllowed$ = dtoTypePermission$.pipe(switchMap(editDtoTypeAllowed => {
+      if (editDtoTypeAllowed) {
+        return this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.write, { '$dtoType': dtoType, '$dtoField': dtofield });
+      }
+    }));
+    this.subscriptions.push(
+      dtoFieldAllowed$.subscribe(dtoFieldAllowed => {
+        // if (dtoFieldAllowed) { this.creatableFields.push(field); }
+      })
+    );
   }
 
   ngOnDestroy() {
