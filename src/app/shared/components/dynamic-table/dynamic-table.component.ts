@@ -46,6 +46,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   subscriptions: Subscription[] = [];
   fields: Field[] = [];
   editableFields: Field[] = [];
+  creatableFields: Field[] = [];
   loading = true; // Needs to be true to prevent ExpressionHasChangedError
   entityData: EntityData;
   selectedEntry: any;
@@ -117,10 +118,11 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       this.minTableWidth = 0;
       const calcMinWidth = this.configuration.minWidth === -1;
       const editDtoTypeAllowed$ = this.japs.userHasPermissionForAction(root.dto.$dtoType.write, { '$dtoType': this.configuration.type });
+      const createDtoTypeAllowed$ = this.japs.userHasPermissionForAction(root.dto.$dtoType.create, { '$dtoType': this.configuration.type });
 
       this.configuration.fields.forEach(field => {
 
-        // collect all editable fiels (user has edit permission and field is editable === true)
+        // collect all editable fields (user has edit permission and field is editable === true)
         if (field.editable) {
           const editDtoFieldAllowed$ = editDtoTypeAllowed$.pipe(switchMap(editDtoTypeAllowed => {
             if (editDtoTypeAllowed) {
@@ -133,6 +135,18 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             })
           );
         }
+
+        // collect all "createable" fields (user has create permission)
+        const createDtoFieldAllowed$ = createDtoTypeAllowed$.pipe(switchMap(editDtoTypeAllowed => {
+          if (editDtoTypeAllowed) {
+            return this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.write, { '$dtoType': this.configuration.type, '$dtoField': field.field });
+          }
+        }));
+        this.subscriptions.push(
+          createDtoFieldAllowed$.subscribe(createDtoFieldAllowed => {
+            if (createDtoFieldAllowed) { this.creatableFields.push(field); }
+          })
+        );
 
         // only consider allowed fields (user has reading permissions) which are visible === true
         this.subscriptions.push(
@@ -376,7 +390,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       const dialogRef = this.dialogService.open(EntityDialogComponent, {
         data: {
           update: false,
-          fields: this.configuration.fields,
+          fields: this.creatableFields,
           configType: this.configuration.type,
           mainId: this.mainId
         },
