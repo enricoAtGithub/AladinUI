@@ -128,8 +128,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             }
           }));
           this.subscriptions.push(
-            editDtoFieldAllowed$.subscribe(userHasEditPermission => {
-              if (userHasEditPermission) { this.editableFields.push(field); }
+            editDtoFieldAllowed$.subscribe(editDtoFieldAllowed => {
+              if (editDtoFieldAllowed) { this.editableFields.push(field); }
             })
           );
         }
@@ -200,9 +200,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             }
           })
         );
-
-
-
       });
 
       this.subscriptions.push(this.tableData.triggerRefresh.subscribe(() => this.refreshTableContents()));
