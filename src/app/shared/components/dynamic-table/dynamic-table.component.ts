@@ -45,6 +45,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   configuration: EntityConfiguration;
   subscriptions: Subscription[] = [];
   fields: Field[] = [];
+  editableFields: Field[] = [];
   loading = true; // Needs to be true to prevent ExpressionHasChangedError
   entityData: EntityData;
   selectedEntry: any;
@@ -117,11 +118,19 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       const calcMinWidth = this.configuration.minWidth === -1;
 
       this.configuration.fields.forEach(field => {
-        this.subscriptions.push(
 
+        // collect all editable fiels (user has edit permission and field is editable === true)
+        if (field.editable) {
+          this.subscriptions.push(
+            this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.write, { '$dtoType': this.configuration.type, '$dtoField': field.field }).subscribe(userHasEditPermission => {
+              if (userHasEditPermission) { this.editableFields.push(field); }
+            }));
+        }
+
+        this.subscriptions.push(
           // only consider allowed fields (user has reading permissions) which are visible === true
-          this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.read, { '$dtoType': this.configuration.type, '$dtoField': field.field }).subscribe(userHasPermission => {
-            if (userHasPermission && field.visible) {
+          this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.read, { '$dtoType': this.configuration.type, '$dtoField': field.field }).subscribe(userHasReadPermission => {
+            if (userHasReadPermission && field.visible) {
               this.fields.push(field);
 
               // Calculate minWidth if set to auto (-1)
@@ -181,7 +190,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
                   configurations$.subscribe(configs => Object.values(configs).map(o => field.options.push({ label: o.type, value: o.type })))
                 );
               }
-
             }
           })
         );
@@ -412,7 +420,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       data: {
         update: true,
         entity: rowData,
-        fields: this.configuration.fields,
+        fields: this.editableFields,
         configType: this.configuration.type,
         mainId: this.mainId
       },
