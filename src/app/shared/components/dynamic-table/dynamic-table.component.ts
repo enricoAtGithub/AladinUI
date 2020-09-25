@@ -116,19 +116,26 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
       this.minTableWidth = 0;
       const calcMinWidth = this.configuration.minWidth === -1;
+      const editDtoTypeAllowed$ = this.japs.userHasPermissionForAction(root.dto.$dtoType.write, { '$dtoType': this.configuration.type });
 
       this.configuration.fields.forEach(field => {
 
         // collect all editable fiels (user has edit permission and field is editable === true)
         if (field.editable) {
+          const editDtoFieldAllowed$ = editDtoTypeAllowed$.pipe(switchMap(editDtoTypeAllowed => {
+            if (editDtoTypeAllowed) {
+              return this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.write, { '$dtoType': this.configuration.type, '$dtoField': field.field });
+            }
+          }));
           this.subscriptions.push(
-            this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.write, { '$dtoType': this.configuration.type, '$dtoField': field.field }).subscribe(userHasEditPermission => {
+            editDtoFieldAllowed$.subscribe(userHasEditPermission => {
               if (userHasEditPermission) { this.editableFields.push(field); }
-            }));
+            })
+          );
         }
 
+        // only consider allowed fields (user has reading permissions) which are visible === true
         this.subscriptions.push(
-          // only consider allowed fields (user has reading permissions) which are visible === true
           this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.read, { '$dtoType': this.configuration.type, '$dtoField': field.field }).subscribe(userHasReadPermission => {
             if (userHasReadPermission && field.visible) {
               this.fields.push(field);
@@ -193,6 +200,9 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
             }
           })
         );
+
+
+
       });
 
       this.subscriptions.push(this.tableData.triggerRefresh.subscribe(() => this.refreshTableContents()));
