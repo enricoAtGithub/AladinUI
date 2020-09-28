@@ -46,7 +46,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   subscriptions: Subscription[] = [];
   fields: Field[] = [];
   editableFields: Field[] = [];
-  creatableFields: Field[] = [];
   loading = true; // Needs to be true to prevent ExpressionHasChangedError
   entityData: EntityData;
   selectedEntry: any;
@@ -117,36 +116,20 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
       this.minTableWidth = 0;
       const calcMinWidth = this.configuration.minWidth === -1;
-      const editDtoTypeAllowed$ = this.japs.userHasPermissionForAction(root.dto.$dtoType.write, { '$dtoType': this.configuration.type });
-      const createDtoTypeAllowed$ = this.japs.userHasPermissionForAction(root.dto.$dtoType.create, { '$dtoType': this.configuration.type });
 
       this.configuration.fields.forEach(field => {
 
         // collect all editable fields (user has edit permission and field is editable === true)
         if (field.editable) {
-          const editDtoFieldAllowed$ = editDtoTypeAllowed$.pipe(switchMap(editDtoTypeAllowed => {
-            if (editDtoTypeAllowed) {
-              return this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.write, { '$dtoType': this.configuration.type, '$dtoField': field.field });
-            }
-          }));
+          const requestedPermissions = [root.dto.$dtoType.write, root.dto.$dtoType.$dtoField.write];
           this.subscriptions.push(
-            editDtoFieldAllowed$.subscribe(editDtoFieldAllowed => {
-              if (editDtoFieldAllowed) { this.editableFields.push(field); }
+            this.japs.userHasPermissionForActions(requestedPermissions, { '$dtoType': this.configuration.type, '$dtoField': field.field }).subscribe(permissions => {
+              if (permissions[root.dto.$dtoType.write] && permissions[root.dto.$dtoType.$dtoField.write]) {
+                this.editableFields.push(field);
+              }
             })
           );
         }
-
-        // collect all "createable" fields (user has create permission)
-        const createDtoFieldAllowed$ = createDtoTypeAllowed$.pipe(switchMap(createDtoTypeAllowed => {
-          if (createDtoTypeAllowed) {
-            return this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.create, { '$dtoType': this.configuration.type, '$dtoField': field.field });
-          }
-        }));
-        this.subscriptions.push(
-          createDtoFieldAllowed$.subscribe(createDtoFieldAllowed => {
-            if (createDtoFieldAllowed) { this.creatableFields.push(field); }
-          })
-        );
 
         // only consider allowed fields (user has reading permissions) which are visible === true
         this.subscriptions.push(
@@ -218,20 +201,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
       this.subscriptions.push(this.tableData.triggerRefresh.subscribe(() => this.refreshTableContents()));
     }));
-  }
-
-  // not used currently
-  getAllowedFields(dtoTypePermission$: Observable<boolean>, dtoType: string, dtofield: string) {
-    const dtoFieldAllowed$ = dtoTypePermission$.pipe(switchMap(editDtoTypeAllowed => {
-      if (editDtoTypeAllowed) {
-        return this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.write, { '$dtoType': dtoType, '$dtoField': dtofield });
-      }
-    }));
-    this.subscriptions.push(
-      dtoFieldAllowed$.subscribe(dtoFieldAllowed => {
-        // if (dtoFieldAllowed) { this.creatableFields.push(field); }
-      })
-    );
   }
 
   ngOnDestroy() {
@@ -404,7 +373,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       const dialogRef = this.dialogService.open(EntityDialogComponent, {
         data: {
           update: false,
-          fields: this.creatableFields,
+          fields: this.editableFields,
           configType: this.configuration.type,
           mainId: this.mainId
         },
