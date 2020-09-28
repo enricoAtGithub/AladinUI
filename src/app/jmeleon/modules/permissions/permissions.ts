@@ -9,7 +9,6 @@ export const root = {
             write: 'dto.$dtoType.write',
             delete: 'dto.$dtoType.delete',
             $dtoField: {
-                create: 'dto.$dtoType.$dtoField.create',
                 read: 'dto.$dtoType.$dtoField.read',
                 write: 'dto.$dtoType.$dtoField.write'
             }
@@ -92,7 +91,6 @@ export const list = [
     'dto.$dtoType.read',
     'dto.$dtoType.write',
     'dto.$dtoType.delete',
-    'dto.$dtoType.$dtoField.create',
     'dto.$dtoType.$dtoField.read',
     'dto.$dtoType.$dtoField.write',
     'dto.FileAttachment.upload',
