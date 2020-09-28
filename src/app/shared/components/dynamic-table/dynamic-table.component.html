@@ -121,7 +121,7 @@
                       </ng-container>
                       <ng-container *ngSwitchCase="'Date'">
                         <p-calendar [name]="field.field" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
-                          class="calenderInputWidthFix" [(ngModel)]="rowData[field.field]"
+                          class="calendarInputWidthFix" [(ngModel)]="rowData[field.field]" appendTo="body"
                           (click)="$event.stopPropagation()"
                           (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)"
                           (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
@@ -129,9 +129,10 @@
                         <button pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; completeCellEdit(rowData);"></button>
                       </ng-container>
                       <ng-container *ngSwitchCase="'Reference'">
-                        <p-dropdown [placeholder]="field.header" [showClear]="!field.mandatory" class="dropdownFullWidth" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}"
+                        <p-dropdown #dropdown [placeholder]="field.header" [showClear]="!field.mandatory" class="dropdownFullWidth" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}"
                           [style]="{'minWidth': '0px', 'display':'grid'}" [(ngModel)]="rowData[field.field]"
                           (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
+                          (onShow)="showDropdown(rowData, dropdown)"
                           (onChange)="cell.isEdited = false; completeCellEdit(rowData)" appAutoFocus></p-dropdown>
                       </ng-container>
                       <ng-container *ngSwitchCase="'dtoType'">

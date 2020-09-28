@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
-import { EntityData, Entity } from '../../models/entity-data';
+import { EntityData } from '../../models/entity-data';
 import { EntityService } from '../../services/entity.service';
-import { LazyLoadEvent, DialogService, ConfirmationService, SelectItem } from 'primeng/primeng';
+import { LazyLoadEvent, DialogService, ConfirmationService } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
 import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
 import { Observable, Subject, Subscription, EMPTY } from 'rxjs';
@@ -41,6 +41,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   @Input() token: string;
   @Output() entitySelection = new EventEmitter();
   @Output() entityOperation = new EventEmitter();
+
+  @ViewChild('dt', {read: ElementRef, static: false}) dynamicTableRef: ElementRef;
 
   configuration: EntityConfiguration;
   subscriptions: Subscription[] = [];
@@ -638,7 +640,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   abortCellEdit(rowData, event) {
-    if (event.relatedTarget === undefined || event.relatedTarget === null || event.relatedTarget['id'] !== this.cellEditCache.field + '§' + rowData['id']) {
+    if (!event || event.relatedTarget === undefined || event.relatedTarget === null || event.relatedTarget['id'] !== this.cellEditCache.field + '§' + rowData['id']) {
       if (this.cellEditCache !== undefined) {
         rowData[this.cellEditCache.field] = this.cellEditCache.data[this.cellEditCache.field];
         this.cellEditCache = undefined;
@@ -669,6 +671,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     if (field.type === 'python' || field.type === 'json') {
       this.openCodeEditor(rowData, field.type, field.field);
       return;
+    }
+    // Register scroll handler in order to abort edit in case of scrolling
+    if (field.type === 'Date') {
+      this.dynamicTableRef.nativeElement.querySelector('div.ui-table-scrollable-body').addEventListener('scroll', (ev: Event) => this.abortCellEdit(rowData, null), { once: true });
     }
 
     this.cellEditCache = { field: field.field, data: Object.assign({}, rowData) };
@@ -707,6 +713,19 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }, error => this.refreshTableContents());
   }
 
+  showDropdown(rowData, dd) {
+    const dropdown = dd.el.nativeElement;
+    const rect = dropdown.getBoundingClientRect();
+
+    this.dynamicTableRef.nativeElement.querySelector('div.ui-table-scrollable-body').addEventListener('scroll', (ev: Event) => this.abortCellEdit(rowData, null), { once: true });
+
+    document.body.append(dropdown);
+    dropdown.style.position = 'absolute';
+    dropdown.style.left = rect.left + 'px';
+    dropdown.style.top = rect.top + window.pageYOffset + 'px';
+    dropdown.style.width = rect.width + 'px';
+  }
+
   openCodeEditor(data: any, syntax: string, field: string) {
     const dialogRef = this.dialogService.open(CodeEditorComponent, {
       data: {
@@ -739,7 +758,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   _isCatalogueEntry(field: Field): boolean {
-    return Field.isCatalogueEntry(field)
+    return Field.isCatalogueEntry(field);
   }
 
 }
