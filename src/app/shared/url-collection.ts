@@ -29,7 +29,7 @@ export class UrlCollection {
         static CHANGE_PASSWD(): string { return UrlCollection.USER_API_BASE_PATH() + '/changepwd'; }
 
         static ROLE(): string { return UrlCollection.USER_API_BASE_PATH() + '/role'; }
-        static VALIDATE_TOKEN(token: string): string {return UrlCollection.USER_API_BASE_PATH() + '/validateToken/' + token; }
+        static VALIDATE_TOKEN(token: string): string { return UrlCollection.USER_API_BASE_PATH() + '/validateToken/' + token; }
 
         static buildGetUrl(userName: string) {
             return UrlCollection.UserManagement.GET() + '/' + userName;
@@ -38,7 +38,7 @@ export class UrlCollection {
     };
 
     static Scheduler = class {
-        static SCHEDULER_ORDERS = () => UrlCollection.SCHEDULER_API_BASE_PATH() + '/schedulerOrders';
+        static SCHEDULER_ORDERS = () => UrlCollection.SCHEDULER_API_BASE_PATH() + '/schedulerEvents/OrderScheduler';
         private static SCHEDULER_ORDER = () => UrlCollection.SCHEDULER_API_BASE_PATH() + '/schedulerOrder';
         static SCHEDULER_RESOURCES = (schedulerEventId: number) => UrlCollection.Scheduler.SCHEDULER_ORDER() + '/' + schedulerEventId + '/resources';
         static UPDATE_ORDER_INTERVAL = (schedulerEventId: number) => UrlCollection.Scheduler.SCHEDULER_ORDER() + '/' + schedulerEventId + '/updateOrderInterval';
