@@ -159,7 +159,7 @@
                     <ng-template #displayEditable>
                       <span class="ui-column-title">{{field.header}}</span>
                       <ng-container [ngSwitch]="field.type">
-                        <div *ngSwitchCase="'Currency'" style="font-family: monospace">{{processData(rowData[field.field], field)}}&nbsp;{{currency$ | async}}</div>
+                        <div *ngSwitchCase="'Currency'" style="font-family: monospace">{{processData(rowData[field.field], field)}}&nbsp;{{currency}}</div>
                         <div *ngSwitchCase="'Icon'"><i [class]="rowData[field.field]?.icon" [ngStyle]="{'color': rowData[field.field]?.color}" style="font-size: 2em;"></i></div>
                         <div *ngSwitchCase="'json'" style="font-family: monospace;">{{processData(rowData[field.field], field)}}</div>
                         <div *ngSwitchCase="'python'" style="font-family: monospace;">{{processData(rowData[field.field], field)}}</div>
