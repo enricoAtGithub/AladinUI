@@ -166,10 +166,11 @@
                         <div *ngSwitchCase="'float'"> {{(processData(rowData[field.field], field)).toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals })}}</div>
                         <div *ngSwitchDefault>{{processData(rowData[field.field], field)}}</div>
                       </ng-container>
-                      <ng-template [ngIf]="(field.editable || field.alternativeFieldForEditing) && tableData.inlineEdit"
-                        [appPermissionCheck]="root.dto.$dtoType.write" [appPermissionCheckVarDict]="{'$dtoType':configuration.type}">
+                      <ng-template [ngIf]="(field.editable || field.alternativeFieldForEditing) && tableData.inlineEdit">
+                        <ng-template [appPermissionCheck]="root.dto.$dtoType.write" [appPermissionCheckVarDict]="{'$dtoType':configuration.type}">
                         <i *appPermissionCheck="root.dto.$dtoType.$dtoField.write; varArr ['$dtoType', configuration.type, '$dtoField', field.field]" class="pi pi-pencil cellEditIcon"
                           (click)="$event.stopPropagation(); initCellEdit(cell, field, rowData);"></i>
+                        </ng-template>
                       </ng-template>    
                     </ng-template>
                   </ng-container>
