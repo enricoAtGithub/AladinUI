@@ -135,13 +135,13 @@
                           [style]="{'minWidth': '0px', 'display':'grid'}" [(ngModel)]="rowData[field.field]"
                           (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
                           (onShow)="showDropdown(rowData, dropdown)"
-                          (onChange)="cell.isEdited = false; completeCellEdit(rowData)" appAutoFocus></p-dropdown>
+                          (onChange)="cell.isEdited = false; completeCellEdit(rowData)" appAutoFocus appStopClickPropagation></p-dropdown>
                       </ng-container>
                       <ng-container *ngSwitchCase="'dtoType'">
                         <p-dropdown [placeholder]="field.header" class="dropdownFullWidth" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}"
                           [style]="{'minWidth': '0px', 'display':'grid'}" [(ngModel)]="rowData[field.field]"
                           (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
-                          (onChange)="cell.isEdited = false; completeCellEdit(rowData)" appAutoFocus></p-dropdown>
+                          (onChange)="cell.isEdited = false; completeCellEdit(rowData)" appAutoFocus appStopClickPropagation></p-dropdown>
                       </ng-container>
                       <ng-container *ngSwitchCase="'Currency'">
                         <div class="ui-inputgroup" style="width: calc(100% - 2.143em);">            
