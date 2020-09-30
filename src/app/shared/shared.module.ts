@@ -47,6 +47,9 @@ import { VarDirective } from './directives/var.directive';
 import { AutoFocusDirective } from './directives/auto-focus.directive';
 import { TooltipModule } from 'primeng/tooltip';
 import { RouterModule } from '@angular/router';
+import { PasswordInputComponent } from './components/password-input/password-input.component';
+import { EntityViewComponent } from './components/entity-view/entity-view.component';
+import { StopClickPropagationDirective } from './directives/stop-click-propagation.directive';
 
 @NgModule({
   declarations: [
@@ -66,7 +69,10 @@ import { RouterModule } from '@angular/router';
     EntitySubtypesComponent,
     CodeEditorComponent,
     VarDirective,
-    AutoFocusDirective
+    AutoFocusDirective,
+    PasswordInputComponent,
+    EntityViewComponent,
+    StopClickPropagationDirective
   ],
   imports: [
     CommonModule,
@@ -118,7 +124,8 @@ import { RouterModule } from '@angular/router';
     CatalogueChooserDialogComponent,
     EntityDropdownComponent,
     NgxPermissionsModule,
-    PermissionsModule
+    PermissionsModule,
+    PasswordInputComponent
   ],
   providers: [
     EntityService,

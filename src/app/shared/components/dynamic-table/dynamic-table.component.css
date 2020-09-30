@@ -32,7 +32,7 @@
     font-size: 1.4em;
 }
 
-.calenderInputWidthFix {
+.calendarInputWidthFix {
     width: calc(100% - 2.143em)
 }
 

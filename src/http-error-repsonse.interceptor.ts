@@ -1,3 +1,4 @@
+
 import { Injectable} from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -57,6 +58,7 @@ export class HttpErrorRepsonseInterceptor implements HttpInterceptor {
                     } else if (!!error && !!error.error && !!error.error.code && error.error.code === ServerErrorCode.LOST_UPDATE_FAILED) {
                         this.errorNotificationService.addErrorNotification(
                             'Update fehlgeschlagen', `Element wurde an anderer Stelle geändert.\n (${error['error']['message']})`);
+                            
                     } else {
                         this.errorNotificationService.addErrorNotification('Error code ' + error['error']['code'], error['error']['message']);
                     }

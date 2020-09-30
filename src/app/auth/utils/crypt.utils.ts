@@ -40,10 +40,12 @@ export default class CryptUtils {
 
         const result = JSON.stringify(obj);
 
-        // console.log(`encrypting state for local storage. \nunencrypted value: ${value.substr(0, CryptUtils._logLength)}. \nencrypted value: ${result.substr(0, CryptUtils._logLength)}`);
+        console.log(`encrypting state for local storage. \nunencrypted value: ${value.substr(0, CryptUtils._logLength)}. \nencrypted value: ${result.substr(0, CryptUtils._logLength)}`);
 
         return result;
     }
+
+    static encryptToken = (token: string): string => CryptoJS.AES.encrypt(token, CryptUtils._key).toString();
 
 
     static decryptForLocalStorage = (value: string): string => {
@@ -78,10 +80,12 @@ export default class CryptUtils {
         obj['user']['token'] = decryptedToken;
         const result = JSON.stringify(obj);
 
-        // console.log(`decrypting state for local storage. \nencrypted value: ${value.substr(0, CryptUtils._logLength)}. \ndecrypted value: ${result.substr(0, CryptUtils._logLength)}`);
+        console.log(`decrypting state for local storage. \nencrypted value: ${value.substr(0, CryptUtils._logLength)}. \ndecrypted value: ${result.substr(0, CryptUtils._logLength)}`);
 
         return result;
     }
+
+    static decryptToken = (encryptedToken: string) => CryptoJS.AES.decrypt(encryptedToken, CryptUtils._key).toString(CryptoJS.enc.Utf8);
 
     // static encryptForLocalStorage = (value: string): string => {
 

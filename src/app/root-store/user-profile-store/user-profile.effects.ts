@@ -1,21 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, map, switchMap, tap, concatMap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap, concatMap, withLatestFrom, mergeMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Router } from '@angular/router';
 import { User } from 'src/app/shared/models/user';
 
 import * as ConfigActions from '../config-store/config.actions';
-import * as UserProfileActions from './user-profile.actions';
 import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
 import { logoutSucceeded } from './user-profile.actions';
+// import { RootStoreState, UserProfileActions } from 'src/app/root-store/root-index';
+import * as RootStoreState from '../root.state';
+import * as UserProfileActions from './user-profile.actions';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class UserProfileEffects {
-  constructor(private authService: AuthService, private actions$: Actions, public router: Router, private japs: JmeleonActionsPermissionService) {}
+  constructor(
+    private authService: AuthService,
+    private actions$: Actions,
+    public router: Router,
+    private japs: JmeleonActionsPermissionService,
+    private store$: Store<RootStoreState.State>) {}
 
-  login$ = createEffect(() => 
+  login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserProfileActions.loginRequested),
       concatMap(action =>
@@ -28,7 +36,7 @@ export class UserProfileEffects {
                   const user: User = httpResult.result;
                   user.allowedActions = user.allowedActions.sort();
                   this.japs.initActionsPermittedForCurrentUser(user.allowedActions);
-  
+
                   if (user.user.enforcePasswdChange) {
                     return UserProfileActions.passwordChangeRequired({user: user});
                   } else {
@@ -43,7 +51,7 @@ export class UserProfileEffects {
                 return UserProfileActions.loginFailed({error: httpResult.errMsg});
               }
             ),
-  
+
             catchError(error =>
               // of(new userProfileActions.LoginFailureAction({ error }))
               of(UserProfileActions.loginFailed({error}))
@@ -75,5 +83,29 @@ export class UserProfileEffects {
       switchMap(_ => [ConfigActions.loadConfigsRequested(), ConfigActions.loadGroupConfigsRequested()])
 
     )
+  );
+
+  validateRequested$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(UserProfileActions.validateTokenRequested),
+        withLatestFrom(this.store$),
+        mergeMap(([, storeState]) => {
+            if (!storeState.userProfile.user || !storeState.userProfile.user.token) {
+              return of(UserProfileActions.validateTokenUnnecessary());
+            }
+            return this.authService.validateToken()
+              .pipe(
+                tap(result => {
+                  if (!result.tokenIsValid) {
+                    this.router.navigate(['/login']);
+                  }
+                }),
+                map(result => result.tokenIsValid ?
+                  UserProfileActions.validateTokenSucceeded({user: result.loginContext} ) :
+                  UserProfileActions.validateTokenFailed())
+              );
+          }
+        )
+      )
   );
 }

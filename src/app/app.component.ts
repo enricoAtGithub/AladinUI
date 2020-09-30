@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/primeng';
 import { ErrorNotificationService } from './shared/services/error-notification.service';
 
@@ -7,10 +7,16 @@ import { ErrorNotificationService } from './shared/services/error-notification.s
   templateUrl: './app.component.html',
   styleUrls: [ './app.component.css' ]
 })
-export class AppComponent  {
-  constructor(private messageService: MessageService, private errorNotificationService: ErrorNotificationService) {
+export class AppComponent implements OnInit {
+  constructor(
+    private messageService: MessageService, 
+    private errorNotificationService: ErrorNotificationService,
+    ) {
     this.errorNotificationService.notificationQueue$.subscribe(notification => {
       this.messageService.add({severity: notification.severity, summary: notification.summary, detail: notification.detail, life: notification.life});
     });
+  }
+  ngOnInit(): void {
+    // console.log('ngoninit - appcomponent');
   }
 }

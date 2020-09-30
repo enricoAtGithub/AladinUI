@@ -105,9 +105,6 @@ import { HttpErrorRepsonseInterceptor } from 'src/http-error-repsonse.intercepto
 import { FormsModule } from '@angular/forms';
 // import { FileUploadDialogComponent } from './shared/components/file-upload-dialog/file-upload-dialog.component';
 import { FileSaverModule } from 'ngx-filesaver';
-import { InvoicesComponent } from './invoices/invoices.component';
-import { OrdersComponent } from './domain/components/orders/orders.component';
-import { UseraltComponent } from './useralt/useralt.component';
 import { ProgressSpinnerModule } from 'primeng/primeng';
 import { JmeleonModule } from './jmeleon/jmeleon.module';
 import { DiagramsModule } from './jmeleon/modules/diagrams/diagrams.module';
@@ -116,9 +113,6 @@ import { DigitOnlyModule } from '@uiowa/digit-only';
 import { SettingsModule } from './jmeleon/modules/settings/settings.module';
 import { SchedulerModule } from './jmeleon/modules/scheduler/scheduler.module';
 import { PermissionsModule } from './jmeleon/modules/permissions/permissions.module';
-import { AccountsComponent } from './accounts/accounts.component';
-import { ProductsComponent } from './domain/components/products/products.component';
-import { QuotationsComponent } from './domain/components/quotations/quotations.component';
 import { RouterModule } from '@angular/router';
 
 import { FinComponent } from './domain/components/fin/fin.component';
@@ -129,6 +123,7 @@ import { J48TreeComponent } from './domain/components/j48tree/j48tree.component'
 
 export function initializeApp(appConfig: AppConfig) {
     console.log('initialize app');
+    appConfig.loadServerInfo();
     return () => appConfig.load();
     // return appConfig.load();
 }
@@ -236,14 +231,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         AppThemeComponent,
         AppFooterComponent,
         AppProfileComponent,
-        UseraltComponent,
         ProfileComponent,
-        ReportsComponent,
-        InvoicesComponent,
-        OrdersComponent,
-        AccountsComponent,
-        ProductsComponent,
-        QuotationsComponent,
+        ReportsComponent
         FinComponent,
         ModelSetComponent,
         ManufacturerComponent,
@@ -253,7 +242,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     providers: [
         AppConfig,
         { provide: APP_INITIALIZER, useFactory: initializeApp, deps: [AppConfig], multi: true },
-        // {provide: LocationStrategy, useClass: PathLocationStrategy},
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: HttpErrorRepsonseInterceptor, multi: true },

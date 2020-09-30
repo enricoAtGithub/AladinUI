@@ -6,7 +6,6 @@
     - write
     - delete
     - $dtoField:   # $dtoField represents a certain field available on the particular DTO Type
-      - create
       - read
       - write
   - FileAttachment:  
@@ -38,6 +37,7 @@
   - stammdaten:
     - show
     - produkte
+    - produkttemplates
     - accounts
   - vertrieb:
     - show

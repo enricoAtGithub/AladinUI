@@ -10,7 +10,18 @@ export class AutoFocusDirective implements AfterContentInit {
 
   public ngAfterContentInit(): void {
     setTimeout(() => {
-        this.el.nativeElement.focus();
+      const ne = this.el.nativeElement;
+      switch (ne.localName) {
+        case 'p-dropdown':
+        case 'p-checkbox':
+          ne.children[0].children[0].children[0].focus();
+          break;
+        case 'p-calendar':
+          ne.children[0].children[0].focus();
+          break;
+        default:
+          ne.focus();
+      }
     }, 20);
   }
 

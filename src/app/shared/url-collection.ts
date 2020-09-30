@@ -14,9 +14,9 @@ export class UrlCollection {
         };
 
         static Right = class {
-            static ALL_ACTIONS = (rightId: number) => `${UrlCollection.UserManagement.RIGHT()}/${rightId}/allActions`;
-            static ADD_ACTION = (rightId: number) => `${UrlCollection.UserManagement.RIGHT()}/${rightId}/addAction`;
-            static REMOVE_ACTION = (rightId: number) => `${UrlCollection.UserManagement.RIGHT()}/${rightId}/removeAction`;
+            static ALL_ACTIONS = (roleId: number) => `${UrlCollection.UserManagement.ROLE()}/${roleId}/allActions`;
+            static ADD_ACTION = (roleId: number) => `${UrlCollection.UserManagement.ROLE()}/${roleId}/addAction`;
+            static REMOVE_ACTION = (roleId: number) => `${UrlCollection.UserManagement.ROLE()}/${roleId}/removeAction`;
         };
 
         static CREATE(): string { return UrlCollection.USER_API_BASE_PATH() + '/create'; }
@@ -28,7 +28,8 @@ export class UrlCollection {
         static LOGOUT(): string { return UrlCollection.USER_API_BASE_PATH() + '/logout'; }
         static CHANGE_PASSWD(): string { return UrlCollection.USER_API_BASE_PATH() + '/changepwd'; }
 
-        static RIGHT(): string { return UrlCollection.USER_API_BASE_PATH() + '/right'; }
+        static ROLE(): string { return UrlCollection.USER_API_BASE_PATH() + '/role'; }
+        static VALIDATE_TOKEN(token: string): string { return UrlCollection.USER_API_BASE_PATH() + '/validateToken/' + token; }
 
         static buildGetUrl(userName: string) {
             return UrlCollection.UserManagement.GET() + '/' + userName;
@@ -37,7 +38,7 @@ export class UrlCollection {
     };
 
     static Scheduler = class {
-        static SCHEDULER_ORDERS = () => UrlCollection.SCHEDULER_API_BASE_PATH() + '/schedulerOrders';
+        static SCHEDULER_ORDERS = () => UrlCollection.SCHEDULER_API_BASE_PATH() + '/schedulerEvents/OrderScheduler';
         private static SCHEDULER_ORDER = () => UrlCollection.SCHEDULER_API_BASE_PATH() + '/schedulerOrder';
         static SCHEDULER_RESOURCES = (schedulerEventId: number) => UrlCollection.Scheduler.SCHEDULER_ORDER() + '/' + schedulerEventId + '/resources';
         static UPDATE_ORDER_INTERVAL = (schedulerEventId: number) => UrlCollection.Scheduler.SCHEDULER_ORDER() + '/' + schedulerEventId + '/updateOrderInterval';

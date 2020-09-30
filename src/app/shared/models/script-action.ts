@@ -9,6 +9,7 @@ export class ScriptActionDefinition {
     public async: boolean;
     public resultType: string;
     public showResult: boolean;
+    public tooltop: string;
 }
 
 export class ScriptActionPayload {

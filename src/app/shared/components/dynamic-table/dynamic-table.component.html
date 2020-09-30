@@ -1,163 +1,226 @@
-<p-confirmDialog header="Neuer Eintrag" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
+<ng-template [appPermissionCheck]="root.dto.$dtoType.read" [appPermissionCheckVarDict]="{'$dtoType':configuration.type}" [appPermissionCheckElse]="hasNoPermission">
 
-<p-dialog header="Entity Auswahl" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog" [style]="{width: '80%'}" appendTo="body">
-  <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData" (entitySelection)="entitySelected($event)"></app-dynamic-table>
-</p-dialog>
+  <p-confirmDialog header="Neuer Eintrag" acceptLabel="Ja" rejectLabel="Nein"></p-confirmDialog>
 
-<div *ngIf="configuration" class="ui-g-12" style="padding:0px">
-  <div [ngClass]="{'card': tableData.showHeadline, 'card-w-title': tableData.showHeadline }">
-    <!-- <h1 *ngIf="tableData.showHeadline">{{tableData.tableName}}</h1> -->
-    <p-table #dt [columns]="fields" [value]="entityData.data" selectionMode="single" dataKey="id" [(selection)]="selectedEntry" (onRowSelect)="rowSelect()" (onRowUnselect)="rowUnselect()"
-      [paginator]="tableData.pagination" [(rows)]="configuration.rowsPerPage" [rowsPerPageOptions]="[10,25,50]" [responsive]="true" [lazy]="true" (onLazyLoad)="loadLazy($event)" [loading]="loading"
-      [totalRecords]="entityData.count" [scrollable]="tableData.scrollable || configuration?.scrollable" [scrollHeight]="tableData.scrollHeight" styleClass="ui-table-customers" (window:resize)="onTableResize($event)">
-      <ng-template *ngIf="tableData.showHeader" pTemplate="caption">
-        {{configuration.displayName}}
-        <button *ngIf="configuration.type !== 'File'" pButton (click)="createEntity()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Hinzufügen"></button>
-        <button *ngIf="configuration.type === 'File'" pButton (click)="uploadFile()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Datei hochladen"></button>
-        <button pButton (click)="refreshTableContents()" icon="pi pi-undo" style="float: right; margin-top: -5px; margin-right: 5px;" pTooltip="Ansicht aktualisieren"></button>
-        <button *ngIf="filterAreActive()" pButton (click)="resetFilter()" icon="pi pi-times-circle" style="float: right; margin-top: -5px; margin-right: 5px;" pTooltip="Filter zurücksetzen"></button>
-      </ng-template>
-      
-      <!-- Table Headers -->
-      <ng-template pTemplate="header" let-columns>
-        <tr>
-          <th *ngFor="let col of columns" [style.width]="calcWidth(col, dt.el.nativeElement.offsetWidth)" [ngSwitch]="col.filterType" style="padding: 0px;">
-            <div style="display:flex; flex-direction: column;">            
-              <!-- Header titles and sorting icon-->
-              <div [pSortableColumn]="col.sortable ? col.field : null" style="margin: 0px">
-                <p style="margin: 0px; padding: 5px" style="overflow-wrap: anywhere;">
-                  {{col.header}}
-                  <p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
-                </p>
-                <div *ngIf="filtersInTable" style="height: 36px; width: 100%;"></div>
-              </div>
+  <p-dialog header="Entity Auswahl" [draggable]="false" [modal]="true" [(visible)]="displayEntitySelectionDialog" [style]="{width: '80%'}" appendTo="body">
+    <app-dynamic-table *ngIf="entitySelectionTableData" [tableData]="entitySelectionTableData" (entitySelection)="entitySelected($event)"></app-dynamic-table>
+  </p-dialog>
 
-              <!-- Filters -->
-              <div *ngIf="col.filterType !== 'none'" style="margin: auto; margin-top: -32px; height: 32px; width: 80%;">
-                <input *ngSwitchCase="'text'" pInputText type="text" style="width:100%; max-width: 200px;" (input)="dt.filter($event.target.value, col.field, 'contains')">
-                <input *ngSwitchCase="'integer'" type="number" pInputText pKeyFilter="int" style="width:100%; max-width: 200px;" (input)="dt.filter($event.target.value, col.field, 'equals')">
-                <p-dropdown *ngSwitchCase="'dropdown'" [options]="col.options" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
-                <p-multiSelect *ngSwitchCase="'multiSelect'" [options]="col.options" [filter]='col.type === "CatalogueEntry"' [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'in')" [defaultLabel]="'Auswählen..'" [selectedItemsLabel]="'{0} Element(e)'" maxSelectedLabels="1">
-                  <ng-template let-item let-i="index" pTemplate="item">
-                    <span *ngIf="item.label !== '__icon__';else displayIcon2">{{item.label}}</span>
-                    <ng-template #displayIcon2>
-                      <i [class]="item.value.icon" [ngStyle]="{'color': item.value.color}" style="font-size: 2em; vertical-align: middle;"></i>
-                    </ng-template>
-                  </ng-template>
-                </p-multiSelect>
-              </div>
+  <div *ngIf="configuration" class="ui-g-12" style="padding:0px">
+    <div [ngClass]="{'card': tableData.showHeadline, 'card-w-title': tableData.showHeadline }">
+      <p-table #dt [columns]="fields" [value]="entityData.data" selectionMode="single" dataKey="id" [(selection)]="selectedEntry" (onRowSelect)="rowSelect()" (onRowUnselect)="rowUnselect()"
+        [paginator]="tableData.pagination" [(rows)]="configuration.rowsPerPage" [rowsPerPageOptions]="rowsPerPageOptions" [responsive]="true" [lazy]="true" (onLazyLoad)="loadLazy($event)" [loading]="loading"
+        [totalRecords]="entityData.count" [scrollable]="tableData.scrollable || configuration?.minWidth" [scrollHeight]="tableData.scrollHeight" styleClass="ui-table-customers" (window:resize)="onTableResize($event)">
 
-            </div>
-          </th>
-          
-          <th *ngIf="showButtons" [style.width.px]="crudColumnSpace">Bearbeiten</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-rowData let-fields="columns">
-        <!-- Processing and displaying the data -->
-        <tr [pSelectableRow]="rowData" (dblclick)="doubleClickTableRow(rowData)">
-          <td *ngFor="let field of fields" id="hoverEffect" [style.width]="calcWidth(field, dt.el.nativeElement.offsetWidth)" style="overflow-wrap: anywhere;">
-            <!-- <div style="display: flex; align-items: center;" [style.justify-content]="field.type === 'boolean' ? 'center' : 'space-between'"> -->
-            <div style="display: flex; align-items: center;" [style.justify-content]="(field.type === 'boolean' || field.type === 'Date') ? 'center' : field.type === 'Currency' ? 'flex-end' : 'space-between'">  
-              <ng-container [var]="{isEdited: false}" #cell="var">
-                <ng-container *ngIf="cell.isEdited else displayEditable" [ngSwitch]="field.type">
-                  <div *ngSwitchCase="'String'">
-                    <input [name]="field.field" type="text" appAutoFocus [(ngModel)]="rowData[field.field]" style="width: calc(100% - 30px)" pInputText
-                      (click)="$event.stopPropagation()" (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)" (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)" (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
-                    <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check"></button>
+        <!-- show buttons here if table header is visible -->
+        <ng-template *ngIf="tableData.showHeader" pTemplate="caption">
+          {{configuration.displayName}}
+          <ng-template [ngIf]="configuration.type !== 'File' &&  configuration.type !== 'FileAttachment'">
+            <button *appPermissionCheck="root.dto.$dtoType.create; varArr ['$dtoType', configuration.type]" pButton (click)="createEntity()" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Hinzufügen"></button>
+          </ng-template>
+          <ng-template [ngIf]="configuration.type === 'File' || configuration.type === 'FileAttachment'">
+            <button *appPermissionCheck="root.dto.File.upload" pButton (click)="uploadFile(mainId, mainType)" icon="pi pi-plus" style="float: right; margin-top: -5px;" pTooltip="Datei hochladen"></button>
+          </ng-template>
+          <button pButton (click)="refreshTableContents()" icon="pi pi-undo" style="float: right; margin-top: -5px; margin-right: 5px;" pTooltip="Ansicht aktualisieren"></button>
+          <button *ngIf="filterAreActive()" pButton (click)="resetFilter()" icon="pi pi-times-circle" style="float: right; margin-top: -5px; margin-right: 5px;" pTooltip="Filter zurücksetzen"></button>
+        </ng-template>
+        
+        <!-- Table Headers -->
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <ng-template ngFor let-col [ngForOf]="columns">
+              <th [style.width]="calcWidth(col, dt.el.nativeElement.offsetWidth)" [ngSwitch]="col.filterType" style="padding: 0px;">
+                <div style="display:flex; flex-direction: column;">            
+                  <!-- Header titles and sorting icon-->
+                  <div [pSortableColumn]="col.sortable ? col.field : null" style="margin: 0px">
+                    <p style="margin: 0px; padding: 5px" style="overflow-wrap: anywhere;">
+                      {{col.header}}
+                      <p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
+                    </p>
+                    <div *ngIf="filtersInTable" style="height: 36px; width: 100%;"></div>
                   </div>
-                  <!-- <ng-container *ngSwitchCase="'int'">
-                    <input #intInput [name]="field.field" type="number" min="0" step="1" appAutoFocus [(ngModel)]="rowData[field.field]" style="width: calc(100% - 30px)" pInputText
-                      (click)="$event.stopPropagation()" (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
-                    <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!intInput.validity.valid"></button>
-                  </ng-container> -->
-                  <ng-container *ngSwitchCase="'int'">
-                    <input #intInput [name]="field.field" type="text" pattern="^\d{1,3}((\.)?\d{3})*$" appAutoFocus [(ngModel)]="rowData[field.field]" style="width: calc(100% - 30px)" pInputText
-                      (click)="$event.stopPropagation()" (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)" (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"  (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
-                    <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!intInput.validity.valid"></button>
+
+                  <!-- Filters -->
+                  <div *ngIf="col.filterType !== 'none'" style="margin: auto; margin-top: -32px; height: 32px; width: 80%;">
+                    <input *ngSwitchCase="'text'" pInputText type="text" style="width:100%; max-width: 200px;" (input)="dt.filter($event.target.value, col.field, 'contains')">
+                    <input *ngSwitchCase="'integer'" type="number" pInputText pKeyFilter="int" style="width:100%; max-width: 200px;" (input)="dt.filter($event.target.value, col.field, 'equals')">
+                    <p-dropdown *ngSwitchCase="'dropdown'" [options]="col.options" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'equals')" appendTo="body"></p-dropdown>
+                    <p-multiSelect *ngSwitchCase="'multiSelect'" [options]="col.options" [filter]="_isCatalogueEntry(col)" [style]="{'width':'100%'}"
+                      (onChange)="dt.filter($event.value, col.field, 'in')" [defaultLabel]="'Auswählen..'" [selectedItemsLabel]="'{0} Element(e)'"
+                      maxSelectedLabels="1" appendTo="body">
+                      <ng-template let-item let-i="index" pTemplate="item">
+                        <span *ngIf="item.label !== '__icon__';else displayIcon2">{{item.label}}</span>
+                        <ng-template #displayIcon2>
+                          <i [class]="item.value.icon" [ngStyle]="{'color': item.value.color}" style="font-size: 2em; vertical-align: middle;"></i>
+                        </ng-template>
+                      </ng-template>
+                    </p-multiSelect>
+                  </div>
+                </div>
+              </th> 
+          </ng-template>         
+
+            <th *ngIf="showButtons" [style.width.px]="crudColumnSpace">            
+              <!-- show buttons here in case table header is hidden  -->
+              <ng-template [ngIf]="!tableData.showHeader">
+                <!-- Header titles and sorting icon-->
+                <div style="display:flex;justify-content: center;align-items: flex-end;flex-wrap: wrap;height: 30px;">            
+                  <ng-template [ngIf]="configuration.type !== 'File' &&  configuration.type !== 'FileAttachment'">
+                    <button *appPermissionCheck="root.dto.$dtoType.create; varArr ['$dtoType', configuration.type]" pButton (click)="createEntity()" icon="pi pi-plus" style="float: right; margin-right: 5px" pTooltip="Hinzufügen" class="ui-button-success"></button>
+                  </ng-template>
+                  <ng-template [ngIf]="configuration.type === 'File' || configuration.type === 'FileAttachment'">
+                    <button *appPermissionCheck="root.dto.File.upload" pButton (click)="uploadFile(mainId, mainType)" icon="pi pi-plus" style="float: right; margin-right: 5px" pTooltip="Datei hochladen" class="ui-button-success"></button>
+                  </ng-template>                
+                  <button pButton (click)="refreshTableContents()" icon="pi pi-undo" style="float: right;" pTooltip="Ansicht aktualisieren" class="ui-button-success"></button>
+                  <button *ngIf="filterAreActive()" pButton (click)="resetFilter()" icon="pi pi-times-circle" style="float: right; margin-right: 5px" pTooltip="Filter zurücksetzen" class="ui-button-success"></button>                    
+                </div>
+              </ng-template>          
+            </th>
+
+          </tr>
+        </ng-template>
+
+        <!-- Processing and displaying table data -->
+        <ng-template pTemplate="body" let-rowData let-fields="columns">
+          <tr [pSelectableRow]="rowData" (dblclick)="doubleClickTableRow(rowData)">
+            <ng-template ngFor let-field [ngForOf]="fields">
+              <td id="hoverEffect" [style.width]="calcWidth(field, dt.el.nativeElement.offsetWidth)" style="overflow-wrap: anywhere;">
+                <div style="display: flex; align-items: center;" [style.justify-content]="(field.type === 'boolean' || field.type === 'Date') ? 'center' : field.type === 'Currency' ? 'flex-end' : 'space-between'">  
+                  <ng-container [var]="{isEdited: false}" #cell="var">
+                    <ng-container *ngIf="cell.isEdited else displayEditable" [ngSwitch]="field.type">
+                      <div *ngSwitchCase="'String'">
+                        <input [name]="field.field" type="text" [(ngModel)]="rowData[field.field]" style="width: calc(100% - 30px)" pInputText
+                          (click)="$event.stopPropagation()"
+                          (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)"
+                          (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
+                          (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)" appAutoFocus>
+                        <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check"></button>
+                      </div>
+                      <ng-container *ngSwitchCase="'int'">
+                        <input #intInput [name]="field.field" type="text" pattern="^\d{1,3}((\.)?\d{3})*$" [(ngModel)]="rowData[field.field]" style="width: calc(100% - 30px)" pInputText
+                          (click)="$event.stopPropagation()"
+                          (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)"
+                          (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)" 
+                          (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)" appAutoFocus>
+                        <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!intInput.validity.valid"></button>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'float'">
+                        <input #floatInput [name]="field.field" type="text" pattern="{{'^\\d{1,3}((\\.)?\\d{3})*(,\\d{1,' + field.decimals + '})?$'}}"
+                          [ngModel]="(rowData[field.field]).toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals })"
+                          (ngModelChange)="rowData[field.field]=$event" style="width: calc(100% - 30px)" pInputText
+                          (click)="$event.stopPropagation()"
+                          (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)"
+                          (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
+                          (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)" appAutoFocus>
+                        <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!floatInput.validity.valid"></button>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'boolean'">
+                        <p-checkbox [name]="field.field" [binary]="true" [(ngModel)]="rowData[field.field]" ngClass="centerCheckbox"
+                        (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
+                        (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)"
+                        (onChange)="cell.isEdited = false; completeCellEdit(rowData);"
+                        (click)="$event.stopPropagation()" appAutoFocus appStopClickPropagation></p-checkbox>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'Date'">
+                        <p-calendar [name]="field.field" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
+                          class="calendarInputWidthFix" [(ngModel)]="rowData[field.field]" appendTo="body"
+                          (click)="$event.stopPropagation()"
+                          (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)"
+                          (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
+                          (onClose)="cell.isEdited = false; abortCellEdit(rowData, $event)" appAutoFocus></p-calendar>
+                        <button pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; completeCellEdit(rowData);"></button>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'Reference'">
+                        <p-dropdown #dropdown [placeholder]="field.header" [showClear]="!field.mandatory" class="dropdownFullWidth" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}"
+                          [style]="{'minWidth': '0px', 'display':'grid'}" [(ngModel)]="rowData[field.field]"
+                          (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
+                          (onShow)="showDropdown(rowData, dropdown)"
+                          (onChange)="cell.isEdited = false; completeCellEdit(rowData)" appAutoFocus appStopClickPropagation></p-dropdown>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'dtoType'">
+                        <p-dropdown [placeholder]="field.header" class="dropdownFullWidth" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}"
+                          [style]="{'minWidth': '0px', 'display':'grid'}" [(ngModel)]="rowData[field.field]"
+                          (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
+                          (onChange)="cell.isEdited = false; completeCellEdit(rowData)" appAutoFocus appStopClickPropagation></p-dropdown>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'Currency'">
+                        <div class="ui-inputgroup" style="width: calc(100% - 2.143em);">            
+                          <input #currencyInput [name]="field.field" [(ngModel)]="rowData[field.field]" pattern="^\d{1,3}((\.)?\d{3})*(,\d{1,2})?$" type="text"
+                            style="width: calc(100% - 28px); font-family: monospace;"
+                            (click)="$event.stopPropagation()"
+                            (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)"
+                            (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
+                            (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)" appAutoFocus>
+                          <span class="ui-inputgroup-addon">{{currency}}</span>
+                        </div>
+                        <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!currencyInput.validity.valid"></button>
+                      </ng-container>
+                    </ng-container>
+                    <ng-template #displayEditable>
+                      <span class="ui-column-title">{{field.header}}</span>
+                      <ng-container [ngSwitch]="field.type">
+                        <div *ngSwitchCase="'Currency'" style="font-family: monospace">{{processData(rowData[field.field], field)}}&nbsp;{{currency}}</div>
+                        <div *ngSwitchCase="'Icon'"><i [class]="rowData[field.field]?.icon" [ngStyle]="{'color': rowData[field.field]?.color}" style="font-size: 2em;"></i></div>
+                        <div *ngSwitchCase="'json'" style="font-family: monospace;">{{processData(rowData[field.field], field)}}</div>
+                        <div *ngSwitchCase="'python'" style="font-family: monospace;">{{processData(rowData[field.field], field)}}</div>
+                        <div *ngSwitchCase="'float'"> {{(processData(rowData[field.field], field)).toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals })}}</div>
+                        <div *ngSwitchDefault>{{processData(rowData[field.field], field)}}</div>
+                      </ng-container>
+                      <ng-template [ngIf]="(field.editable || field.alternativeFieldForEditing) && tableData.inlineEdit">
+                        <ng-template [appPermissionCheck]="root.dto.$dtoType.write" [appPermissionCheckVarDict]="{'$dtoType':configuration.type}">
+                        <i *appPermissionCheck="root.dto.$dtoType.$dtoField.write; varArr ['$dtoType', configuration.type, '$dtoField', field.field]" class="pi pi-pencil cellEditIcon"
+                          (click)="$event.stopPropagation(); initCellEdit(cell, field, rowData);"></i>
+                        </ng-template>
+                      </ng-template>    
+                    </ng-template>
                   </ng-container>
-                  <ng-container *ngSwitchCase="'float'">
-                    <input #floatInput [name]="field.field" type="text" pattern="{{'^\\d{1,3}((\\.)?\\d{3})*(,\\d{1,' + field.decimals + '})?$'}}" appAutoFocus [ngModel]="(rowData[field.field]).toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals })" (ngModelChange)="rowData[field.field]=$event"  style="width: calc(100% - 30px)" pInputText
-                      (click)="$event.stopPropagation()" (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)" (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"  (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
-                    <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!floatInput.validity.valid"></button>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="'boolean'">
-                    <p-checkbox [name]="field.field" [binary]="true" [(ngModel)]="rowData[field.field]" ngClass="centerCheckbox"
-                      (onChange)="cell.isEdited = false; completeCellEdit(rowData);"
-                      (click)="$event.stopPropagation()"></p-checkbox>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="'Date'">
-                    <p-calendar [name]="field.field" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" class="calenderInputWidthFix" [(ngModel)]="rowData[field.field]"
-                      (click)="$event.stopPropagation()" (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)" (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"  (onClose)="cell.isEdited = false; abortCellEdit(rowData, $event)"></p-calendar>
-                    <button pButton type="button" icon="pi pi-check" (click)="cell.isEdited = false; completeCellEdit(rowData);"></button>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="'CatalogueEntry'">
-                    <p-dropdown [placeholder]="field.header" class="dropdownFullWidth" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}" [style]="{'minWidth': '0px', 'display':'grid'}" [(ngModel)]="rowData[field.field]"
-                      (onChange)="cell.isEdited = false; completeCellEdit(rowData)"></p-dropdown>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="'dtoType'">
-                    <p-dropdown [placeholder]="field.header" class="dropdownFullWidth" [name]="field.field" [options]="field.options" [panelStyle]="{'width':'100%'}" [style]="{'minWidth': '0px', 'display':'grid'}" [(ngModel)]="rowData[field.field]"
-                      (onChange)="cell.isEdited = false; completeCellEdit(rowData)"></p-dropdown>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="'Currency'">
-                    <div class="ui-inputgroup" style="width: calc(100% - 2.143em);">            
-                      <input #currencyInput [name]="field.field" appAutoFocus [(ngModel)]="rowData[field.field]" pattern="^\d{1,3}((\.)?\d{3})*(,\d{1,2})?$" type="text" style="width: calc(100% - 28px); font-family: monospace;"
-                        (click)="$event.stopPropagation()" (keyup.enter)="cell.isEdited = false; completeCellEdit(rowData)" (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"  (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)">
-                      <span class="ui-inputgroup-addon">{{currency$ | async}}</span>
-                    </div>
-                    <button pButton type="button" [id]="field.field + '§' + rowData['id']" icon="pi pi-check" [disabled]="!currencyInput.validity.valid"></button>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="'python'">
-                    <span class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
-                      <input [disabled]="true" [placeholder]="'<' + field.type + '>'" style="width: 100%" pInputText>
-                    </span>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="'json'">
-                    <span class="ui-float-label" style="margin-top: 15px;" style="flex-grow: 1; display: flex;">
-                      <input [disabled]="true" [placeholder]="'<' + field.type + '>'" style="width: 100%" pInputText>
-                    </span>
-                  </ng-container>
-                  <ng-container *ngSwitchDefault>
-                    <input [disabled]="true" [placeholder]="rowData[field.field]?._repr_" style="width: calc(100% - 2.143em)" pInputText
-                      (click)="$event.stopPropagation()">
-                    <button pButton type="button" (click)="cell.isEdited = false; $event.stopPropagation(); openEntitySelectionDialog(field, rowData['id'])" icon="pi pi-pencil"></button>
-                  </ng-container>
-                </ng-container>
-                <ng-template #displayEditable>
-                  <span class="ui-column-title">{{field.header}}</span>
-                  <ng-container [ngSwitch]="field.type">
-                    <div *ngSwitchCase="'Currency'" style="font-family: monospace">{{processData(rowData[field.field], field)}}&nbsp;{{currency$ | async}}</div>
-                    <div *ngSwitchCase="'Icon'"><i [class]="rowData[field.field]?.icon" [ngStyle]="{'color': rowData[field.field]?.color}" style="font-size: 2em;"></i></div>
-                    <div *ngSwitchCase="'json'" style="font-family: monospace;">{{processData(rowData[field.field], field)}}</div>
-                    <div *ngSwitchCase="'python'" style="font-family: monospace;">{{processData(rowData[field.field], field)}}</div>
-                    <div *ngSwitchCase="'float'"> {{(processData(rowData[field.field], field)).toLocaleString('de', { 'minimumFractionDigits': field.decimals, 'maximumFractionDigits': field.decimals })}}</div>
-                    <div *ngSwitchDefault>{{processData(rowData[field.field], field)}}</div>
-                  </ng-container>
-                  <i *ngIf="field.editable && tableData.inlineEdit" class="pi pi-pencil cellEditIcon" (click)="$event.stopPropagation(); initCellEdit(cell, field.field, rowData, field.type);"></i>
+                </div>
+              </td>
+            </ng-template>
+
+            <!-- Crud Buttons at last column -->
+            <td *ngIf="showButtons"  [style.width.px]="crudColumnSpace" style="text-align: center;">
+              <code *ngFor="let action of rowData._actions_" [ngSwitch]="action" class="html"> 
+                <!-- hard coded actions -->
+                <ng-template [ngSwitchCase]="'UPDATE'">
+                  <button *appPermissionCheck="root.dto.$dtoType.write; varArr ['$dtoType', configuration.type]" pButton type="button" icon="pi pi-pencil" class="crudButton" pTooltip="bearbeiten" (click)="updateEntity(rowData)"></button>
                 </ng-template>
-              </ng-container>
-            </div>
-          </td>
 
+                <ng-template [ngSwitchCase]="'DELETE'">
+                  <button *appPermissionCheck="root.dto.$dtoType.delete; varArr ['$dtoType', configuration.type]" pButton type="button" icon="pi pi-trash" class="crudButton" pTooltip="löschen" (click)="deleteEntity(rowData)"></button>
+                </ng-template>
 
-          <!-- Crud Buttons -->
-          <td *ngIf="showButtons"  [style.width.px]="crudColumnSpace" style="text-align: center;">
-            <code *ngFor="let action of rowData._actions_" [ngSwitch]="action" class="html"> 
-              <!-- hard coded actions -->
-              <button *ngSwitchCase="'UPDATE'" pButton type="button" icon="pi pi-pencil" class="crudButton" pTooltip="bearbeiten" (click)="updateEntity(rowData)"></button>
-              <button *ngSwitchCase="'DELETE'" pButton type="button" icon="pi pi-trash" class="crudButton" pTooltip="löschen" (click)="deleteEntity(rowData)"></button>
-              <button *ngSwitchCase="'UPLOAD'" pButton type="button" icon="fa fa-upload" class="crudButton" fileSaver pTooltip="aktualisieren" (click)="uploadFile(mainId, mainType, rowData['id'], rowData['fileType'])"></button>
-              <button *ngSwitchCase="'DOWNLOAD'" pButton type="button" icon="fa fa-download" class="crudButton" fileSaver pTooltip="herunterladen" [method]="'GET'" [fileName]="rowData['fileName']" [url]="downloadUrl(rowData['id'])"></button>
-              <!-- dynamic script actions -->
-              <button *ngSwitchDefault pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton" (click)="executeAction(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
-            </code>
-          </td>
+                <ng-template [ngSwitchCase]="'UPLOAD'">
+                  <ng-template [ngIf]="configuration.type === 'File' || configuration.type === 'FileAttachment'">
+                    <button *appPermissionCheck="root.dto.File.upload" pButton type="button" icon="fa fa-upload" class="crudButton" fileSaver pTooltip="aktualisieren" (click)="uploadFile(mainId, mainType, rowData['id'], rowData['fileType'])"></button>
+                  </ng-template>
+                </ng-template>              
 
-        </tr>
-      </ng-template>
-    </p-table>
+                <ng-template [ngSwitchCase]="'DOWNLOAD'"> 
+                  <ng-template [ngIf]="configuration.type === 'File' || configuration.type === 'FileAttachment'">
+                    <button *appPermissionCheck="root.dto.File.download" pButton type="button" icon="fa fa-download" class="crudButton" fileSaver pTooltip="herunterladen" [method]="'GET'" [fileName]="rowData['fileName']" [url]="downloadUrl(rowData['id'])"></button>
+                  </ng-template>
+                </ng-template>
+
+                  <!-- dynamic script actions -->
+                <button *ngSwitchDefault pButton type="button" [icon]="configuration.actions[action].icon" class="crudButton"  [pTooltip]="configuration.actions[action].tooltip" (click)="executeAction(configuration.actions[action].hrid, configuration.type, rowData['id'])"></button>
+              </code>
+            </td>
+
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <app-dynamic-table-attachments *ngIf="tableData.showAttachments" [configName]="configuration.type" [entryId]="selectedEntryId" [refreshTrigger]="refreshTrigger"></app-dynamic-table-attachments>
+
   </div>
+</ng-template>
 
-  <app-dynamic-table-attachments *ngIf="tableData.showAttachments" [configName]="configuration.type" [entryId]="selectedEntryId" [refreshTrigger]="refreshTrigger"></app-dynamic-table-attachments>
-
-</div>
+<ng-template #hasNoPermission>
+  <div class="hasNoPermission">
+      <h2>ACCESS DENIED</h2>
+      Required reading permission: dto.{{configuration.type}}.read<br>
+      Please contact your administrator.
+  </div>
+</ng-template>

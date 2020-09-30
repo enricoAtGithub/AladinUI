@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QuotationsComponent } from './quotations.component';
+import { EntityViewComponent } from './entity-view.component';
 
-describe('QuotationsComponent', () => {
-  let component: QuotationsComponent;
-  let fixture: ComponentFixture<QuotationsComponent>;
+describe('EntityViewComponent', () => {
+  let component: EntityViewComponent;
+  let fixture: ComponentFixture<EntityViewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuotationsComponent ]
+      declarations: [ EntityViewComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(QuotationsComponent);
+    fixture = TestBed.createComponent(EntityViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

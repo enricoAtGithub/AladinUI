@@ -65,7 +65,7 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
 
     // get items for fields with type 'CatalogueEntry'
     this.fields.forEach(field => {
-      if (field.type === 'CatalogueEntry') {
+      if (Field.isCatalogueEntry(field)) {
         this.subscriptions.push(
           this.catalogueService.getCatalogue(field.defaultCatalogue).subscribe(catalogue => {
             const values = catalogue.values.map(e => ({ label: e['name'], value: e['id'] }));
@@ -155,9 +155,9 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     this.displayEntitySelectionDialog = false;
   }
 
-  openEntitySelectionDialog(field: any, input: InputText) {
-    this.entitySelectionContext = { field: field['field'], textModule: input };
-    this.entitySelectionTableData = new TableData(field['type'], field['type'])
+  openEntitySelectionDialog(field: Field, input: InputText) {
+    this.entitySelectionContext = { field: field.field, textModule: input };
+    this.entitySelectionTableData = new TableData(field.referenceType, field.referenceType)
       .hideHeader()
       .hideHeadline()
       .hideAttachments()
@@ -183,10 +183,6 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     this.showCodeEditor = false;
   }
 
-  _isKnownType(type: string) {
-    return Field.isKnownType(type);
-  }
-
   nullField(field: Field, form: NgForm) {
     form.control.patchValue({ [field.field]: null });
   }
@@ -203,6 +199,8 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
         if (entityForm.value[field.field] != null) {
           entityForm.value[field.field] = new Date(entityForm.value[field.field]).toISOString();
         }
+      } else if (entityForm.value[field.field] === undefined) {
+        entityForm.value[field.field] = null;
       }
     });
 
@@ -232,4 +230,11 @@ export class EntityDialogComponent implements OnInit, OnDestroy {
     }
   }
 
+  _isCatalogueEntry(field: Field): boolean {
+    return Field.isCatalogueEntry(field);
+  }
+
+  _isEntityReference(field: Field): boolean {
+    return Field.isEntityReference(field);
+  }
 }

@@ -66,10 +66,6 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: 'Rollenverwaltung', icon: 'fa fa-users', routerLink: ['/administration/role-management'],
                         visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.rollenverwaltung)
-                    },
-                    {
-                        label: 'Rechteverwaltung', icon: 'fa fa-users', routerLink: ['/administration/permission-management'],
-                        visible: this.jmeleonPermissionsService.currentUserHasPermission(root.Menuitems.administration.rechteverwaltung)
                     }
                 ]
             },

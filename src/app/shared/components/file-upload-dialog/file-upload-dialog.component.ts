@@ -58,6 +58,7 @@ export class FileUploadDialogComponent implements OnInit {
     this.catalogueDisplayName = data['catalogueDisplayName'];
     this.ownerId = data['ownerId'];
     this.ownerType = data['ownerType'];
+    this.attachmentCategory = data['attachmentCategory'];
 
 
     this.setMaxUploadSize(1);

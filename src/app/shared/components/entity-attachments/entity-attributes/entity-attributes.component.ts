@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { Attribute } from 'src/app/shared/models/attribute';
 import { EntityService } from 'src/app/shared/services/entity.service';
-import { AttributeGroup, AttributeGroupEntries } from 'src/app/shared/models/entity-configuration';
+import { AttributeGroup, AttributeGroupEntry } from 'src/app/shared/models/entity-configuration';
 import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromConfigSelectors from 'src/app/root-store/config-store/config.selectors';
@@ -63,7 +63,9 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
     // get all dtos for type "Reference"
     const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
     configurations$.subscribe(configs => {
-      this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
+      if (configs) {
+        this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
+      }
     });
 
     // get Currency from settings
@@ -82,7 +84,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
     this.newAttribute.ownerType = this.ownerType;
     this.newAttribute.ownerId = this.ownerId;
     if (this.attrGroup) {
-      this.newAttribute.attributeGroup = this.attrGroup.hrid;
+      this.newAttribute.attributeGroup = this.attrGroup.name;
       this.initAttributGroupData();
     }
     this.displayAddAttribute = true;
@@ -101,7 +103,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
 
   updateAttachments() {
     let attrGr: string;
-    if (this.attrGroup) { attrGr = this.attrGroup.hrid; } else { attrGr = 'null'; }
+    if (this.attrGroup) { attrGr = this.attrGroup.name; } else { attrGr = 'null'; }
     this.entityService.getAttributes(this.ownerType, this.ownerId, attrGr).subscribe(response => {
       this.attributes = <Attribute[]>response;
       this.attributes.forEach(attr => { if (attr.attributeType === 'Date') { attr.dateValue = new Date(attr.value); } });
@@ -140,7 +142,7 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
 
   setType(attributeName: string) {
     this.refDtoRepr = '';
-    const selectedAttribute: AttributeGroupEntries = this.attrGroup.attributes.find(obj => obj.name === attributeName);
+    const selectedAttribute: AttributeGroupEntry = this.attrGroup.attributes.find(obj => obj.name === attributeName);
     selectedAttribute.dtoType ? this.dtoTypeUnknown = false : this.dtoTypeUnknown = true;
     this.newAttribute.attributeType = selectedAttribute.type;
     this.newAttribute.referenceType = selectedAttribute.dtoType;

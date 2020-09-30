@@ -1,1 +1,13 @@
-<app-dynamic-table [tableData]="tableData"></app-dynamic-table>
+<div style="display: flex; flex-direction: column;">
+    <app-dynamic-table [tableData]="tableData" [token]="token$ | async" [selectedId]="id$ | async" (entitySelection)="onEntitySelection($event)"></app-dynamic-table>
+
+    <div *ngIf="!isSingleRole; else rightActionsEditor" style="background: #fff;">
+        <app-dynamic-table-attachments configName="SecurityRole" [entryId]="entryId"></app-dynamic-table-attachments>
+    </div>
+    
+
+    <ng-template #rightActionsEditor>
+        <app-right-actions-editor [ownerId]="entryId"></app-right-actions-editor>
+    </ng-template> 
+</div>
+

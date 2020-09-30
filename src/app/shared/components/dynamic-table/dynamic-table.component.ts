@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { EntityConfiguration } from '../../models/entity-configuration';
 import { Field } from '../../models/field';
-import { EntityData, Entity } from '../../models/entity-data';
+import { EntityData } from '../../models/entity-data';
 import { EntityService } from '../../services/entity.service';
-import { LazyLoadEvent, DialogService, ConfirmationService, SelectItem } from 'primeng/primeng';
+import { LazyLoadEvent, DialogService, ConfirmationService } from 'primeng/primeng';
 import { TableData } from '../../models/table-data';
 import { EntityDialogComponent } from '../entity-dialog/entity-dialog.component';
 import { Observable, Subject, Subscription, EMPTY } from 'rxjs';
@@ -37,13 +37,17 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   @Input() mainType: string;
   @Input() dblClickCallback: (data) => any;
   @Input() selectedId: string;
+  @Input() attachmentCategory: string; // FileAttachment category
   @Input() token: string;
   @Output() entitySelection = new EventEmitter();
   @Output() entityOperation = new EventEmitter();
 
+  @ViewChild('dt', {read: ElementRef, static: false}) dynamicTableRef: ElementRef;
+
   configuration: EntityConfiguration;
   subscriptions: Subscription[] = [];
-  fields: Field[];
+  fields: Field[] = [];
+  editableFields: Field[] = [];
   loading = true; // Needs to be true to prevent ExpressionHasChangedError
   entityData: EntityData;
   selectedEntry: any;
@@ -56,7 +60,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   minTableWidth: number;
   freeColumnSpace = 100;
   zeroWidthColumns = 0;
-  currency$: Observable<string>;
+  currency: string;
   actionCount: number;
   displayEntitySelectionDialog = false;
   entitySelectionTableData: TableData;
@@ -65,6 +69,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   lastCellRef: any;
   crudColumnSpace: number;
   refreshTrigger: Subject<any>;
+  rowsPerPageOptions = [10, 25, 50];
 
   constructor(
     private entityService: EntityService,
@@ -80,6 +85,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   ) { }
 
   ngOnInit() {
+    // Get observable for entity configuration from store
     const configuration$: Observable<EntityConfiguration> = this.store$.pipe(
       select(fromConfigSelectors.selectConfigs),
       map(configs => configs[this.tableData.entityType])
@@ -92,6 +98,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     this.refreshTrigger = new Subject();
     this.subscriptions.push(this.refreshTrigger.asObservable().subscribe(() => this.refreshTableContents()));
 
+    this.settingsService.getSetting('CURRENCY').pipe(map(setting => setting.value)).subscribe(currency => this.currency = currency);
+
     this.subscriptions.push(configuration$.subscribe(async config => {
       // Get the config according to the given name
       this.configuration = config;
@@ -100,60 +108,97 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         return;
       }
 
-      // get Currency from settings
-      this.currency$ = this.settingsService.getSetting('CURRENCY').pipe(map(setting => setting.value));
+      // Add rows per page option to dropdown if defined in config
+      if (!this.rowsPerPageOptions.includes(this.configuration.rowsPerPage)) {
+        this.rowsPerPageOptions.push(this.configuration.rowsPerPage);
+        this.rowsPerPageOptions.sort();
+      }
 
       this.checkShowButtons();
 
       this.minTableWidth = 0;
-      this.fields = this.configuration.fields.filter(field => field.visible === true);
-      this.fields.forEach(field => {
-        if (!field.width) {
-          this.zeroWidthColumns++;
-        } else {
-          this.minTableWidth += !field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
-          this.freeColumnSpace -= field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
+      const calcMinWidth = this.configuration.minWidth === -1;
+
+      this.configuration.fields.forEach(field => {
+
+        // collect all editable fields (user has edit permission and field is editable === true)
+        if (field.editable) {
+          const requestedPermissions = [root.dto.$dtoType.write, root.dto.$dtoType.$dtoField.write];
+          this.subscriptions.push(
+            this.japs.userHasPermissionForActions(requestedPermissions, { '$dtoType': this.configuration.type, '$dtoField': field.field }).subscribe(permissions => {
+              if (permissions[root.dto.$dtoType.write] && permissions[root.dto.$dtoType.$dtoField.write]) {
+                this.editableFields.push(field);
+              }
+            })
+          );
         }
 
-        this.filtersInTable = field.filterType !== 'none' || this.filtersInTable;
-        if (!Field.isPrimitiveType(field.type)) {
-          field.options = [];
+        // only consider allowed fields (user has reading permissions) which are visible === true
+        this.subscriptions.push(
+          this.japs.userHasPermissionForAction(root.dto.$dtoType.$dtoField.read, { '$dtoType': this.configuration.type, '$dtoField': field.field }).subscribe(userHasReadPermission => {
+            if (userHasReadPermission && field.visible) {
+              this.fields.push(field);
 
-          if ((field.type === 'CatalogueEntry' || field.type === 'Icon') && field.defaultCatalogue) {
-            this.subscriptions.push(
-              this.catalogueService.getCatalogue(field.defaultCatalogue)
-                .subscribe(catalogue => {
-                  catalogue.values.forEach(o => {
-                    if (field.type === 'CatalogueEntry') {
-                      field.options.push({ label: o.name, value: o.id });
-                    } else {
-                      this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe((attributes: any) => {
-                        const icon = attributes.find(attr => attr['name'] === 'icon');
-                        const color = attributes.find(attr => attr['name'] === 'color');
-                        field.options.push({
-                          label: '__icon__', value:
-                            { id: '' + o.id, icon: icon ? icon['stringValue'] : '', color: color ? color['stringValue'] : '' }
-                        });
+              // Calculate minWidth if set to auto (-1)
+              if (calcMinWidth) {
+                switch (field.type) {
+                  case 'int':
+                    this.configuration.minWidth += 100;
+                    break;
+                  case 'String':
+                    this.configuration.minWidth += 200;
+                    break;
+                  case 'boolean':
+                    this.configuration.minWidth += 50;
+                    break;
+                  case 'Date':
+                    this.configuration.minWidth += 150;
+                    break;
+                  default:
+                    this.configuration.minWidth += 150;
+                }
+              }
+
+              if (!field.width) {
+                this.zeroWidthColumns++;
+              } else {
+                this.minTableWidth += !field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
+                this.freeColumnSpace -= field.width.endsWith('%') ? Number.parseInt(field.width, 10) : 0;
+              }
+
+              this.filtersInTable = field.filterType !== 'none' || this.filtersInTable;
+              field.options = [];
+
+              // get catalogue information for every field of type CatalogueEntry
+              if ((Field.isCatalogueEntry(field) || Field.isIcon(field)) && field.defaultCatalogue) {
+                this.subscriptions.push(
+                  this.catalogueService.getCatalogue(field.defaultCatalogue)
+                    .subscribe(catalogue => {
+                      catalogue.values.forEach(o => {
+                        if (Field.isCatalogueEntry(field)) {
+                          field.options.push({ label: o.name, value: o.id });
+                        } else {
+                          this.entityService.getAttachments('attribute', 'CatalogueEntry', o.id).subscribe((attributes: any) => {
+                            const icon = attributes.find(attr => attr['name'] === 'icon');
+                            const color = attributes.find(attr => attr['name'] === 'color');
+                            field.options.push({
+                              label: '__icon__', value:
+                                { id: '' + o.id, icon: icon ? icon['stringValue'] : '', color: color ? color['stringValue'] : '' }
+                            });
+                          });
+                        }
                       });
-                    }
-                  });
-                }));
-          } else if (field.type === 'dtoType') {
-            // get all dtoConfigs for field.type === 'dtoType' (e.g. for Script Actions)
-            const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
-            this.subscriptions.push(
-              configurations$.subscribe(configs => Object.values(configs).map(o => field.options.push({ label: o.type, value: o.type })))
-            );
-          }
-          // else {
-          //   // when multiselecting an DTOType we need to fill the combo with all entity ids and reprs
-          //   this.subscriptions.push(
-          //     this.entityService.filter(field.type, 1, 100000, undefined, undefined, undefined)
-          //       .subscribe(data => {
-          //         data.data.forEach(o => field.options.push({ label: o._repr_, value: o.id }));
-          //       }));
-          // }
-        }
+                    }));
+              } else if (Field.isDtoType(field)) {
+                // get all dtoConfigs for field.type === 'dtoType' (e.g. for Script Actions)
+                const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
+                this.subscriptions.push(
+                  configurations$.subscribe(configs => Object.values(configs).map(o => field.options.push({ label: o.type, value: o.type })))
+                );
+              }
+            }
+          })
+        );
       });
 
       this.subscriptions.push(this.tableData.triggerRefresh.subscribe(() => this.refreshTableContents()));
@@ -234,7 +279,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       }
     });
 
-    if (!!this.selectedId){
+    if (!!this.selectedId) {
       qualifier += `EQ('id',${this.selectedId}),`;
     }
 
@@ -269,13 +314,21 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           .subscribe(data => {
             this.entityData = data; this.loading = false;
             this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
-            }));
+            if (this.selectedId) {
+              this.selectedEntryId = +this.selectedId;
+              this.selectedEntry = data.data.find(entity => entity['id'] === +this.selectedId);
+            }
+          }));
     } else {
       this.subscriptions.push(
         this.tableData.dataSource
           .subscribe(data => {
             this.entityData = data; this.loading = false;
             this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
+            if (this.selectedId) {
+              this.selectedEntryId = +this.selectedId;
+              this.selectedEntry = data.data.find(entity => entity['id'] === +this.selectedId);
+            }
           }));
     }
   }
@@ -317,40 +370,54 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   createEntity() {
-    const dialogRef = this.dialogService.open(EntityDialogComponent, {
-      data: {
-        update: false,
-        fields: this.configuration.fields,
-        configType: this.configuration.type,
-        mainId: this.mainId
-      },
-      header: 'Hinzufügen',
-      width: '500px'
-    });
 
-    // following code is refactored according https://medium.com/@paynoattn/3-common-mistakes-i-see-people-use-in-rx-and-the-observable-pattern-ba55fee3d031
-    // this.subscriptions.push(
-    //   dialogRef.onClose.subscribe((fields: Field[]) => {
-    //     if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
-    //       this.entityService.createEntity(this.configuration.type, fields)
-    //         .subscribe(() => {
-    //           this.loadLazy(this.lastLazyLoadEvent);
-    //           this.entityOperation.emit(null);
-    //         });
-    //     }
-    //   })
-    // );
+    if ((!this.configuration.customCreation) || this.configuration.customCreation.creationMode === 'createEntity') {
+      const dialogRef = this.dialogService.open(EntityDialogComponent, {
+        data: {
+          update: false,
+          fields: this.editableFields,
+          configType: this.configuration.type,
+          mainId: this.mainId
+        },
+        header: 'Hinzufügen',
+        width: '500px'
+      });
 
-    this.subscriptions.push(
-      dialogRef.onClose.pipe(
-        switchMap((fields: Field[]) => fields ? this.entityService.createEntity(this.configuration.type, fields) : EMPTY)).subscribe(
-          () => {
-            this.loadLazy(this.lastLazyLoadEvent);
-            this.entityOperation.emit(null);
-          },
-          error => console.error('[Dynamic-Table] Method createEntity failed!\n' + error)
-        )
-    );
+      // following code is refactored according https://medium.com/@paynoattn/3-common-mistakes-i-see-people-use-in-rx-and-the-observable-pattern-ba55fee3d031
+      // this.subscriptions.push(
+      //   dialogRef.onClose.subscribe((fields: Field[]) => {
+      //     if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+      //       this.entityService.createEntity(this.configuration.type, fields)
+      //         .subscribe(() => {
+      //           this.loadLazy(this.lastLazyLoadEvent);
+      //           this.entityOperation.emit(null);
+      //         });
+      //     }
+      //   })
+      // );
+
+      this.subscriptions.push(
+        dialogRef.onClose.pipe(
+          switchMap((fields: Field[]) => {
+            if (fields) {
+              this.loading = true;
+              return this.entityService.createEntity(this.configuration.type, fields);
+            } else {
+              return EMPTY;
+            }
+          })).subscribe(
+            () => {
+              this.loadLazy(this.lastLazyLoadEvent);
+              this.entityOperation.emit(null);
+            },
+            error => console.error('[Dynamic-Table] Method createEntity failed!\n' + error)
+          )
+      );
+
+    } else if (this.configuration.customCreation.creationMode === 'executeAction') {
+      this.executeAction(this.configuration.customCreation.creationAction.action, this.mainType, this.mainId, true);
+
+    }
 
   }
 
@@ -359,7 +426,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       data: {
         update: true,
         entity: rowData,
-        fields: this.configuration.fields,
+        fields: this.editableFields,
         configType: this.configuration.type,
         mainId: this.mainId
       },
@@ -395,7 +462,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
         ownerId: ownerId,
         ownerType: ownerType,
         fileId: fileId,
-        fileType: fileType
+        fileType: fileType,
+        attachmentCategory: this.attachmentCategory
       },
       header: 'Datei aktualisieren',
       width: '800px'
@@ -459,7 +527,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   calcWidth(col: Field, width: number) {
-    if (this.configuration.minWidth && this.configuration.scrollable && width < this.configuration.minWidth) {
+    if (this.configuration.minWidth && width < this.configuration.minWidth) {
       if (this.crudColumnSpace === undefined) {
         this.crudColumnSpace = this.calcCrudColWidth(this.entityData.maxActionNumber);
       }
@@ -478,13 +546,13 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
   }
 
-  calcCrudColWidth(actionCount: number): number	{
+  calcCrudColWidth(actionCount: number): number {
     // width required to display action icons, per Icon 32px required, additional offset of 2x13px for margin
     // if there is no actionCount (empty table) just return 90px
     return actionCount ? (actionCount * 32) + 26 : 90;
   }
 
-  executeAction(actionHrid: string, dtoType: string, entityId: number) {
+  executeAction(actionHrid: string, dtoType: string, entityId: number, suppressOutput?: boolean) {
     const payload: ScriptActionPayload = { actionHrid: actionHrid, entityReference: { dtoType: dtoType, id: entityId } };
 
     // run getAction API to retrieve information (HRID and params) required to execute the action
@@ -496,7 +564,6 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           const dialogRef = this.dialogService.open(EntityDialogComponent, {
             data: {
               update: true,
-              entity: actionDetails,
               fields: actionDetails.params,
               configType: this.configuration.type,
               mainId: this.mainId,
@@ -508,11 +575,12 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
           this.subscriptions.push(
             dialogRef.onClose.subscribe((fields: Field[]) => {
               if (fields) {  // in case the dynamicDialog is closed via "x" at top right corner, nothing is returned
+                this.loading = true;
                 payload.params = fields;
                 this.entityService.executeAction(payload, false).subscribe(
                   (result) => {
                     this.loadLazy(this.lastLazyLoadEvent);
-                    this.showActionResult(actionDetails.name, result['result'], result['output'], true, actionDetails.showResult);
+                    if (!suppressOutput) { this.showActionResult(actionDetails.name, result['result'], result['output'], true, actionDetails.showResult); }
                   },
                   error => this.showActionResult(actionDetails.name, error.error.message, error.error.trace, false, true)
                 );
@@ -522,10 +590,11 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
           // if there are no params do not make any turnarounds and just go!
         } else {
+          this.loading = true;
           this.entityService.executeAction(payload, false).subscribe(
             result => {
               this.loadLazy(this.lastLazyLoadEvent);
-              this.showActionResult(actionDetails.name, result['result'], result['output'], true, actionDetails.showResult);
+              if (!suppressOutput) { this.showActionResult(actionDetails.name, result['result'], result['output'], true, actionDetails.showResult); }
             },
             error => this.showActionResult(actionDetails.name, error.error.message, error.error.trace, false, true)
           );
@@ -535,8 +604,8 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   showActionResult(actionName: string, result: string, output: string, success: boolean, showResult: boolean) {
-    if (!showResult) {
-      if (success) { this.errorNotificationService.addSuccessNotification('Aktion ' + actionName + ' executed sucessfully', result); }
+    if (!showResult && success) {
+      this.errorNotificationService.addSuccessNotification('Aktion ' + actionName + ' executed sucessfully', result);
     } else {
       const dialogRef = this.dialogService.open(ScriptResultComponent, {
         data: {
@@ -559,7 +628,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
 
   openEntitySelectionDialog(field: any, id: number) {
     this.entitySelectionContext = { field: field['field'], id: id };
-    this.entitySelectionTableData = new TableData(field['type'], field['type'])
+    this.entitySelectionTableData = new TableData(field.referenceType, field.referenceType)
       .hideHeader()
       .hideHeadline()
       .hideAttachments()
@@ -571,7 +640,7 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
   }
 
   abortCellEdit(rowData, event) {
-    if (event.relatedTarget === undefined || event.relatedTarget === null || event.relatedTarget['id'] !== this.cellEditCache.field + '§' + rowData['id']) {
+    if (!event || event.relatedTarget === undefined || event.relatedTarget === null || event.relatedTarget['id'] !== this.cellEditCache.field + '§' + rowData['id']) {
       if (this.cellEditCache !== undefined) {
         rowData[this.cellEditCache.field] = this.cellEditCache.data[this.cellEditCache.field];
         this.cellEditCache = undefined;
@@ -585,30 +654,50 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
     }
   }
 
-  initCellEdit(cellRef, field: string, rowData, type: string) {
-      // If another cell is being edited abort the edit operation and initialize the new edit operation
+  initCellEdit(cellRef, field, rowData) {
+    // If another cell is being edited abort the edit operation and initialize the new edit operation
     if (this.lastCellRef !== undefined && this.cellEditCache !== undefined) {
       const rowDataPrev = this.entityData.data.find(row => row['id'] === this.cellEditCache.data['id']);
-      rowDataPrev[this.cellEditCache.field] = this.cellEditCache.data[this.cellEditCache.field];
+      rowDataPrev[this.cellEditCache.field.field] = this.cellEditCache.data[this.cellEditCache.field.field];
       this.lastCellRef.isEdited = false;
     }
-    this.cellEditCache = {field: field, data: Object.assign({}, rowData)};
+
+    // in case of entity selection open dialog directly
+    if (Field.isReference(field) && !Field.isCatalogueEntry(field)) {
+      this.openEntitySelectionDialog(field, rowData['id']);
+      return;
+    }
+    // in case of code edit open code editor directly
+    if (field.type === 'python' || field.type === 'json') {
+      this.openCodeEditor(rowData, field.type, field.field);
+      return;
+    }
+    // Register scroll handler in order to abort edit in case of scrolling
+    if (field.type === 'Date') {
+      this.dynamicTableRef.nativeElement.querySelector('div.ui-table-scrollable-body').addEventListener('scroll', (ev: Event) => this.abortCellEdit(rowData, null), { once: true });
+    }
+
+    this.cellEditCache = { field: field.field, data: Object.assign({}, rowData) };
     cellRef.isEdited = true;
     this.lastCellRef = cellRef;
-    // in case of code edit open code editor directly
-    if (type === 'python' || type === 'json') {
-      this.openCodeEditor(rowData, type, field);
-    }
+
   }
 
   completeCellEdit(data) {
     this.lastCellRef = undefined;
     this.cellEditCache = undefined;
 
-    const dateFields = this.configuration.fields.filter(field => field.type === 'Date');
-    dateFields.forEach(field => {
-      if (data[field.field] !== null) {
-        data[field.field] = new Date(data[field.field]).toISOString();
+    const dateFields: Field[] = [];
+    this.configuration.fields.forEach(field => {
+      if (field.type === 'Date') {
+        dateFields.push(field);
+        if (data[field.field] !== null) {
+          data[field.field] = new Date(data[field.field]).toISOString();
+        }
+      }
+
+      if (field.alternativeFieldForEditing) {
+        data[field.alternativeFieldForEditing] = data[field.field];
       }
     });
 
@@ -622,6 +711,19 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       this.entityData.data[index] = result['fields'];
       this.entityOperation.emit(null);
     }, error => this.refreshTableContents());
+  }
+
+  showDropdown(rowData, dd) {
+    const dropdown = dd.el.nativeElement;
+    const rect = dropdown.getBoundingClientRect();
+
+    this.dynamicTableRef.nativeElement.querySelector('div.ui-table-scrollable-body').addEventListener('scroll', (ev: Event) => this.abortCellEdit(rowData, null), { once: true });
+
+    document.body.append(dropdown);
+    dropdown.style.position = 'absolute';
+    dropdown.style.left = rect.left + 'px';
+    dropdown.style.top = rect.top + window.pageYOffset + 'px';
+    dropdown.style.width = rect.width + 'px';
   }
 
   openCodeEditor(data: any, syntax: string, field: string) {
@@ -653,6 +755,10 @@ export class DynamicTableComponent implements OnInit, OnDestroy, OnChanges, Afte
       this.jmlNavigationService.clearId(this.router);
       // this.router.navigate([])
     }
+  }
+
+  _isCatalogueEntry(field: Field): boolean {
+    return Field.isCatalogueEntry(field);
   }
 
 }

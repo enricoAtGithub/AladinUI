@@ -12,6 +12,7 @@ export class EntitySubtypesComponent implements OnInit, OnChanges {
 
   @Input() subtype: string;
   @Input() mainId: number;
+  @Input() mainType: number;
   @Input() refreshTrigger: Subject<any>;
 
   constructor() { }
@@ -23,10 +24,10 @@ export class EntitySubtypesComponent implements OnInit, OnChanges {
     if (changes.subtype) {
       this.tableData = new TableData('', changes.subtype.currentValue)
         .setScrollable()
-        .setScrollHeight('222px')
-        //.hideHeader()
+        //.setScrollHeight('222px')
+        .hideHeader()
         .hideHeadline()
-        .disablePagination();
+        //.disablePagination();
     }
   }
 

@@ -17,6 +17,8 @@ import * as UserProfileReducers from '../root-store/user-profile-store/user-prof
 import * as ConfigReducers from '../root-store/config-store/config.reducer';
 import { UserProfileStoreModule } from './user-profile-store/user-profile-store.module';
 import { ConfigurationStoreModule } from './config-store/config-store.module';
+import { User } from '../shared/models/user';
+import { UserProfileState } from './user-profile-store/user-profile.state';
 
 
 const reducers: ActionReducerMap<RootStoreState.State> = {
@@ -30,8 +32,37 @@ export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionRedu
   const jmeleonStoreNames = [
     {
       'userProfile': {
-        encrypt: (state: string) => CryptUtils.encryptForLocalStorage(state),
-        decrypt: (state: string) => CryptUtils.decryptForLocalStorage(state)
+        // en-/decrypt is not called when used with de-/serialize. moved en/decrypt into de-/serialize.
+        // encrypt: (state: string) => CryptUtils.encryptForLocalStorage(state),
+        // decrypt: (state: string) => CryptUtils.decryptForLocalStorage(state),
+        serialize: (userState: UserProfileState) => {
+          // clone state
+          // console.log('serializing state. input: ', userState);
+          const state = JSON.parse(JSON.stringify(userState));
+          // remove unwanted properties
+          if (!!state.user){
+            state.user.allowedActions = [];
+            state.user.roles = [];
+            state.user.user = undefined;
+            state.tokenIsValidated = false;
+          }
+          if (!!state && !!state.user && !!state.user.token){
+            state.user.token = CryptUtils.encryptToken(state.user.token);
+          }
+          return state;
+          // serialize (doesn't seems to be necessary)
+          // console.log('serializing state. ', state);
+          // return JSON.stringify(state);
+        },
+        deserialize: (state) => {
+
+          // console.log('deserializing state. ', state);
+          // return JSON.parse(state);
+          if (!!state && !!state.user && !!state.user.token){
+            state.user.token = CryptUtils.decryptToken(state.user.token);
+          }
+          return state;
+        }
       }
     }, {
       'config': {
@@ -41,7 +72,6 @@ export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionRedu
   const customStoreNames = [];
   return localStorageSync(
     {
-      // keys: jmeleonStoreNames.concat(customStoreNames),
       keys: jmeleonStoreNames.concat(customStoreNames),
 
       rehydrate: true
@@ -55,7 +85,7 @@ const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer, cle
   imports: [
     CommonModule,
     StoreModule.forRoot(
-      reducers, 
+      reducers,
       // undefined,
       {metaReducers}),
     EffectsModule.forRoot([]),

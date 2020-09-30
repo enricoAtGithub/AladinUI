@@ -11,6 +11,7 @@ import { Store, select } from '@ngrx/store';
 import { RootStoreState } from 'src/app/root-store/root-index';
 import * as fromUserSelectors from 'src/app/root-store/user-profile-store/user-profile.selectors';
 import { JmeleonActionsPermissionService } from 'src/app/jmeleon/modules/permissions/services/jmeleon-actions-permission.service';
+import { TokenValidationResult } from '../models/token-validation-result.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,7 @@ export class AuthService {
   public localUser$: Observable<User>;
   private isLoggedInSubject: Subject<boolean>;
   public isLoggedIn$: Observable<boolean>;
+  public tokenIsValidated$: Observable<boolean>;
 
   constructor(
     private http: HttpClient,
@@ -49,8 +51,10 @@ export class AuthService {
       );
     this.isLoggedIn$ = this.store$.pipe(
       select(fromUserSelectors.selectUserProfileUser),
-      map(user => !!user));
+      map(user => !!user && !!user.token));
 
+    this.tokenIsValidated$ = this.store$.pipe(
+      select(fromUserSelectors.selectTokenIsValidated));
 
     this.localUser$.subscribe(
       user => {
@@ -182,6 +186,23 @@ export class AuthService {
     //     })
     //   );
 
+  }
+
+  validateToken(): Observable<TokenValidationResult>{
+
+    const result = this.localUser$.pipe(
+      switchMap(user => {
+        // console.log('token-validation. token: ', user.token);
+        if (!user || !user.token){
+          const failureResult = new TokenValidationResult();
+          failureResult.tokenIsValid = false;
+          return of(failureResult);
+        }
+        const url = UrlCollection.UserManagement.VALIDATE_TOKEN(user.token);
+        return this.http.get<TokenValidationResult>(url);
+      })
+    );
+    return result;
   }
 
 }

@@ -18,7 +18,8 @@ import { InjectionToken } from '@angular/core';
        ...state,
        user: action.user,
        error: '',
-       isInLogin: false
+       isInLogin: false,
+       tokenIsValidated: true
      };
    }),
    on(UserProfileActions.loginFailed, (state, action) => {
@@ -51,9 +52,26 @@ import { InjectionToken } from '@angular/core';
         ...state,
         isInLogout: false,
         error: '',
+        user: null,
+        tokenIsValidated: false
+     };
+   }),
+   on(UserProfileActions.validateTokenFailed, (state, action) => {
+     return {
+        ...state,
+        isInLogout: false,
+        error: '',
         user: null
      };
-   })
+   }),on(UserProfileActions.validateTokenSucceeded, (state, action) => {
+    return {
+      ...state,
+      user: action.user,
+      error: '',
+      isInLogin: false,
+      tokenIsValidated: true
+    };
+  }),
  );
 
  export function publicUserProfileReducer(state: UserProfileState, action: Action){

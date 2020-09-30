@@ -1,66 +1,54 @@
-<div *ngIf="entryId !== undefined && entryId !== null && !isEmpty" style="padding: 0px" class="card">
-  <p-tabView>
-    <!-- Display group relations if available -->
-    <ng-template ngFor let-group [ngForOf]="configuration?.groups">
-      <p-tabPanel *ngIf="!this.excludedPanels?.includes(group)" [header]="(getGroupHeader(group) | async).displayName"
-        [selected]="this.selectedPanel === group">
-        <app-entity-group-relation [ownerType]="configName" [ownerId]="entryId" [relation]="group">
-        </app-entity-group-relation>
-      </p-tabPanel>
+<div *ngIf="entryId !== undefined && entryId !== null && hasContent===true" style="padding: 0px">
+
+  <!-- ### Panels ### -->
+  <ng-template ngFor let-entityAttachment [ngForOf]="panelAttachments"> 
+    <p-panel *ngIf="!this.excludedPanels?.includes(entityAttachment.name)" [collapsed]="entityAttachment.showCollapsed" [toggleable]="true" [style]="{'margin-bottom':'5px'}">
+      <p-header>
+          <span class="ui-panel-title" style="padding: 8px">{{entityAttachment.displayName}}</span>
+      </p-header>
+      <ng-container *ngTemplateOutlet="entityAttachments; context:{entityAttachment: entityAttachment}"></ng-container>     
+    </p-panel>  
+  </ng-template>
+
+  <!-- ### Tab View ### -->   
+  <p-tabView [style]="{'margin-bottom':'15px'}">
+    <ng-template ngFor let-entityAttachment [ngForOf]="tabViewAttachments"> 
+      <p-tabPanel *ngIf="!this.excludedPanels?.includes(entityAttachment.name)" [header]="entityAttachment.displayName" [selected]="this.selectedPanel === entityAttachment.name">
+        <ng-container *ngTemplateOutlet="entityAttachments; context:{entityAttachment: entityAttachment}"></ng-container>    
+      </p-tabPanel> 
     </ng-template>
+  </p-tabView> 
 
-
-    <div *ngIf="!this.excludedPanels?.includes('LogEntries')">
-      <p-tabPanel *ngIf="this.configuration?.components?.includes('LogEntries')" header="Logbuch"
-        [selected]="this.selectedPanel === 'LogEntries'">
-        <app-entity-logs [ownerType]="configName" [ownerId]="entryId"></app-entity-logs>
-      </p-tabPanel>
-    </div>
-
-    <div *ngIf="!this.excludedPanels?.includes('Notes')">
-      <p-tabPanel *ngIf="this.configuration?.components?.includes('Notes')" header="Notizen"
-        [selected]="this.selectedPanel === 'Notes'">
-        <app-entity-notes [ownerType]="configName" [ownerId]="entryId"></app-entity-notes>
-      </p-tabPanel>
-    </div>
-
-    <ng-template ngFor let-attrGroup [ngForOf]="configuration?.attributeGroups">
-      <p-tabPanel *ngIf="!this.excludedPanels?.includes(attrGroup)" [header]="attrGroup.name"
-        [selected]="this.selectedPanel === attrGroup">
-        <app-entity-attributes [ownerType]="configName" [ownerId]="entryId" [attrGroup]="attrGroup">
-        </app-entity-attributes>
-      </p-tabPanel>
-    </ng-template>
-
-    <div *ngIf="!this.excludedPanels?.includes('Attributes')">
-      <p-tabPanel *ngIf="this.configuration?.components?.includes('Attributes')" header="Attribute"
-        [selected]="this.selectedPanel === 'Attributes'">
-        <app-entity-attributes [ownerType]="configName" [ownerId]="entryId">
-        </app-entity-attributes>
-      </p-tabPanel>
-    </div>
-
-    <div *ngIf="!this.excludedPanels?.includes('FileAttachments')">
-      <p-tabPanel *ngIf="this.configuration?.components?.includes('FileAttachments')" header="Dateianhänge"
-        [selected]="this.selectedPanel === 'FileAttachments'">
-        <div style="height: 250px">
-          <app-entity-file-attachments [ownerType]="configName" [ownerId]="entryId"></app-entity-file-attachments>
-        </div>
-      </p-tabPanel>
-    </div>
-
-    <ng-template ngFor let-subtype [ngForOf]="configuration?.subtypes">
-      <p-tabPanel *ngIf="!this.excludedPanels?.includes(subtype)"
-        [header]="(getSubTypeHeader(subtype) | async).displayName" [selected]="this.selectedPanel === subtype">
-        <app-entity-subtypes [subtype]="subtype" [mainId]="entryId" [refreshTrigger]="refreshTrigger"></app-entity-subtypes>
-      </p-tabPanel>
-    </ng-template>
-
-    <div *ngIf="!this.excludedPanels?.includes('Actions')">
-      <p-tabPanel *ngIf="showActionTab" header="Aktionen" [selected]="this.selectedPanel === 'Actions'">
-        <app-right-actions-editor [ownerId]="entryId"></app-right-actions-editor>
-      </p-tabPanel>
-    </div>
-
-  </p-tabView>
 </div>
+
+<ng-template #entityAttachments let-entityAttachment="entityAttachment">
+  <ng-container [ngSwitch]="entityAttachment.type">
+
+    <!-- Components: Notes, File Attachments, Attributes, Log Entries, Security Action Editor -->
+    <div *ngSwitchCase="'component'">
+      <div [ngSwitch]="entityAttachment.name">
+        <app-entity-notes *ngSwitchCase="'Notes'" [ownerType]="configName" [ownerId]="entryId"></app-entity-notes>
+        <app-entity-file-attachments *ngSwitchCase="'FileAttachments'" [ownerType]="configName" [ownerId]="entryId" [categories]="entityAttachment.attachmentCategories"></app-entity-file-attachments>
+        <app-entity-attributes *ngSwitchCase="'Attributes'" [ownerType]="configName" [ownerId]="entryId"></app-entity-attributes>
+        <app-entity-logs *ngSwitchCase="'LogEntries'" [ownerType]="configName" [ownerId]="entryId"></app-entity-logs>
+        <app-right-actions-editor *ngSwitchCase="'SecurityActionEditor'" [ownerId]="entryId"></app-right-actions-editor>
+      </div>
+    </div>    
+
+    <!-- Sub Entities -->
+    <div *ngSwitchCase="'subEntity'">
+      <app-entity-subtypes [subtype]="entityAttachment.name" [mainType]="configName" [mainId]="entryId" [refreshTrigger]="refreshTrigger"></app-entity-subtypes>
+    </div>
+
+    <!-- Attribute Groups -->
+    <div *ngSwitchCase="'attributeGroup'">
+      <app-entity-attributes [ownerType]="configName" [ownerId]="entryId" [attrGroup]="entityAttachment"></app-entity-attributes>
+    </div>            
+
+    <!-- Group Relations -->
+    <div *ngSwitchCase="'group'">
+      <app-entity-group-relation [ownerType]="configName" [ownerId]="entryId" [relation]="entityAttachment.name"></app-entity-group-relation>
+    </div> 
+
+  </ng-container>
+</ng-template>
