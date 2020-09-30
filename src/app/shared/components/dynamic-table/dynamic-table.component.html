@@ -119,7 +119,7 @@
                         (keyup.esc)="cell.isEdited = false; abortCellEdit(rowData, $event)"
                         (blur)="cell.isEdited = false; abortCellEdit(rowData, $event)"
                         (onChange)="cell.isEdited = false; completeCellEdit(rowData);"
-                        (click)="$event.stopPropagation()" appAutoFocus></p-checkbox>
+                        (click)="$event.stopPropagation()" appAutoFocus appStopClickPropagation></p-checkbox>
                       </ng-container>
                       <ng-container *ngSwitchCase="'Date'">
                         <p-calendar [name]="field.field" showTime="true" hourFormat="24" dateFormat="dd.mm.yy" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"

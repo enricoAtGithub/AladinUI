@@ -49,6 +49,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { RouterModule } from '@angular/router';
 import { PasswordInputComponent } from './components/password-input/password-input.component';
 import { EntityViewComponent } from './components/entity-view/entity-view.component';
+import { StopClickPropagationDirective } from './directives/stop-click-propagation.directive';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { EntityViewComponent } from './components/entity-view/entity-view.compon
     VarDirective,
     AutoFocusDirective,
     PasswordInputComponent,
-    EntityViewComponent
+    EntityViewComponent,
+    StopClickPropagationDirective
   ],
   imports: [
     CommonModule,
