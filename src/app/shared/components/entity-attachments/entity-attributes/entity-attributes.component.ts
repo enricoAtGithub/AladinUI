@@ -63,7 +63,9 @@ export class EntityAttributesComponent implements OnInit, OnChanges {
     // get all dtos for type "Reference"
     const configurations$ = this.store$.pipe(select(fromConfigSelectors.selectConfigs));
     configurations$.subscribe(configs => {
-      this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
+      if (configs) {
+        this.dtoConfigs = Object.values(configs).map(config => this.configToSelectItem(config.type, config.type));
+      }
     });
 
     // get Currency from settings
