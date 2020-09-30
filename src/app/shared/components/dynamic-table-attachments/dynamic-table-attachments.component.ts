@@ -32,10 +32,11 @@ export class DynamicTableAttachmentsComponent implements OnInit, OnChanges {
   init() {
     const configuration$: Observable<EntityConfiguration> = this.store$.pipe(
       select(fromConfigSelectors.selectConfigs),
-      map(configs => configs[this.configName])
+      map(configs => configs ? configs[this.configName] : configs)
     );
 
     configuration$.subscribe(config => {
+      if (!config) { return; }
       config.entityAttachments ? this.hasContent = true : this.hasContent = false;
 
       if (this.hasContent) {
