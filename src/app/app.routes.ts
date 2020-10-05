@@ -4,7 +4,6 @@ import { AuthGuard } from './auth/guards/auth.guard';
 
 import { LoginComponent } from './auth/components/login/login.component';
 import { UserManagementComponent } from './user/components/user-management/user-management.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReportsComponent } from './reports/reports.component';
 import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -23,6 +22,8 @@ import { ModelSetComponent } from './domain/components/model_set/modelset.compon
 import { ManufacturerCodeComponent } from './domain/components/manufacturercode/manufacturer_code.component';
 import { ManufacturerComponent } from './domain/components/manufacturer/manufacturer.component';
 import { J48TreeComponent } from './domain/components/j48tree/j48tree.component';
+import { EntityViewComponent } from './shared/components/entity-view/entity-view.component';
+import { RoleManagementComponent } from './user/components/role-management/role-management.component';
 
 export const routes: Routes = [
   // App-Layout routes

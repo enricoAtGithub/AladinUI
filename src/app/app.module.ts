@@ -232,7 +232,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         AppFooterComponent,
         AppProfileComponent,
         ProfileComponent,
-        ReportsComponent
+        ReportsComponent,
         FinComponent,
         ModelSetComponent,
         ManufacturerComponent,
