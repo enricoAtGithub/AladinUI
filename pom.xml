@@ -8,7 +8,7 @@
     <name>Aladin UI</name>
     <groupId>de.simply.jmeleon</groupId>
     <artifactId>aladin-ui</artifactId>
-    <version>0.9.1</version>
+    <version>1.0</version>
     <packaging>war</packaging>
 
 
