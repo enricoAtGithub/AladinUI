@@ -33,7 +33,7 @@
     "@uiowa/digit-only": "^1.2.3",
     "angular-resizable-element": "^3.3.0",
     "angular-split": "^3.0.3",
-    "chart.js": "2.8.0",
+    "chart.js": "2.9.4",
     "cldr-data": "^36.0.0",
     "core-js": "3.2.1",
     "crypto-js": "^4.0.0",
